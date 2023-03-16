@@ -39,7 +39,24 @@
     </div>
   </section>
 
+  <section class="popular container">
+    <div class="head_text">
+      Popular Categories
+      <router-link to="/"><span class="line"> | Veiw All </span></router-link>
+    </div>
+
+    <Splide
+      :options="{ perPage: 6, rewind: true, autoplay: true }"
+      aria-label="My Favorite Images"
+    >
+      <SplideSlide v-for="(products, index) in popular" :key="index">
+        <img :src="products.img" alt="Sample 1" />
+      </SplideSlide>
+    </Splide>
+  </section>
+
   <section class="products q-pt-xl container">
+    <div class="head_text">Featured Listings</div>
     <div class="product_cards">
       <div v-for="(product, index) in products" :key="index" class="product">
         <img :src="product.product_image" alt="" />
@@ -73,14 +90,82 @@
             <span>{{ product.ratings_count }}</span>
           </p>
         </div>
+        <div class="love">
+          <i class="fa-regular fa-heart"></i>
+        </div>
       </div>
     </div>
   </section>
+  <section class="products q-pt-xl container">
+    <div class="head_text">Top Rated Shops</div>
+    <div class="product_cards">
+      <div v-for="(product, index) in topProducts" :key="index" class="product">
+        <img :src="product.product_image" alt="" />
+        <div class="location">
+          <p>{{ product.location }}</p>
+        </div>
+        <div class="name">
+          <p>{{ product.name }}</p>
+        </div>
+        <div class="price">
+          <p>{{ product.amount }}</p>
+        </div>
+        <div class="desc">
+          <p>{{ product.desc }}</p>
+        </div>
+        <div class="kinds">
+          <p class="kind">{{ product.kind }}</p>
+          <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
+        </div>
+        <div class="owners">
+          <p class="owner">
+            <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
+          </p>
+          <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
+            <q-rating
+              v-model="ratingModel"
+              size="1.5em"
+              :max="4"
+              color="black"
+            />
+            <span>{{ product.ratings_count }}</span>
+          </p>
+        </div>
+        <div class="love">
+          <i class="fa-regular fa-heart"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="join_area">
+    <div class="join container">
+      <div class="left">
+        <div class="join_title">Join Thousands of Happy Sellers.</div>
+        <div class="join_desc">Start Selling on Leegolu today.</div>
+
+        <div class="btn">
+          <q-btn color="secondary"> Start Selling </q-btn>
+        </div>
+      </div>
+
+      <div class="right">
+        <img src="/images/join.png" alt="" />
+      </div>
+    </div>
+  </section>
+
+  <FooterVue />
 </template>
 
 <script>
+import FooterVue from "src/components/Footer.vue";
 import { defineComponent, ref } from "vue";
-
+import { Splide, SplideSlide } from "@splidejs/vue-splide";
+// Default theme
+import "@splidejs/vue-splide/css";
+// or only core styles
+import "@splidejs/vue-splide/css/core";
 export default defineComponent({
   name: "IndexPage",
   setup() {
@@ -88,8 +173,86 @@ export default defineComponent({
       ratingModel: ref(4),
     };
   },
+  components: {
+    FooterVue,
+    Splide,
+    SplideSlide,
+  },
   data() {
     return {
+      popular: [
+        {
+          img: "/images/sneakPop.png",
+        },
+        {
+          img: "/images/shirt.png",
+        },
+        {
+          img: "/images/auto.png",
+        },
+        {
+          img: "/images/washingmachine.png",
+        },
+        {
+          img: "/images/utensils.png",
+        },
+        {
+          img: "/images/phone.png",
+        },
+        {
+          img: "/images/sneakPop.png",
+        },
+      ],
+      topProducts: [
+        {
+          product_image: "/images/car.png",
+          name: "Royal Star 45” TV fHD/HD Smart...",
+          location: "KETU, LAGOS",
+          amount: "₦112,500",
+          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
+          owner: "Izuogu & Sons Limited",
+          ratings: 5,
+          ratings_count: 203,
+          kind: "Brand New",
+          make: "Hisense",
+        },
+        {
+          product_image: "/images/sneakers.png",
+          name: "Royal Star 45” TV fHD/HD Smart...",
+          location: "KETU, LAGOS",
+          amount: "₦112,500",
+          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
+          owner: "Izuogu & Sons Limited",
+          ratings: 5,
+          ratings_count: 203,
+          kind: "Brand New",
+          make: "",
+        },
+        {
+          product_image: "/images/tv.png",
+          name: "Royal Star 45” TV fHD/HD Smart...",
+          location: "KETU, LAGOS",
+          amount: "₦112,500",
+          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
+          owner: "Izuogu & Sons Limited",
+          ratings: 5,
+          ratings_count: 203,
+          kind: "Used",
+          make: "Hisense",
+        },
+        {
+          product_image: "/images/computer.png",
+          name: "Royal Star 45” TV fHD/HD Smart...",
+          location: "KETU, LAGOS",
+          amount: "₦112,500",
+          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
+          owner: "Izuogu & Sons Limited",
+          ratings: 5,
+          ratings_count: 203,
+          kind: "New",
+          make: "",
+        },
+      ],
       products: [
         {
           product_image: "/images/car.png",
@@ -152,7 +315,7 @@ export default defineComponent({
           make: "Hisense",
         },
         {
-          product_image: "/images/ac.png",
+          product_image: "/images/keyboard.png",
           name: "Royal Star 45” TV fHD/HD Smart...",
           location: "KETU, LAGOS",
           amount: "₦112,500",
@@ -164,7 +327,7 @@ export default defineComponent({
           make: "Hisense",
         },
         {
-          product_image: "/images/ac.png",
+          product_image: "/images/sneak.png",
           name: "Royal Star 45” TV fHD/HD Smart...",
           location: "KETU, LAGOS",
           amount: "₦112,500",
@@ -176,7 +339,7 @@ export default defineComponent({
           make: "",
         },
         {
-          product_image: "/images/ac.png",
+          product_image: "/images/mytv.png",
           name: "Royal Star 45” TV fHD/HD Smart...",
           location: "KETU, LAGOS",
           amount: "₦112,500",
@@ -204,7 +367,7 @@ p {
   width: 100%;
 }
 .nav {
-  padding: 0.5rem;
+  padding: 0.7rem 3rem;
   align-items: center;
   display: flex;
   width: 100%;
@@ -252,6 +415,28 @@ a {
   width: 100%;
 }
 
+.popular {
+  margin: 3rem auto;
+}
+.popular img {
+  width: 150px;
+}
+
+.popular .head_text {
+  margin-bottom: 2rem;
+}
+
+.popular span.line {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+  text-transform: capitalize;
+  color: rgba(100, 115, 124, 0.61);
+  margin-left: 0.7rem;
+}
+
 .wrapper {
   text-align: center;
   width: 55%;
@@ -268,6 +453,7 @@ a {
   font-weight: 500;
   font-size: 15px;
   line-height: 18px;
+  margin-bottom: 0.8rem;
   color: #ffffff;
 }
 
@@ -308,6 +494,10 @@ a {
   padding-top: 1rem;
 }
 
+.process img {
+  width: 90%;
+}
+
 /* prodcut card */
 .product_cards {
   display: grid;
@@ -321,6 +511,23 @@ a {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.12);
   border-radius: 5px;
   padding: 0.8rem;
+  position: relative;
+}
+
+.product_cards .product .love {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background: rgba(0, 0, 0, 0.29);
+  border-radius: 30px;
+  width: 27px;
+  height: 27px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.product_cards .product .love i {
+  color: #ffffff;
 }
 .product_cards .product .location p {
   font-weight: 400;
@@ -392,7 +599,45 @@ a {
   color: #000000;
 }
 
-@media (min-width: 1200px) {
+/* join */
+
+.join_area {
+  margin: 5rem 0;
+}
+
+.join_area .join {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  align-items: center;
+  place-items: center;
+}
+
+.join_area .left {
+  text-align: center;
+}
+
+.join_area .join_title {
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 48px;
+  text-transform: capitalize;
+  color: #1a3c52;
+}
+.join_area .join_desc {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  text-transform: capitalize;
+  color: #64737c;
+  margin: 0.3rem 0 0.9rem;
+}
+
+.join img {
+  width: 200px;
+}
+
+@media (min-width: 1300px) {
   .product_cards {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
