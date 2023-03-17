@@ -6,8 +6,8 @@
       </div>
 
       <div class="right">
-        <router-link to=""> Sign In </router-link>
-        <router-link to=""> Join Now </router-link>
+        <router-link to="/login"> Sign In </router-link>
+        <router-link to="/register"> Join Now </router-link>
         <q-btn color="secondary"> Start Selling </q-btn>
       </div>
     </div>
@@ -59,40 +59,42 @@
     <div class="head_text">Featured Listings</div>
     <div class="product_cards">
       <div v-for="(product, index) in products" :key="index" class="product">
-        <img :src="product.product_image" alt="" />
-        <div class="location">
-          <p>{{ product.location }}</p>
-        </div>
-        <div class="name">
-          <p>{{ product.name }}</p>
-        </div>
-        <div class="price">
-          <p>{{ product.amount }}</p>
-        </div>
-        <div class="desc">
-          <p>{{ product.desc }}</p>
-        </div>
-        <div class="kinds">
-          <p class="kind">{{ product.kind }}</p>
-          <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
-        </div>
-        <div class="owners">
-          <p class="owner">
-            <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
-          </p>
-          <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
-            <q-rating
-              v-model="ratingModel"
-              size="1.5em"
-              :max="4"
-              color="black"
-            />
-            <span>{{ product.ratings_count }}</span>
-          </p>
-        </div>
-        <div class="love">
-          <i class="fa-regular fa-heart"></i>
-        </div>
+        <router-link to="/ProductDetail">
+          <img :src="product.product_image" alt="" />
+          <div class="location">
+            <p>{{ product.location }}</p>
+          </div>
+          <div class="name">
+            <p>{{ product.name }}</p>
+          </div>
+          <div class="price">
+            <p>{{ product.amount }}</p>
+          </div>
+          <div class="desc">
+            <p>{{ product.desc }}</p>
+          </div>
+          <div class="kinds">
+            <p class="kind">{{ product.kind }}</p>
+            <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
+          </div>
+          <div class="owners">
+            <p class="owner">
+              <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
+            </p>
+            <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
+              <q-rating
+                v-model="ratingModel"
+                size="1.5em"
+                :max="4"
+                color="black"
+              />
+              <span>{{ product.ratings_count }}</span>
+            </p>
+          </div>
+          <div class="love">
+            <i class="fa-regular fa-heart"></i>
+          </div>
+        </router-link>
       </div>
     </div>
   </section>

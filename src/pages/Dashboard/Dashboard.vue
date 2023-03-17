@@ -233,7 +233,7 @@ export default {};
 }
 
 .small_card:last-child {
-  background: red;
+  // background: red;
   width: 334px;
   // width: 100%;
   display: flex;
@@ -337,6 +337,21 @@ export default {};
 
   .main {
     grid-template-columns: 6.2fr 2fr;
+  }
+}
+@media (max-width: 1000px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+  .right_card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .right_card_top,
+  .right_card_top.down {
+    max-width: 100%;
   }
 }
 </style>

@@ -76,7 +76,13 @@
             <input type="text" class="input-1" placeholder="*******" />
           </div>
 
-          <q-btn type="button" color="secondary" class="btn">Proceed</q-btn>
+          <q-btn
+            @click="modal = true"
+            type="button"
+            color="secondary"
+            class="btn"
+            >Proceed</q-btn
+          >
           <div class="clear"></div>
 
           <div class="goggle_auth">
@@ -180,8 +186,10 @@
         </div>
 
         <div class="row q-pb-lg items-center justify-between">
-          <q-btn color="primary" class="q-px-xl proceed"> Proceed </q-btn>
-          <q-btn class="q-px-sm skip"> Skip </q-btn>
+          <q-btn to="/user/dashboard" color="primary" class="q-px-xl proceed">
+            Proceed
+          </q-btn>
+          <q-btn to="/user/dashboard" class="q-px-sm skip"> Skip </q-btn>
         </div>
 
         <div @click="modaltwo = false" class="close">
@@ -197,7 +205,7 @@ export default {
   data() {
     return {
       data: { bus: "Leegolu Regular" },
-      modal: true,
+      modal: false,
       modaltwo: false,
       preview: "/images/preview.png",
       image: null,

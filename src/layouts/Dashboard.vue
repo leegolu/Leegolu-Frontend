@@ -58,6 +58,7 @@
       bordered
       class="bg-white"
       :width="206"
+      :breakpoint="800"
     >
       <q-scroll-area class="fit">
         <q-list padding>
