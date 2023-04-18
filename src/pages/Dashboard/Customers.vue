@@ -2,15 +2,15 @@
   <div class="wrapp">
     <div class="top">
       <span class="title">
-        <i class="fa-solid q-mr-sm fa-message"></i>
-        Messages | 6
+        <i class="fa-solid q-mr-sm fa-list"></i>
+        Customers | 8
       </span>
 
       <div class="sort_area">
         <div class="left">
-          <q-btn class="active">Recent </q-btn>
-          <q-btn class="regular"> Exppired </q-btn>
-          <q-btn class="regular"> Archived </q-btn>
+          <q-btn class="active"> All Customers </q-btn>
+          <q-btn class="regular"> Call Leads </q-btn>
+          <q-btn class="regular"> Chat Leads </q-btn>
         </div>
       </div>
     </div>
@@ -25,10 +25,10 @@
         :loading="loading"
         @request="onRequest"
       >
-        <template v-slot:body-cell-messages="props">
+        <template v-slot:body-cell-customerList="props">
           <q-td :props="props">
             <!-- {{ props.row }} -->
-            <div @click="advertdialog = true" class="name_row">
+            <div class="name_row">
               <q-avatar size="50px" class="shadow-10">
                 <img :src="props.row.image_url" />
               </q-avatar>
@@ -39,9 +39,6 @@
                 <div class="name_down">
                   {{ props.row.kind }}
                 </div>
-                <div class="name_last">
-                  {{ props.row.chat }}
-                </div>
               </div>
             </div>
           </q-td>
@@ -50,6 +47,49 @@
           <q-td :props="props">
             <div class="added">
               {{ props.row.addedOn }}
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props">
+            <div
+              class="row items-center justify-end no-wrap table_actn_area q-gutter-sm"
+            >
+              <q-btn
+                size="13px"
+                text-color="primary"
+                rounded
+                class="actn_btn"
+                icon="fa-solid fa-phone-volume"
+              />
+              <q-btn
+                text-color="primary"
+                rounded
+                @click="toggleModal(props.row)"
+                class="actn_btn"
+                icon="fa-solid fa-message"
+              />
+              <q-btn-dropdown class="modify" color="primary" label="Modify">
+                <q-list>
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Edit</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Archive</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Delete</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
             </div>
           </q-td>
         </template>
@@ -64,57 +104,77 @@
     <q-dialog v-model="advertdialog" persistent>
       <q-card class="card">
         <div class="dialog_content">
+          <p class="advert text-center">Chat Lead</p>
           <div class="dialog_top advert">
             <div class="left_dialog">
-              <img src="/images/listing1.png" alt="" />
+              <img :src="rowData.image_url" alt="" />
             </div>
 
             <div class="det">
-              <div class="title name_top">Michael Nnamani</div>
-              <div class="name_down act text-weight-bold">Active</div>
-            </div>
-          </div>
-          <div class="dialog_top advert">
-            <div class="left_dialog">
-              <img src="/images/listing2.png" alt="" />
-            </div>
-
-            <div class="det">
-              <div class="title name_top">Ankara Head Wrap Gown</div>
-              <div class="name_down text-black">₦50,000</div>
-            </div>
-          </div>
-          <div class="chatArea">
-            <p class="text-center today">Today</p>
-            <div style="width: 100%; max-width: 400px">
-              <q-chat-message
-                name="me"
-                avatar="https://cdn.quasar.dev/img/avatar1.jpg"
-                :text="['hey, how are you?']"
-                sent
-              />
-              <q-chat-message
-                name="Jane"
-                avatar="https://cdn.quasar.dev/img/avatar2.jpg"
-                :text="['doing fine, how r you?']"
-              />
-
-              <q-chat-message
-                name="Jane"
-                avatar="https://cdn.quasar.dev/img/avatar5.jpg"
-                bg-color="amber"
-              >
-                <q-spinner-dots size="2rem" />
-              </q-chat-message>
-            </div>
-
-            <div class="input_area">
-              <div class="inp_wra">
-                <i class="fa-solid fa-face-smile"></i>
-                <input type="text" placeholder="Type something...." />
-                <i class="fa-solid fa-microphone"></i>
+              <div class="title name_top">{{ rowData.userName }}</div>
+              <div class="name_down">{{ rowData.kind }}</div>
+              <div class="name_copy">
+                08099999694
+                <span @click="copy"><i class="fa-solid fa-copy"></i></span>
               </div>
             </div>
+          </div>
+          <div class="topDetails">
+            <div class="lead_details">
+              <div class="leads">
+                <img src="/images/listing1.png" alt="" />
+
+                <div class="lead_detail">
+                  <div class="interested">INTERESTED IN</div>
+                  <div class="title">Ankara Head Wrap Gown</div>
+                  <div class="price">₦15,000</div>
+                  <div class="day">2 days ago</div>
+                </div>
+              </div>
+            </div>
+            <div class="lead_details">
+              <div class="leads">
+                <img src="/images/listing3.png" alt="" />
+
+                <div class="lead_detail">
+                  <div class="interested">INTERESTED IN</div>
+                  <div class="title">Ankara Head Wrap Gown</div>
+                  <div class="price">₦15,000</div>
+                  <div class="day">2 days ago</div>
+                </div>
+              </div>
+            </div>
+            <div class="lead_details">
+              <div class="leads">
+                <img src="/images/listing2.png" alt="" />
+
+                <div class="lead_detail">
+                  <div class="interested">INTERESTED IN</div>
+                  <div class="title">Ankara Head Wrap Gown</div>
+                  <div class="price">₦15,000</div>
+                  <div class="day">2 days ago</div>
+                </div>
+              </div>
+            </div>
+            <div class="lead_details">
+              <div class="leads">
+                <img src="/images/listing3.png" alt="" />
+
+                <div class="lead_detail">
+                  <div class="interested">INTERESTED IN</div>
+                  <div class="title">Ankara Head Wrap Gown</div>
+                  <div class="price">₦15,000</div>
+                  <div class="day">2 days ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="boost">
+            <div class="minimize">
+              Minimize <i class="fa-solid fa-arrow-up"></i>
+            </div>
+            <q-btn> Call Now </q-btn>
           </div>
 
           <q-btn @click="advertdialog = false" class="close">
@@ -131,9 +191,9 @@ import { useMeta } from "quasar";
 import { ref } from "vue";
 const columns = [
   {
-    name: "messages",
+    name: "customerList",
     required: true,
-    label: "Messages",
+    label: "Customer List",
     align: "left",
     field: (row) => row.name,
     sortable: true,
@@ -141,10 +201,19 @@ const columns = [
   {
     name: "addedOn",
     required: true,
-    // label: "Added On",
-    align: "right",
+    label: "Added On",
+    align: "center",
     field: (row) => row.name,
     sortable: true,
+  },
+
+  {
+    name: "actions",
+    required: true,
+    label: "Actions",
+    align: "right",
+    field: (row) => row.id,
+    sortable: false,
   },
 ];
 
@@ -153,24 +222,21 @@ const rows = [
     name: "customerList",
     image_url: "/images/tableimg.png",
     userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
+    kind: "Chat Lead",
     addedOn: "October 7, 2022",
   },
   {
-    name: "customerList",
-    image_url: "/images/tableimg1.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
-    addedOn: "October 7, 2022",
-  },
-  {
-    name: "customerList",
+    name: "addedOn",
     image_url: "/images/tableimg2.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
+    userName: "Aliyu Mohammad",
+    kind: "Chat Lead",
+    addedOn: "October 7, 2022",
+  },
+  {
+    name: "addedOn",
+    image_url: "/images/tableimg1.png",
+    userName: "Gold Adetutu",
+    kind: "Chat Lead",
     addedOn: "October 7, 2022",
   },
 ];
@@ -178,7 +244,7 @@ const rows = [
 export default {
   setup() {
     useMeta({
-      title: "Messages",
+      title: "Customers",
     });
   },
   data() {
@@ -219,6 +285,16 @@ export default {
   methods: {
     getEvents() {},
     onRequest(props) {},
+
+    copy() {
+      let Url = document.querySelector(".name_copy").textContent;
+      navigator.clipboard.writeText(Url);
+      this.$q.notify({
+        message: "Copied!",
+        color: "green",
+        position: "top",
+      });
+    },
 
     onItemClick() {},
 
@@ -301,9 +377,9 @@ export default {
 .sort_area .active {
   font-family: "Open Sans";
   font-style: normal;
-  width: 107px;
-  height: 34px;
   font-weight: 700;
+  // width: 107px;
+  height: 34px;
   font-size: 14px;
   line-height: 19px;
   text-align: center;
@@ -363,54 +439,14 @@ export default {
   gap: 1rem;
 }
 
-.input_area {
-  position: relative;
-}
-
-.input_area .inp_wra {
-  background: #f6f6f6;
-  border: 1px solid #e8e8e8;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 100px;
-  padding: 0.3rem 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  margin: 2rem 0rem 0;
-  justify-content: space-between;
-}
-.input_area .inp_wra input {
-  border: none;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 15px;
-  color: #9a9a9a;
-  background: transparent;
-  width: 100%;
-}
-.input_area .inp_wra i:first-of-type {
-  color: rgba(31, 123, 181, 0.73);
-}
-.input_area .inp_wra i:last-of-type {
-  background: #1f7bb5;
-  color: #fff;
-  width: 40px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-}
-
 .added {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
   line-height: 16px;
+  text-align: center;
+
   color: #b0b0b0;
 }
 
@@ -432,16 +468,24 @@ export default {
   color: #1f7bb5;
 }
 
-.name_down.act {
-  font-weight: 700;
-}
-.name_last {
+.name_copy {
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 16px;
-  color: #64737c;
+  font-size: 12px;
+  line-height: 129.02%;
+  text-align: center;
+  letter-spacing: 0.125em;
+  text-transform: capitalize;
+  color: #8e8e8e;
+  position: relative;
+  margin-top: 1rem;
+}
+
+.name_copy span {
+  position: absolute;
+  right: -1%;
+  top: -32%;
 }
 
 // dialog
@@ -464,13 +508,18 @@ export default {
 }
 .dialog_content .dialog_top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
-  margin: 1rem 0;
 }
 
-.dialog_content .dialog_top.advert:nth-child(1) {
-  border-bottom: 1px solid #c3c3c3b2;
+.dialog_content .dialog_top.advert {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 0rem;
+  margin-bottom: 1.5rem;
 }
 
 .dialog_content .dialog_top img {
@@ -480,19 +529,67 @@ export default {
   height: 53px;
 }
 
-.chatArea {
-  background: rgba(31, 123, 181, 0.28);
-  border-radius: 0px 0px 9px 9px;
-  padding: 1.4rem 0.5rem;
+.topDetails {
+  border-bottom: 2px solid #d9d9d9 !important;
+  border-top: 2px solid #d9d9d9 !important;
+  padding: 0.5rem;
+  height: 200px;
+  overflow-y: scroll;
 }
-p.today {
+
+.topDetails .lead_details {
+  margin: 1rem 0;
+}
+
+.leads .interested {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 8px;
+  line-height: 11px;
+  color: #1f7bb5;
+}
+
+.leads .title {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 22px;
+  color: #000000;
+}
+
+.leads .price {
   font-family: "Inter";
   font-style: normal;
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  text-transform: capitalize;
+  color: #000000;
+}
 
-  color: #1f7bb5;
+.leads .day {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 8px;
+  line-height: 10px;
+  text-transform: lowercase;
+  color: #9d9d9d;
+}
+
+.leads img {
+  border: 3px solid rgba(176, 176, 176, 0.5);
+  border-radius: 3px;
+  width: 78px;
+  height: 78px;
+}
+
+.lead_details .leads {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .dialog_content .boost .q-btn {
@@ -511,6 +608,29 @@ p.today {
 
 .dialog_content .boost {
   padding: 0.5rem 0;
+}
+
+.dialog_content .boost .minimize {
+  min-height: 0;
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  color: #000000;
+  padding-bottom: 0.5rem;
+}
+
+.dialog_content .boost .minimize i {
+  margin-left: 0.5rem;
+}
+.dialog_content .boost .minimize::before {
+  box-shadow: none;
+  width: fit-content;
 }
 
 .dialog_content .close {

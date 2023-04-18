@@ -36,53 +36,40 @@
           <div class="small_card_sub">Customers that reached out.</div>
           <div class="count">0</div>
         </div>
-        <div class="small_card">
-          <!-- <div class="wallet_left">
-            <img src="/images/wallet.png" alt="" />
-            <div class="small_card_main_text">Wallet</div>
+        <div class="small_card_bus">
+          <div class="wallet_left">
+            <img src="/images/gift.png" alt="" />
           </div>
-          <div class="det">
-            <div class="wallet_amt">₦500</div>
-            <q-btn color="primary" class="q-mt-lg"> Top up </q-btn>
-          </div> -->
-          <!-- <img src="/images/lebus.png" alt="" /> -->
-        </div>
-      </div>
+          <div class="">
+            <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
+            <div class="wallet_amt">Leegolu Business</div>
+            <div class="wallet_small">Shop | ₦3000</div>
 
-      <div class="small_card_bus">
-        <div class="wallet_left">
-          <img src="/images/gift.png" alt="" />
-          <!-- <div class="small_card_main_text">Wallet</div> -->
-        </div>
-        <div class="">
-          <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
-          <div class="wallet_amt">Leegolu Business</div>
-          <div class="wallet_small">Shop | ₦3000</div>
-
-          <div class="progress_wrap q-mt-lg">
-            <div class="progress">
-              <div class="small">4/20 Listings</div>
-              <q-linear-progress :value="progress1" color="accent">
-                <div class="absolute-full flex flex-center">
-                  <q-badge
-                    color="white"
-                    text-color="accent"
-                    :label="progressLabel1"
-                  />
-                </div>
-              </q-linear-progress>
-            </div>
-            <div class="progress q-mt-sm">
-              <div class="small">30 days left</div>
-              <q-linear-progress :value="progress1" color="accent">
-                <div class="absolute-full flex flex-center">
-                  <q-badge
-                    color="white"
-                    text-color="accent"
-                    :label="progressLabel1"
-                  />
-                </div>
-              </q-linear-progress>
+            <div class="progress_wrap q-mt-lg">
+              <div class="progress">
+                <div class="small">4/20 Listings</div>
+                <q-linear-progress :value="progress1" color="accent">
+                  <div class="absolute-full flex flex-center">
+                    <q-badge
+                      color="white"
+                      text-color="accent"
+                      :label="progressLabel1"
+                    />
+                  </div>
+                </q-linear-progress>
+              </div>
+              <div class="progress q-mt-sm">
+                <div class="small">30 days left</div>
+                <q-linear-progress :value="progress1" color="accent">
+                  <div class="absolute-full flex flex-center">
+                    <q-badge
+                      color="white"
+                      text-color="accent"
+                      :label="progressLabel1"
+                    />
+                  </div>
+                </q-linear-progress>
+              </div>
             </div>
           </div>
         </div>
@@ -132,9 +119,14 @@
       </div>
     </div>
   </div>
+
+  <div>
+    <Charts />
+  </div>
 </template>
 
 <script>
+import Charts from "../../components/Charts.vue";
 import { ref, computed } from "vue";
 export default {
   setup() {
@@ -148,6 +140,10 @@ export default {
       progress2,
       progressLabel2: computed(() => (progress2.value * 100).toFixed(2) + "%"),
     };
+  },
+
+  components: {
+    Charts,
   },
 };
 </script>
