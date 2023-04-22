@@ -510,7 +510,7 @@ export default {
       toggleLeftDrawer,
       links1: [
         { icon: "home", text: "Overview", to: "dashboard" },
-        { icon: "fa-solid fa-file", text: "Manage Shop", to: "adverts" },
+        { icon: "fa-solid fa-shop", text: "Manage Shop", to: "adverts" },
         { icon: "fa-solid fa-list", text: "My Listings", to: "listings" },
         {
           icon: "fa-solid fa-pen",

@@ -81,6 +81,37 @@
         <div class="flag_sub">Reach thousands of customers</div>
         <q-btn color="primary" class="q-mt-lg post"> Post Listing</q-btn>
       </div>
+
+      <div id="chart" class="bg-white q-pa-md">
+        <div class="top_business">
+          <div class="shoe_company">
+            <img src="/images/buslogo.png" alt="" />
+            <div class="detail_com">
+              <div class="logo_main_text">Logo Shoe Company</div>
+              <div class="logo_main_desc">Business Metrics</div>
+            </div>
+          </div>
+
+          <div class="business_seive">
+            <q-btn flat> Page Visits </q-btn>
+          </div>
+          <div class="business_seive">
+            <q-btn flat> Callback Requests </q-btn>
+          </div>
+          <div class="business_seive">
+            <q-btn flat> Message Requests </q-btn>
+          </div>
+          <div class="business_seive">
+            <q-btn flat> Phone Views </q-btn>
+          </div>
+        </div>
+        <apexchart
+          type="bar"
+          height="380"
+          :options="chartOptions"
+          :series="series"
+        ></apexchart>
+      </div>
     </div>
 
     <div class="right_card">
@@ -119,16 +150,35 @@
       </div>
     </div>
   </div>
-
-  <div>
-    <Charts />
-  </div>
 </template>
 
 <script>
-import Charts from "../../components/Charts.vue";
+import VueApexCharts from "vue3-apexcharts";
+
+// import Charts from "../../components/Charts.vue";
 import { ref, computed } from "vue";
 export default {
+  components: {
+    apexchart: VueApexCharts,
+  },
+  data() {
+    return {
+      chartOptions: {
+        chart: {
+          id: "basic-bar",
+        },
+        xaxis: {
+          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+        },
+      },
+      series: [
+        {
+          name: "series-1",
+          data: [30, 40, 45, 50, 49, 60, 70, 91],
+        },
+      ],
+    };
+  },
   setup() {
     const progress1 = ref(0.3);
     const progress2 = ref(0.9);
@@ -140,10 +190,6 @@ export default {
       progress2,
       progressLabel2: computed(() => (progress2.value * 100).toFixed(2) + "%"),
     };
-  },
-
-  components: {
-    Charts,
   },
 };
 </script>
@@ -458,6 +504,54 @@ export default {
   border-radius: 9px;
   width: 184px;
   height: 30px;
+}
+
+.top_business {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.top_business .shoe_company {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.top_business img {
+  width: 36px;
+  height: 36px;
+}
+
+.top_business .logo_main_text {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 19px;
+  white-space: nowrap;
+  color: #000000;
+}
+.top_business .logo_main_desc {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #000000;
+}
+
+.top_business .business_seive .q-btn {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(176, 176, 176, 0.62);
+  border-radius: 14.5px;
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  color: #000000;
 }
 
 @media (min-width: 1100px) {

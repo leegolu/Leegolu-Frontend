@@ -6,15 +6,18 @@
       type="bar"
       :options="chartOptions"
       :series="series"
-    ></apexcharts>
+    />
   </div>
 </template>
 
 <script>
+import VueApexCharts from "vue3-apexcharts";
 export default {
   name: "Chart",
-
-  data: function () {
+  components: {
+    apexchart: VueApexCharts,
+  },
+  data() {
     return {
       chartOptions: {
         chart: {
