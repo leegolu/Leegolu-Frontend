@@ -64,7 +64,7 @@
       show-if-above
       bordered
       class="bg-white"
-      :width="206"
+      :width="236"
       :breakpoint="800"
     >
       <q-scroll-area class="fit">
@@ -97,6 +97,17 @@
 
           <q-separator class="q-my-md" />
         </q-list>
+        <div class="sub">
+          <img src="/images/money.png" alt="" />
+
+          <div class="btext">
+            <div class="small_tex">Make more money with a</div>
+
+            <div class="main_text">Leegolu Business account</div>
+          </div>
+
+          <q-btn> Upgrade to Business </q-btn>
+        </div>
       </q-scroll-area>
     </q-drawer>
 
@@ -509,21 +520,33 @@ export default {
       search,
       toggleLeftDrawer,
       links1: [
-        { icon: "home", text: "Overview", to: "dashboard" },
-        { icon: "fa-solid fa-list", text: "My Listings", to: "listings" },
+        {
+          icon: "fa-duotone fa-house",
+          text: "Overview",
+          to: "regular.dashboard",
+        },
+        {
+          icon: "fa-duotone fa-list",
+          text: "My Listings",
+          to: "regular.listings",
+        },
 
         {
-          icon: "fa-solid fa-heart",
+          icon: "fa-duotone fa-heart",
           text: "My Favorites",
-          to: "favourites",
+          to: "regular.favourites",
         },
-        { icon: "fa-solid fa-message", text: "Messages", to: "messages" },
         {
-          icon: "fa-solid fa-bell",
-          text: "Notifications",
-          to: "notifications",
+          icon: "fa-duotone fa-message",
+          text: "Messages",
+          to: "regular.messages",
         },
-        { icon: "fa-solid fa-gear", text: "Settings", to: "settings" },
+        {
+          icon: "fa-duotone fa-bell",
+          text: "Notifications",
+          to: "regular.notifications",
+        },
+        // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
       ],
     };
   },
@@ -548,6 +571,45 @@ export default {
 .header {
   background: #ffffff;
   border-bottom: 1px solid #dddddd;
+}
+
+.sub {
+  margin-top: 6rem;
+  text-align: center;
+}
+
+.sub .btext {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  color: #000000;
+}
+
+.sub img {
+  width: 84px;
+  height: 59px;
+  object-fit: contain;
+}
+
+.sub .main_text {
+  font-weight: 700;
+}
+
+.sub .q-btn {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  color: #ffffff;
+  background: #1f7bb5;
+  border-radius: 9px;
+  margin-top: 1rem;
+  text-transform: capitalize;
 }
 .mybtn {
   width: 166px;

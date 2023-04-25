@@ -52,7 +52,6 @@
       <div class="small_card_bus">
         <div class="wallet_left">
           <img src="/images/gift.png" alt="" />
-          <!-- <div class="small_card_main_text">Wallet</div> -->
         </div>
         <div class="">
           <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>

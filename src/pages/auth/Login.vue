@@ -28,7 +28,12 @@
               <label class="input-label">Password</label>
               <input type="text" class="input-1" placeholder="*******" />
             </div>
-            <p class="text-weight-bold">Forgot your password?</p>
+            <q-btn
+              flat
+              :to="{ name: 'reset.password' }"
+              class="text-weight-bold"
+              >Forgot your password?</q-btn
+            >
           </div>
 
           <q-btn type="button" color="secondary" class="btn">Proceed</q-btn>
@@ -104,6 +109,12 @@ $btn-primary-text-color: #fff;
   line-height: 100%;
   letter-spacing: -0.01em;
   color: #000000;
+}
+
+.password .q-btn {
+  padding: 0;
+  min-height: 0;
+  text-transform: capitalize;
 }
 
 input {

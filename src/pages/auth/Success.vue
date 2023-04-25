@@ -9,8 +9,9 @@
         Your password has been changed successfully
       </div>
 
-      <div class="change">
-        <q-btn> RETURN TO DASHBOARD</q-btn>
+      <div class="change col">
+        <!-- <q-btn> RETURN TO DASHBOARD</q-btn> -->
+        <q-btn :to="{ name: 'login' }"> RETURN TO LOGIN</q-btn>
       </div>
     </div>
   </div>

@@ -12,30 +12,37 @@ const routes = [
       {
         path: "/register",
         component: () => import("src/pages/auth/Register.vue"),
+        name: "register",
       },
       {
         path: "/login",
         component: () => import("src/pages/auth/Login.vue"),
+        name: "login",
       },
       {
         path: "/reset-password",
         component: () => import("src/pages/auth/ResetPassword.vue"),
+        name: "reset.password",
       },
       {
         path: "/CheckEmail",
         component: () => import("src/pages/auth/CheckEmail.vue"),
+        name: "checkmail",
       },
       {
         path: "/ResetTemplate",
         component: () => import("src/pages/auth/ResetTemplate.vue"),
+        name: "reset.template",
       },
       {
         path: "/ChangePassword",
         component: () => import("src/pages/auth/ChangePassword.vue"),
+        name: "change.password",
       },
       {
         path: "/Success",
         component: () => import("src/pages/auth/Success.vue"),
+        name: "success",
       },
     ],
   },
@@ -54,73 +61,106 @@ const routes = [
     component: () => import("layouts/Business.vue"),
     children: [
       {
-        path: "/user/business-dashboard",
+        path: "/business/business-dashboard",
         component: () => import("pages/Dashboard/BusinessDashboard.vue"),
-        name: "business-dashboard",
+        name: "business.dashboard",
       },
       {
-        path: "/user/manage-shop",
+        path: "/business/manage-shop",
         component: () => import("pages/Dashboard/ManageShop.vue"),
         name: "manage-shop",
       },
       {
-        path: "/user/Plans",
+        path: "/business/Plans",
         component: () => import("pages/Dashboard/Plans.vue"),
         name: "Plans",
       },
-    ],
-  },
-  {
-    path: "/Dashboard",
-    component: () => import("layouts/Dashboard.vue"),
-    children: [
+
       {
-        path: "/user/Dashboard",
-        component: () => import("pages/Dashboard/Dashboard.vue"),
-        name: "dashboard",
-      },
-      {
-        path: "/user/adverts",
+        path: "/business/adverts",
         component: () => import("pages/Dashboard/Adverts.vue"),
         name: "adverts",
       },
       {
-        path: "/user/listings",
+        path: "/business/listings",
         component: () => import("pages/Dashboard/Listings.vue"),
         name: "listings",
       },
       {
-        path: "/user/customers",
+        path: "/business/customers",
         component: () => import("pages/Dashboard/Customers.vue"),
         name: "customers",
       },
       {
-        path: "/user/collections",
+        path: "/business/collections",
         component: () => import("pages/Dashboard/Collections.vue"),
         name: "collections",
       },
       {
-        path: "/user/favourites",
+        path: "/business/favourites",
         component: () => import("pages/Dashboard/Favourites.vue"),
         name: "favourites",
       },
       {
-        path: "/user/messages",
+        path: "/business/messages",
         component: () => import("pages/Dashboard/Messages.vue"),
         name: "messages",
       },
       {
-        path: "/user/notifications",
+        path: "/business/notifications",
         component: () => import("pages/Dashboard/Notifications.vue"),
         name: "notifications",
       },
+      // {
+      //   path: "/business/settings",
+      //   component: () => import("pages/Dashboard/Settings.vue"),
+      //   name: "settings",
+      // },
+    ],
+  },
+  {
+    path: "/regular",
+    component: () => import("layouts/Regular.vue"),
+    children: [
       {
-        path: "/user/settings",
-        component: () => import("pages/Dashboard/Settings.vue"),
-        name: "settings",
+        path: "/user/regular-dashboard",
+        component: () => import("pages/Dashboard/RegularDashboard.vue"),
+        name: "regular.dashboard",
+      },
+      {
+        path: "/regular/listings",
+        component: () => import("pages/Dashboard/Listings.vue"),
+        name: "regular.listings",
+      },
+      {
+        path: "/regular/favourites",
+        component: () => import("pages/Dashboard/Favourites.vue"),
+        name: "regular.favourites",
+      },
+      {
+        path: "/regular/messages",
+        component: () => import("pages/Dashboard/Messages.vue"),
+        name: "regular.messages",
+      },
+      {
+        path: "/regular/notifications",
+        component: () => import("pages/Dashboard/Notifications.vue"),
+        name: "regular.notifications",
       },
     ],
   },
+  // {
+  //   path: "/Dashboard",
+  //   component: () => import("layouts/Regular.vue"),
+  //   children: [
+  //     {
+  //       path: "/user/Dashboard",
+  //       component: () => import("pages/Dashboard/Dashboard.vue"),
+  //       name: "dashboard",
+  //     },
+
+  //   ],
+  // },
 
   // Always leave this as last one,
   // but you can also remove it

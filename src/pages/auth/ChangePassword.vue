@@ -21,7 +21,13 @@
             </div>
           </div>
 
-          <q-btn type="button" color="secondary" class="btn">Save</q-btn>
+          <q-btn
+            :to="{ name: 'success' }"
+            type="button"
+            color="secondary"
+            class="btn"
+            >Save</q-btn
+          >
           <div class="clear"></div>
         </form>
       </div>

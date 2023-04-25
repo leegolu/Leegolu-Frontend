@@ -23,8 +23,16 @@
           <div
             class="row q-mt-lg items-center justify-end no-wrap q-col-gutter-x-md"
           >
-            <q-btn type="button" color="" class="btn">Cancel</q-btn>
-            <q-btn type="button" color="secondary" class="btn">Proceed</q-btn>
+            <q-btn :to="{ name: 'login' }" type="button" color="" class="btn"
+              >Cancel</q-btn
+            >
+            <q-btn
+              :to="{ name: 'checkmail' }"
+              type="button"
+              color="secondary"
+              class="btn"
+              >Proceed</q-btn
+            >
             <!-- <div class="clear"></div> -->
           </div>
         </form>

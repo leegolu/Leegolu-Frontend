@@ -573,6 +573,7 @@ p.count {
   display: flex;
   align-items: center;
   gap: 1rem;
+  cursor: pointer;
 }
 .name_row .img img {
   width: 99px;

@@ -97,6 +97,18 @@
 
           <q-separator class="q-my-md" />
         </q-list>
+
+        <div class="sub">
+          <img src="/images/money.png" alt="" />
+
+          <div class="btext">
+            <div class="small_tex">Make more money with a</div>
+            <br />
+            <div class="main_text">Leegolu Business account</div>
+          </div>
+
+          <q-btn> Upgrade to Business </q-btn>
+        </div>
       </q-scroll-area>
     </q-drawer>
 
@@ -555,6 +567,7 @@ export default {
   background: #ffffff;
   border-bottom: 1px solid #dddddd;
 }
+
 .mybtn {
   width: 166px;
   height: 36px;

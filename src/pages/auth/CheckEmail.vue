@@ -10,6 +10,13 @@
         with your Leegolu account for further instructions <br />
         on how to reset your password.
       </div>
+      <q-btn
+        :to="{ name: 'reset.template' }"
+        type="button"
+        color="secondary"
+        class="btn q-ma-sm"
+        >View mail template</q-btn
+      >
 
       <div class="q-mt-xl no_email">
         Didn’t receive an email? <q-btn flat> Resend Email </q-btn>
@@ -81,8 +88,19 @@ img {
   color: #000000;
 }
 
-.q-btn {
+.no_email .q-btn {
   padding: 0;
+  color: #1f7bb5;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  text-transform: capitalize;
+}
+
+.q-btn {
+  padding: 0 10px;
   color: #1f7bb5;
   font-family: "Montserrat";
   font-style: normal;

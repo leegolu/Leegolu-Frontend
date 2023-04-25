@@ -167,12 +167,9 @@
                   />
 
                   <div class="previewDiv">
-                    <!-- <p>Preview Here:</p> -->
                     <template v-if="preview">
                       <img :src="preview" class="previewimg" />
                       <img src="/images/click.png" class="click" alt="" />
-                      <!-- <p class="mb-0">file name: {{ image.name }}</p>
-                      <p class="mb-0">size: {{ image.size / 1024 }}KB</p> -->
                     </template>
                   </div>
                 </div>
@@ -186,10 +183,31 @@
         </div>
 
         <div class="row q-pb-lg items-center justify-between">
-          <q-btn to="/user/dashboard" color="primary" class="q-px-xl proceed">
+          <q-btn
+            :to="{
+              name: `${
+                data.bus === 'Leegolu Regular'
+                  ? 'regular.dashboard'
+                  : 'business.dashboard'
+              }`,
+            }"
+            color="primary"
+            class="q-px-xl proceed"
+          >
             Proceed
           </q-btn>
-          <q-btn to="/user/dashboard" class="q-px-sm skip"> Skip </q-btn>
+          <q-btn
+            :to="{
+              name: `${
+                data.bus === 'Leegolu Regular'
+                  ? 'regular.dashboard'
+                  : 'business.dashboard'
+              }`,
+            }"
+            class="q-px-sm skip"
+          >
+            Skip
+          </q-btn>
         </div>
 
         <div @click="modaltwo = false" class="close">

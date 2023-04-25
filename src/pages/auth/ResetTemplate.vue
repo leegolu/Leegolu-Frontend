@@ -16,7 +16,7 @@
       </div>
 
       <div class="change">
-        <q-btn> CHANGE PASSWORD </q-btn>
+        <q-btn :to="{ name: 'change.password' }"> CHANGE PASSWORD </q-btn>
       </div>
 
       <div class="q-mt-lg no_email">

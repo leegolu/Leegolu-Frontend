@@ -509,28 +509,28 @@ export default {
       search,
       toggleLeftDrawer,
       links1: [
-        { icon: "home", text: "Overview", to: "dashboard" },
-        { icon: "fa-solid fa-shop", text: "Manage Shop", to: "adverts" },
-        { icon: "fa-solid fa-list", text: "My Listings", to: "listings" },
+        { icon: "fa-duotone fa-house", text: "Overview", to: "dashboard" },
+        { icon: "fa-duotone fa-shop", text: "Manage Shop", to: "manage-shop" },
+        { icon: "fa-duotone fa-list", text: "My Listings", to: "listings" },
         {
-          icon: "fa-solid fa-pen",
+          icon: "fa-duotone fa-pen",
           text: "My Collections",
           to: "collections",
         },
-        { icon: "fa-solid fa-user", text: "My Customers", to: "customers" },
-        { icon: "fa-solid fa-message", text: "Messages", to: "messages" },
+        { icon: "fa-duotone fa-user", text: "My Customers", to: "customers" },
+        { icon: "fa-duotone fa-message", text: "Messages", to: "messages" },
 
         {
-          icon: "fa-solid fa-heart",
+          icon: "fa-duotone fa-heart",
           text: "My Favorites",
           to: "favourites",
         },
         {
-          icon: "fa-solid fa-bell",
+          icon: "fa-duotone fa-bell",
           text: "Notifications",
           to: "notifications",
         },
-        { icon: "fa-solid fa-gear", text: "Settings", to: "settings" },
+        // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
       ],
     };
   },
