@@ -160,9 +160,9 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
   border-radius: 14px;
-  min-width: 230px;
+  min-width: 200px;
   min-height: 351px;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .title {

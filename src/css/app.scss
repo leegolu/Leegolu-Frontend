@@ -105,3 +105,56 @@ th.text-right {
 .sort .q-field__native {
   color: #ee4e36;
 }
+
+.q-drawer {
+  position: fixed;
+}
+
+// heads
+
+.recent_listing_head {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 27px;
+  color: #000000;
+  margin-top: 2rem;
+}
+.recent_listing_head span {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+  text-transform: capitalize;
+  color: rgba(100, 115, 124, 0.6);
+}
+
+.responsive_autofit_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.category_items .q-item {
+  padding: 0 10px;
+  // white-space: nowrap;
+}
+
+.modal .q-field {
+  background: rgba(233, 233, 233, 0.62);
+  border: 1px solid #c9c9c9;
+  border-radius: 10px;
+}
+.modal .q-field__native {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #969696;
+}
+.submit .q-btn .q-btn__content {
+  justify-content: center;
+}

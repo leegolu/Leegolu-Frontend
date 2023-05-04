@@ -236,4 +236,33 @@ i {
   color: #ffffff;
   margin-bottom: 0;
 }
+
+@media (max-width: 500px) {
+  .footer_rights {
+    flex-wrap: wrap;
+  }
+
+  .footer_wrap_hold {
+    width: 100%;
+  }
+
+  .footer_input_hold {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer_input_hold p {
+    font-size: 20px;
+  }
+
+  .footer .left,
+  .footer .right,
+  .footer .middle {
+    width: 100%;
+  }
+
+  .footer {
+    padding: 7rem 3rem 4rem;
+  }
+}
 </style>

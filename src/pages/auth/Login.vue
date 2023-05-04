@@ -285,4 +285,13 @@ input {
   letter-spacing: -0.01em;
   color: #000000;
 }
+
+@media (max-width: 500px) {
+  .login {
+    padding: 1rem;
+  }
+  .right {
+    padding: 1rem;
+  }
+}
 </style>

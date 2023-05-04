@@ -42,15 +42,37 @@
   <section class="popular container">
     <div class="head_text">
       Popular Categories
-      <router-link to="/"><span class="line"> | Veiw All </span></router-link>
+      <router-link :to="{ name: 'category-page' }"
+        ><span class="line"> | Veiw All </span></router-link
+      >
     </div>
 
     <Splide
-      :options="{ perPage: 6, rewind: true, autoplay: true }"
+      :options="{
+        perPage: 6,
+        rewind: true,
+        autoplay: true,
+        breakpoints: {
+          640: {
+            perPage: 2,
+          },
+          767: {
+            perPage: 2,
+          },
+          1024: {
+            perPage: 3,
+          },
+          2000: {
+            perPage: 4,
+          },
+        },
+      }"
       aria-label="My Favorite Images"
     >
       <SplideSlide v-for="(products, index) in popular" :key="index">
-        <img :src="products.img" alt="Sample 1" />
+        <router-link :to="{ name: 'category-page' }">
+          <img :src="products.img" alt="Sample 1" />
+        </router-link>
       </SplideSlide>
     </Splide>
   </section>
@@ -642,6 +664,64 @@ a {
 @media (min-width: 1300px) {
   .product_cards {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 1100px) {
+  .product_cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  .product_cards .product .owners {
+    gap: 0rem;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 500px) {
+  .wrapper input {
+    font-size: 15px;
+    height: 39.63px;
+    width: 799px;
+    border: none;
+  }
+
+  .wrapper button {
+    height: 39.63px;
+  }
+
+  .wrapper .main_text {
+    font-size: 40px;
+    line-height: 38px;
+    margin-bottom: 1rem;
+  }
+
+  .logo {
+    width: 127px;
+    height: 39px;
+    object-fit: contain;
+  }
+
+  a {
+    font-size: 12px;
+  }
+
+  .right .q-btn {
+    font-size: 10px;
+    padding: 4px 5px;
+  }
+  .right {
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .nav {
+    padding: 0.7rem 0.6rem;
+  }
+
+  .join_area .join {
+    grid-template-columns: 1fr;
+  }
+
+  .footer_rights {
+    flex-wrap: wrap;
   }
 }
 </style>

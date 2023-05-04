@@ -64,7 +64,7 @@
       show-if-above
       bordered
       class="bg-white"
-      :width="206"
+      :width="236"
       :breakpoint="800"
     >
       <q-scroll-area class="fit">
@@ -509,7 +509,11 @@ export default {
       search,
       toggleLeftDrawer,
       links1: [
-        { icon: "fa-duotone fa-house", text: "Overview", to: "dashboard" },
+        {
+          icon: "fa-duotone fa-house",
+          text: "Overview",
+          to: "business.dashboard",
+        },
         { icon: "fa-duotone fa-shop", text: "Manage Shop", to: "manage-shop" },
         { icon: "fa-duotone fa-list", text: "My Listings", to: "listings" },
         {
@@ -653,7 +657,7 @@ input:focus {
 .links {
   font-family: "Open Sans";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
   line-height: 19px;
   // color: #000000;

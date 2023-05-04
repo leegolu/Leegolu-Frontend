@@ -572,7 +572,11 @@ export default {
   background: #ffffff;
   border-bottom: 1px solid #dddddd;
 }
-
+// @media (min-width: 1200px) {
+//   .header {
+//     max-width: 1380px;
+//   }
+// }
 .sub {
   margin-top: 6rem;
   text-align: center;
@@ -708,7 +712,7 @@ input:focus {
 .links {
   font-family: "Open Sans";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
   line-height: 19px;
   // color: #000000;

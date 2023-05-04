@@ -1,7 +1,7 @@
 <template>
   <div class="login q-pt-xl">
     <div class="login_wrapper">
-      <div class="left">
+      <div class="left side">
         <div class="left_wrap">
           <div class="img">
             <img src="/images/leee.png" alt="" />
@@ -76,11 +76,7 @@
             <input type="text" class="input-1" placeholder="*******" />
           </div>
 
-          <q-btn
-            @click="modal = true"
-            type="button"
-            color="secondary"
-            class="btn"
+          <q-btn @click="register" type="button" color="secondary" class="btn"
             >Proceed</q-btn
           >
           <div class="clear"></div>
@@ -95,7 +91,7 @@
     </div>
   </div>
 
-  <q-dialog v-model="modal">
+  <q-dialog v-model="welcometoleegoluregularmodal">
     <q-card style="width: 100%; max-width: 80vw">
       <div class="modal">
         <div class="modal_wrap">
@@ -131,19 +127,76 @@
         </div>
 
         <div class="row q-pb-lg items-center justify-between">
-          <q-btn @click="toggleModals" color="primary" class="q-px-xl proceed">
+          <q-btn
+            @click="addphotoforleegoluregularmodal = true"
+            color="primary"
+            class="q-px-xl proceed"
+          >
             Proceed
           </q-btn>
           <q-btn class="q-px-sm skip"> Skip </q-btn>
         </div>
 
-        <div @click="modal = false" class="close">
+        <div @click="welcometoleegoluregularmodal = false" class="close">
           <i class="fa-solid fa-xmark"></i>
         </div>
       </div>
     </q-card>
   </q-dialog>
-  <q-dialog v-model="modaltwo">
+  <q-dialog v-model="welcometoleegolubusinessmodal">
+    <q-card style="width: 100%; max-width: 80vw">
+      <div class="modal">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Hello Chris,</div>
+            <div class="modal_main_text">Welcome to Leegolu Business.</div>
+            <div class="modal_sub_text">
+              Your account gives you full access to all basic features available
+              on the Leegolu marketplace for free.
+            </div>
+
+            <ul>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to direct seller
+                contact
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Ability to sell as a private
+                seller
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to insights & analytics
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to Leegolu video ads
+              </li>
+              <li><i class="fa-solid fa-check"></i> A branded shop</li>
+            </ul>
+          </div>
+
+          <div class="right">
+            <img src="/images/welcometobusiness.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="row q-pb-lg items-center justify-between">
+          <q-btn
+            @click="addphotoforleegolubusinessmodal = true"
+            color="primary"
+            class="q-px-xl proceed"
+          >
+            Proceed
+          </q-btn>
+          <q-btn class="q-px-sm skip"> Skip </q-btn>
+        </div>
+
+        <div @click="welcometoleegolubusinessmodal = false" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
+  <q-dialog v-model="addphotoforleegoluregularmodal">
     <q-card style="width: 100%; max-width: 85vw">
       <div class="modal two">
         <div class="modal_wrap">
@@ -178,18 +231,14 @@
           </div>
 
           <div class="right">
-            <img src="/images/rocket.png" alt="" />
+            <img src="/images/businessimg.svg" alt="" />
           </div>
         </div>
 
         <div class="row q-pb-lg items-center justify-between">
           <q-btn
             :to="{
-              name: `${
-                data.bus === 'Leegolu Regular'
-                  ? 'regular.dashboard'
-                  : 'business.dashboard'
-              }`,
+              name: `regular.dashboard`,
             }"
             color="primary"
             class="q-px-xl proceed"
@@ -198,11 +247,7 @@
           </q-btn>
           <q-btn
             :to="{
-              name: `${
-                data.bus === 'Leegolu Regular'
-                  ? 'regular.dashboard'
-                  : 'business.dashboard'
-              }`,
+              name: `regular.dashboard`,
             }"
             class="q-px-sm skip"
           >
@@ -210,7 +255,144 @@
           </q-btn>
         </div>
 
-        <div @click="modaltwo = false" class="close">
+        <div @click="addphotoforleegoluregularmodal = false" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
+  <q-dialog v-model="addphotoforleegolubusinessmodal">
+    <q-card style="width: 100%; max-width: 85vw">
+      <div class="modal two">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Add your photo</div>
+            <div class="modal_sub_text">
+              Add a picture of yourself or select a
+              <span class="text-primary">preferred emoji</span>. Other users
+              will associate this with your account.
+            </div>
+
+            <div class="previewMain">
+              <form>
+                <div class="form">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    @change="previewImage"
+                    class="previewinput"
+                    id="my-file"
+                  />
+
+                  <div class="previewDiv">
+                    <template v-if="preview">
+                      <img :src="preview" class="previewimg" />
+                      <img src="/images/click.png" class="click" alt="" />
+                    </template>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="right">
+            <img src="/images/businessimg.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="row q-pb-lg items-center justify-between">
+          <q-btn
+            @click="businessreg = true"
+            color="primary"
+            class="q-px-xl proceed"
+          >
+            Proceed
+          </q-btn>
+          <q-btn
+            :to="{
+              name: `business.dashboard`,
+            }"
+            class="q-px-sm skip"
+          >
+            Skip
+          </q-btn>
+        </div>
+
+        <div @click="addphotoforleegolubusinessmodal = false" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
+  <q-dialog v-model="businessreg">
+    <q-card style="width: 100%; max-width: 85vw">
+      <div class="modal two">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Leegolu Business</div>
+            <div class="modal_sub_text">
+              Please supply your business details below.
+            </div>
+
+            <form id="form">
+              <div class="input-box active-grey">
+                <label class="input-label">Business Name</label>
+                <input
+                  type="text"
+                  class="input-1"
+                  placeholder="Red Dress Co."
+                />
+              </div>
+              <div class="input-box active-grey">
+                <label class="input-label">About Business</label>
+                <input
+                  type="text"
+                  class="input-1"
+                  placeholder="Fashion Apparel"
+                />
+              </div>
+              <div class="wraps">
+                <div class="input-box active-grey">
+                  <label class="input-label">State</label>
+                  <select class="reg" name="" id="">
+                    <option value="+243">Nassarawa</option>
+                    <option value="+243">Nassarawa</option>
+                    <option value="+243">Nassarawa</option>
+                  </select>
+                </div>
+                <div class="input-box active-grey">
+                  <label class="input-label">Area</label>
+                  <select class="reg" name="" id="">
+                    <option value="+243">Lafia</option>
+                    <option value="+243">Lafia</option>
+                    <option value="+243">Lafia</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="input-box active-grey">
+                <label class="input-label">Full Address</label>
+                <input
+                  value="13 Pious Adolf Crescent, Trans-Elemo, Laffia"
+                  type="text"
+                  class="input-1"
+                  placeholder="*******"
+                />
+              </div>
+
+              <q-btn @click="finish" type="button" color="primary" class="btn"
+                >Finish</q-btn
+              >
+              <div class="clear"></div>
+            </form>
+          </div>
+
+          <div class="right">
+            <img src="/images/businessreg.svg" alt="" />
+          </div>
+        </div>
+
+        <div @click="businessreg = false" class="close">
           <i class="fa-solid fa-xmark"></i>
         </div>
       </div>
@@ -223,9 +405,12 @@ export default {
   data() {
     return {
       data: { bus: "Leegolu Regular" },
-      modal: false,
-      modaltwo: false,
+      welcometoleegoluregularmodal: false,
+      welcometoleegolubusinessmodal: false,
       preview: "/images/preview.png",
+      addphotoforleegoluregularmodal: false,
+      addphotoforleegolubusinessmodal: false,
+      businessreg: true,
       image: null,
     };
   },
@@ -243,9 +428,16 @@ export default {
       }
     },
 
-    toggleModals() {
-      this.modal = false;
-      this.modaltwo = true;
+    register() {
+      if (this.data.bus === "Leegolu Regular") {
+        this.welcometoleegoluregularmodal = true;
+      } else {
+        this.welcometoleegolubusinessmodal = true;
+      }
+    },
+
+    finish() {
+      this.$router.replace({ name: "Plans" });
     },
   },
 };
@@ -346,7 +538,8 @@ $btn-primary-text-color: #fff;
   gap: 2rem;
   height: 100%;
 }
-input {
+input,
+select {
   background: $default-background;
 }
 
@@ -418,16 +611,29 @@ input {
   letter-spacing: -0.01em;
   color: #000000;
 }
+.input-box select.reg {
+  all: unset;
+}
 
 .phone input {
   padding-left: 4.4rem !important;
+}
+
+.wraps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
 }
 #form {
   margin: 0 auto;
 }
 .input-box.active-grey {
-  .input-1 {
-    border: 1.5px solid #c2bfbf;
+  .input-1,
+  select.reg {
+    border: 1.5px solid #9d9d9d;
+  }
+  select.reg {
+    width: 100%;
   }
   .input-label {
     color: $color;
@@ -438,9 +644,13 @@ input {
     transition: 250ms;
   }
 }
+
+.wraps .input-box {
+  margin: 0;
+}
 .input-box {
   position: relative;
-  margin: 35px 0;
+  margin: 30px 0;
   .input-label {
     position: absolute;
     color: $color;
@@ -457,7 +667,8 @@ input {
     user-select: none;
     pointer-events: none;
   }
-  .input-1 {
+  .input-1,
+  select.reg {
     box-sizing: border-box;
     height: 50px;
     width: 100%;
@@ -516,7 +727,7 @@ input {
   min-width: 88px;
   transition: 250ms;
   width: 100%;
-  margin-top: 2rem;
+  // margin-top: 2rem;
 
   &:hover {
     background: $btn-default-bgh-color;
@@ -551,6 +762,7 @@ input {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .modal .right {
@@ -565,6 +777,7 @@ input {
   font-size: 32px;
   line-height: 44px;
   color: #000000;
+  padding-top: 1rem;
 }
 
 .modal_main_text {
@@ -573,6 +786,7 @@ input {
   font-weight: 600;
   font-size: 24px;
   line-height: 33px;
+  white-space: nowrap;
   color: #000000;
 }
 
@@ -675,5 +889,62 @@ input {
   height: 100%;
   background: transparent;
   opacity: 0;
+}
+
+@media (max-width: 800px) {
+  .login_wrapper {
+    grid-template-columns: 1fr;
+  }
+  .login {
+    padding: 1rem;
+  }
+  .left.side {
+    display: none;
+  }
+
+  .modal .right img {
+    display: none;
+  }
+
+  .modal_main {
+    font-size: 25px;
+  }
+  .modal {
+    padding: 0rem 1rem 0;
+  }
+
+  .modal_sub_text {
+    font-size: 14px;
+  }
+
+  .modal_sub_text .q-btn {
+    font-size: 11px;
+    margin-top: 0.5rem;
+  }
+  .modal .close i {
+    right: 4%;
+  }
+
+  .modal_wrap {
+    gap: 0rem;
+    padding: 2rem 0;
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    margin-top: 0;
+  }
+
+  .right {
+    padding-top: 1rem;
+  }
+}
+@media (max-width: 500px) {
+  .modal .skip {
+    width: auto;
+  }
+  .modal .proceed {
+    width: auto;
+  }
 }
 </style>

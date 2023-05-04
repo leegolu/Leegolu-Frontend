@@ -5,8 +5,12 @@
         <div class="left">
           <div class="main_text">Hello Chris,</div>
           <div class="sub">Welcome to your Leegolu dashboard.</div>
-          <q-btn color="primary" class="q-mt-lg tour">
-            Take a video tour
+          <q-btn
+            :to="{ name: 'manage-shop' }"
+            color="primary"
+            class="q-mt-lg tour"
+          >
+            Manage your shop
           </q-btn>
         </div>
 
@@ -25,9 +29,7 @@
         <div class="small_card">
           <img src="/images/engage.png" alt="" />
           <div class="small_card_main_text">Engagement</div>
-          <div class="small_card_sub">
-            Adverts that customers interacted with.
-          </div>
+          <div class="small_card_sub">Adverts interacted with.</div>
           <div class="count">0</div>
         </div>
         <div class="small_card">
@@ -75,12 +77,12 @@
         </div>
       </div>
 
-      <div class="flag_section">
+      <!-- <div class="flag_section">
         <img src="/images/flag.png" alt="" />
         <div class="mainFlag_text">Post your first listing</div>
         <div class="flag_sub">Reach thousands of customers</div>
         <q-btn color="primary" class="q-mt-lg post"> Post Listing</q-btn>
-      </div>
+      </div> -->
 
       <div id="chart" class="bg-white q-pa-md">
         <div class="top_business">
@@ -112,6 +114,20 @@
           :series="series"
         ></apexchart>
       </div>
+
+      <!-- <div class="recent_listing_head">
+        Recent Listings
+        <q-btn flat style="padding: 0" :to="{ name: 'listings' }"
+          >| View All</q-btn
+        >
+        <div class="responsive_autofit_grid">
+          <DashboardHomeListing
+            v-for="(listing, index) in arr"
+            :key="index"
+            :listing="listing"
+          />
+        </div>
+      </div> -->
     </div>
 
     <div class="right_card">
@@ -154,15 +170,51 @@
 
 <script>
 import VueApexCharts from "vue3-apexcharts";
-
+import DashboardHomeListing from "../../components/listings/DashboardHomeListing.vue";
 // import Charts from "../../components/Charts.vue";
 import { ref, computed } from "vue";
 export default {
   components: {
     apexchart: VueApexCharts,
+    DashboardHomeListing,
   },
   data() {
     return {
+      arr: [
+        {
+          img: "/images/listing1.png",
+          title: "Ankara 3 Piece Gown",
+          price: "₦50,000",
+          status: "Active",
+          date: "Created 17 Oct, 2023",
+          impressions: 236,
+          engagements: 97,
+          leads: 2,
+          boosted: true,
+        },
+        {
+          img: "/images/listing2.png",
+          title: "Princess Cut Peplum Sleeve...",
+          price: "₦50,000",
+          status: "Active",
+          date: "Created 17 Oct, 2023",
+          impressions: 236,
+          engagements: 97,
+          leads: 2,
+          boosted: false,
+        },
+        {
+          img: "/images/listing3.png",
+          title: "Off Shoulder Peperdem Gown",
+          price: "₦50,000",
+          status: "Active",
+          date: "Created 17 Oct, 2023",
+          impressions: 0,
+          engagements: 97,
+          leads: 2,
+          boosted: true,
+        },
+      ],
       chartOptions: {
         chart: {
           id: "basic-bar",
@@ -259,7 +311,7 @@ export default {
   border-radius: 14px;
   padding: 1rem;
   margin-bottom: 2rem;
-  max-width: 281px;
+  // max-width: 281px;
   margin-left: auto;
 }
 
@@ -328,7 +380,25 @@ export default {
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 14px;
   padding: 1rem;
-  width: 100%;
+  width: 140px;
+  max-width: 100%;
+  height: 165px;
+}
+
+@media (min-width: 1200px) {
+  .small_card {
+    max-width: 100%;
+    height: 165px;
+  }
+
+  .small_cards {
+    grid-template-columns: 1fr 1fr 1fr 2.5fr;
+  }
+}
+@media (max-width: 1170px) {
+  .small_card_bus {
+    width: 321px;
+  }
 }
 
 .small_card img {
@@ -380,7 +450,7 @@ export default {
   border-radius: 14px;
   display: flex;
   justify-content: space-between;
-  width: 314px;
+  // width: 314px;
   height: 165px;
   padding: 1rem;
 }
@@ -560,7 +630,13 @@ export default {
   }
 
   .main {
-    grid-template-columns: 6.2fr 2fr;
+    grid-template-columns: 7.8fr 3fr;
+    max-width: 1300px;
+  }
+}
+@media (max-width: 1100px) {
+  .small_card {
+    width: 100%;
   }
 }
 @media (max-width: 1000px) {
@@ -577,6 +653,43 @@ export default {
   .right_card_top,
   .right_card_top.down {
     max-width: 100%;
+  }
+}
+@media (max-width: 800px) {
+  .small_cards {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .main_card {
+    max-width: 100%;
+  }
+  .main_card .right {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .main_card {
+    padding: 1.5rem;
+  }
+
+  .main {
+    margin: 1.3rem 1rem 2rem;
+  }
+  .btn {
+    width: 106px;
+    height: 36px;
+    font-size: 12px;
+  }
+  .small_cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  .small_card,
+  .small_card_bus {
+    width: 90%;
+    margin: 0 auto;
   }
 }
 </style>

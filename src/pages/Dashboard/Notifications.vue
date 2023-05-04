@@ -358,6 +358,7 @@ export default {
 .name_row {
   display: flex;
   align-items: center;
+  cursor: pointer;
   gap: 1rem;
 }
 

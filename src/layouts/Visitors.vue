@@ -12,7 +12,14 @@
           icon="menu"
         />
 
-        <q-btn flat no-caps no-wrap class="q-ml-xs logo" v-if="$q.screen.gt.xs">
+        <q-btn
+          to="/"
+          flat
+          no-caps
+          no-wrap
+          class="q-ml-xs logo"
+          v-if="$q.screen.gt.xs"
+        >
           <img src="/images/logored.png" alt="" />
         </q-btn>
 
@@ -373,7 +380,7 @@ input:focus {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 18px;
   color: #000000;
   min-height: 0;
@@ -413,6 +420,28 @@ input:focus {
   }
   .mybtn {
     width: 160px;
+  }
+
+  .category_items {
+    display: none;
+  }
+
+  a {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .right .q-btn {
+    font-size: 10px;
+    padding: 4px 5px;
+    white-space: nowrap;
+  }
+  .right {
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .nav {
+    padding: 0.7rem 0.6rem;
   }
 }
 </style>

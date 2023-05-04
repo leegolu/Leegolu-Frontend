@@ -44,6 +44,17 @@ const routes = [
         component: () => import("src/pages/auth/Success.vue"),
         name: "success",
       },
+      {
+        path: "/Plans",
+        component: () => import("pages/Dashboard/Plans.vue"),
+        name: "Plans",
+      },
+
+      {
+        path: "/business/page-builder",
+        component: () => import("pages/VendorPageBuilder.vue"),
+        name: "page.builder",
+      },
     ],
   },
   {
@@ -53,6 +64,7 @@ const routes = [
       {
         path: "/CategoryPage",
         component: () => import("pages/CategoryPage.vue"),
+        name: "category-page",
       },
     ],
   },
@@ -61,7 +73,7 @@ const routes = [
     component: () => import("layouts/Business.vue"),
     children: [
       {
-        path: "/business/business-dashboard",
+        path: "/business/dashboard",
         component: () => import("pages/Dashboard/BusinessDashboard.vue"),
         name: "business.dashboard",
       },
@@ -69,11 +81,6 @@ const routes = [
         path: "/business/manage-shop",
         component: () => import("pages/Dashboard/ManageShop.vue"),
         name: "manage-shop",
-      },
-      {
-        path: "/business/Plans",
-        component: () => import("pages/Dashboard/Plans.vue"),
-        name: "Plans",
       },
 
       {
@@ -111,11 +118,6 @@ const routes = [
         component: () => import("pages/Dashboard/Notifications.vue"),
         name: "notifications",
       },
-      // {
-      //   path: "/business/settings",
-      //   component: () => import("pages/Dashboard/Settings.vue"),
-      //   name: "settings",
-      // },
     ],
   },
   {
@@ -123,7 +125,7 @@ const routes = [
     component: () => import("layouts/Regular.vue"),
     children: [
       {
-        path: "/user/regular-dashboard",
+        path: "/regular/dashboard",
         component: () => import("pages/Dashboard/RegularDashboard.vue"),
         name: "regular.dashboard",
       },

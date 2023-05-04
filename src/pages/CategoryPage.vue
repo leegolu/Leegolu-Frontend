@@ -693,4 +693,27 @@ p {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }
+
+@media (max-width: 1100px) {
+  .product_cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  .product_cards .product .owners {
+    gap: 0rem;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 500px) {
+  .category_wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .category_wrapper .left {
+    display: none;
+  }
+
+  .search_text_wrap {
+    margin-bottom: 2rem;
+  }
+}
 </style>

@@ -5,9 +5,7 @@
         <div class="left">
           <div class="main_text">Hello Chris,</div>
           <div class="sub">Welcome to your Leegolu dashboard.</div>
-          <q-btn color="primary" class="q-mt-lg tour">
-            Take a video tour
-          </q-btn>
+          <q-btn color="primary" class="q-mt-lg tour"> Take a tour </q-btn>
         </div>
 
         <div class="right">
@@ -25,9 +23,7 @@
         <div class="small_card">
           <img src="/images/engage.png" alt="" />
           <div class="small_card_main_text">Engagement</div>
-          <div class="small_card_sub">
-            Adverts that customers interacted with.
-          </div>
+          <div class="small_card_sub">Adverts interacted with.</div>
           <div class="count">0</div>
         </div>
         <div class="small_card">
@@ -36,20 +32,46 @@
           <div class="small_card_sub">Customers that reached out.</div>
           <div class="count">0</div>
         </div>
-        <div class="small_card">
-          <!-- <div class="wallet_left">
-            <img src="/images/wallet.png" alt="" />
-            <div class="small_card_main_text">Wallet</div>
+        <div class="small_card_bus">
+          <div class="wallet_left">
+            <img src="/images/gift.png" alt="" />
           </div>
-          <div class="det">
-            <div class="wallet_amt">₦500</div>
-            <q-btn color="primary" class="q-mt-lg"> Top up </q-btn>
-          </div> -->
-          <!-- <img src="/images/lebus.png" alt="" /> -->
+          <div class="">
+            <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
+            <div class="wallet_amt">Leegolu Business</div>
+            <div class="wallet_small">Shop | ₦3000</div>
+
+            <div class="progress_wrap q-mt-lg">
+              <div class="progress">
+                <div class="small">4/20 Listings</div>
+                <q-linear-progress :value="progress1" color="accent">
+                  <div class="absolute-full flex flex-center">
+                    <q-badge
+                      color="white"
+                      text-color="accent"
+                      :label="progressLabel1"
+                    />
+                  </div>
+                </q-linear-progress>
+              </div>
+              <div class="progress q-mt-sm">
+                <div class="small">30 days left</div>
+                <q-linear-progress :value="progress1" color="accent">
+                  <div class="absolute-full flex flex-center">
+                    <q-badge
+                      color="white"
+                      text-color="accent"
+                      :label="progressLabel1"
+                    />
+                  </div>
+                </q-linear-progress>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="small_card_bus">
+      <!-- <div class="small_card_bus">
         <div class="wallet_left">
           <img src="/images/gift.png" alt="" />
         </div>
@@ -85,13 +107,27 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
-      <div class="flag_section">
+      <!-- <div class="flag_section">
         <img src="/images/flag.png" alt="" />
         <div class="mainFlag_text">Post your first listing</div>
         <div class="flag_sub">Reach thousands of customers</div>
         <q-btn color="primary" class="q-mt-lg post"> Post Listing</q-btn>
+      </div> -->
+
+      <div class="recent_listing_head">
+        Recent Listings
+        <q-btn flat style="padding: 0" :to="{ name: 'listings' }"
+          >| View All</q-btn
+        >
+        <div class="responsive_autofit_grid">
+          <DashboardHomeListing
+            v-for="(listing, index) in arr"
+            :key="index"
+            :listing="listing"
+          />
+        </div>
       </div>
     </div>
 
@@ -135,7 +171,51 @@
 
 <script>
 import { ref, computed } from "vue";
+import DashboardHomeListing from "../../components/listings/DashboardHomeListing.vue";
+
 export default {
+  components: {
+    DashboardHomeListing,
+  },
+  data() {
+    return {
+      arr: [
+        {
+          img: "/images/listing1.png",
+          title: "Ankara 3 Piece Gown",
+          price: "₦50,000",
+          status: "Active",
+          date: "Created 17 Oct, 2023",
+          impressions: 236,
+          engagements: 97,
+          leads: 2,
+          boosted: true,
+        },
+        {
+          img: "/images/listing2.png",
+          title: "Princess Cut Peplum Sleeve...",
+          price: "₦50,000",
+          status: "Active",
+          date: "Created 17 Oct, 2023",
+          impressions: 236,
+          engagements: 97,
+          leads: 2,
+          boosted: false,
+        },
+        {
+          img: "/images/listing3.png",
+          title: "Off Shoulder Peperdem Gown",
+          price: "₦50,000",
+          status: "Active",
+          date: "Created 17 Oct, 2023",
+          impressions: 0,
+          engagements: 97,
+          leads: 2,
+          boosted: true,
+        },
+      ],
+    };
+  },
   setup() {
     const progress1 = ref(0.3);
     const progress2 = ref(0.9);
@@ -216,7 +296,7 @@ export default {
   border-radius: 14px;
   padding: 1rem;
   margin-bottom: 2rem;
-  max-width: 281px;
+  // max-width: 281px;
   margin-left: auto;
 }
 
@@ -270,22 +350,37 @@ export default {
 
 // small cards
 .small_cards {
-  // display: flex;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
   margin-top: 2rem;
-  // overflow: hidden;
   padding-bottom: 1rem;
-  // padding-left: 0.5rem;
-  overflow-x: scroll;
+  // overflow-x: scroll;
 }
 .small_card {
   background: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 14px;
   padding: 1rem;
-  width: 100%;
+  width: 140px;
+  max-width: 100%;
+  height: 165px;
+}
+
+@media (min-width: 1200px) {
+  .small_card {
+    max-width: 100%;
+    height: 165px;
+  }
+
+  .small_cards {
+    grid-template-columns: 1fr 1fr 1fr 2.5fr;
+  }
+}
+@media (max-width: 1170px) {
+  .small_card_bus {
+    width: 321px;
+  }
 }
 
 .small_card img {
@@ -337,7 +432,7 @@ export default {
   border-radius: 14px;
   display: flex;
   justify-content: space-between;
-  width: 314px;
+  // width: 314px;
   height: 165px;
   padding: 1rem;
 }
@@ -410,7 +505,7 @@ export default {
   box-shadow: none;
   height: 100%;
   width: 100%;
-  min-width: 334px;
+  // min-width: 334px;
 }
 // .small_card:last-child {
 //   background: transparent;
@@ -462,14 +557,22 @@ export default {
   width: 184px;
   height: 30px;
 }
-
+// .right_card {
+//   min-width: 300px;
+// }
 @media (min-width: 1100px) {
   .main_card {
     max-width: 100%;
   }
 
   .main {
-    grid-template-columns: 6.2fr 2fr;
+    grid-template-columns: 7.8fr 3fr;
+    max-width: 1300px;
+  }
+}
+@media (max-width: 1100px) {
+  .small_card {
+    width: 100%;
   }
 }
 @media (max-width: 1000px) {
@@ -486,6 +589,44 @@ export default {
   .right_card_top,
   .right_card_top.down {
     max-width: 100%;
+  }
+}
+@media (max-width: 800px) {
+  .small_cards {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .main_card {
+    max-width: 100%;
+  }
+  .main_card .right {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .main_card {
+    padding: 1.5rem;
+  }
+
+  .main {
+    margin: 1.3rem 1rem 2rem;
+  }
+  .btn {
+    width: 106px;
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .small_cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  .small_card,
+  .small_card_bus {
+    width: 90%;
+    margin: 0 auto;
   }
 }
 </style>
