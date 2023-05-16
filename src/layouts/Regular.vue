@@ -578,7 +578,8 @@ export default {
 //   }
 // }
 .sub {
-  margin-top: 6rem;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
   text-align: center;
 }
 

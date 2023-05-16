@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-    <div class="row text-center justify-center items-center">
+    <div class="row text-center hide_desktop justify-center items-center">
       <div
         @click="colorschemeModal = true"
         class="span q-col-gutter-x-sm row items-center"
@@ -1449,6 +1449,12 @@ export default {
 
   .responsive_autofit_grid {
     background: #fff;
+  }
+}
+
+@media (min-width: 500px) {
+  .hide_desktop {
+    display: none;
   }
 }
 </style>

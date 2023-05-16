@@ -13,20 +13,36 @@
           </div>
         </div>
 
-        <form id="form">
+        <form @submit.prevent="login" id="form">
           <div class="input-box active-grey">
             <label class="input-label">Email Address</label>
             <input
               type="text"
               class="input-1"
+              required
+              name="email"
+              v-model="data.email"
               placeholder="johndoe@gmail.com"
             />
+            <small v-if="errors.email" class="text-red text-weight-bold">
+              {{ errors.email[0] }}
+            </small>
           </div>
 
           <div class="password">
             <div class="input-box active-grey">
               <label class="input-label">Password</label>
-              <input type="text" class="input-1" placeholder="*******" />
+              <input
+                v-model="data.password"
+                type="text"
+                name="password"
+                required
+                class="input-1"
+                placeholder="*******"
+              />
+              <small v-if="errors.password" class="text-red text-weight-bold">
+                {{ errors.password[0] }}
+              </small>
             </div>
             <q-btn
               flat
@@ -36,7 +52,9 @@
             >
           </div>
 
-          <q-btn type="button" color="secondary" class="btn">Proceed</q-btn>
+          <q-btn :loading="loading" type="submit" color="secondary" class="btn"
+            >Proceed</q-btn
+          >
           <div class="clear"></div>
 
           <div class="goggle_auth">
@@ -55,7 +73,33 @@ export default {
   data() {
     return {
       data: { bus: "Leegolu Regular" },
+      errors: {},
+      countrycode: "+243",
+      loading: false,
     };
+  },
+
+  methods: {
+    login() {
+      this.loading = true;
+      this.$api
+        .post("login", this.data)
+        .then((response) => {
+          console.log(response);
+          this.loading = false;
+          this.$store.leegoluauth.userDetails = response.data.user;
+          this.$store.leegoluauth.token = response.data.token;
+          localStorage.setItem("token", response.data.token);
+          this.$helper.notify(response.data.message, "success");
+          this.$router.replace({ name: "business.dashboard" });
+        })
+        .catch((e) => {
+          this.loading = false;
+          // let error = this.$plugins.reader.error(e);
+          this.errors = error.errors || {};
+          // this.$helper.notify(error.message || error, error.status || "error");
+        });
+    },
   },
 };
 </script>

@@ -638,6 +638,10 @@ export default {
   .small_card {
     width: 100%;
   }
+
+  .top_business {
+    flex-wrap: wrap;
+  }
 }
 @media (max-width: 1000px) {
   .main {

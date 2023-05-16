@@ -2,22 +2,33 @@
   <div class="card">
     <div class="img_wrap">
       <img src="/images/plancircle.png" alt="" />
-      <img :src="`/images/${plan.img}`" alt="" />
+      <img :src="`/images/sellerplan.png`" alt="" />
+      <!-- <img :src="`/images/${plan.img}`" alt="" /> -->
     </div>
     <div class="title">{{ plan.name }}</div>
     <div class="amount">
-      ₦{{ plan.amount }}
+      {{ plan.price }}
       <br />
       <div class="small">Per month</div>
     </div>
 
     <div class="options">
       <ul>
-        <li v-for="(option, index) in plan.containing" :key="index">
+        <li>
           <i class="fa-solid q-mr-sm text-green fa-check"></i>
-          {{ option.title }}
+          10 Listings
+        </li>
+        <li>
+          <i class="fa-solid q-mr-sm text-green fa-check"></i>
+          Custom Domain
         </li>
       </ul>
+      <!-- <ul>
+        <li v-for="(option, index) in plan.description" :key="index">
+          <i class="fa-solid q-mr-sm text-green fa-check"></i>
+          {{ option }}
+        </li>
+      </ul> -->
     </div>
 
     <div class="btn">
@@ -30,23 +41,36 @@
           <div class="dialog_top">
             <div class="img_wrap">
               <img src="/images/plancircle.png" alt="" />
-              <img :src="`/images/${plan.img}`" alt="" />
+              <img :src="`/images/sellerplan.png`" alt="" />
             </div>
           </div>
           <div class="title">{{ plan.name }}</div>
-          <div class="amount">₦{{ plan.amount }}</div>
+          <div class="amount">{{ plan.price }}</div>
 
+          <div v-if="errors.name" class="input-box active-grey">
+            <label class="input-label">Business Name</label>
+            <input
+              type="text"
+              name="name"
+              v-model="vendordetails.name"
+              class="input-1"
+              placeholder="Red Dress Co."
+            />
+            <small v-if="errors.name" class="text-red text-weight-bold">
+              {{ errors.name[0] }}
+            </small>
+          </div>
           <div class="input-box active-grey">
             <label class="input-label">Duration</label>
             <select name="" id="">
               <option value="+243">1 Month</option>
-              <option value="+243">1 Month</option>
-              <option value="+243">1 Month</option>
+              <!-- <option value="+243">1 Month</option>
+              <option value="+243">1 Month</option> -->
             </select>
           </div>
 
           <div class="boost">
-            <q-btn>Proceed</q-btn>
+            <q-btn :loading="loading" @click="onboardVendor">Proceed</q-btn>
           </div>
 
           <q-btn @click="dialogCreate = false" class="close">
@@ -64,11 +88,57 @@ export default {
   data() {
     return {
       dialogCreate: false,
+      loading: false,
+      errors: {},
+      vendordetails: {},
     };
   },
   methods: {
     proceed() {
       this.dialogCreate = true;
+    },
+
+    onboardVendor() {
+      this.loading = true;
+      if (this.errors.name) {
+        let data = {
+          ...this.$store.leegoluauth.vendorDetails,
+          plan: this.plan.id,
+          name: this.vendordetails.name,
+        };
+
+        this.$api
+          .post("onboarding", data)
+          .then((response) => {
+            console.log(response);
+            this.$helper.notify(response.data.message, "success");
+            this.$router.replace({ name: "business.dashboard" });
+            this.loading = false;
+          })
+          .catch(({ response }) => {
+            console.log(response);
+            this.loading = false;
+            this.errors = response.data.errors || {};
+          });
+      } else {
+        let data = {
+          ...this.$store.leegoluauth.vendorDetails,
+          plan: this.plan.id,
+        };
+        this.$api
+          .post("onboarding", data)
+          .then((response) => {
+            console.log(response);
+            this.$helper.notify(response.data.message, "success");
+            this.$router.replace({ name: "business.dashboard" });
+            this.loading = false;
+          })
+          .catch(({ response }) => {
+            console.log(response);
+            this.loading = false;
+            this.errors = response.data.errors || {};
+          });
+      }
     },
   },
 };
@@ -153,6 +223,8 @@ export default {
   min-width: 230px;
   min-height: 351px;
   padding: 2rem;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .title {

@@ -1,8 +1,26 @@
 // outside of a Vue file
-import { copyToClipboard, Dialog, Notify } from "quasar";
+import { Dialog, Notify, copyToClipboard, date, scroll } from "quasar";
+
+// import currencies from "app/currencies";
 import loader from "src/stores/loader";
 
 export default {
+  /**
+   * Substitutes the placeholders in a string with the values from the object
+   * @param {String} string
+   * @param {Object} data
+   */
+  str_subst(string, data = {}) {
+    ["last_updated", "created_at", "updated_at", "date"].forEach((key) => {
+      if (data[key]) {
+        data[key] = date.formatDate(new Date(data[key]), "YYYY/MM/DD");
+      }
+    });
+    console.log(string, data);
+    return string.replace(/{\s*([a-zA-Z0-9_]+)\s*}/g, (match, key) => {
+      return data[key] || "";
+    });
+  },
   /**
    * Break an array into multiple other arrays making it
    * grouped by the specified size
@@ -10,7 +28,7 @@ export default {
    * @param {Number} size
    * @returns
    */
-  chunk (arr, size = 2) {
+  chunk(arr, size = 2) {
     const chunkedArray = [];
     for (let i = 0; i < arr.length; i++) {
       const last = chunkedArray[chunkedArray.length - 1];
@@ -23,12 +41,37 @@ export default {
     return chunkedArray;
   },
 
+  date(d, format = "YYYY/MM/DD") {
+    return date.formatDate(new Date(d), format);
+  },
+
+  /**
+   * Converts seconds to MM:SS format
+   * @param {String|Number} seconds
+   * @returns
+   * @example convertTimeMMSS(128) // $
+   */
+  convertTimeMMSS(seconds) {
+    if (typeof seconds === "string") {
+      seconds = parseInt(seconds);
+    }
+    let minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    let time = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+
+    // If time contains a . remove the miliseconds
+    if (time.includes(".")) {
+      time = time.split(".")[0];
+    }
+    return time.replace(".", ":");
+  },
+
   /**
    * Remove an item from an array
    * @param {Object|Number} item
    * @param {Array} list
    */
-  pull (item, list) {
+  pull(item, list) {
     let index;
     if (item instanceof Number) {
       index = item;
@@ -49,14 +92,22 @@ export default {
    * @param {string} key
    * @returns
    */
-  sum (items, key) {
+  sum(items, key) {
     key = typeof key === "object" && key[0] ? key[1] || key[0] : key;
     return items.reduce(function (Accumulated, item) {
       key = key.includes(".") ? key.split(".") : key;
       if (typeof key === "object" && key[0] && key[1]) {
-        return Accumulated + Number(item[key[0]][key[1]]);
+        let sum = Accumulated + Number(item[key[0]][key[1]]);
+        if (item.quantity || item.qty) {
+          sum = sum * (item.quantity || item.qty);
+        }
+        return sum;
       }
-      return Accumulated + Number(item[key]);
+      let sum = Accumulated + Number(item[key]);
+      if (item.quantity || item.qty) {
+        sum = sum * (item.quantity || item.qty);
+      }
+      return sum;
     }, 0);
   },
   /**
@@ -65,12 +116,12 @@ export default {
    * @param {Number} startAt
    * @returns
    */
-  range (size, startAt = 0) {
+  range(size, startAt = 0) {
     if (!size) return [];
 
     return [...Array(size).keys()].map((i) => i + startAt);
   },
-  copy (str) {
+  copy(str) {
     if (typeof str !== "string") return false;
 
     copyToClipboard(str)
@@ -87,30 +138,62 @@ export default {
         });
       });
   },
+  tagify(string, limit = 3) {
+    let tags = string.split(",");
+    let more = tags.length - limit;
+    if (tags.length > limit) {
+      tags = tags.slice(0, limit);
+      tags.push("+ " + more + " more");
+    }
+    return tags;
+  },
+  scrollToElement(el, addOffset = 0, duration = 1000) {
+    const { getScrollTarget, setVerticalScrollPosition } = scroll;
+
+    const target = getScrollTarget(el);
+    const offset = el.offsetTop + addOffset;
+    setVerticalScrollPosition(target, offset, duration);
+  },
   /**
    *
-   * @param {String} msg
+   * @param {String} data The message to be displayed or an object with message and qdialog options
    * @param {String} status [success, error, danger, warning, alert, notice, info]
    * @param {Boolean} alert   Setting value to true will make the notification a dialog
    * @param {String | Boolean} label  You can set value to "Persistent" to remove label
    *                                  and make the dialog persistent or set to
    *                                  Boolean "false" to only remove label
-   * @returns
+   * @param {Boolean} cancel  Setting value to true will add a cancel button to the dialog
+   * @returns {Boolean | Object}  Returns false if no message is provided
    */
-  notify (data, status = "info", alert = false, label = "OK", cancel = false) {
-    let msg = typeof data === "object" ? data.message || data.msg || null : data;
+  notify(data, status = "info", alert = false, label = "OK", cancel = false) {
+    let msg =
+      typeof data === "object" ? data.message || data.msg || null : data;
     status = typeof data === "object" ? data.status : status;
     alert = typeof data === "object" ? data.alert : alert;
-    label = typeof data === "object" ? data.label : label;
+    label = typeof data === "object" ? data.label || data.ok : label;
     cancel = typeof data === "object" ? data.cancel : cancel;
 
     // create a new object from data without message and status
-    const options = typeof data === 'object' ? Object.keys(data)
-      .filter((key) => ["message", "msg", "status", "alert", "label", "cancel", "onDismiss"].indexOf(key) === -1)
-      .reduce((obj, key) => {
-        obj[key] = data[key];
-        return obj;
-      }, {}) : {};
+    const options =
+      typeof data === "object"
+        ? Object.keys(data)
+            .filter(
+              (key) =>
+                [
+                  "message",
+                  "msg",
+                  "status",
+                  "alert",
+                  "label",
+                  "cancel",
+                  "onDismiss",
+                ].indexOf(key) === -1
+            )
+            .reduce((obj, key) => {
+              obj[key] = data[key];
+              return obj;
+            }, {})
+        : {};
 
     if (msg === "" || !msg) {
       return false;
@@ -160,22 +243,22 @@ export default {
     if (alert === true) {
       return Dialog.create({
         ...options,
-        class: `tf-rounded-4 tf-border q-pa-sm tf-important bg-${tx_status.class} text-${tx_status.textColor}`,
+        class: `tf-rounded-4 q-pa-sm important bg-${tx_status.class} text-${tx_status.textColor}`,
         cancel:
-          /*label !== 'persistent' ||*/ cancel === false
+          cancel === false /*|| label !== 'persistent'*/
             ? false
             : {
-              color: ne_cancel ? "negative" : tx_status.textColor,
-              "text-color": "white",
-              label: cancel,
-            },
+                color: ne_cancel ? "negative" : tx_status.textColor,
+                "text-color": "white",
+                label: "cancel",
+              },
         ok:
           label === "persistent" || label === false
             ? false
             : { color: tx_status.textColor, "text-color": "white", label },
-        title: status.toUpperCase(),
+        title: options.title || (status ?? "").toUpperCase(),
         message: msg,
-        persistent: label === "persistent",
+        persistent: label === "persistent" || options.persistent,
       });
     } else {
       if (data.timeout) {
@@ -183,26 +266,26 @@ export default {
       }
       let notify = Notify.create({
         ...options,
+        classes: ["no-shadow"],
         type: tx_status.type || status,
         message: msg,
       });
 
       if (data.onDismiss && typeof data.onDismiss === "function") {
-        if (data.timeout !== 'undefined') {
+        if (data.timeout !== "undefined") {
           let t = setTimeout(() => {
             data.onDismiss(notify);
-            notify()
-            clearTimeout(t)
+            notify();
+            clearTimeout(t);
           }, data.timeout);
         } else {
           data.onDismiss(notify);
         }
-
       }
       return notify;
     }
   },
-  cartable (data) {
+  cartable(data) {
     let cart = this.arrayClean(data, true),
       cartable = [];
     cart.map((i) => {
@@ -210,7 +293,7 @@ export default {
     });
     return cartable;
   },
-  nlText (str, lines = 2, breaker = "<br />") {
+  nlText(str, lines = 2, breaker = "<br />") {
     const splitext = this.chunk(str.split(" "), lines);
     let text = "";
     splitext.forEach((el) => {
@@ -219,10 +302,10 @@ export default {
 
     return text;
   },
-  goto (link) {
+  goto(link) {
     window.location = link;
   },
-  asset (url) {
+  asset(url) {
     if (process.env.PREFER_ASSET === "true" && url.indexOf("http") !== -1) {
       var base_url = document.createElement("a");
       base_url.href = url;
@@ -230,14 +313,16 @@ export default {
     }
     return process.env.ASSET_URL + url;
   },
-  nameFromPath (path) {
+  nameFromPath(path) {
     var base_url = document.createElement("a");
     base_url.href = path;
     return base_url.pathname.replace(/\/|\.|\/$/g, "");
   },
-  getPageNumber (path) {
-    const search = new URLSearchParams(path);
-    return search.get("page");
+  getPageNumber(path, key = "page") {
+    if (!path || path.indexOf(key) === -1) {
+      return 1;
+    }
+    return path.split(key + "=").pop();
   },
   /**
    * Set the loading state of a property
@@ -246,7 +331,7 @@ export default {
    * @param {*} state
    * @param {*} ids
    */
-  loadingState (prop = null, state = true, ids = null) {
+  loadingState(prop = null, state = true, ids = null) {
     if (ids && typeof ids === "object") {
       ids.map((e) => {
         prop[e] = state;
@@ -259,7 +344,7 @@ export default {
       }
     }
   },
-  arrayClean (array, getObj = false) {
+  arrayClean(array, getObj = false) {
     let obj = JSON.parse(JSON.stringify(array));
 
     if (getObj === true) {
@@ -267,7 +352,7 @@ export default {
     }
     return Object.keys(obj).map((i) => obj[i]);
   },
-  objMap (obj, func) {
+  objMap(obj, func) {
     obj = JSON.parse(JSON.stringify(obj));
     let newObj = {};
     Object.keys(obj).map((key) => {
@@ -275,15 +360,15 @@ export default {
     });
     return newObj;
   },
-  isEven (n) {
+  isEven(n) {
     if (!Number.isFinite(parseFloat(n))) return false;
     return n % 2 == 0;
   },
-  isOdd (n) {
+  isOdd(n) {
     if (!Number.isFinite(parseFloat(n))) return false;
     return Math.abs(n % 2) == 1;
   },
-  money (
+  money(
     amount,
     abbrev = false,
     curr = true,
@@ -292,10 +377,13 @@ export default {
   ) {
     if (typeof amount === "undefined" || typeof amount === null) return 0;
 
+    const _curr = currencies.find((c) => c.cc === "NGN");
     const gs =
       curr === true || curr === "code" ? loader.bootstrap.getSettings : null;
     let currency = "USD",
       symbol = "$";
+    gs.currency = _curr.cc;
+    gs.currency_symbol = _curr.symbol;
 
     if (gs && gs.currency && curr === "code") {
       currency = gs.currency;
@@ -324,7 +412,7 @@ export default {
       (abbrev === true ? this.intStr(amount) : parsedAmount)
     );
   },
-  humanize (num, slugify) {
+  humanize(num, slugify) {
     if (!num) {
       return false;
     }
@@ -404,7 +492,7 @@ export default {
       return ones[numString[0]] + " thousand " + this.humanize(end, slugify);
     }
   },
-  intStr (num) {
+  intStr(num) {
     num = num.toString().replace(/[^0-9.]/g, "");
     if (num < 1000) {
       return num;
@@ -427,5 +515,21 @@ export default {
       (num / si[index].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") +
       si[index].s
     );
+  },
+  openFullscreen(el) {
+    const elem = typeof el === "string" ? document.querySelector(el ?? "") : el;
+    if (!el) {
+      return false;
+    }
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      /* IE11 */
+      elem.msRequestFullscreen();
+    }
   },
 };

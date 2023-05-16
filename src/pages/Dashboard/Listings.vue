@@ -216,4 +216,15 @@ export default {
 .sort_area .right .q-btn::before {
   box-shadow: none;
 }
+
+@media (max-width: 1060px) {
+  .sort_area .left {
+    flex-wrap: wrap;
+    gap: 1rem 0.5rem;
+  }
+
+  .sort_area .right .q-btn {
+    width: auto;
+  }
+}
 </style>

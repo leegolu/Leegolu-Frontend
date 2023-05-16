@@ -602,6 +602,10 @@ p.advert {
     gap: 2rem;
   }
 
+  .sort_area .left {
+    flex-wrap: wrap;
+  }
+
   .listing .right .manage_ad {
     width: 126px;
   }

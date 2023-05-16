@@ -10,11 +10,23 @@
             <div class="main">Join the newest online market</div>
 
             <div class="desc">
-              Thousands of users within Africa are experiencing the new to buy &
+              Thousands of users within Africa are <br />
+              experiencing the new to buy & <br />
               sell online.
             </div>
+
+            <img
+              :src="
+                data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'
+                  ? '/images/welcometobusiness.svg'
+                  : '/images/rocket.png'
+              "
+              class="side_img"
+              alt=""
+            />
           </div>
-          <div class="foot">HTML 5 ANIMATION</div>
+          <!-- <div class="foot">HTML 5 ANIMATION</div> -->
+          <div></div>
         </div>
       </div>
 
@@ -24,59 +36,110 @@
 
           <div class="sub">
             Have an account?
-            <router-link to="/login" class="text-black text-weight-bold"
+            <router-link
+              :to="{ name: 'login' }"
+              class="text-black text-weight-bold"
               >Login
             </router-link>
           </div>
         </div>
 
-        <div class="checks">
-          <div :class="data.bus === 'Leegolu Regular' ? 'check' : 'notactive'">
-            <q-radio
-              v-model="data.bus"
-              val="Leegolu Regular"
-              label="Leegolu Regular"
-            />
+        <form @submit.prevent="register">
+          <!-- {{ data.role }} -->
+          <div class="checks">
+            <div
+              v-for="role in roles"
+              :key="role.id"
+              :class="role.name === data.role ? 'check' : 'notactive'"
+            >
+              <q-radio
+                v-model="data.role"
+                :val="role.id"
+                :label="`Leegolu ${role.name}`"
+              />
+            </div>
+
+            <!-- {{ roles }} -->
+            <!-- <div
+              :class="data.bus === 'Leegolu Business' ? 'check' : 'notactive'"
+            >
+              <q-radio
+                v-model="data.bus"
+                val="Leegolu Business"
+                label="Leegolu Business"
+              />
+            </div> -->
           </div>
-          <div :class="data.bus === 'Leegolu Business' ? 'check' : 'notactive'">
-            <q-radio
-              v-model="data.bus"
-              val="Leegolu Business"
-              label="Leegolu Business"
-            />
-          </div>
-        </div>
-        <form id="form">
           <div class="input-box active-grey">
             <label class="input-label">Username</label>
-            <input type="text" class="input-1" placeholder="John Doe" />
+            <input
+              v-model="data.name"
+              type="text"
+              required
+              name="name"
+              class="input-1"
+              placeholder="John Doe"
+            />
+            <small v-if="errors.name" class="text-red text-weight-bold">
+              {{ errors.name[0] }}
+            </small>
           </div>
           <div class="input-box active-grey">
             <label class="input-label">Email Address</label>
             <input
-              type="text"
+              type="email"
+              required
+              name="email"
+              v-model="data.email"
               class="input-1"
               placeholder="johndoe@gmail.com"
             />
+            <small v-if="errors.email" class="text-red text-weight-bold">
+              {{ errors.email[0] }}
+            </small>
           </div>
           <div class="input-box active-grey">
             <label class="input-label">Phone Number</label>
-            <div class="row no-wrap phone items-center">
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-              </select>
-              <input type="text" class="input-1" placeholder="07060870483" />
+
+            <div class="div">
+              <div class="row no-wrap phone items-center">
+                <select required v-model="countrycode" name="" id="">
+                  <option value="+243">+243</option>
+                  <option value="+243">+243</option>
+                  <option value="+243">+243</option>
+                </select>
+                <input
+                  type="text"
+                  v-model="data.phone"
+                  class="input-1"
+                  name="phone"
+                  placeholder="07060870483"
+                />
+              </div>
+              <small v-if="errors.phone" class="text-red text-weight-bold">
+                {{ errors.phone[0] }}
+              </small>
             </div>
           </div>
 
           <div class="input-box active-grey">
             <label class="input-label">Password</label>
-            <input type="text" class="input-1" placeholder="*******" />
+            <input
+              v-model="data.password"
+              type="password"
+              required
+              name="password"
+              class="input-1"
+              placeholder="*******"
+            />
+            <small v-if="errors.password" class="text-red text-weight-bold">
+              {{ errors.password[0] }}
+            </small>
           </div>
 
-          <q-btn @click="register" type="button" color="secondary" class="btn"
+          <!-- {{ errors }} -->
+
+          <q-btn :loading="loading" type="submit" color="secondary" class="btn"
             >Proceed</q-btn
           >
           <div class="clear"></div>
@@ -92,7 +155,7 @@
   </div>
 
   <q-dialog v-model="welcometoleegoluregularmodal">
-    <q-card style="width: 100%; max-width: 80vw">
+    <q-card style="width: 100%; max-width: 800px">
       <div class="modal">
         <div class="modal_wrap">
           <div class="left">
@@ -144,7 +207,7 @@
     </q-card>
   </q-dialog>
   <q-dialog v-model="welcometoleegolubusinessmodal">
-    <q-card style="width: 100%; max-width: 80vw">
+    <q-card style="width: 100%; max-width: 800px">
       <div class="modal">
         <div class="modal_wrap">
           <div class="left">
@@ -197,7 +260,7 @@
     </q-card>
   </q-dialog>
   <q-dialog v-model="addphotoforleegoluregularmodal">
-    <q-card style="width: 100%; max-width: 85vw">
+    <q-card style="width: 100%; max-width: 800px">
       <div class="modal two">
         <div class="modal_wrap">
           <div class="left">
@@ -262,7 +325,7 @@
     </q-card>
   </q-dialog>
   <q-dialog v-model="addphotoforleegolubusinessmodal">
-    <q-card style="width: 100%; max-width: 85vw">
+    <q-card style="width: 100%; max-width: 800px">
       <div class="modal two">
         <div class="modal_wrap">
           <div class="left">
@@ -325,7 +388,7 @@
     </q-card>
   </q-dialog>
   <q-dialog v-model="businessreg">
-    <q-card style="width: 100%; max-width: 85vw">
+    <q-card style="width: 100%; max-width: 800px">
       <div class="modal two">
         <div class="modal_wrap">
           <div class="left">
@@ -339,44 +402,68 @@
                 <label class="input-label">Business Name</label>
                 <input
                   type="text"
+                  name="name"
+                  v-model="vendordetails.name"
                   class="input-1"
                   placeholder="Red Dress Co."
                 />
               </div>
               <div class="input-box active-grey">
                 <label class="input-label">About Business</label>
-                <input
+                <!-- <input
                   type="text"
                   class="input-1"
+                  v-model="vendordetails.business_type"
                   placeholder="Fashion Apparel"
-                />
+                /> -->
+                <select v-model="vendordetails.business_type" class="reg">
+                  <option
+                    v-for="businessType in businessTypes"
+                    :key="businessType.id"
+                    :value="businessType.id"
+                  >
+                    {{ businessType.name }}
+                  </option>
+                </select>
               </div>
               <div class="wraps">
                 <div class="input-box active-grey">
                   <label class="input-label">State</label>
-                  <select class="reg" name="" id="">
-                    <option value="+243">Nassarawa</option>
-                    <option value="+243">Nassarawa</option>
-                    <option value="+243">Nassarawa</option>
+                  <select
+                    v-model="vendordetails.state"
+                    class="reg"
+                    @change="getAreas(vendordetails.state)"
+                  >
+                    <option
+                      v-for="state in states"
+                      :key="state.id"
+                      :value="state.id"
+                    >
+                      {{ state.name }}
+                    </option>
                   </select>
                 </div>
                 <div class="input-box active-grey">
                   <label class="input-label">Area</label>
-                  <select class="reg" name="" id="">
-                    <option value="+243">Lafia</option>
-                    <option value="+243">Lafia</option>
-                    <option value="+243">Lafia</option>
+                  <select v-model="vendordetails.area" class="reg" name="">
+                    <option
+                      v-for="area in areas"
+                      :key="area.id"
+                      :value="area.id"
+                    >
+                      {{ area.name }}
+                    </option>
                   </select>
                 </div>
               </div>
-
+              <!-- {{ vendordetails }} -->
               <div class="input-box active-grey">
                 <label class="input-label">Full Address</label>
                 <input
-                  value="13 Pious Adolf Crescent, Trans-Elemo, Laffia"
+                  v-model="vendordetails.address"
                   type="text"
                   class="input-1"
-                  placeholder="*******"
+                  placeholder="13 Pious Adolf Crescent, Trans-Elemo, Laffia"
                 />
               </div>
 
@@ -404,15 +491,39 @@
 export default {
   data() {
     return {
-      data: { bus: "Leegolu Regular" },
+      data: { role: "regular" },
       welcometoleegoluregularmodal: false,
       welcometoleegolubusinessmodal: false,
       preview: "/images/preview.png",
       addphotoforleegoluregularmodal: false,
       addphotoforleegolubusinessmodal: false,
-      businessreg: true,
+      businessreg: false,
       image: null,
+      errors: {},
+      countrycode: "+243",
+      vendordetails: {
+        name: "",
+        address: "",
+        area: "",
+        state: "",
+        business_type: "Fashion & Apparel",
+      },
+      roles: [],
+      businessTypes: [],
+      loading: false,
+      states: [],
+      areas: [],
     };
+  },
+
+  created() {
+    this.getRoles();
+    this.getStates();
+    this.getBusinessTypes();
+  },
+
+  mounted() {
+    console.log(this.$store.leegoluauth);
   },
 
   methods: {
@@ -428,16 +539,137 @@ export default {
       }
     },
 
+    // register() {
+    //   if (this.data.bus === "Leegolu Regular") {
+    //     this.welcometoleegoluregularmodal = true;
+    //   } else {
+    //     this.welcometoleegolubusinessmodal = true;
+    //   }
+    // },
+
     register() {
-      if (this.data.bus === "Leegolu Regular") {
-        this.welcometoleegoluregularmodal = true;
-      } else {
-        this.welcometoleegolubusinessmodal = true;
-      }
+      this.loading = true;
+      let data = {
+        ...this.data,
+        phone: this.countrycode + this.data.phone,
+      };
+      this.$api
+        .post("register", data)
+        .then((response) => {
+          console.log(response);
+          // console.log(response);
+
+          if (response.data.user.role[0].name === "business") {
+            this.welcometoleegolubusinessmodal = true;
+          } else {
+            this.welcometoleegoluregularmodal = true;
+          }
+
+          this.$store.leegoluauth.userDetails = response.data.user;
+          this.$store.leegoluauth.token = response.data.token;
+          localStorage.setItem("token", response.data.token);
+          this.$helper.notify(response.data.message, "success");
+          this.loading = false;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.loading = false;
+          // let error = this.$plugins.reader.error(e);
+          this.errors = response.data.errors || {};
+          // this.$helper.notify(error.message || error, error.status || "error");
+        });
+    },
+    getRoles() {
+      this.$api
+        .get("roles")
+        .then((response) => {
+          // console.log(response);å
+          let roles = response.data.data;
+          console.log(roles);
+          this.roles = roles.filter((role) => {
+            return role.name === "business" || role.name === "regular";
+          });
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getBusinessTypes() {
+      this.$api
+        .get("business-types")
+        .then((response) => {
+          console.log(response);
+          this.businessTypes = response.data.data;
+          this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getStates() {
+      this.$api
+        .get("states")
+        .then((response) => {
+          console.log(response);
+          this.states = response.data.data;
+          // this.vendordetails.state = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getAreas(id) {
+      this.$api
+        .get(`${id}/areas`)
+        .then((response) => {
+          console.log(response);
+          this.areas = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
     },
 
     finish() {
-      this.$router.replace({ name: "Plans" });
+      if (this.vendordetails.name === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business name field is required",
+        });
+        return;
+      } else if (this.vendordetails.area === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business area field is required",
+        });
+        return;
+      } else if (this.vendordetails.state === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business state field is required",
+        });
+        return;
+      } else if (this.vendordetails.address === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business address field is required",
+        });
+
+        return;
+      } else if (this.vendordetails.business_type === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business business type field is required",
+        });
+        return;
+      } else {
+        this.$store.leegoluauth.vendorDetails = this.vendordetails;
+        this.$router.replace({ name: "Plans" });
+      }
     },
   },
 };
@@ -498,6 +730,12 @@ $btn-primary-text-color: #fff;
   color: #000000;
 }
 
+.side_img {
+  width: 295px;
+  height: 400px;
+  object-fit: contain;
+}
+
 .checks .notactive {
   background: #ffffff;
   border: 1px solid #b0b0b0;
@@ -541,6 +779,11 @@ $btn-primary-text-color: #fff;
 input,
 select {
   background: $default-background;
+}
+
+input:focus,
+select:focus {
+  outline: none;
 }
 
 .goggle_auth {
@@ -612,7 +855,9 @@ select {
   color: #000000;
 }
 .input-box select.reg {
-  all: unset;
+  // all: unset;
+  position: unset;
+  margin: 0;
 }
 
 .phone input {
@@ -945,6 +1190,10 @@ select {
   }
   .modal .proceed {
     width: auto;
+  }
+
+  .modal_main_text {
+    font-size: 20px;
   }
 }
 </style>

@@ -3,7 +3,11 @@
     <div class="main_title">Leegolu Business Plans</div>
     <div class="sub_title">Choose a plan that fits your need</div>
     <div class="card_wrap">
-      <PlanCardVue v-for="(plan, index) in plans" :key="index" :plan="plan" />
+      <PlanCardVue
+        v-for="(plan, index) in businessPlans"
+        :key="index"
+        :plan="plan"
+      />
     </div>
   </div>
 </template>
@@ -16,6 +20,7 @@ export default {
   },
   data() {
     return {
+      businessPlans: [],
       plans: [
         {
           name: "Seller",
@@ -27,59 +32,79 @@ export default {
             },
           ],
         },
-        {
-          name: "Shop",
-          amount: "3000",
-          img: "shopplan.png",
-          containing: [
-            {
-              title: "Make up to 20 Listings",
-            },
-            {
-              title: "Customizable shop page",
-            },
-            {
-              title: "Branded listing",
-            },
-          ],
-        },
-        {
-          name: "Dealer",
-          amount: "5000",
-          img: "dealerplan.png",
-          containing: [
-            {
-              title: "Make up to 50 Listings",
-            },
-            {
-              title: "Customizable shop page",
-            },
-            {
-              title: "Branded listing",
-            },
-          ],
-        },
-        {
-          name: "Warehouse",
-          amount: "15000",
-          img: "warehouseplan.png",
-          containing: [
-            {
-              title: "Make unlimited listings",
-            },
-            {
-              title: "Customizable shop page",
-            },
-            {
-              title: "Branded listing",
-            },
-            {
-              title: "Boosted shop page ",
-            },
-          ],
-        },
+        // {
+        //   name: "Shop",
+        //   amount: "3000",
+        //   img: "shopplan.png",
+        //   containing: [
+        //     {
+        //       title: "Make up to 20 Listings",
+        //     },
+        //     {
+        //       title: "Customizable shop page",
+        //     },
+        //     {
+        //       title: "Branded listing",
+        //     },
+        //   ],
+        // },
+        // {
+        //   name: "Dealer",
+        //   amount: "5000",
+        //   img: "dealerplan.png",
+        //   containing: [
+        //     {
+        //       title: "Make up to 50 Listings",
+        //     },
+        //     {
+        //       title: "Customizable shop page",
+        //     },
+        //     {
+        //       title: "Branded listing",
+        //     },
+        //   ],
+        // },
+        // {
+        //   name: "Warehouse",
+        //   amount: "15000",
+        //   img: "warehouseplan.png",
+        //   containing: [
+        //     {
+        //       title: "Make unlimited listings",
+        //     },
+        //     {
+        //       title: "Customizable shop page",
+        //     },
+        //     {
+        //       title: "Branded listing",
+        //     },
+        //     {
+        //       title: "Boosted shop page ",
+        //     },
+        //   ],
+        // },
       ],
     };
+  },
+
+  created() {
+    this.getPlans();
+  },
+
+  methods: {
+    getPlans() {
+      this.$api
+        .get("business-plans")
+        .then((response) => {
+          console.log(response);
+          this.businessPlans = response.data.data;
+          // this.vendordetails.state = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
   },
 };
 </script>
