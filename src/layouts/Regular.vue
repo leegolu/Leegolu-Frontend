@@ -39,22 +39,32 @@
 
         <q-space />
 
-        <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn size="10px" round color="primary" icon="fa-solid fa-message">
-            <q-badge floating color="red" rounded>4</q-badge>
-          </q-btn>
-          <q-btn size="10px" color="primary" round icon="notifications">
-            <q-badge floating color="red" rounded>4</q-badge>
-          </q-btn>
-          <q-btn @click="modal1 = true" class="mybtn">
-            Create Listing <i class="fa-solid q-ml-md fa-plus"></i
-          ></q-btn>
-          <q-btn round flat>
-            <q-avatar size="35px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-            <q-tooltip>Account</q-tooltip>
-          </q-btn>
+        <div
+          style="width: 100%; gap: 3rem"
+          class="q-gutter-sm header_icons justify-end row items-center no-wrap"
+        >
+          <div style="gap: 1rem" class="le flex no-wrap items-center">
+            <q-btn style="padding: 4px 8px" size="10px" flat color="primary">
+              <img src="/images/headernotif.svg" alt="" />
+              <q-badge floating color="red" rounded>4</q-badge>
+            </q-btn>
+            <q-btn style="padding: 4px 8px" size="10px" color="primary" flat>
+              <img src="/images/headericon.svg" alt="" />
+              <q-badge floating color="red" rounded>4</q-badge>
+            </q-btn>
+          </div>
+
+          <div style="gap: 1rem" class="le flex no-wrap items-center">
+            <q-btn @click="modal1 = true" text-color="primary" class="mybtn">
+              Create Listing <i class="fa-solid q-ml-md fa-plus"></i
+            ></q-btn>
+            <q-btn round flat>
+              <q-avatar size="35px">
+                <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              </q-avatar>
+              <q-tooltip>Account</q-tooltip>
+            </q-btn>
+          </div>
         </div>
       </q-toolbar>
     </q-header>
@@ -80,7 +90,8 @@
             }"
           >
             <q-item-section class="avater_side" avatar>
-              <q-icon size="18px" :name="link.icon" />
+              <!-- <q-icon size="18px" :name="link.icon" /> -->
+              <img :src="link.icon" />
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ link.text }}</q-item-label>
@@ -521,28 +532,28 @@ export default {
       toggleLeftDrawer,
       links1: [
         {
-          icon: "fa-duotone fa-house",
+          icon: "/images/overview.svg",
           text: "Overview",
           to: "regular.dashboard",
         },
         {
-          icon: "fa-duotone fa-list",
+          icon: "/images/icon3.svg",
           text: "My Listings",
           to: "regular.listings",
         },
 
         {
-          icon: "fa-duotone fa-heart",
+          icon: "/images/fav.svg",
           text: "My Favorites",
           to: "regular.favourites",
         },
         {
-          icon: "fa-duotone fa-message",
+          icon: "/images/messages.svg",
           text: "Messages",
           to: "regular.messages",
         },
         {
-          icon: "fa-duotone fa-bell",
+          icon: "/images/notif.svg",
           text: "Notifications",
           to: "regular.notifications",
         },
@@ -729,8 +740,9 @@ input:focus {
 
 .q-item.q-router-link--active,
 .q-item--active {
-  background: #e9e9e9;
+  background: #1f7bb5;
   border-radius: 5px;
+  color: white;
 }
 
 // modals

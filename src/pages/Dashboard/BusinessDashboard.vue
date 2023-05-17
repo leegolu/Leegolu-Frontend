@@ -27,7 +27,7 @@
           <div class="count">0</div>
         </div>
         <div class="small_card">
-          <img src="/images/engage.png" alt="" />
+          <img src="/images/engagesvg.svg" alt="" />
           <div class="small_card_main_text">Engagement</div>
           <div class="small_card_sub">Adverts interacted with.</div>
           <div class="count">0</div>
@@ -50,26 +50,12 @@
             <div class="progress_wrap q-mt-lg">
               <div class="progress">
                 <div class="small">4/20 Listings</div>
-                <q-linear-progress :value="progress1" color="accent">
-                  <div class="absolute-full flex flex-center">
-                    <q-badge
-                      color="white"
-                      text-color="accent"
-                      :label="progressLabel1"
-                    />
-                  </div>
+                <q-linear-progress reverse :value="progress1" color="warning">
                 </q-linear-progress>
               </div>
               <div class="progress q-mt-sm">
                 <div class="small">30 days left</div>
-                <q-linear-progress :value="progress1" color="accent">
-                  <div class="absolute-full flex flex-center">
-                    <q-badge
-                      color="white"
-                      text-color="accent"
-                      :label="progressLabel1"
-                    />
-                  </div>
+                <q-linear-progress reverse :value="progress1" color="warning">
                 </q-linear-progress>
               </div>
             </div>
@@ -95,7 +81,7 @@
           </div>
 
           <div class="business_seive">
-            <q-btn flat> Page Visits </q-btn>
+            <q-btn color="white" class="bg-primary" flat> Page Visits </q-btn>
           </div>
           <div class="business_seive">
             <q-btn flat> Callback Requests </q-btn>
@@ -132,7 +118,7 @@
 
     <div class="right_card">
       <div class="right_card_top">
-        <img src="/images/personel.png" alt="" />
+        <img src="/images/newsle.svg" alt="" />
         <div class="card_main_text">
           Expand your business without breaking the bank.
         </div>
@@ -166,6 +152,215 @@
       </div>
     </div>
   </div>
+
+  <q-dialog class="dash_modal" v-model="welcometoleegolubusinessmodal">
+    <q-card style="width: 100%; max-width: 800px">
+      <div class="modal">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Hello Chris,</div>
+            <div class="modal_main_text">Welcome to Leegolu Business.</div>
+            <div class="modal_sub_text">
+              Your account gives you full access to all basic features available
+              on the Leegolu marketplace for free.
+            </div>
+
+            <ul>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to direct seller
+                contact
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Ability to sell as a private
+                seller
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to insights & analytics
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to Leegolu video ads
+              </li>
+              <li><i class="fa-solid fa-check"></i> A branded shop</li>
+            </ul>
+          </div>
+
+          <div class="right">
+            <img src="/images/welcometobusiness.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="row q-pb-lg items-center justify-between">
+          <q-btn
+            @click="addphotoforleegolubusinessmodal = true"
+            color="primary"
+            class="q-px-xl proceed"
+          >
+            Proceed
+          </q-btn>
+          <q-btn @click="toggleModal" class="q-px-sm skip"> Skip </q-btn>
+        </div>
+
+        <div @click="welcometoleegolubusinessmodal = false" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog class="dash_modal" v-model="addphotoforleegolubusinessmodal">
+    <q-card style="width: 100%; max-width: 800px">
+      <div class="modal two">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Add your photo</div>
+            <div class="modal_sub_text">
+              Add a picture of yourself or select a
+              <span class="text-primary">preferred emoji</span>. Other users
+              will associate this with your account.
+            </div>
+
+            <div class="previewMain">
+              <form>
+                <div class="form">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    @change="previewImage"
+                    class="previewinput"
+                    id="my-file"
+                  />
+
+                  <div class="previewDiv">
+                    <template v-if="preview">
+                      <img :src="preview" class="previewimg" />
+                      <img src="/images/click.png" class="click" alt="" />
+                    </template>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="right">
+            <img src="/images/businessimg.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="row q-pb-lg items-center justify-between">
+          <q-btn
+            @click="businessreg = true"
+            color="primary"
+            class="q-px-xl proceed"
+          >
+            Proceed
+          </q-btn>
+          <q-btn @click="skipImg" class="q-px-sm skip"> Skip </q-btn>
+        </div>
+
+        <div @click="addphotoforleegolubusinessmodal = false" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
+  <q-dialog class="dash_modal" v-model="businessreg">
+    <q-card style="width: 100%; max-width: 800px">
+      <div class="modal two">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Leegolu Business</div>
+            <div class="modal_sub_text">
+              Please supply your business details below.
+            </div>
+
+            <form id="form">
+              <div class="input-box active-grey">
+                <label class="input-label">Business Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  v-model="vendordetails.name"
+                  class="input-1"
+                  placeholder="Red Dress Co."
+                />
+              </div>
+              <div class="input-box active-grey">
+                <label class="input-label">About Business</label>
+                <!-- <input
+                  type="text"
+                  class="input-1"
+                  v-model="vendordetails.business_type"
+                  placeholder="Fashion Apparel"
+                /> -->
+                <select v-model="vendordetails.business_type" class="reg">
+                  <option
+                    v-for="businessType in businessTypes"
+                    :key="businessType.id"
+                    :value="businessType.id"
+                  >
+                    {{ businessType.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="wraps">
+                <div class="input-box active-grey">
+                  <label class="input-label">State</label>
+                  <select
+                    v-model="vendordetails.state"
+                    class="reg"
+                    @change="getAreas(vendordetails.state)"
+                  >
+                    <option
+                      v-for="state in states"
+                      :key="state.id"
+                      :value="state.id"
+                    >
+                      {{ state.name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="input-box active-grey">
+                  <label class="input-label">Area</label>
+                  <select v-model="vendordetails.area" class="reg" name="">
+                    <option
+                      v-for="area in areas"
+                      :key="area.id"
+                      :value="area.id"
+                    >
+                      {{ area.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <!-- {{ vendordetails }} -->
+              <div class="input-box active-grey">
+                <label class="input-label">Full Address</label>
+                <input
+                  v-model="vendordetails.address"
+                  type="text"
+                  class="input-1"
+                  placeholder="13 Pious Adolf Crescent, Trans-Elemo, Laffia"
+                />
+              </div>
+
+              <q-btn @click="finish" type="button" color="primary" class="btn"
+                >Finish</q-btn
+              >
+              <div class="clear"></div>
+            </form>
+          </div>
+
+          <div class="right">
+            <img src="/images/businessreg.svg" alt="" />
+          </div>
+        </div>
+
+        <div @click="reg" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -180,6 +375,25 @@ export default {
   },
   data() {
     return {
+      welcometoleegolubusinessmodal: false,
+      preview: "/images/preview.png",
+      businessreg: false,
+      image: null,
+      errors: {},
+      countrycode: "+243",
+      vendordetails: {
+        name: "",
+        address: "",
+        area: "",
+        state: "",
+        business_type: "Fashion & Apparel",
+      },
+      roles: [],
+      businessTypes: [],
+      loading: false,
+      states: [],
+      areas: [],
+      addphotoforleegolubusinessmodal: false,
       arr: [
         {
           img: "/images/listing1.png",
@@ -222,6 +436,7 @@ export default {
         xaxis: {
           categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
         },
+        colors: ["#1f7bb5", "#247BA0"],
       },
       series: [
         {
@@ -230,6 +445,22 @@ export default {
         },
       ],
     };
+  },
+
+  // watch: {
+  //   welcometoleegolubusinessmodal: {
+  //     handler: function (val, oldVal) {
+  //       console.log(val);
+  //     },
+  //     deep: true,
+  //     immediate: true,
+  //   },
+  // },
+  created() {
+    this.getRoles();
+    this.getStates();
+    this.getBusinessTypes();
+    this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
   },
   setup() {
     const progress1 = ref(0.3);
@@ -243,10 +474,135 @@ export default {
       progressLabel2: computed(() => (progress2.value * 100).toFixed(2) + "%"),
     };
   },
+  // mounted() {
+  //   this.welcometoleegolubusinessmodal = true;
+  // },
+  methods: {
+    previewImage(event) {
+      var input = event.target;
+      if (input.files) {
+        var reader = new FileReader();
+        reader.onload = (e) => {
+          this.preview = e.target.result;
+        };
+        this.image = input.files[0];
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
+
+    toggleModal() {
+      this.welcometoleegolubusinessmodal = false;
+      this.addphotoforleegolubusinessmodal = true;
+    },
+    skipImg() {
+      this.addphotoforleegolubusinessmodal = false;
+      this.businessreg = true;
+    },
+
+    reg() {
+      this.$store.leegoluauth.modal = false;
+      this.businessreg = false;
+    },
+    getRoles() {
+      this.$api
+        .get("roles")
+        .then((response) => {
+          // console.log(response);å
+          let roles = response.data.data;
+          console.log(roles);
+          this.roles = roles.filter((role) => {
+            return role.name === "business" || role.name === "regular";
+          });
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getBusinessTypes() {
+      this.$api
+        .get("business-types")
+        .then((response) => {
+          console.log(response);
+          this.businessTypes = response.data.data;
+          this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getStates() {
+      this.$api
+        .get("states")
+        .then((response) => {
+          console.log(response);
+          this.states = response.data.data;
+          // this.vendordetails.state = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getAreas(id) {
+      this.$api
+        .get(`${id}/areas`)
+        .then((response) => {
+          console.log(response);
+          this.areas = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    finish() {
+      if (this.vendordetails.name === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business name field is required",
+        });
+        return;
+      } else if (this.vendordetails.area === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business area field is required",
+        });
+        return;
+      } else if (this.vendordetails.state === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business state field is required",
+        });
+        return;
+      } else if (this.vendordetails.address === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business address field is required",
+        });
+
+        return;
+      } else if (this.vendordetails.business_type === "") {
+        this.$q.notify({
+          color: "red",
+          message: "Business business type field is required",
+        });
+        return;
+      } else {
+        this.$store.leegoluauth.vendorDetails = this.vendordetails;
+        this.$router.replace({ name: "Plans" });
+      }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+// * {
+//   border: 1px solid red;
+// }
 .main {
   display: grid;
   grid-template-columns: 5fr 2fr;
@@ -284,6 +640,13 @@ export default {
   color: #000000;
 }
 
+// .left_main {
+//   max-width: 70%;
+// }
+// .right_card {
+//   width: 100%;
+// }
+
 .main_card .right {
   display: flex;
   justify-content: flex-end;
@@ -297,7 +660,12 @@ export default {
   font-size: 15px;
   line-height: 18px;
   text-align: center;
+  text-transform: capitalize;
   color: #ffffff;
+}
+
+.tour::before {
+  box-shadow: none;
 }
 
 .main_card .right img {
@@ -373,11 +741,11 @@ export default {
   // overflow: hidden;
   padding-bottom: 1rem;
   // padding-left: 0.5rem;
-  overflow-x: scroll;
+  // overflow-x: scroll;
 }
 .small_card {
   background: #ffffff;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
+  // box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 14px;
   padding: 1rem;
   width: 140px;
@@ -395,9 +763,11 @@ export default {
     grid-template-columns: 1fr 1fr 1fr 2.5fr;
   }
 }
-@media (max-width: 1170px) {
-  .small_card_bus {
-    width: 321px;
+
+@media (max-width: 1100px) {
+  .small_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 }
 
@@ -451,6 +821,7 @@ export default {
   display: flex;
   justify-content: space-between;
   // width: 314px;
+  flex: 2;
   height: 165px;
   padding: 1rem;
 }
@@ -578,6 +949,7 @@ export default {
 
 .top_business {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 1rem;
   align-items: center;
@@ -624,9 +996,13 @@ export default {
   color: #000000;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .main_card {
     max-width: 100%;
+  }
+
+  .small_card {
+    width: 130px;
   }
 
   .main {
@@ -634,7 +1010,13 @@ export default {
     max-width: 1300px;
   }
 }
-@media (max-width: 1100px) {
+
+@media (min-width: 1300px) {
+  .small_card {
+    width: 100%;
+  }
+}
+@media (max-width: 1200px) {
   .small_card {
     width: 100%;
   }
@@ -642,10 +1024,16 @@ export default {
   .top_business {
     flex-wrap: wrap;
   }
+  .small_card_bus {
+    width: 321px;
+  }
 }
 @media (max-width: 1000px) {
   .main {
     grid-template-columns: 1fr;
+  }
+  .small_card {
+    width: 100%;
   }
 
   .right_card {

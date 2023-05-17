@@ -1,66 +1,78 @@
 <template>
   <div class="login q-pt-xl">
-    <div class="login_wrapper">
-      <div class="left side">
-        <div class="left_wrap">
-          <div class="img">
-            <img src="/images/leee.png" alt="" />
-          </div>
-          <div class="middle">
-            <div class="main">Join the newest online market</div>
-
-            <div class="desc">
-              Thousands of users within Africa are <br />
-              experiencing the new to buy & <br />
-              sell online.
+    <div class="login_hold">
+      <div class="login_wrapper">
+        <div class="left side">
+          <div class="left_wrap">
+            <div class="img">
+              <img src="/images/leee.png" alt="" />
             </div>
+            <div class="middle">
+              <div
+                v-if="data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'"
+                class="main"
+              >
+                Do more with <br />
+                <span> Leegolu Business</span>
+              </div>
+              <div v-else class="main">
+                Join the newest <br />
+                online market
+              </div>
 
-            <img
-              :src="
-                data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'
-                  ? '/images/welcometobusiness.svg'
-                  : '/images/rocket.png'
-              "
-              class="side_img"
-              alt=""
-            />
-          </div>
-          <!-- <div class="foot">HTML 5 ANIMATION</div> -->
-          <div></div>
-        </div>
-      </div>
-
-      <div class="right">
-        <div class="sign">
-          <div class="head q-mb-sm">Sign up</div>
-
-          <div class="sub">
-            Have an account?
-            <router-link
-              :to="{ name: 'login' }"
-              class="text-black text-weight-bold"
-              >Login
-            </router-link>
+              <div class="desc">
+                Thousands of users within Africa are <br />
+                experiencing the new to buy & <br />
+                sell online.
+              </div>
+              <div class="side_img_wrap text-center">
+                <img
+                  :src="
+                    data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'
+                      ? '/images/shop.svg'
+                      : '/images/rockets.svg'
+                  "
+                  class="side_img"
+                  alt=""
+                />
+              </div>
+            </div>
+            <!-- <div class="foot">HTML 5 ANIMATION</div> -->
+            <div></div>
           </div>
         </div>
 
-        <form @submit.prevent="register">
-          <!-- {{ data.role }} -->
-          <div class="checks">
-            <div
-              v-for="role in roles"
-              :key="role.id"
-              :class="role.name === data.role ? 'check' : 'notactive'"
-            >
-              <q-radio
-                v-model="data.role"
-                :val="role.id"
-                :label="`Leegolu ${role.name}`"
-              />
-            </div>
+        <div class="right">
+          <div class="sign">
+            <div class="head q-mb-sm">Sign up</div>
 
-            <!-- {{ roles }} -->
-            <!-- <div
+            <div class="sub">
+              Have an account?
+              <router-link
+                :to="{ name: 'login' }"
+                class="text-black text-weight-bold"
+                >Login
+              </router-link>
+            </div>
+          </div>
+
+          <form @submit.prevent="register">
+            <!-- {{ data.role }} -->
+            <div class="checks">
+              <div
+                v-for="role in roles"
+                :key="role.id"
+                :class="role.id === data.role ? 'check' : 'notactive'"
+              >
+                <q-radio
+                  v-model="data.role"
+                  :val="role.id"
+                  :label="`Leegolu ${role.name}`"
+                />
+              </div>
+
+              <!-- {{ roles }} -->
+              <!-- <div
               :class="data.bus === 'Leegolu Business' ? 'check' : 'notactive'"
             >
               <q-radio
@@ -69,87 +81,92 @@
                 label="Leegolu Business"
               />
             </div> -->
-          </div>
-          <div class="input-box active-grey">
-            <label class="input-label">Username</label>
-            <input
-              v-model="data.name"
-              type="text"
-              required
-              name="name"
-              class="input-1"
-              placeholder="John Doe"
-            />
-            <small v-if="errors.name" class="text-red text-weight-bold">
-              {{ errors.name[0] }}
-            </small>
-          </div>
-          <div class="input-box active-grey">
-            <label class="input-label">Email Address</label>
-            <input
-              type="email"
-              required
-              name="email"
-              v-model="data.email"
-              class="input-1"
-              placeholder="johndoe@gmail.com"
-            />
-            <small v-if="errors.email" class="text-red text-weight-bold">
-              {{ errors.email[0] }}
-            </small>
-          </div>
-          <div class="input-box active-grey">
-            <label class="input-label">Phone Number</label>
-
-            <div class="div">
-              <div class="row no-wrap phone items-center">
-                <select required v-model="countrycode" name="" id="">
-                  <option value="+243">+243</option>
-                  <option value="+243">+243</option>
-                  <option value="+243">+243</option>
-                </select>
-                <input
-                  type="text"
-                  v-model="data.phone"
-                  class="input-1"
-                  name="phone"
-                  placeholder="07060870483"
-                />
-              </div>
-              <small v-if="errors.phone" class="text-red text-weight-bold">
-                {{ errors.phone[0] }}
+            </div>
+            <div class="input-box active-grey">
+              <label class="input-label">Username</label>
+              <input
+                v-model="data.name"
+                type="text"
+                required
+                name="name"
+                class="input-1"
+                placeholder="John Doe"
+              />
+              <small v-if="errors.name" class="text-red text-weight-bold">
+                {{ errors.name[0] }}
               </small>
             </div>
-          </div>
+            <div class="input-box active-grey">
+              <label class="input-label">Email Address</label>
+              <input
+                type="email"
+                required
+                name="email"
+                v-model="data.email"
+                class="input-1"
+                placeholder="johndoe@gmail.com"
+              />
+              <small v-if="errors.email" class="text-red text-weight-bold">
+                {{ errors.email[0] }}
+              </small>
+            </div>
+            <div class="input-box active-grey">
+              <label class="input-label">Phone Number</label>
 
-          <div class="input-box active-grey">
-            <label class="input-label">Password</label>
-            <input
-              v-model="data.password"
-              type="password"
-              required
-              name="password"
-              class="input-1"
-              placeholder="*******"
-            />
-            <small v-if="errors.password" class="text-red text-weight-bold">
-              {{ errors.password[0] }}
-            </small>
-          </div>
+              <div class="div">
+                <div class="row no-wrap phone items-center">
+                  <select required v-model="countrycode" name="" id="">
+                    <option value="+243">+243</option>
+                    <option value="+243">+243</option>
+                    <option value="+243">+243</option>
+                  </select>
+                  <input
+                    type="text"
+                    v-model="data.phone"
+                    class="input-1"
+                    name="phone"
+                    placeholder="07060870483"
+                  />
+                </div>
+                <small v-if="errors.phone" class="text-red text-weight-bold">
+                  {{ errors.phone[0] }}
+                </small>
+              </div>
+            </div>
 
-          <!-- {{ errors }} -->
+            <div class="input-box active-grey">
+              <label class="input-label">Password</label>
+              <input
+                v-model="data.password"
+                type="password"
+                required
+                name="password"
+                class="input-1"
+                placeholder="*******"
+              />
+              <small v-if="errors.password" class="text-red text-weight-bold">
+                {{ errors.password[0] }}
+              </small>
+            </div>
 
-          <q-btn :loading="loading" type="submit" color="secondary" class="btn"
-            >Proceed</q-btn
-          >
-          <div class="clear"></div>
+            <!-- {{ errors }} -->
 
-          <div class="goggle_auth">
-            <q-btn>
-              <img src="/images/googleauth.png" alt="" />
-            </q-btn>
-          </div>
-        </form>
+            <q-btn
+              :loading="loading"
+              type="submit"
+              color="secondary"
+              class="btn"
+              >Proceed</q-btn
+            >
+            <div class="clear"></div>
+
+            <div class="goggle_auth">
+              <q-btn>
+                <img src="/images/googleauth.png" alt="" />
+              </q-btn>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -491,7 +508,7 @@
 export default {
   data() {
     return {
-      data: { role: "regular" },
+      data: { role: "c6f3cebc-2928-4d24-bdc9-41a383fee65c" },
       welcometoleegoluregularmodal: false,
       welcometoleegolubusinessmodal: false,
       preview: "/images/preview.png",
@@ -516,15 +533,11 @@ export default {
     };
   },
 
-  created() {
-    this.getRoles();
-    this.getStates();
-    this.getBusinessTypes();
-  },
-
-  mounted() {
-    console.log(this.$store.leegoluauth);
-  },
+  // created() {
+  //   this.getRoles();
+  //   this.getStates();
+  //   this.getBusinessTypes();
+  // },
 
   methods: {
     previewImage(event) {
@@ -557,19 +570,17 @@ export default {
         .post("register", data)
         .then((response) => {
           console.log(response);
-          // console.log(response);
-
-          if (response.data.user.role[0].name === "business") {
-            this.welcometoleegolubusinessmodal = true;
-          } else {
-            this.welcometoleegoluregularmodal = true;
-          }
-
+          console.log(response);
           this.$store.leegoluauth.userDetails = response.data.user;
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
           this.$helper.notify(response.data.message, "success");
           this.loading = false;
+          if (response.data.user.role[0].name === "business") {
+            this.$router.replace({ name: "business.dashboard" });
+          } else {
+            this.$router.replace({ name: "regular.dashboard" });
+          }
         })
         .catch(({ response }) => {
           console.log(response);
@@ -698,11 +709,25 @@ $btn-primary-boxshadow-color: 0 1px 1px 0 rgba(66, 133, 244, 0.45),
   0 1px 3px 1px rgba(66, 133, 244, 0.3);
 $btn-primary-text-color: #fff;
 .login {
-  background: #fff;
-  height: 100vh;
+  background: aliceblue;
+  // height: 100vh;
+  padding: 2rem 2rem 5rem;
+}
+
+@media (min-width: 1100px) {
+  .login {
+    height: 100vh;
+  }
+}
+.login_hold {
+  background: #ffffff;
+  box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
   max-width: 1000px;
+  width: 909px;
+  max-height: 631px;
+  overflow: hidden;
   margin: 0 auto;
-  padding: 2rem;
 }
 
 .img img {
@@ -713,7 +738,7 @@ $btn-primary-text-color: #fff;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
-  margin: 2rem 0 1rem;
+  margin: 1rem 0 1rem;
 }
 
 .checks .check {
@@ -731,8 +756,9 @@ $btn-primary-text-color: #fff;
 }
 
 .side_img {
-  width: 295px;
-  height: 400px;
+  // max-width: 298px;
+  max-height: 261px;
+  margin-top: 1rem;
   object-fit: contain;
 }
 
@@ -771,9 +797,13 @@ $btn-primary-text-color: #fff;
 }
 
 .login_wrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  display: flex;
+  // grid-template-columns: 1fr 2fr;
+
+  // grid-template-columns: repeat(2, 1fr);
+  // gap: 1rem;
+  width: 909px;
+  padding: 1rem;
   height: 100%;
 }
 input,
@@ -801,12 +831,16 @@ select:focus {
 .left_wrap {
   background: linear-gradient(180deg, #002b60 0%, #357196 100%);
   border-radius: 7px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: space-between;
+  width: 376px;
   height: 100%;
+  padding: 1rem 1.5rem;
+}
 
-  padding: 1rem;
+.middle {
+  padding-top: 6rem;
 }
 
 .main {
@@ -818,7 +852,9 @@ select:focus {
   color: #ffffff;
   margin-bottom: 0.7rem;
 }
-
+.main span {
+  white-space: nowrap;
+}
 .desc {
   font-family: "Montserrat";
   font-style: normal;
@@ -839,7 +875,7 @@ select:focus {
 }
 
 .right {
-  padding-top: 2rem;
+  padding: 2rem 2.25rem 1rem 3rem;
 }
 
 .input-box select {
@@ -895,7 +931,7 @@ select:focus {
 }
 .input-box {
   position: relative;
-  margin: 30px 0;
+  margin: 25px 0;
   .input-label {
     position: absolute;
     color: $color;
@@ -972,7 +1008,7 @@ select:focus {
   min-width: 88px;
   transition: 250ms;
   width: 100%;
-  // margin-top: 2rem;
+  margin-top: 1rem;
 
   &:hover {
     background: $btn-default-bgh-color;

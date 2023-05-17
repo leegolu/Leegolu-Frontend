@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { Notify } from "quasar";
 export const useAuthStore = defineStore("leegoluauth", {
   state: () => ({
     token: "",
     userDetails: {},
     vendorDetails: {},
+    modal: true,
     // token: localStorage.getItem("token") || "",
   }),
   getters: {

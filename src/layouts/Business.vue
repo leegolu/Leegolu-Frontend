@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="bg-accent">
+  <q-layout view="hHh lpR fFf" class="">
     <q-header class="header q-py-xs" height-hint="58">
       <q-toolbar>
         <q-btn
@@ -39,22 +39,32 @@
 
         <q-space />
 
-        <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn size="10px" round color="primary" icon="fa-solid fa-message">
-            <q-badge floating color="red" rounded>4</q-badge>
-          </q-btn>
-          <q-btn size="10px" color="primary" round icon="notifications">
-            <q-badge floating color="red" rounded>4</q-badge>
-          </q-btn>
-          <q-btn @click="modal1 = true" class="mybtn">
-            Create Listing <i class="fa-solid q-ml-md fa-plus"></i
-          ></q-btn>
-          <q-btn round flat>
-            <q-avatar size="35px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-            <q-tooltip>Account</q-tooltip>
-          </q-btn>
+        <div
+          style="width: 100%; gap: 3rem"
+          class="q-gutter-sm header_icons justify-end row items-center no-wrap"
+        >
+          <div style="gap: 1rem" class="le flex no-wrap items-center">
+            <q-btn style="padding: 4px 8px" size="10px" flat color="primary">
+              <img src="/images/headernotif.svg" alt="" />
+              <q-badge floating color="red" rounded>4</q-badge>
+            </q-btn>
+            <q-btn style="padding: 4px 8px" size="10px" color="primary" flat>
+              <img src="/images/headericon.svg" alt="" />
+              <q-badge floating color="red" rounded>4</q-badge>
+            </q-btn>
+          </div>
+
+          <div style="gap: 1rem" class="le flex no-wrap items-center">
+            <q-btn @click="modal1 = true" text-color="primary" class="mybtn">
+              Create Listing <i class="fa-solid q-ml-md fa-plus"></i
+            ></q-btn>
+            <q-btn round flat>
+              <q-avatar size="35px">
+                <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              </q-avatar>
+              <q-tooltip>Account</q-tooltip>
+            </q-btn>
+          </div>
         </div>
       </q-toolbar>
     </q-header>
@@ -80,7 +90,8 @@
             }"
           >
             <q-item-section class="avater_side" avatar>
-              <q-icon size="18px" :name="link.icon" />
+              <img :src="link.icon" alt="" />
+              <!-- <q-icon size="18px" :name="link.icon" /> -->
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ link.text }}</q-item-label>
@@ -137,62 +148,112 @@
 
         <div class="create q-pt-xl">Advert Details</div>
 
-        <div class="form"></div>
+        <!-- <div class="form"></div> -->
         <form id="form">
           <div class="wraps">
-            <div class="input-box active-grey">
+            <div v-if="!showsubCat" class="input-box active-grey">
               <label class="input-label">Category</label>
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
+              <select
+                v-model="data2.state"
+                @change="getSubCategory(data2.state)"
+                name=""
+                id=""
+              >
+                <option
+                  v-for="category in categories"
+                  :key="category.id"
+                  :value="category.slug"
+                >
+                  {{ category.name }}
+                </option>
               </select>
             </div>
-            <div class="input-box active-grey">
+            <div v-if="showsubCat" class="input-box active-grey">
+              <!-- <q-btn flat style="min-height: unset"> Reset </q-btn> -->
+              <label class="input-label bg-grey bg-red q-pa-xs text-white"
+                >Select Sub Category
+              </label>
+              <select
+                @change="getUploadRequirements(data.subcategory)"
+                v-model="data.subcategory"
+                name=""
+                id=""
+              >
+                <option
+                  v-for="subcategory in subcategories"
+                  :key="subcategory.id"
+                  :value="subcategory.id"
+                >
+                  {{ subcategory.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="!showarea" class="input-box active-grey">
               <label class="input-label">Location</label>
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
+              <select
+                v-model="data2.location"
+                @change="getAreas(data2.location)"
+                name=""
+                id=""
+              >
+                <option
+                  v-for="state in states"
+                  :key="state.id"
+                  :value="state.id"
+                >
+                  {{ state.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="showarea" class="input-box active-grey">
+              <label class="input-label bg-grey bg-red q-pa-xs text-white"
+                >Select Exact Location</label
+              >
+              <select v-model="data.area" name="" id="">
+                <option v-for="area in areas" :key="area.id" :value="area.id">
+                  {{ area.name }}
+                </option>
               </select>
             </div>
           </div>
 
           <div class="input-box active-grey">
             <label class="input-label">Advert Title</label>
-            <input type="text" class="input-1" />
+            <input v-model="data.name" type="text" class="input-1" />
           </div>
           <div class="input-box active-grey">
             <label class="input-label">Advert Description </label>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <textarea
+              v-model="data.description"
+              name=""
+              id=""
+              cols="30"
+              rows="10"
+            ></textarea>
           </div>
 
           <div class="wraps">
             <div class="input-box active-grey">
               <label class="input-label">Condition</label>
-              <input type="text" class="input-1" />
+              <input v-model="data.condition" type="text" class="input-1" />
             </div>
 
             <div class="price">
               <div class="input-box active-grey">
                 <label class="input-label">Price</label>
-                <input type="text" class="input-1" />
+                <input v-model="data.price" type="number" class="input-1" />
               </div>
               <div>
                 <q-checkbox
                   color="negative"
-                  v-model="price"
+                  v-model="data.negotiable"
                   label="Negotiable"
                 />
               </div>
             </div>
           </div>
 
-          <q-btn
-            type="button"
-            @click="modal2 = true"
-            color="primary"
-            class="btn"
+          <q-btn type="button" @click="create" color="primary" class="btn"
             >Proceed</q-btn
           >
           <div class="clear"></div>
@@ -213,29 +274,35 @@
           attract more customers. We recommend your images are taken by a
           professional and when possible get a model to wear them.
         </div>
-
+        {{ data }}
         <div class="form"></div>
         <form id="form">
           <div class="wraps">
-            <div class="input-box active-grey">
-              <label class="input-label">Brand</label>
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-              </select>
-            </div>
-            <div class="input-box active-grey">
+            <template
+              v-for="(requirement, index) in [requirements.dropdowns]"
+              :key="index"
+            >
+              <div class="input-box active-grey">
+                <label class="input-label">{{ requirement }}</label>
+                <select v-model="data[requirement]" name="" id="">
+                  <option value="+243">+243</option>
+                  <option value="+243">+243</option>
+                  <option value="+243">+243</option>
+                </select>
+              </div>
+            </template>
+
+            <!-- <div class="input-box active-grey">
               <label class="input-label">Make</label>
               <select name="" id="">
                 <option value="+243">+243</option>
                 <option value="+243">+243</option>
                 <option value="+243">+243</option>
               </select>
-            </div>
+            </div> -->
           </div>
 
-          <div class="wraps">
+          <!-- <div class="wraps">
             <div class="input-box active-grey">
               <label class="input-label">Model</label>
               <input type="text" class="input-1" />
@@ -247,7 +314,7 @@
                 <input type="text" class="input-1" />
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="q-py-lg advert q-gutter-sm">
             <label class="adDet">Advert Details</label>
@@ -274,7 +341,7 @@
             />
           </div>
 
-          <div class="Features q-mt-md">Features</div>
+          <!-- <div class="Features q-mt-md">Features</div>
           <div class="check_wraps">
             <div class="left">
               <div>
@@ -372,17 +439,11 @@
                 <q-checkbox color="negative" v-model="air" label="Negotiable" />
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="row items-center justify-between">
-            <q-btn
-              @click="modal3 = true"
-              type="button"
-              color="primary"
-              class="btn"
-              >Proceed</q-btn
-            >
-            <q-btn @click="modal1 = true" type="button" outline class="btn prev"
+            <q-btn type="button" color="primary" class="btn">Proceed</q-btn>
+            <q-btn @click="prev" type="button" outline class="btn prev"
               >Prev</q-btn
             >
           </div>
@@ -467,11 +528,20 @@ export default {
     return {
       preview: "/images/sqrpreview.png",
       image: null,
-      modal1: false,
-      modal2: false,
+      modal1: true,
+      modal2: true,
       price: true,
       air: false,
       modal3: false,
+      categories: [],
+      subcategories: [],
+      states: [],
+      showarea: false,
+      requirements: [],
+      showsubCat: false,
+      areas: [],
+      data: { negotiable: true },
+      data2: {},
     };
   },
   setup() {
@@ -510,33 +580,75 @@ export default {
       toggleLeftDrawer,
       links1: [
         {
-          icon: "fa-duotone fa-house",
+          icon: "/images/overview.svg",
           text: "Overview",
           to: "business.dashboard",
         },
-        { icon: "fa-duotone fa-shop", text: "Manage Shop", to: "manage-shop" },
-        { icon: "fa-duotone fa-list", text: "My Listings", to: "listings" },
         {
-          icon: "fa-duotone fa-pen",
+          icon: "/images/shopicon.svg",
+          text: "Manage Shop",
+          to: "manage-shop",
+        },
+        { icon: "/images/icon3.svg", text: "My Listings", to: "listings" },
+        {
+          icon: "/images/collections.svg",
           text: "My Collections",
           to: "collections",
         },
-        { icon: "fa-duotone fa-user", text: "My Customers", to: "customers" },
-        { icon: "fa-duotone fa-message", text: "Messages", to: "messages" },
+        {
+          icon: "/images/customers.svg",
+          text: "My Customers",
+          to: "customers",
+        },
+        { icon: "/images/messages.svg", text: "Messages", to: "messages" },
 
         {
-          icon: "fa-duotone fa-heart",
+          icon: "/images/fav.svg",
           text: "My Favorites",
           to: "favourites",
         },
         {
-          icon: "fa-duotone fa-bell",
+          icon: "/images/notif.svg",
           text: "Notifications",
           to: "notifications",
         },
         // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
       ],
+      // links1: [
+      //   {
+      //     icon: "fa-duotone fa-house",
+      //     text: "Overview",
+      //     to: "business.dashboard",
+      //   },
+      //   { icon: "fa-duotone fa-shop", text: "Manage Shop", to: "manage-shop" },
+      //   { icon: "fa-duotone fa-list", text: "My Listings", to: "listings" },
+      //   {
+      //     icon: "fa-duotone fa-pen",
+      //     text: "My Collections",
+      //     to: "collections",
+      //   },
+      //   { icon: "fa-duotone fa-user", text: "My Customers", to: "customers" },
+      //   { icon: "fa-duotone fa-message", text: "Messages", to: "messages" },
+
+      //   {
+      //     icon: "fa-duotone fa-heart",
+      //     text: "My Favorites",
+      //     to: "favourites",
+      //   },
+      //   {
+      //     icon: "fa-duotone fa-bell",
+      //     text: "Notifications",
+      //     to: "notifications",
+      //   },
+      //   // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
+      // ],
     };
+  },
+
+  created() {
+    this.getCategory();
+    this.getStates();
+    this.getUploadRequirements();
   },
 
   methods: {
@@ -549,6 +661,139 @@ export default {
         };
         this.image = input.files[0];
         reader.readAsDataURL(input.files[0]);
+      }
+    },
+
+    prev() {
+      this.modal2 = false;
+      this.modal1 = true;
+    },
+
+    getCategory() {
+      this.$api
+        .get("categories")
+        .then((response) => {
+          console.log(response);
+          this.categories = response.data.data;
+          // this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getSubCategory(category) {
+      this.showsubCat = true;
+      this.$api
+        .get(`${category}/sub`)
+        .then((response) => {
+          console.log(response);
+          this.subcategories = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getStates() {
+      this.$api
+        .get("states")
+        .then((response) => {
+          console.log(response);
+          this.states = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getAreas(id) {
+      this.showarea = true;
+
+      this.$api
+        .get(`${id}/areas`)
+        .then((response) => {
+          console.log(response);
+          this.areas = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getUploadRequirements(id) {
+      this.$api
+        .get(`${"61a8ee18-7277-46fc-81c0-41ee7147a1c5"}/requirement`)
+        .then((response) => {
+          console.log(response);
+          this.requirements = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    // getUploadRequirements(id) {
+    //   this.$api
+    //     .get(`${id}/requirement`)
+    //     .then((response) => {
+    //       console.log(response);
+    //       this.requriements = response.data.data;
+    //     })
+    //     .catch((e) => {
+    //       this.loading = false;
+    //       this.errors = error.errors || {};
+    //     });
+    // },
+
+    create() {
+      if (!this.data.subcategory) {
+        this.$q.notify({
+          color: "red",
+          message: "Sub Category field is required",
+        });
+        return;
+      } else if (!this.data.area) {
+        this.$q.notify({
+          color: "red",
+          message: "Location field is required",
+        });
+        return;
+      } else if (!this.data.name) {
+        this.$q.notify({
+          color: "red",
+          message: "Name field is required",
+        });
+        return;
+      } else if (!this.data.description) {
+        this.$q.notify({
+          color: "red",
+          message: "Description field is required",
+        });
+
+        return;
+      } else if (!this.data.condition) {
+        this.$q.notify({
+          color: "red",
+          message: "Condition field is required",
+        });
+        return;
+      } else if (!this.data.price) {
+        this.$q.notify({
+          color: "red",
+          message: "Price field is required",
+        });
+        return;
+      } else if (!this.data.negotiable) {
+        this.$q.notify({
+          color: "red",
+          message: "The Negotiable field is required",
+        });
+        return;
+      } else {
+        this.modal2 = true;
       }
     },
   },
@@ -596,7 +841,8 @@ export default {
 }
 .wraps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  // grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   // align-items: center;
   gap: 1rem;
 }
@@ -673,8 +919,9 @@ input:focus {
 
 .q-item.q-router-link--active,
 .q-item--active {
-  background: #e9e9e9;
+  background: #1f7bb5;
   border-radius: 5px;
+  color: white;
 }
 
 // modals

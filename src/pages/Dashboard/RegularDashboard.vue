@@ -167,6 +167,125 @@
       </div>
     </div>
   </div>
+
+  <q-dialog class="dash_modal" v-model="addphotoforleegoluregularmodal">
+    <q-card style="width: 100%; max-width: 800px">
+      <div class="modal two">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Add your photo</div>
+            <div class="modal_sub_text">
+              Add a picture of yourself or select a
+              <span class="text-primary">preferred emoji</span>. Other users
+              will associate this with your account.
+            </div>
+
+            <div class="previewMain">
+              <form>
+                <div class="form">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    @change="previewImage"
+                    class="previewinput"
+                    id="my-file"
+                  />
+
+                  <div class="previewDiv">
+                    <template v-if="preview">
+                      <img :src="preview" class="previewimg" />
+                      <img src="/images/click.png" class="click" alt="" />
+                    </template>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="right">
+            <img src="/images/businessimg.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="row q-pb-lg items-center justify-between">
+          <q-btn
+            :to="{
+              name: `regular.dashboard`,
+            }"
+            color="primary"
+            class="q-px-xl proceed"
+          >
+            Proceed
+          </q-btn>
+          <q-btn
+            :to="{
+              name: `regular.dashboard`,
+            }"
+            class="q-px-sm skip"
+          >
+            Skip
+          </q-btn>
+        </div>
+
+        <div @click="addphotoforleegoluregularmodal = false" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog class="dash_modal" v-model="welcometoleegoluregularmodal">
+    <q-card style="width: 100%; max-width: 800px">
+      <div class="modal">
+        <div class="modal_wrap">
+          <div class="left">
+            <div class="modal_main">Hello Chris,</div>
+            <div class="modal_main_text">Welcome to Leegolu.</div>
+            <div class="modal_sub_text">
+              Your account gives you full access to all basic features available
+              on the Leegolu marketplace for free.
+            </div>
+
+            <ul>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to direct seller
+                contact
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Ability to sell as a private
+                seller
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to insights & analytics
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i> Access to Leegolu video ads
+              </li>
+            </ul>
+          </div>
+
+          <div class="right">
+            <img src="/images/rocket.png" alt="" />
+          </div>
+        </div>
+
+        <div class="row q-pb-lg items-center justify-between">
+          <q-btn
+            @click="addphotoforleegoluregularmodal = true"
+            color="primary"
+            class="q-px-xl proceed"
+          >
+            Proceed
+          </q-btn>
+          <q-btn class="q-px-sm skip"> Skip </q-btn>
+        </div>
+
+        <div @click="welcometoleegoluregularmodal = false" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -179,6 +298,9 @@ export default {
   },
   data() {
     return {
+      welcometoleegoluregularmodal: false,
+      preview: "/images/preview.png",
+      addphotoforleegoluregularmodal: false,
       arr: [
         {
           img: "/images/listing1.png",
@@ -215,6 +337,10 @@ export default {
         },
       ],
     };
+  },
+
+  mounted() {
+    this.welcometoleegoluregularmodal = true;
   },
   setup() {
     const progress1 = ref(0.3);
@@ -375,6 +501,11 @@ export default {
 
   .small_cards {
     grid-template-columns: 1fr 1fr 1fr 2.5fr;
+  }
+}
+@media (max-width: 1200px) {
+  .small_card {
+    width: 100%;
   }
 }
 @media (max-width: 1170px) {
@@ -560,6 +691,11 @@ export default {
 // .right_card {
 //   min-width: 300px;
 // }
+@media (min-width: 1300px) {
+  .small_card {
+    width: 100%;
+  }
+}
 @media (min-width: 1100px) {
   .main_card {
     max-width: 100%;
