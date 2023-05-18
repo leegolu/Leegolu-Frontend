@@ -2,6 +2,33 @@
   height: 1.5em;
   background: #354e8d;
 }
+input::placeholder {
+  opacity: 0.5;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 60vh;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.empty img {
+  width: 106px;
+  height: 106px;
+}
+
+.empty_text {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 15px;
+  text-align: center;
+  color: #9a9a9a;
+}
 
 $color: #80868b;
 $active-color: #1a73e8;
@@ -503,6 +530,15 @@ select:focus {
 
   .bar .input_wrap {
     width: 100%;
+  }
+}
+@media (max-width: 1000px) {
+  .bar {
+    width: 100% !important;
+    margin-right: 5rem;
+  }
+  .bar .input_wrap {
+    width: 100% !important;
   }
 }
 @media (max-width: 800px) {

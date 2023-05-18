@@ -84,7 +84,7 @@
 
 <script>
 export default {
-  props: ["plan"],
+  props: ["plan", "loadingsign"],
   data() {
     return {
       dialogCreate: false,
@@ -111,6 +111,9 @@ export default {
           .post("onboarding", data)
           .then((response) => {
             console.log(response);
+            // console.log(response.data);
+            // console.log(response.data.vendor);
+            this.$store.leegoluauth.vendorDetails = response.data.vendor;
             this.$helper.notify(response.data.message, "success");
             this.$router.replace({ name: "business.dashboard" });
             this.loading = false;
@@ -129,6 +132,7 @@ export default {
           .post("onboarding", data)
           .then((response) => {
             console.log(response);
+            this.$store.leegoluauth.vendorDetails = response.data.vendor;
             this.$helper.notify(response.data.message, "success");
             this.$router.replace({ name: "business.dashboard" });
             this.loading = false;

@@ -2,12 +2,23 @@
   <div class="wrapper">
     <div class="main_title">Leegolu Business Plans</div>
     <div class="sub_title">Choose a plan that fits your need</div>
+
+    <div class="load">
+      <div v-if="loading" class="row justify-center">
+        <q-card>
+          <q-skeleton width="200px" height="100px" />
+        </q-card>
+      </div>
+    </div>
     <div class="card_wrap">
-      <PlanCardVue
-        v-for="(plan, index) in businessPlans"
-        :key="index"
-        :plan="plan"
-      />
+      <div v-if="!loading" class="div">
+        <PlanCardVue
+          v-for="(plan, index) in businessPlans"
+          :key="index"
+          :plan="plan"
+          :loadingsign="loading"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -21,6 +32,7 @@ export default {
   data() {
     return {
       businessPlans: [],
+      loading: true,
       plans: [
         {
           name: "Seller",
@@ -97,6 +109,7 @@ export default {
         .get("business-plans")
         .then((response) => {
           console.log(response);
+          this.loading = false;
           this.businessPlans = response.data.data;
           // this.vendordetails.state = response.data.data[0].id;
         })
@@ -185,7 +198,7 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
   border-radius: 14px;
-  min-width: 200px;
+  min-width: 300px;
   min-height: 351px;
   padding: 1rem;
 }

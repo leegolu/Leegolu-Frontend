@@ -533,11 +533,11 @@ export default {
     };
   },
 
-  // created() {
-  //   this.getRoles();
-  //   this.getStates();
-  //   this.getBusinessTypes();
-  // },
+  created() {
+    this.getRoles();
+    // this.getStates();
+    // this.getBusinessTypes();
+  },
 
   methods: {
     previewImage(event) {
@@ -570,7 +570,7 @@ export default {
         .post("register", data)
         .then((response) => {
           console.log(response);
-          console.log(response);
+          // console.log(response);
           this.$store.leegoluauth.userDetails = response.data.user;
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
@@ -581,6 +581,7 @@ export default {
           } else {
             this.$router.replace({ name: "regular.dashboard" });
           }
+          this.$store.leegoluauth.modal = true;
         })
         .catch(({ response }) => {
           console.log(response);

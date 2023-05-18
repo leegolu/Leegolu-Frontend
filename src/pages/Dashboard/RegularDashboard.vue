@@ -44,26 +44,12 @@
             <div class="progress_wrap q-mt-lg">
               <div class="progress">
                 <div class="small">4/20 Listings</div>
-                <q-linear-progress :value="progress1" color="accent">
-                  <div class="absolute-full flex flex-center">
-                    <q-badge
-                      color="white"
-                      text-color="accent"
-                      :label="progressLabel1"
-                    />
-                  </div>
+                <q-linear-progress reverse :value="progress1" color="warning">
                 </q-linear-progress>
               </div>
               <div class="progress q-mt-sm">
                 <div class="small">30 days left</div>
-                <q-linear-progress :value="progress1" color="accent">
-                  <div class="absolute-full flex flex-center">
-                    <q-badge
-                      color="white"
-                      text-color="accent"
-                      :label="progressLabel1"
-                    />
-                  </div>
+                <q-linear-progress reverse :value="progress1" color="warning">
                 </q-linear-progress>
               </div>
             </div>
@@ -277,7 +263,12 @@
           >
             Proceed
           </q-btn>
-          <q-btn class="q-px-sm skip"> Skip </q-btn>
+          <q-btn
+            @click="welcometoleegoluregularmodal = false"
+            class="q-px-sm skip"
+          >
+            Skip
+          </q-btn>
         </div>
 
         <div @click="welcometoleegoluregularmodal = false" class="close">
@@ -340,7 +331,7 @@ export default {
   },
 
   mounted() {
-    this.welcometoleegoluregularmodal = true;
+    this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
   },
   setup() {
     const progress1 = ref(0.3);
@@ -501,6 +492,17 @@ export default {
 
   .small_cards {
     grid-template-columns: 1fr 1fr 1fr 2.5fr;
+  }
+}
+
+@media (max-width: 1000px) {
+  .small_card_bus {
+    width: auto;
+  }
+
+  .small_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 @media (max-width: 1200px) {

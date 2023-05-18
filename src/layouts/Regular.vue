@@ -137,84 +137,144 @@
         </div>
 
         <div class="previewMain">
-          <form>
-            <div class="form">
-              <input
-                type="file"
-                accept="image/*"
-                @change="previewImage"
-                class="previewinput"
-                id="my-file"
-              />
+          <div class="form">
+            <q-file
+              type="file"
+              v-model="data2.uploads"
+              accept=".jpg,.png,.svg,.jpeg"
+              name="uploads"
+              @update:model-value="setFile"
+              class="previewinput"
+            />
 
-              <div class="previewDiv">
-                <template v-if="preview">
-                  <img :src="preview" class="previewimg" />
-                  <img src="/images/click.png" class="click" alt="" />
-                </template>
-              </div>
+            <div class="previewDiv">
+              <template v-if="preview">
+                <img :src="preview" class="previewimg" />
+                <img src="/images/click.png" class="click" alt="" />
+              </template>
             </div>
-          </form>
+          </div>
         </div>
 
         <div class="create q-pt-xl">Advert Details</div>
 
-        <div class="form"></div>
+        <!-- <div class="form"></div> -->
         <form id="form">
+          <div class="q-mt-sm" v-if="loading">Loading</div>
           <div class="wraps">
-            <div class="input-box active-grey">
+            <div v-if="!showsubCat" class="input-box active-grey">
               <label class="input-label">Category</label>
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
+              <select
+                v-model="data2.state"
+                @change="getSubCategory(data2.state)"
+                name=""
+                id=""
+              >
+                <option
+                  v-for="category in categories"
+                  :key="category.id"
+                  :value="category.slug"
+                >
+                  {{ category.name }}
+                </option>
               </select>
             </div>
-            <div class="input-box active-grey">
+            <div v-if="showsubCat" class="input-box active-grey">
+              <!-- <q-btn flat style="min-height: unset"> Reset </q-btn> -->
+              <label class="input-label bg-grey bg-red q-pa-xs text-white"
+                >Select Sub Category
+              </label>
+              <select
+                @change="getUploadRequirements(data.subcategory)"
+                v-model="data.subcategory"
+                name=""
+                id=""
+              >
+                <option
+                  v-for="subcategory in subcategories"
+                  :key="subcategory.id"
+                  :value="subcategory.id"
+                >
+                  {{ subcategory.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="!showarea" class="input-box active-grey">
               <label class="input-label">Location</label>
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
+              <select
+                v-model="data2.location"
+                @change="getAreas(data2.location)"
+                name=""
+                id=""
+              >
+                <option
+                  v-for="state in states"
+                  :key="state.id"
+                  :value="state.id"
+                >
+                  {{ state.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="showarea" class="input-box active-grey">
+              <label class="input-label bg-grey bg-red q-pa-xs text-white"
+                >Select Exact Location</label
+              >
+              <select v-model="data.area" name="" id="">
+                <option v-for="area in areas" :key="area.id" :value="area.id">
+                  {{ area.name }}
+                </option>
               </select>
             </div>
           </div>
 
-          <div class="input-box active-grey">
-            <label class="input-label">Advert Title</label>
-            <input type="text" class="input-1" />
+          <div class="wraps">
+            <div class="input-box active-grey">
+              <label class="input-label">Advert Title</label>
+              <input v-model="data.name" type="text" class="input-1" />
+            </div>
+            <div class="input-box active-grey">
+              <label class="input-label">Brand</label>
+              <input v-model="data.brand" type="text" class="input-1" />
+            </div>
           </div>
+
           <div class="input-box active-grey">
             <label class="input-label">Advert Description </label>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <textarea
+              v-model="data.description"
+              name=""
+              id=""
+              cols="30"
+              rows="10"
+            ></textarea>
           </div>
 
           <div class="wraps">
             <div class="input-box active-grey">
               <label class="input-label">Condition</label>
-              <input type="text" class="input-1" />
+              <select v-model="data.condition" name="" id="">
+                <option value="Brand new">Brand new</option>
+                <option value="Used">Used</option>
+              </select>
             </div>
 
             <div class="price">
               <div class="input-box active-grey">
                 <label class="input-label">Price</label>
-                <input type="text" class="input-1" />
+                <input v-model="data.price" type="number" class="input-1" />
               </div>
               <div>
                 <q-checkbox
                   color="negative"
-                  v-model="price"
+                  v-model="data.negotiable"
                   label="Negotiable"
                 />
               </div>
             </div>
           </div>
 
-          <q-btn
-            type="button"
-            @click="modal2 = true"
-            color="primary"
-            class="btn"
+          <q-btn type="button" @click="create" color="primary" class="btn"
             >Proceed</q-btn
           >
           <div class="clear"></div>
@@ -235,29 +295,35 @@
           attract more customers. We recommend your images are taken by a
           professional and when possible get a model to wear them.
         </div>
-
+        <!-- {{ data }} -->
         <div class="form"></div>
-        <form id="form">
-          <div class="wraps">
+        <div class="wraps">
+          <template v-for="(requirement, index) in requirements" :key="index">
             <div class="input-box active-grey">
-              <label class="input-label">Brand</label>
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
+              <label class="input-label">{{ requirement.name }}</label>
+              <select v-model="data[requirement.name]" name="" id="">
+                <option
+                  v-for="(option, index) in requirement.fields"
+                  :key="index"
+                  :value="option"
+                >
+                  {{ option }}
+                </option>
               </select>
             </div>
-            <div class="input-box active-grey">
+          </template>
+
+          <!-- <div class="input-box active-grey">
               <label class="input-label">Make</label>
               <select name="" id="">
                 <option value="+243">+243</option>
                 <option value="+243">+243</option>
                 <option value="+243">+243</option>
               </select>
-            </div>
-          </div>
+            </div> -->
+        </div>
 
-          <div class="wraps">
+        <!-- <div class="wraps">
             <div class="input-box active-grey">
               <label class="input-label">Model</label>
               <input type="text" class="input-1" />
@@ -269,9 +335,9 @@
                 <input type="text" class="input-1" />
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="q-py-lg advert q-gutter-sm">
+        <!-- <div class="q-py-lg advert q-gutter-sm">
             <label class="adDet">Advert Details</label>
             <q-editor
               v-model="editor"
@@ -294,9 +360,9 @@
                 ['upload', 'save'],
               ]"
             />
-          </div>
+          </div> -->
 
-          <div class="Features q-mt-md">Features</div>
+        <!-- <div class="Features q-mt-md">Features</div>
           <div class="check_wraps">
             <div class="left">
               <div>
@@ -394,22 +460,22 @@
                 <q-checkbox color="negative" v-model="air" label="Negotiable" />
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="row items-center justify-between">
-            <q-btn
-              @click="modal3 = true"
-              type="button"
-              color="primary"
-              class="btn"
-              >Proceed</q-btn
-            >
-            <q-btn @click="modal1 = true" type="button" outline class="btn prev"
-              >Prev</q-btn
-            >
-          </div>
-          <div class="clear"></div>
-        </form>
+        <div class="row items-center justify-between">
+          <q-btn
+            @click="finish"
+            :loading="loading"
+            type="button"
+            color="primary"
+            class="btn"
+            >Proceed</q-btn
+          >
+          <q-btn @click="prev" type="button" outline class="btn prev"
+            >Prev</q-btn
+          >
+        </div>
+        <div class="clear"></div>
       </q-card>
     </q-dialog>
 
@@ -473,6 +539,29 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="successModal">
+      <q-card class="card">
+        <q-card-section>
+          <div class="text-h6">Success</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          You have successfully created a listing
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            :to="{ name: 'listings' }"
+            flat
+            class="bg-primary text-white"
+            label="View Listings"
+            color="primary"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -494,6 +583,17 @@ export default {
       price: true,
       air: false,
       modal3: false,
+      categories: [],
+      subcategories: [],
+      states: [],
+      showarea: false,
+      requirements: [],
+      showsubCat: false,
+      areas: [],
+      errors: [],
+      loading: false,
+      data: { negotiable: true },
+      data2: {},
     };
   },
   setup() {
@@ -562,16 +662,208 @@ export default {
     };
   },
 
+  created() {
+    this.getCategory();
+    this.getStates();
+  },
+
   methods: {
-    previewImage(event) {
-      var input = event.target;
-      if (input.files) {
-        var reader = new FileReader();
-        reader.onload = (e) => {
-          this.preview = e.target.result;
-        };
-        this.image = input.files[0];
-        reader.readAsDataURL(input.files[0]);
+    setFile(props) {
+      console.log(props);
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        this.preview = e.target.result;
+      };
+      reader.readAsDataURL(props);
+    },
+
+    prev() {
+      this.modal2 = false;
+      this.modal1 = true;
+    },
+
+    getCategory() {
+      this.$api
+        .get("categories")
+        .then((response) => {
+          console.log(response);
+          this.categories = response.data.data;
+          // this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getSubCategory(category) {
+      this.loading = true;
+      this.showsubCat = true;
+      this.$api
+        .get(`${category}/sub`)
+        .then((response) => {
+          // console.log(response);
+          this.subcategories = response.data.data;
+          this.loading = false;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getStates() {
+      this.$api
+        .get("states")
+        .then((response) => {
+          console.log(response);
+          this.states = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getAreas(id) {
+      this.showarea = true;
+      this.loading = true;
+      this.$api
+        .get(`${id}/areas`)
+        .then((response) => {
+          // console.log(response);
+          this.loading = false;
+          this.areas = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getUploadRequirements(id) {
+      this.$api
+        .get(`${id}/requirement`)
+        .then((response) => {
+          console.log(response);
+          this.requirements = response.data.data[0].dropdowns;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    finish() {
+      this.data.negotiable = this.data.negotiable ? 1 : 0;
+      let data = {
+        ...this.data,
+      };
+      let createproductObject = data;
+      console.log(this.postFormData);
+      const formData = new FormData();
+      formData.append("uploads[]", this.data2.uploads);
+      formData.append("uploads[]", this.data2.uploads);
+      formData.append("uploads[]", this.data2.uploads);
+      // formData.append("uploads", this.data.uploads[0]);
+      // formData.append("uploads[]", this.data.uploads);
+      // formData.append("uploads[]", this.data.uploads);
+      // formData.append("uploads[]", this.data.uploads);
+      // formData.append("uploads", this.data.uploads);
+
+      for (var key in createproductObject) {
+        console.log(key);
+
+        console.log(createproductObject[key]);
+        formData.append(key, createproductObject[key]);
+      }
+
+      console.log(formData);
+      this.loading = true;
+      this.$api
+        .post(
+          `${this.$store.leegoluauth.vendorDetails.slug}/product/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Success:", response);
+          this.loading = false;
+          this.$q.notify({
+            message: response.message,
+            color: "green",
+            timeout: 100000,
+            position: "top",
+            actions: [{ icon: "close", color: "white" }],
+          });
+          this.data = { negotiable: true, uploads: null };
+          this.modal1 = false;
+          this.modal2 = false;
+          this.successModal = true;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.errors = response.data[0];
+          this.loading = false;
+          this.$q.notify({
+            message: `An error occured, please recheck credentials or check your internet settings.`,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+          // console.log("Error:", response);
+        });
+    },
+
+    create() {
+      if (!this.data.subcategory) {
+        this.$q.notify({
+          color: "red",
+          message: "Sub Category field is required",
+        });
+        return;
+      } else if (!this.data.area) {
+        this.$q.notify({
+          color: "red",
+          message: "Location field is required",
+        });
+        return;
+      } else if (!this.data.name) {
+        this.$q.notify({
+          color: "red",
+          message: "Name field is required",
+        });
+        return;
+      } else if (!this.data.description) {
+        this.$q.notify({
+          color: "red",
+          message: "Description field is required",
+        });
+
+        return;
+      } else if (!this.data.condition) {
+        this.$q.notify({
+          color: "red",
+          message: "Condition field is required",
+        });
+        return;
+      } else if (!this.data.price) {
+        this.$q.notify({
+          color: "red",
+          message: "Price field is required",
+        });
+        return;
+      } else if (!this.data.negotiable) {
+        this.$q.notify({
+          color: "red",
+          message: "The Negotiable field is required",
+        });
+        return;
+      } else {
+        this.modal2 = true;
       }
     },
   },

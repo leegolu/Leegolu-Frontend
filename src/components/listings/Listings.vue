@@ -3,16 +3,16 @@
     <div class="listing">
       <div class="left">
         <div class="img">
-          <img :src="listing.img" alt="" />
-          <p v-if="listing.boosted" class="tag">Boosted</p>
+          <img :src="listing.uploads[0].url" alt="" />
+          <!-- <p v-if="listing.boosted" class="tag">Boosted</p> -->
         </div>
 
         <div class="left_right">
-          <div class="title">{{ listing.title }}</div>
+          <div class="title">{{ listing.name }}</div>
 
-          <div class="price">{{ listing.price }}</div>
+          <div class="price">₦{{ listing.price.toLocaleString() }}</div>
 
-          <div class="status">{{ listing.status }}</div>
+          <div class="status">{{ listing.condition }}</div>
 
           <div class="q-pt-lg date">{{ listing.date }}</div>
         </div>
@@ -22,17 +22,17 @@
         <div class="items">
           <img src="/images/impressions.png" alt="" />
           <p>Impressions</p>
-          <div class="count">{{ listing.impressions }}</div>
+          <div class="count">10</div>
         </div>
         <div class="items">
           <img src="/images/engage.png" alt="" />
           <p>Engagement</p>
-          <div class="count">{{ listing.engagements }}</div>
+          <div class="count">10</div>
         </div>
         <div class="items">
           <img src="/images/layer.png" alt="" />
           <p>Leads</p>
-          <div class="count">{{ listing.leads }}</div>
+          <div class="count">10</div>
         </div>
       </div>
 
@@ -67,15 +67,15 @@
         <div class="dialog_content">
           <div class="dialog_top">
             <div class="left_dialog">
-              <img :src="listing.img" alt="" />
+              <img :src="listing.uploads[0].url" alt="" />
             </div>
 
             <div class="det">
               <div class="title">
-                {{ listing.title }}
+                {{ listing.name }}
               </div>
               <div class="price">
-                {{ listing.price }}
+                {{ listing.price.toLocaleString() }}
               </div>
             </div>
           </div>
@@ -83,17 +83,20 @@
             <div class="items">
               <img src="/images/impressions.png" alt="" />
               <p>Impressions</p>
-              <div class="count">{{ listing.impressions }}</div>
+              <div class="count">10</div>
+              <!-- <div class="count">{{ listing.impressions }}</div> -->
             </div>
             <div class="items">
               <img src="/images/engage.png" alt="" />
               <p>Engagement</p>
-              <div class="count">{{ listing.engagements }}</div>
+              <div class="count">10</div>
+              <!-- <div class="count">{{ listing.engagements }}</div> -->
             </div>
             <div class="items">
               <img src="/images/layer.png" alt="" />
               <p>Leads</p>
-              <div class="count">{{ listing.leads }}</div>
+              <div class="count">10</div>
+              <!-- <div class="count">{{ listing.leads }}</div> -->
             </div>
           </div>
 
@@ -130,7 +133,7 @@
 
             <div class="det">
               <div class="title">
-                {{ listing.title }}
+                {{ listing.name }}
               </div>
               <div class="price">
                 {{ listing.price }}
@@ -266,11 +269,13 @@ export default {
   font-weight: 400;
   font-size: 9px;
   line-height: 12px;
+  white-space: nowrap;
   text-align: center;
   color: #ffffff;
   background: #00a01a;
   border-radius: 3px;
-  width: 45px;
+  width: fit-content;
+  padding: 0.5rem;
   height: 17px;
   display: flex;
   justify-content: center;
@@ -298,6 +303,7 @@ export default {
   align-items: center;
   // justify-content: space-between;
   gap: 5rem;
+  padding-top: 0rem;
 }
 
 .listing .middle .item {

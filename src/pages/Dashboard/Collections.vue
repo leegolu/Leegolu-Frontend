@@ -108,6 +108,18 @@
         </template>
       </q-table>
     </div>
+
+    <!-- <div v-if="listings.length > 0" class="listings">
+      <div v-for="(listing, index) in listings" :key="index">
+        <Listings :listing="listing" />
+      </div>
+    </div>
+
+    <div v-else class="empty">
+      <img src="/images/empty.svg" alt="" />
+
+      <div class="empty_text">You currently have no listings</div>
+    </div> -->
     <q-dialog v-model="dialog" persistent>
       <q-card class="card">
         <div class="dialog_content">
@@ -349,6 +361,10 @@ export default {
     });
   },
 
+  created() {
+    this.getListings();
+  },
+
   methods: {
     getEvents() {},
     onRequest(props) {},
@@ -435,6 +451,27 @@ export default {
       this.dialog = true;
       // console.log(props);
     },
+
+    getListings() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
+        .then((response) => {
+          console.log("Success:", response);
+          this.listings = response.data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.errors = response.data[0];
+          this.loading = false;
+          this.$q.notify({
+            message: `An error occured, please recheck credentials or check your internet settings.`,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+          // console.log("Error:", response);
+        });
+    },
   },
 };
 </script>
@@ -458,7 +495,7 @@ export default {
 }
 
 .sort_area {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   display: flex;
@@ -947,6 +984,10 @@ input {
   .input-1 {
     border: 2px solid #1a73e8;
   }
+}
+
+.form img.previewimg {
+  border-radius: unset;
 }
 
 .clear {

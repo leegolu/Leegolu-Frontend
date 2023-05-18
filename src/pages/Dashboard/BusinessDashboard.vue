@@ -3,7 +3,14 @@
     <div class="left_main">
       <div class="main_card">
         <div class="left">
-          <div class="main_text">Hello Chris,</div>
+          <div class="main_text">
+            Hello
+            {{
+              this.$store.leegoluauth.userDetails
+                ? this.$store.leegoluauth.userDetails.name
+                : "User"
+            }},
+          </div>
           <div class="sub">Welcome to your Leegolu dashboard.</div>
           <q-btn
             :to="{ name: 'manage-shop' }"
@@ -592,6 +599,8 @@ export default {
         return;
       } else {
         this.$store.leegoluauth.vendorDetails = this.vendordetails;
+        this.$store.leegoluauth.modal = false;
+
         this.$router.replace({ name: "Plans" });
       }
     },
@@ -1040,6 +1049,15 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
+  }
+
+  .small_card_bus {
+    width: auto;
+  }
+
+  .small_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 
   .right_card_top,

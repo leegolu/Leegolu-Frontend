@@ -38,9 +38,22 @@
         </div>
       </div>
     </div>
-    <div v-for="(listing, index) in arr" :key="index">
-      <Listings :listing="listing" />
+    <div v-if="listings.length > 0" class="listings">
+      <div v-for="(listing, index) in listings" :key="index">
+        <Listings :listing="listing" />
+      </div>
     </div>
+
+    <div v-else class="empty">
+      <img src="/images/empty.svg" alt="" />
+
+      <div class="empty_text">You currently have no listings</div>
+    </div>
+    <!-- <div class="empty" v-else>
+      <img src="/images/empty.svg" alt="" />
+
+      <div class="empty_text">You currently have no listings</div>
+    </div> -->
   </div>
 </template>
 
@@ -51,12 +64,13 @@ import Listings from "src/components/listings/Listings.vue";
 export default {
   setup() {
     useMeta({
-      title: "Customers",
+      title: "Listings",
     });
   },
   data() {
     return {
       value: false,
+      listings: [],
       arr: [
         {
           img: "/images/listing1.png",
@@ -120,9 +134,34 @@ export default {
     Listings,
   },
 
+  created() {
+    this.getListings();
+  },
+
   methods: {
     onItemClick() {
       console.log("first");
+    },
+
+    getListings() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
+        .then((response) => {
+          console.log("Success:", response);
+          this.listings = response.data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.errors = response.data[0];
+          this.loading = false;
+          this.$q.notify({
+            message: `An error occured, please recheck credentials or check your internet settings.`,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+          // console.log("Error:", response);
+        });
     },
   },
 };
@@ -143,7 +182,7 @@ export default {
 }
 
 .sort_area {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   display: flex;

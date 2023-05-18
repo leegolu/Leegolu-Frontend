@@ -7,7 +7,9 @@
 
           <div class="sub">
             Don’t have an account?
-            <router-link to="/register" class="text-black text-weight-bold"
+            <router-link
+              :to="{ name: 'register' }"
+              class="text-black text-weight-bold"
               >Sign Up</router-link
             >
           </div>
@@ -72,7 +74,7 @@
 export default {
   data() {
     return {
-      data: { bus: "Leegolu Regular" },
+      data: {},
       errors: {},
       countrycode: "+243",
       loading: false,
@@ -88,10 +90,16 @@ export default {
           console.log(response);
           this.loading = false;
           this.$store.leegoluauth.userDetails = response.data.user;
+          this.$store.leegoluauth.vendorDetails = response.data.vendor;
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
           this.$helper.notify(response.data.message, "success");
-          this.$router.replace({ name: "business.dashboard" });
+          if (response.data.user.role[0].name === "business") {
+            this.$router.replace({ name: "business.dashboard" });
+          } else {
+            this.$router.replace({ name: "regular.dashboard" });
+          }
+          // this.$router.replace({ name: "business.dashboard" });
         })
         .catch((e) => {
           this.loading = false;
@@ -159,6 +167,11 @@ $btn-primary-text-color: #fff;
   padding: 0;
   min-height: 0;
   text-transform: capitalize;
+}
+
+.login_wrapper {
+  height: auto !important;
+  width: auto !important;
 }
 
 input {
