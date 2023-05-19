@@ -30,6 +30,12 @@ input::placeholder {
   color: #9a9a9a;
 }
 
+.main_text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 $color: #80868b;
 $active-color: #1a73e8;
 $error-color: #f44336;

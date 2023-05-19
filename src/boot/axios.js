@@ -17,23 +17,25 @@ const api = axios.create({
 });
 
 // Get the token from session storage
-let token = localStorage.getItem("token");
-axios.interceptors.response.use(function (response) {
-  if (response.data && response.data.token) {
-    token = response.data.token;
-  }
-  return response;
-});
+// let token = localStorage.getItem("token");
+// let auth = JSON.parse(localStorage.getItem("pinia_leegoluauth"));
+// console.log(auth.token);
+// axios.interceptors.response.use(function (response) {
+//   if (response.data && response.data.token) {
+//     token = response.data.token;
+//   }
+//   return response;
+// });
 
-api.interceptors.request.use(function (config) {
-  // Check valid token
-  // console.log(config);
-  if (token) {
-    // console.log(token);
-    config.headers.Authorization = "Bearer " + token;
-  }
-  return config;
-});
+// api.interceptors.request.use(function (config) {
+// Check valid token
+// console.log(config);
+//   if (auth.token) {
+// console.log(token);
+//     config.headers.Authorization = "Bearer " + auth.token;
+//   }
+//   return config;
+// });
 
 export default boot(({ router, store, app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
@@ -45,6 +47,26 @@ export default boot(({ router, store, app }) => {
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
   app.config.globalProperties.$store = store;
+
+  // console.log(store);
+  // console.log(store.state._value.leegoluauth.token);
+  let auth = store.state._value.leegoluauth;
+  // let auth = JSON.parse(localStorage.getItem("pinia_leegoluauth"));
+
+  axios.interceptors.response.use(function (response) {
+    console.log(response);
+    if (response.data && response.data.token) {
+      token = response.data.token;
+    }
+    return response;
+  });
+
+  api.interceptors.request.use(function (config) {
+    if (auth.token) {
+      config.headers.Authorization = "Bearer " + auth.token;
+    }
+    return config;
+  });
 });
 
 export { axios, api };

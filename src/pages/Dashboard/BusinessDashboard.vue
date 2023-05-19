@@ -516,7 +516,7 @@ export default {
         .then((response) => {
           // console.log(response);å
           let roles = response.data.data;
-          console.log(roles);
+          // console.log(roles);
           this.roles = roles.filter((role) => {
             return role.name === "business" || role.name === "regular";
           });
@@ -530,7 +530,7 @@ export default {
       this.$api
         .get("business-types")
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.businessTypes = response.data.data;
           this.vendordetails.business_type = response.data.data[0].id;
         })
@@ -543,7 +543,7 @@ export default {
       this.$api
         .get("states")
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.states = response.data.data;
           // this.vendordetails.state = response.data.data[0].id;
         })
@@ -556,7 +556,7 @@ export default {
       this.$api
         .get(`${id}/areas`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.areas = response.data.data;
         })
         .catch((e) => {

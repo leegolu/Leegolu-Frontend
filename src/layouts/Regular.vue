@@ -669,7 +669,7 @@ export default {
 
   methods: {
     setFile(props) {
-      console.log(props);
+      // console.log(props);
       var reader = new FileReader();
       reader.onload = (e) => {
         this.preview = e.target.result;
@@ -686,7 +686,7 @@ export default {
       this.$api
         .get("categories")
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.categories = response.data.data;
           // this.vendordetails.business_type = response.data.data[0].id;
         })
@@ -716,7 +716,7 @@ export default {
       this.$api
         .get("states")
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.states = response.data.data;
         })
         .catch((e) => {
@@ -744,7 +744,7 @@ export default {
       this.$api
         .get(`${id}/requirement`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.requirements = response.data.data[0].dropdowns;
         })
         .catch((e) => {
@@ -759,7 +759,7 @@ export default {
         ...this.data,
       };
       let createproductObject = data;
-      console.log(this.postFormData);
+      // console.log(this.postFormData);
       const formData = new FormData();
       formData.append("uploads[]", this.data2.uploads);
       formData.append("uploads[]", this.data2.uploads);
@@ -771,13 +771,13 @@ export default {
       // formData.append("uploads", this.data.uploads);
 
       for (var key in createproductObject) {
-        console.log(key);
+        // console.log(key);
 
-        console.log(createproductObject[key]);
+        // console.log(createproductObject[key]);
         formData.append(key, createproductObject[key]);
       }
 
-      console.log(formData);
+      // console.log(formData);
       this.loading = true;
       this.$api
         .post(
@@ -790,7 +790,7 @@ export default {
           }
         )
         .then((response) => {
-          console.log("Success:", response);
+          // console.log("Success:", response);
           this.loading = false;
           this.$q.notify({
             message: response.message,
@@ -805,7 +805,7 @@ export default {
           this.successModal = true;
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.errors = response.data[0];
           this.loading = false;
           this.$q.notify({

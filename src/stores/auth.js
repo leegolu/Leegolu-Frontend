@@ -11,17 +11,16 @@ export const useAuthStore = defineStore("leegoluauth", {
   }),
   getters: {
     registrationForm: (state) => state.userDetails,
+    authToken: (state) => state.token,
   },
   actions: {
-    setUserDDetails(data) {
-      console.log(data);
-      console.log(data.token);
-      console.log(data.user);
+    setUserDetails(data) {
       const token = data.token;
       const user = data;
       localStorage.setItem("token", token);
       localStorage.setItem("userdet", JSON.stringify(user));
-      this.userDetails = data;
+      this.userDetails = data.user;
+      this.vendor = data.vendor;
       this.token = token;
     },
 

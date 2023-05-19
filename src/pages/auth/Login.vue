@@ -89,6 +89,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.loading = false;
+          this.$store.leegoluauth.setUserDetails(response.data);
           this.$store.leegoluauth.userDetails = response.data.user;
           this.$store.leegoluauth.vendorDetails = response.data.vendor;
           this.$store.leegoluauth.token = response.data.token;
