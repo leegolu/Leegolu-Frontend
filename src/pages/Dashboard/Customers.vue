@@ -283,8 +283,23 @@ export default {
   },
 
   methods: {
-    getEvents() {},
-    onRequest(props) {},
+    onRequest(props) {
+      // this.loading = true;
+      const url = `${this.$store.leegoluauth.vendorDetails.slug}/customers`;
+      this.curl = url;
+      this.$api
+        .get(url)
+        .then(({ data }) => {
+          console.log(data);
+          this.loading = false;
+          this.rows = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.loading = false;
+          this.rows = [];
+        });
+    },
 
     copy() {
       let Url = document.querySelector(".name_copy").textContent;
@@ -298,25 +313,6 @@ export default {
 
     onItemClick() {},
 
-    creatTicketBtn() {
-      this.editstate = false;
-      this.create_title = true;
-    },
-    createEventTicket(e) {
-      e.preventDefault();
-    },
-    editTicketing(category) {
-      this.editstate = true;
-      this.create_title = true;
-    },
-
-    editedFunction(e) {
-      e.preventDefault();
-    },
-    deleteTicketing(id) {},
-
-    deletemultiple(id) {},
-
     refreshtitle() {
       if (this.curl !== "") {
         this.loading = true;
@@ -327,6 +323,23 @@ export default {
       this.rowData = props;
       this.advertdialog = true;
       // console.log(props);
+    },
+    refreshcustomers() {
+      if (this.curl !== "") {
+        this.loading = true;
+        this.$api
+          .get(this.curl)
+          .then(({ data }) => {
+            this.loading = false;
+            this.rows = data.data;
+            console.log(data);
+          })
+          .catch(({ response }) => {
+            console.log(response);
+            this.loading = false;
+            this.rows = [];
+          });
+      }
     },
   },
 };
@@ -347,7 +360,7 @@ export default {
 }
 
 .sort_area {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   display: flex;

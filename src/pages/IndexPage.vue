@@ -79,25 +79,37 @@
 
   <section class="products q-pt-xl container">
     <div class="head_text">Featured Listings</div>
-    <div class="product_cards">
-      <div v-for="(product, index) in products" :key="index" class="product">
-        <router-link to="/ProductDetail">
-          <img :src="product.product_image" alt="" />
+    <div v-if="listings.length > 0" class="product_cards">
+      <div v-for="(product, index) in listings" :key="index" class="product">
+        <div @click="goto(product)">
+          <img :src="product.uploads[0].url" alt="" />
           <div class="location">
-            <p>{{ product.location }}</p>
+            <p>{{ product.area }}</p>
           </div>
           <div class="name">
             <p>{{ product.name }}</p>
           </div>
           <div class="price">
-            <p>{{ product.amount }}</p>
+            <p>₦{{ product.price.toLocaleString() }}</p>
           </div>
           <div class="desc">
-            <p>{{ product.desc }}</p>
+            <p>{{ product.description }}</p>
+            <p v-if="product.details">
+              <span
+                v-for="(entry, index) in Object.entries(product.details)"
+                :key="index"
+              >
+                <span v-if="entry[1] !== null"
+                  >{{ entry[0] }}: {{ entry[1] + ", " }}</span
+                >
+              </span>
+            </p>
+            <!-- <p> {{ Object.entries(product.details).toString() }}
+              {{ Object.entries(product.details)[0] }}</p> -->
           </div>
           <div class="kinds">
-            <p class="kind">{{ product.kind }}</p>
-            <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
+            <p class="kind">{{ product.condition }}</p>
+            <!-- <p v-if="product.make !== ''" class="make">{{ product.make }}</p> -->
           </div>
           <div class="owners">
             <p class="owner">
@@ -116,8 +128,12 @@
           <div class="love">
             <i class="fa-regular fa-heart"></i>
           </div>
-        </router-link>
+        </div>
       </div>
+    </div>
+
+    <div v-else class="else">
+      <div class="text-h6 text-center">No products</div>
     </div>
   </section>
   <section class="products q-pt-xl container">
@@ -132,7 +148,7 @@
           <p>{{ product.name }}</p>
         </div>
         <div class="price">
-          <p>{{ product.amount }}</p>
+          <p>{{ product.amount.toLocaleString() }}</p>
         </div>
         <div class="desc">
           <p>{{ product.desc }}</p>
@@ -169,7 +185,9 @@
         <div class="join_desc">Start Selling on Leegolu today.</div>
 
         <div class="btn">
-          <q-btn color="secondary"> Start Selling </q-btn>
+          <q-btn :to="{ name: 'register' }" color="secondary">
+            Start Selling
+          </q-btn>
         </div>
       </div>
 
@@ -204,6 +222,7 @@ export default defineComponent({
   },
   data() {
     return {
+      listings: [],
       popular: [
         {
           img: "/images/sneakPop.png",
@@ -377,6 +396,31 @@ export default defineComponent({
       ],
     };
   },
+
+  created() {
+    this.getFeaturedlistngs();
+  },
+
+  methods: {
+    goto(product) {
+      this.$router.replace({
+        name: "product.detail",
+        params: { slug: product.slug },
+      });
+    },
+    getFeaturedlistngs() {
+      this.$api
+        .get(`listings`)
+        .then((response) => {
+          this.listings = response.data.data;
+          console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+  },
 });
 </script>
 
@@ -429,6 +473,10 @@ a {
   justify-content: center;
   align-items: center;
   background: linear-gradient(180deg, #1a3f55 0%, #357196 84.27%);
+}
+
+.btn {
+  background: transparent;
 }
 
 .input_area form {
@@ -557,7 +605,7 @@ a {
   font-weight: 400;
   font-size: 8px;
   line-height: 10px;
-  text-transform: capitalize;
+  text-transform: uppercase;
   color: #000000;
 }
 .product_cards .product .name p {
@@ -621,6 +669,12 @@ a {
   line-height: 12px;
   text-transform: capitalize;
   color: #000000;
+}
+
+.product img {
+  height: 150px;
+  /* height: 206px; */
+  object-fit: contain;
 }
 
 /* join */

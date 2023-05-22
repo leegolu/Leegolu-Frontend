@@ -9,10 +9,12 @@ const routes = [
         name: "register",
       },
       { path: "/home", component: () => import("pages/IndexPage.vue") },
-      {
-        path: "/ProductDetail",
-        component: () => import("pages/ProductDetail.vue"),
-      },
+
+      // {
+      //   path: "/product-detail/:slug",
+      //   component: () => import("pages/ProductDetail.vue"),
+      //   name: "product.detail",
+      // },
 
       // {
       //   path: "/register",
@@ -70,6 +72,12 @@ const routes = [
         path: "/CategoryPage",
         component: () => import("pages/CategoryPage.vue"),
         name: "category-page",
+      },
+
+      {
+        path: "/product-detail/:slug",
+        component: () => import("pages/ProductDetail.vue"),
+        name: "product.detail",
       },
     ],
   },

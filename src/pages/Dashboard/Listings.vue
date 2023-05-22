@@ -40,7 +40,7 @@
     </div>
     <div v-if="listings.length > 0" class="listings">
       <div v-for="(listing, index) in listings" :key="index">
-        <Listings :listing="listing" />
+        <Listings @refresh-event="getListings" :listing="listing" />
       </div>
     </div>
 

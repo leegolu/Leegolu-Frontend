@@ -49,7 +49,7 @@
         <div class="q-gutter-sm row items-center no-wrap">
           <div class="right">
             <router-link to="/login"> Sign In </router-link>
-            <router-link to="/register"> Join Now </router-link>
+            <router-link :to="{ name: 'register' }"> Join Now </router-link>
             <q-btn color="secondary"> Start Selling </q-btn>
           </div>
         </div>
@@ -229,6 +229,7 @@ a {
   font-size: 16px;
   line-height: 19px;
   color: #000;
+  white-space: nowrap;
 }
 
 .right {
@@ -244,6 +245,7 @@ a {
   text-transform: uppercase;
   border-radius: 6px;
   color: #ffffff;
+  white-space: nowrap;
 }
 .header {
   background: #ffffff;
@@ -375,11 +377,14 @@ input:focus {
 .category_items {
   display: flex;
   align-items: center;
+  overflow-x: scroll;
+  height: 50px;
 }
 .category_items .item {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
+  white-space: nowrap;
   font-size: 14px;
   line-height: 18px;
   color: #000000;
@@ -438,7 +443,7 @@ input:focus {
   }
   .right {
     gap: 0.5rem;
-    margin-bottom: 0.3rem;
+    // margin-bottom: 0.3rem;
   }
   .nav {
     padding: 0.7rem 0.6rem;

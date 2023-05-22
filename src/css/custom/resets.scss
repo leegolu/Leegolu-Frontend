@@ -526,6 +526,91 @@ select:focus {
   width: 20px !important;
   height: 20px !important;
 }
+
+.sort_area {
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sort_area .active {
+  white-space: nowrap;
+}
+
+.sort_area .left::-webkit-scrollbar {
+  display: none;
+}
+
+// seller phone_dailog
+.contact_vendor {
+  width: 362px;
+  min-height: 283px;
+  padding: 1rem;
+  position: relative;
+}
+
+.phone_dailog {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.phone_dailog .contact_seller {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  color: #000000;
+}
+
+.phone_dailog .vendorname {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  text-transform: capitalize;
+  color: #000000;
+}
+
+.phone_dailog .call_ven {
+  width: 100%;
+  border-top: 2px solid rgba(195, 195, 195, 0.7);
+  padding-top: 1rem;
+}
+
+.phone_dailog .q-btn {
+  position: absolute;
+  top: 1%;
+  right: 1%;
+}
+
+.phone_dailog a {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  color: #ffffff;
+  background: #ee4e36;
+  border-radius: 5px;
+  display: inline-block;
+  height: 39.89px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.phone_dailog img {
+  width: 81px;
+  height: 81px;
+}
+
 @media (max-width: 1100px) {
   .header_icons {
     gap: 0.5rem !important;
@@ -547,10 +632,43 @@ select:focus {
     width: 100% !important;
   }
 }
+@media (max-width: 1060px) {
+  .listing .middle {
+    gap: 1rem;
+  }
+  .listing .right .manage_ad {
+    width: 106px;
+    font-size: 12px;
+  }
+  .listing .right .modify {
+    width: 90px;
+    font-size: 11px;
+  }
+
+  .listing {
+    gap: 1rem;
+  }
+  .listing .left {
+    gap: 0.5rem;
+  }
+
+  .sort_area .left {
+    flex-wrap: wrap;
+    gap: 1rem !important;
+  }
+}
+@media (max-width: 1040px) {
+  .listing {
+    display: flex;
+    overflow-x: scroll;
+    gap: 2rem;
+  }
+}
 @media (max-width: 800px) {
   .header_icons .le {
     gap: 0 !important;
   }
+
   .login_wrapper {
     grid-template-columns: 1fr;
   }
@@ -594,7 +712,7 @@ select:focus {
     margin-top: 0;
   }
 
-  .right {
+  .sort_area .right {
     padding-top: 1rem;
   }
 }
@@ -604,6 +722,15 @@ select:focus {
   }
   .modal .proceed {
     width: auto;
+  }
+
+  .sort_area {
+    gap: 0 !important;
+  }
+
+  .sort_area .left {
+    flex-wrap: unset !important;
+    overflow-x: scroll;
   }
 
   .modal_main_text {

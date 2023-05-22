@@ -39,19 +39,27 @@
       <div class="right">
         <q-btn-dropdown class="modify" color="primary" label="Modify">
           <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              clickable
+              v-close-popup
+              @click="onItemClick('edit', listing)"
+            >
               <q-item-section>
                 <q-item-label>Edit</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <!-- <q-item clickable v-close-popup @click="onItemClick">
               <q-item-section>
                 <q-item-label>Archive</q-item-label>
               </q-item-section>
-            </q-item>
+            </q-item> -->
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              clickable
+              v-close-popup
+              @click="onItemClick('delete', listing)"
+            >
               <q-item-section>
                 <q-item-label>Delete</q-item-label>
               </q-item-section>
@@ -183,8 +191,25 @@ export default {
   },
   props: ["listing"],
   methods: {
-    onItemClick() {
-      console.log("clicked");
+    onItemClick(action, selectedlisting) {
+      console.log(action);
+      console.log(selectedlisting);
+      if (action === "edit") {
+        console.log("edit");
+      } else {
+        console.log("delete");
+        this.loading = true;
+        this.$api
+          .delete(`${this.listing.slug}/delete`)
+          .then(({ data }) => {
+            this.loading = false;
+            this.$emit("refresh-event");
+          })
+          .catch(({ response }) => {
+            console.log(response);
+            this.loading = false;
+          });
+      }
     },
   },
 };
@@ -214,6 +239,7 @@ export default {
   grid-template-columns: 1fr 2fr;
   // grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 1rem;
+  align-items: center;
 }
 .img {
   position: relative;
@@ -603,17 +629,13 @@ p.advert {
     gap: 3rem;
   }
 }
-@media (max-width: 1060px) {
-  .listing .middle {
+
+@media (max-width: 900px) {
+  .listing {
+    display: flex;
+    overflow-x: scroll;
     gap: 2rem;
-  }
-
-  .sort_area .left {
-    flex-wrap: wrap;
-  }
-
-  .listing .right .manage_ad {
-    width: 126px;
+    padding-bottom: 0.6rem;
   }
 }
 </style>

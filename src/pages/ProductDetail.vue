@@ -1,72 +1,64 @@
 <template>
-  <div class="detail q-pt-xl">
+  <div v-if="loading" class="q-pt-xl">
+    <q-skeleton class="container" height="250px" />
+  </div>
+  <div v-if="!loading" class="detail q-pt-xl">
     <div class="product_detail_wrap container">
       <div class="left">
-        <section
-          id="main-carousel"
-          class="splide"
-          aria-label="My Awesome Gallery"
+        <q-carousel
+          swipeable
+          animated
+          v-model="slide"
+          arrows
+          thumbnails
+          infinite
         >
-          <div class="splide__track">
-            <ul class="splide__list">
-              <li class="splide__slide">
-                <img src="/images/car.png" alt="" />
-              </li>
-              <li class="splide__slide">
-                <img src="/images/car.png" alt="" />
-              </li>
-              <li class="splide__slide">
-                <img src="/images/car.png" alt="" />
-              </li>
-              <li class="splide__slide">
-                <img src="/images/car.png" alt="" />
-              </li>
-              <li class="splide__slide">
-                <img src="/images/car.png" alt="" />
-              </li>
-            </ul>
-          </div>
-        </section>
-        <ul id="thumbnails" class="thumbnails">
-          <li class="thumbnail">
-            <img src="/images/car.png" alt="" />
-          </li>
-          <li class="thumbnail">
-            <img src="/images/car.png" alt="" />
-          </li>
-          <li class="thumbnail">
-            <img src="/images/car.png" alt="" />
-          </li>
-          <li class="thumbnail">
-            <img src="/images/car.png" alt="" />
-          </li>
-        </ul>
+          <q-carousel-slide
+            v-for="(image, index) in product.data.uploads"
+            :key="index"
+            :name="index"
+            :img-src="image.url"
+          />
+        </q-carousel>
       </div>
 
       <div class="right">
-        <div class="location">KETU, lAGOS</div>
-        <div class="title q-mb-xs">Hisense 1.5HP Split Air Conditioner</div>
-        <div class="price">₦210,000</div>
+        <div class="location">{{ product.data.area }}</div>
+        <div class="title q-mb-xs">{{ product.data.name }}</div>
+        <div class="price">₦{{ product.data.price.toLocaleString() }}</div>
 
         <div class="q-mt-md q-pb-xs row items-center justify-between posted">
-          <small>Posted 2hrs Ago</small>
-          <small>2567 Views</small>
+          <small>Posted {{ hoursago }}hrs Ago</small>
+          <small>{{ product.data.views }} Views</small>
         </div>
         <hr class="q-mb-md" />
 
         <p class="desc">
+          {{ product.data.description }}
+        </p>
+        <!-- <p class="desc">
           This is a firstbody 2011 model Toyota Camry for cheaper rate! Car is
           in good condition, it buy and drive! Be sure inform the seller you get
           the contact on Olist
-        </p>
+        </p> -->
 
         <div class="owner">
           <div class="owner_left">
-            <img src="/images/owner.png" alt="" />
+            <img
+              :src="
+                product.vendor.avatar !== null
+                  ? `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU`
+                  : product.vendor.avatar
+              "
+              alt=""
+            />
           </div>
           <div class="owner_right">
-            <p class="owner_title">Idafe Motors <span> | 7 Months</span></p>
-            <div class="ratings_area">
+            <p class="owner_title">
+              {{ product.vendor.business_name }}
+              <!-- <span> | 7 Months</span> -->
+            </p>
+            <!-- <div class="ratings_area">
               <span class="rating_main_text">4.0</span>
               <q-rating
                 v-model="ratingModel"
@@ -75,15 +67,17 @@
                 color="secondary"
               />
               <span class="ratings_subtext"> (2345) </span>
-            </div>
+            </div> -->
           </div>
         </div>
 
         <div class="btns q-mt-lg">
           <q-btn
             color="secondary"
+            @click="viewPhone"
             icon="fa-solid fa-phone-volume"
             label="Show Contact"
+            :loading="loadingBtn"
           />
           <q-btn
             color="primary"
@@ -118,11 +112,16 @@
       <hr class="q-mt-lg" />
 
       <div class="info_detail">
-        <div class="info_item">
-          <p>TOYOTA</p>
-          <small>MAKE</small>
+        <div
+          v-for="(detail, index) in productDetails"
+          :key="index"
+          class="info_item"
+        >
+          <!-- {{ detail }} -->
+          <p>{{ detail[1][0] }}</p>
+          <small>{{ detail[1][1] }}</small>
         </div>
-        <div class="info_item">
+        <!-- <div class="info_item">
           <p>COROLLA</p>
           <small>MODEL</small>
         </div>
@@ -157,12 +156,12 @@
         <div class="info_item">
           <p>MALAMI00937747748</p>
           <small>VIN</small>
-        </div>
+        </div> -->
       </div>
 
       <hr class="q-mb-lg" />
 
-      <div class="product_info_hold">
+      <!-- <div class="product_info_hold">
         <div class="left">
           <div class="info_main_text">Product Details</div>
 
@@ -219,8 +218,45 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
+
+    <q-dialog v-model="phoneDialog">
+      <q-card class="contact_vendor">
+        <div class="phone_dailog">
+          <div class="contact_seller q-pb-lg">Contact Seller</div>
+
+          <div class="seller_img q-mb-md">
+            <img
+              :src="
+                product.vendor.avatar !== null
+                  ? `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU`
+                  : product.vendor.avatar
+              "
+              alt=""
+            />
+          </div>
+          <div class="vendorname">{{ product.vendor.business_name }}</div>
+          <!-- <div class="ratings_area">
+            <span class="rating_main_text">4.0</span>
+            <q-rating
+              v-model="ratingModel"
+              size="1.5em"
+              :max="4"
+              color="secondary"
+            />
+          </div> -->
+
+          <div class="call_ven q-mt-lg">
+            <a target="_blank" :href="`tel:${phone_number}`"
+              >Call {{ phone_number }}</a
+            >
+          </div>
+
+          <q-btn @click="phoneDialog = false" flat icon="close" />
+        </div>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -230,41 +266,102 @@ export default {
   setup() {
     return {
       ratingModel: ref(4),
+      product: ref({}),
+      slide: ref(1),
+      productDetails: [],
+      hoursago: "",
+      loading: ref(true),
+      loadingBtn: ref(false),
+      phone_number: "",
+      phoneDialog: ref(false),
     };
   },
 
-  mounted() {
-    var splide = new Splide("#main-carousel", {
-      pagination: false,
-    });
+  // mounted() {
+  //   var splide = new Splide("#main-carousel", {
+  //     pagination: false,
+  //   });
 
-    var thumbnails = document.getElementsByClassName("thumbnail");
-    var current;
+  //   var thumbnails = document.getElementsByClassName("thumbnail");
+  //   var current;
 
-    for (var i = 0; i < thumbnails.length; i++) {
-      initThumbnail(thumbnails[i], i);
-    }
+  //   for (var i = 0; i < thumbnails.length; i++) {
+  //     initThumbnail(thumbnails[i], i);
+  //   }
 
-    function initThumbnail(thumbnail, index) {
-      thumbnail.addEventListener("click", function () {
-        splide.go(index);
-      });
-    }
+  //   function initThumbnail(thumbnail, index) {
+  //     thumbnail.addEventListener("click", function () {
+  //       splide.go(index);
+  //     });
+  //   }
 
-    splide.on("mounted move", function () {
-      var thumbnail = thumbnails[splide.index];
+  //   splide.on("mounted move", function () {
+  //     var thumbnail = thumbnails[splide.index];
 
-      if (thumbnail) {
-        if (current) {
-          current.classList.remove("is-active");
-        }
+  //     if (thumbnail) {
+  //       if (current) {
+  //         current.classList.remove("is-active");
+  //       }
 
-        thumbnail.classList.add("is-active");
-        current = thumbnail;
-      }
-    });
+  //       thumbnail.classList.add("is-active");
+  //       current = thumbnail;
+  //     }
+  //   });
 
-    splide.mount();
+  //   splide.mount();
+  // },
+
+  created() {
+    this.getProduct();
+  },
+
+  methods: {
+    getProduct() {
+      let product = this.$router.currentRoute.value.params.slug;
+      this.loading = true;
+      this.$api
+        .get(`product/${product}`)
+        .then((response) => {
+          this.product = response.data;
+          // const newArray = Object.entries();
+          const filteredEntries = Object.entries(
+            response.data.data.details
+          ).filter(([key, value]) => value !== null);
+
+          const filteredObject = Object.entries(filteredEntries);
+          console.log(filteredObject);
+          this.productDetails = filteredObject;
+
+          const postDate = new Date(response.data.data.created_at);
+          const now = new Date();
+          const timeDifference = now - postDate;
+          const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
+          this.loading = false;
+          this.hoursago = hoursAgo;
+          // console.log(hoursAgo);
+          // console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    viewPhone() {
+      this.loadingBtn = true;
+      this.$api
+        .get(`${this.product.vendor.slug}/view-phone`)
+        .then((response) => {
+          this.loadingBtn = false;
+          this.phoneDialog = true;
+          this.phone_number = response.data.phone;
+          // console.log(response);
+        })
+        .catch((e) => {
+          this.loadingBtn = false;
+          this.errors = error.errors || {};
+        });
+    },
   },
 };
 </script>
@@ -277,7 +374,7 @@ p {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
-  align-items: center;
+  // align-items: center;
   width: 95%;
 }
 
@@ -332,6 +429,12 @@ p.desc {
 
 .owner_left {
   padding-top: 0.5rem;
+}
+
+.owner_left img {
+  width: 51.24px;
+  height: 51.24px;
+  border-radius: 50%;
 }
 
 p.owner_title {
@@ -418,6 +521,7 @@ ul li {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  max-height: 470px;
 }
 
 .splide__slide {
@@ -552,5 +656,29 @@ ul li {
   font-size: 10px;
   line-height: 20px;
   color: #000000;
+}
+
+@media (max-width: 1100px) {
+  .category_items {
+    overflow-x: scroll;
+  }
+}
+@media (max-width: 1000px) {
+  .product_detail_wrap {
+    grid-template-columns: 1fr;
+    gap: 14rem;
+  }
+}
+@media (max-width: 500px) {
+  .info_item {
+    padding: 0rem 0;
+  }
+  .btns {
+    grid-template-columns: 1fr;
+  }
+
+  .product_information {
+    margin: 2rem auto 0;
+  }
 }
 </style>

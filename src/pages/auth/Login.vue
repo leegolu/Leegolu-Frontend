@@ -94,6 +94,8 @@ export default {
           this.$store.leegoluauth.vendorDetails = response.data.vendor;
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
+          this.$store.leegoluauth.modal = false;
+
           this.$helper.notify(response.data.message, "success");
           if (response.data.user.role[0].name === "business") {
             this.$router.replace({ name: "business.dashboard" });

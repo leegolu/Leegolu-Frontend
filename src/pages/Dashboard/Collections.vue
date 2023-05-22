@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div class="style q-pa-md">
+    <div v-if="rows.length > 0" class="style q-pa-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"
@@ -26,43 +26,61 @@
         :loading="loading"
         @request="onRequest"
       >
-        <template v-slot:body-cell-customerList="props">
-          <q-td :props="props">
+        <template v-slot:body-cell-name="props">
+          <q-td @click="getCollection(props)" :props="props">
             <!-- {{ props.row }} -->
-            <div @click="dialog = true" class="name_row">
+            <div class="name_row">
               <div class="img">
-                <img :src="props.row.image_url" />
+                <img :src="props.row.avatar.url" />
+                <!-- <img :src="props.row.image_url" /> -->
               </div>
 
               <div class="name">
                 <div class="name_top">
-                  {{ props.row.userName }}
+                  {{ props.row.name }}
                 </div>
                 <div class="name_down">
-                  {{ props.row.kind }}
+                  {{ props.row.products.length }} Listings
                 </div>
-                <div class="q-py-xs avatars q-gutter-sm" style="height: 80px">
+                <div
+                  v-if="props.row.products.length"
+                  class="q-py-xs avatars q-gutter-sm"
+                  style="height: 80px"
+                >
                   <q-avatar
-                    v-for="(n, index) in 5"
+                    v-for="(n, index) in props.row.products"
                     :key="n"
                     square
                     size="40px"
-                    class="overlapping"
-                    :style="`left: ${index === 0 ? 0 : n * 15}px`"
+                    class="overlapping no-wrap"
+                    :style="`left: ${index === 0 ? 0 : n * 50}px`"
                   >
                     <img
-                      :src="`https://cdn.quasar.dev/img/avatar${n + 1}.jpg`"
+                      v-for="(n, index) in props.row.products"
+                      :key="index"
+                      :src="`${n.uploads[0].url}`"
                     />
+
+                    <!-- <img
+                      :src="`https://cdn.quasar.dev/img/avatar${n + 1}.jpg`"
+                    /> -->
                   </q-avatar>
+                </div>
+
+                <div style="line-height: 1.1" v-else>
+                  <small class="text-grey"
+                    >You have not added any listings to this collection, <br />
+                    click to add.</small
+                  >
                 </div>
               </div>
             </div>
           </q-td>
         </template>
-        <template v-slot:body-cell-addedOn="props">
+        <template v-slot:body-cell-created_at="props">
           <q-td :props="props">
             <div class="added">
-              {{ props.row.addedOn }}
+              {{ new Date(props.row.created_at) }}
             </div>
           </q-td>
         </template>
@@ -78,19 +96,27 @@
                 label="Modify"
               >
                 <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
+                  <q-item
+                    clickable
+                    v-close-popup
+                    @click="onItemClick('edit', props.row)"
+                  >
                     <q-item-section>
                       <q-item-label>Edit</q-item-label>
                     </q-item-section>
                   </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
+                  <!-- <q-item clickable v-close-popup @click="onItemClick()">
                     <q-item-section>
                       <q-item-label>Archive</q-item-label>
                     </q-item-section>
-                  </q-item>
+                  </q-item> -->
 
-                  <q-item clickable v-close-popup @click="onItemClick">
+                  <q-item
+                    clickable
+                    v-close-popup
+                    @click="onItemClick('delete', props.row)"
+                  >
                     <q-item-section>
                       <q-item-label>Delete</q-item-label>
                     </q-item-section>
@@ -109,17 +135,12 @@
       </q-table>
     </div>
 
-    <!-- <div v-if="listings.length > 0" class="listings">
-      <div v-for="(listing, index) in listings" :key="index">
-        <Listings :listing="listing" />
-      </div>
-    </div>
-
     <div v-else class="empty">
       <img src="/images/empty.svg" alt="" />
 
-      <div class="empty_text">You currently have no listings</div>
-    </div> -->
+      <div class="empty_text">You currently have no collections</div>
+    </div>
+
     <q-dialog v-model="dialog" persistent>
       <q-card class="card">
         <div class="dialog_content">
@@ -127,92 +148,98 @@
           <div class="dialog_top advert">
             <div class="left_dialog collection">
               <img src="/images/collection1.png" alt="" />
-              <div class="title">Ankara</div>
+              <div class="title">{{ collectionData.row.name }}</div>
             </div>
           </div>
-          <p class="count">8 Listings in this collection</p>
-          <div class="topDetails">
-            <div class="lead_details">
-              <div class="leads_wrap">
-                <div class="leads">
-                  <img src="/images/listing2.png" alt="" />
+          <!-- {{ collectionData.products.length }} -->
+          <p class="count">
+            {{ collectionData.row.products.length }} Listings in this collection
+          </p>
+          <div v-if="collectionData.row.products.length > 0" class="hold">
+            <div class="topDetails">
+              <div
+                v-for="listing in collectionData.row.products"
+                :key="listing.id"
+                class="lead_details"
+              >
+                <div class="leads_wrap">
+                  <div class="leads">
+                    <img :src="listing.uploads[0].url" alt="" />
 
-                  <div class="lead_detail">
-                    <div class="title">Ankara Head Wrap Gown</div>
-                    <div class="price">₦15,000</div>
-                    <q-btn @click="close" class="remove" flat>
-                      <i class="fa-solid fa-xmark"></i> Remove
-                    </q-btn>
+                    <div class="lead_detail">
+                      <div class="title">{{ listing.name }}</div>
+                      <div class="price">₦{{ listing.price }}</div>
+                      <q-btn @click="close(listing)" class="remove" flat>
+                        <i class="fa-solid fa-xmark"></i> Remove
+                      </q-btn>
+                    </div>
                   </div>
-                </div>
-                <div class="q-pa-md">
-                  <q-checkbox keep-color color="info" v-model="val" />
+                  <div class="q-pa-md">
+                    <q-checkbox keep-color color="info" v-model="val" />
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="lead_details">
-              <div class="leads_wrap">
-                <div class="leads">
-                  <img src="/images/listing2.png" alt="" />
+          </div>
+          <div v-else class="empty">
+            <img src="/images/empty.svg" alt="" />
 
-                  <div class="lead_detail">
-                    <div class="title">Ankara Head Wrap Gown</div>
-                    <div class="price">₦15,000</div>
-                    <q-btn class="remove" flat>
-                      <i class="fa-solid fa-xmark"></i> Remove
-                    </q-btn>
-                  </div>
-                </div>
-                <div class="q-pa-md">
-                  <q-checkbox keep-color color="info" v-model="val" />
-                </div>
-              </div>
+            <div class="empty_text">
+              You currently have no listings in this collection
             </div>
-            <div class="lead_details">
-              <div class="leads_wrap">
-                <div class="leads">
-                  <img src="/images/listing3.png" alt="" />
+          </div>
+          <div class="boost">
+            <q-btn @click="dialogAdd = true">Add Listing</q-btn>
+          </div>
 
-                  <div class="lead_detail">
-                    <div class="title">Ankara Head Wrap Gown</div>
-                    <div class="price">₦15,000</div>
-                    <q-btn class="remove" flat>
-                      <i class="fa-solid fa-xmark"></i> Remove
-                    </q-btn>
+          <q-btn @click="dialog = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
+          </q-btn>
+        </div>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="dialogAdd" persistent>
+      <q-card class="card">
+        <div class="dialog_content">
+          <p class="advert text-center">Add Listing</p>
+
+          <p class="count text-center">Select listings for this collection</p>
+          <div class="hold">
+            <div class="topDetails">
+              <div
+                v-for="listing in listings"
+                :key="listing.id"
+                class="lead_details"
+              >
+                <div class="leads_wrap">
+                  <div class="leads">
+                    <img :src="listing.uploads[0].url" alt="" />
+
+                    <div class="lead_detail">
+                      <div class="title">{{ listing.name }}</div>
+                      <div class="price">₦{{ listing.price }}</div>
+                    </div>
                   </div>
-                </div>
-
-                <div class="q-pa-md">
-                  <q-checkbox keep-color color="info" v-model="val" />
-                </div>
-              </div>
-            </div>
-            <div class="lead_details">
-              <div class="leads_wrap">
-                <div class="leads">
-                  <img src="/images/listing2.png" alt="" />
-
-                  <div class="lead_detail">
-                    <div class="title">Ankara Head Wrap Gown</div>
-                    <div class="price">₦15,000</div>
-                    <q-btn class="remove" flat>
-                      <i class="fa-solid fa-xmark"></i> Remove
-                    </q-btn>
+                  <div class="q-pa-md">
+                    <q-checkbox
+                      @click="addListing(listing)"
+                      keep-color
+                      color="info"
+                      v-model="listing.checked"
+                    />
                   </div>
-                </div>
-
-                <div class="q-pa-md">
-                  <q-checkbox keep-color color="info" v-model="val" />
                 </div>
               </div>
             </div>
           </div>
 
           <div class="boost">
-            <q-btn>Add Listing</q-btn>
+            <q-btn :loading="loading" @click="addlistingTocollection"
+              >Save</q-btn
+            >
           </div>
 
-          <q-btn @click="dialog = false" class="close">
+          <q-btn @click="dialogAdd = false" class="close">
             <i class="fa-solid fa-xmark"></i>
           </q-btn>
         </div>
@@ -224,33 +251,35 @@
           <p class="advert text-center">Add new collection</p>
           <div class="dialog_top">
             <div class="previewMain">
-              <form>
-                <div class="form">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    @change="previewImage"
-                    class="previewinput"
-                    id="my-file"
-                  />
+              <div class="form">
+                <q-file
+                  type="file"
+                  v-model="data.avatar"
+                  accept=".jpg,.png,.svg,.jpeg"
+                  name="avatar"
+                  @update:model-value="setFile"
+                  class="previewinput"
+                  id="my-file"
+                />
 
-                  <div class="previewDiv">
-                    <template v-if="preview">
-                      <img :src="preview" class="previewimg" />
-                      <img src="/images/upload.png" class="click" alt="" />
-                    </template>
-                  </div>
+                <div class="previewDiv">
+                  <template v-if="preview">
+                    <img :src="preview" class="previewimg" />
+                    <img src="/images/upload.png" class="click" alt="" />
+                  </template>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
           <div class="input-box active-grey">
             <label class="input-label">Collection Name</label>
-            <input type="text" class="input-1" />
+            <input v-model="data.name" type="text" class="input-1" />
           </div>
 
           <div class="boost">
-            <q-btn>Add Collection</q-btn>
+            <q-btn :loading="loading" @click="createCollection"
+              >Add Collection</q-btn
+            >
           </div>
 
           <q-btn @click="dialogCreate = false" class="close">
@@ -267,7 +296,7 @@ import { useMeta } from "quasar";
 import { ref } from "vue";
 const columns = [
   {
-    name: "customerList",
+    name: "name",
     required: true,
     label: "Collections List",
     align: "left",
@@ -275,11 +304,11 @@ const columns = [
     sortable: true,
   },
   {
-    name: "addedOn",
+    name: "created_at",
     required: true,
     label: "Created On",
     align: "center",
-    field: (row) => row.name,
+    field: (row) => row.created_at,
     sortable: true,
   },
 
@@ -293,29 +322,29 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    name: "customerList",
-    image_url: "/images/collection3.png",
-    userName: "Gowns",
-    kind: "11 Listings",
-    addedOn: "October 7, 2022",
-  },
-  {
-    name: "addedOn",
-    image_url: "/images/collection2.png",
-    userName: "Ankara Gear",
-    kind: "11 Listings",
-    addedOn: "October 7, 2022",
-  },
-  {
-    name: "addedOn",
-    image_url: "/images/collection1.png",
-    userName: "Bridal",
-    kind: "11 Listings",
-    addedOn: "October 7, 2022",
-  },
-];
+// const rows = [
+//   {
+//     name: "customerList",
+//     image_url: "/images/collection3.png",
+//     userName: "Gowns",
+//     kind: "11 Listings",
+//     addedOn: "October 7, 2022",
+//   },
+//   {
+//     name: "addedOn",
+//     image_url: "/images/collection2.png",
+//     userName: "Ankara Gear",
+//     kind: "11 Listings",
+//     addedOn: "October 7, 2022",
+//   },
+//   {
+//     name: "addedOn",
+//     image_url: "/images/collection1.png",
+//     userName: "Bridal",
+//     kind: "11 Listings",
+//     addedOn: "October 7, 2022",
+//   },
+// ];
 
 export default {
   setup() {
@@ -326,10 +355,15 @@ export default {
   data() {
     return {
       columns,
+      dialogAdd: false,
       preview: "/images/sqrpreview.png",
       dialog: false,
+      collections: [],
+      collectionData: {},
       dialogCreate: false,
-      rows,
+      rows: [],
+      listings: [],
+      checkedListings: [],
       val: false,
       errors: [],
       image: ref(null),
@@ -366,8 +400,31 @@ export default {
   },
 
   methods: {
-    getEvents() {},
-    onRequest(props) {},
+    onRequest(props) {
+      this.loading = true;
+      const url = `collection/${this.$store.leegoluauth.vendorDetails.slug}/all`;
+      this.curl = url;
+      this.$api
+        .get(url)
+        .then(({ data }) => {
+          console.log(data);
+          this.loading = false;
+          this.rows = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.loading = false;
+          this.rows = [];
+        });
+    },
+    setFile(props) {
+      // console.log(props);
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        this.preview = e.target.result;
+      };
+      reader.readAsDataURL(props);
+    },
 
     copy() {
       let Url = document.querySelector(".name_copy").textContent;
@@ -379,7 +436,7 @@ export default {
       });
     },
 
-    close() {
+    close(listing) {
       this.$q
         .dialog({
           title: "Remove Listing",
@@ -397,7 +454,24 @@ export default {
           persistent: true,
         })
         .onOk(() => {
-          // console.log('>>>> OK')
+          this.$api
+            .post(
+              `collection/${this.collectionData.row.slug}/${listing.id}/remove`
+            )
+            .then(({ data }) => {
+              this.dialog = false;
+              this.refreshcollections();
+              // console.log(data);
+              this.$q.notify({
+                message: data.message,
+                color: "green",
+                position: "bottom",
+              });
+            })
+            .catch(({ response }) => {
+              console.log(response);
+              this.loading = false;
+            });
         })
         .onCancel(() => {
           // console.log('>>>> Cancel')
@@ -407,42 +481,76 @@ export default {
         });
     },
 
-    onItemClick() {},
-
-    creatTicketBtn() {
-      this.editstate = false;
-      this.create_title = true;
-    },
-    createEventTicket(e) {
-      e.preventDefault();
-    },
-    editTicketing(category) {
-      this.editstate = true;
-      this.create_title = true;
+    getCollection(props) {
+      this.dialog = true;
+      this.collectionData = props;
     },
 
-    editedFunction(e) {
-      e.preventDefault();
+    addListing(listing) {
+      this.checkedListings.push(listing);
+      console.log(listing);
     },
-    deleteTicketing(id) {},
 
-    deletemultiple(id) {},
+    addlistingTocollection() {
+      const newArray = this.checkedListings.filter((item) => item.checked);
+      console.log(newArray);
+      const formData = new FormData();
+      newArray.forEach((item, index) => {
+        formData.append(`products[]`, item.id);
+        // formData.append(`products[]`, item.id);
+      });
 
-    refreshtitle() {
-      if (this.curl !== "") {
+      // console.log(formData);
+      this.loading = true;
+      this.$api
+        .post(`collection/${this.collectionData.row.id}/add`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          // console.log("Success:", response);
+          this.dialogAdd = false;
+          this.loading = false;
+          this.dialog = false;
+          this.refreshcollections();
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+            position: "bottom",
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.errors = response.data[0];
+          this.loading = false;
+          this.$q.notify({
+            message: `An error occured.`,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+        });
+    },
+
+    onItemClick(action, collection) {
+      console.log(action);
+      console.log(collection);
+      if (action === "edit") {
+        console.log("edit");
+      } else {
+        console.log("delete");
         this.loading = true;
-      }
-    },
-
-    previewImage(event) {
-      var input = event.target;
-      if (input.files) {
-        var reader = new FileReader();
-        reader.onload = (e) => {
-          this.preview = e.target.result;
-        };
-        this.image = input.files[0];
-        reader.readAsDataURL(input.files[0]);
+        this.$api
+          .delete(`collection/${collection.slug}/delete`)
+          .then(({ data }) => {
+            this.loading = false;
+            this.refreshcollections();
+          })
+          .catch(({ response }) => {
+            console.log(response);
+            this.loading = false;
+          });
       }
     },
 
@@ -452,12 +560,61 @@ export default {
       // console.log(props);
     },
 
+    createCollection() {
+      let data = {
+        ...this.data,
+      };
+      let createcollection = data;
+      const formData = new FormData();
+      formData.append("avatar", this.data.avatar);
+      for (var key in createcollection) {
+        formData.append(key, createcollection[key]);
+      }
+      this.loading = true;
+      this.$api
+        .post(
+          `collection/${this.$store.leegoluauth.vendorDetails.slug}/store`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Success:", response);
+          this.collections = response.data.data;
+          this.refreshcollections();
+          this.loading = false;
+          this.dialogCreate = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+            position: "bottom",
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.errors = response.data[0];
+          this.loading = false;
+          this.$q.notify({
+            message: `An error occured.`,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+        });
+    },
+
     getListings() {
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
         .then((response) => {
-          console.log("Success:", response);
-          this.listings = response.data.data;
+          // console.log("Success:", response);
+          const newArray = response.data.data.map((item) => {
+            return { ...item, checked: false };
+          });
+          this.listings = newArray;
         })
         .catch(({ response }) => {
           console.log(response);
@@ -471,6 +628,24 @@ export default {
           });
           // console.log("Error:", response);
         });
+    },
+
+    refreshcollections() {
+      if (this.curl !== "") {
+        this.loading = true;
+        this.$api
+          .get(this.curl)
+          .then(({ data }) => {
+            this.loading = false;
+            this.rows = data.data;
+            console.log(data);
+          })
+          .catch(({ response }) => {
+            console.log(response);
+            this.loading = false;
+            this.rows = [];
+          });
+      }
     },
   },
 };
@@ -602,8 +777,9 @@ p.count {
   font-size: 12px;
   line-height: 15px;
   color: #000000;
-  padding: 0 1.5rem;
+  padding: 0 1.5rem 1rem;
   margin-bottom: 0;
+  border-bottom: 1px solid #cccccc;
 }
 
 .name_row {
@@ -668,6 +844,10 @@ p.count {
   position: absolute;
   right: -15%;
   top: -32%;
+}
+
+.empty {
+  height: 40vh;
 }
 
 // dialog
@@ -738,20 +918,16 @@ p.count {
 
 .topDetails {
   padding: 0.5rem;
-  height: 350px;
+  height: 300px;
   padding: 0 1rem 1rem;
   overflow-y: scroll;
-}
-
-.topDetails .lead_details {
-  margin: 1rem 0;
 }
 
 .leads_wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid rgba(195, 195, 195, 0.4);
+  // border-top: 1px solid rgba(195, 195, 195, 0.4);
   border-bottom: 1px solid rgba(195, 195, 195, 0.4);
   padding: 0.3rem 0;
 }

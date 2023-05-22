@@ -711,8 +711,12 @@ $btn-primary-boxshadow-color: 0 1px 1px 0 rgba(66, 133, 244, 0.45),
 $btn-primary-text-color: #fff;
 .login {
   background: aliceblue;
-  // height: 100vh;
-  padding: 2rem 2rem 5rem;
+  padding: 2rem 2rem 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  // padding: 2rem 2rem 5rem;
 }
 
 @media (min-width: 1100px) {
@@ -1173,12 +1177,28 @@ select:focus {
   opacity: 0;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
+  .login_wrapper,
+  .login_hold {
+    width: 100%;
+  }
+
+  .right {
+    padding: 3rem 1rem 1rem 2rem;
+  }
+}
+@media (max-width: 820px) {
   .login_wrapper {
     grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
   }
   .login {
     padding: 1rem;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
   }
   .left.side {
     display: none;
@@ -1215,10 +1235,6 @@ select:focus {
 
   .btn {
     margin-top: 0;
-  }
-
-  .right {
-    padding-top: 1rem;
   }
 }
 @media (max-width: 500px) {
