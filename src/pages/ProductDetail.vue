@@ -313,6 +313,7 @@ export default {
 
   created() {
     this.getProduct();
+    // console.log(this.$router.currentRoute.value.fullPath);
   },
 
   methods: {
@@ -329,7 +330,7 @@ export default {
           ).filter(([key, value]) => value !== null);
 
           const filteredObject = Object.entries(filteredEntries);
-          console.log(filteredObject);
+          // console.log(filteredObject);
           this.productDetails = filteredObject;
 
           const postDate = new Date(response.data.data.created_at);
@@ -357,7 +358,16 @@ export default {
           this.phone_number = response.data.phone;
           // console.log(response);
         })
-        .catch((e) => {
+        .catch(({ response }) => {
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to view vendor contact",
+              color: "green",
+            });
+          }
           this.loadingBtn = false;
           this.errors = error.errors || {};
         });

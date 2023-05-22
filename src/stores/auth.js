@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("leegoluauth", {
     vendorDetails: {},
     vendor: {},
     modal: true,
+    previousRoute: "",
     // token: localStorage.getItem("token") || "",
   }),
   getters: {

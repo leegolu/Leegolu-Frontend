@@ -3,11 +3,6 @@
     <div class="category_wrapper">
       <div class="left">
         <div class="section">
-          <div class="section_main_text">
-            {{ thiscategory.category }}
-            <span class="count">| {{ products.length }}</span>
-          </div>
-
           <div class="each_category_wrap">
             <div
               v-for="(each, index) in thiscategory.subcategories"
@@ -15,7 +10,10 @@
               class="each_category"
             >
               <q-item
-                :to="{ name: 'subcategory-page', params: { slug: each.slug } }"
+                :to="{
+                  name: 'category-page',
+                  params: { slug: each.slug, sub: '' },
+                }"
               >
                 {{ each.name }}
               </q-item>
@@ -479,17 +477,14 @@ export default defineComponent({
   watch: {
     "$route.params.slug": {
       handler() {
-        this.getCategoryProducts();
-        this.getcategory();
+        this.getsubCategoryProducts();
       },
       immediate: true,
     },
   },
 
   created() {
-    this.getCategoryProducts();
-    this.getcategory();
-    // this.getsubCategoryProducts();
+    this.getsubCategoryProducts();
   },
 
   methods: {
@@ -503,12 +498,12 @@ export default defineComponent({
       this.$api
         .post(`${slug}/like`)
         .then((response) => {
-          this.getCategoryProducts();
+          // console.log(response);
+          this.getsubCategoryProducts();
           this.$q.notify({
             message: "Product added to favourites",
             color: "green",
           });
-          console.log(response);
         })
         .catch(({ response }) => {
           if (response.status === 401) {
@@ -528,11 +523,12 @@ export default defineComponent({
           this.errors = error.errors || {};
         });
     },
+
     removeFav(slug) {
       this.$api
         .delete(`${slug}/like`)
         .then((response) => {
-          this.getCategoryProducts();
+          this.getsubCategoryProducts();
           this.$q.notify({
             message: "Product removed to favourites",
             color: "green",
@@ -540,7 +536,6 @@ export default defineComponent({
           // console.log(response);
         })
         .catch(({ response }) => {
-          this.loading = false;
           if (response.status === 401) {
             this.$store.leegoluauth.previousRoute =
               this.$router.currentRoute.value.fullPath;
@@ -550,6 +545,7 @@ export default defineComponent({
               color: "green",
             });
           }
+          this.loading = false;
           this.$q.notify({
             message: "An error occured",
             color: "red",
@@ -557,29 +553,15 @@ export default defineComponent({
           this.errors = error.errors || {};
         });
     },
-    getCategoryProducts() {
+
+    getsubCategoryProducts() {
       let category = this.$router.currentRoute.value.params.slug;
       this.loading = true;
       this.$api
-        .get(`${category}/products/all`)
+        .get(`${category}/products`)
         .then((response) => {
           this.products = response.data.data;
           console.log(response);
-        })
-        .catch((e) => {
-          this.loading = false;
-          this.errors = error.errors || {};
-        });
-    },
-
-    getcategory() {
-      let category = this.$router.currentRoute.value.params.slug;
-      this.loading = true;
-      this.$api
-        .get(`${category}`)
-        .then((response) => {
-          this.thiscategory = response.data;
-          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;

@@ -97,11 +97,16 @@ export default {
           this.$store.leegoluauth.modal = false;
 
           this.$helper.notify(response.data.message, "success");
-          if (response.data.user.role[0].name === "business") {
-            this.$router.replace({ name: "business.dashboard" });
+          if (this.$store.leegoluauth.previousRoute === "") {
+            if (response.data.user.role[0].name === "business") {
+              this.$router.replace({ name: "business.dashboard" });
+            } else {
+              this.$router.replace({ name: "regular.dashboard" });
+            }
           } else {
-            this.$router.replace({ name: "regular.dashboard" });
+            this.$router.replace(this.$store.leegoluauth.previousRoute);
           }
+
           // this.$router.replace({ name: "business.dashboard" });
         })
         .catch((e) => {

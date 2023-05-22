@@ -3,7 +3,7 @@
     <div class="top">
       <span class="title">
         <i class="fa-solid q-mr-sm fa-list"></i>
-        Customers | 8
+        Customers | {{ count }}
       </span>
 
       <div class="sort_area">
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div class="style q-pa-md">
+    <div v-if="rows.length > 0" class="style q-pa-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"
@@ -25,28 +25,41 @@
         :loading="loading"
         @request="onRequest"
       >
-        <template v-slot:body-cell-customerList="props">
+        <template v-slot:body-cell-name="props">
           <q-td :props="props">
             <!-- {{ props.row }} -->
             <div class="name_row">
               <q-avatar size="50px" class="shadow-10">
-                <img :src="props.row.image_url" />
+                <img
+                  :src="
+                    props.row.avatar === null
+                      ? `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU`
+                      : props.row.avatar
+                  "
+                  alt=""
+                />
               </q-avatar>
               <div class="name">
                 <div class="name_top">
-                  {{ props.row.userName }}
+                  {{ props.row.name }}
                 </div>
                 <div class="name_down">
-                  {{ props.row.kind }}
+                  {{ props.row.mode }}
+                </div>
+                <small class="added text-left">
+                  {{ props.row.phone }}
+                </small>
+                <div class="added">
+                  {{ props.row.email }}
                 </div>
               </div>
             </div>
           </q-td>
         </template>
-        <template v-slot:body-cell-addedOn="props">
+        <template v-slot:body-cell-created_at="props">
           <q-td :props="props">
             <div class="added">
-              {{ props.row.addedOn }}
+              {{ new Date(props.row.created_at) }}
             </div>
           </q-td>
         </template>
@@ -59,6 +72,8 @@
                 size="13px"
                 text-color="primary"
                 rounded
+                target="_blank"
+                :href="`tel:${props.row.phone}`"
                 class="actn_btn"
                 icon="fa-solid fa-phone-volume"
               />
@@ -77,11 +92,11 @@
                     </q-item-section>
                   </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
+                  <!-- <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
                       <q-item-label>Archive</q-item-label>
                     </q-item-section>
-                  </q-item>
+                  </q-item> -->
 
                   <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
@@ -100,6 +115,11 @@
           </div>
         </template>
       </q-table>
+    </div>
+    <div v-else class="empty">
+      <img src="/images/empty.svg" alt="" />
+
+      <div class="empty_text">You currently have no favourites</div>
     </div>
     <q-dialog v-model="advertdialog" persistent>
       <q-card class="card">
@@ -191,7 +211,7 @@ import { useMeta } from "quasar";
 import { ref } from "vue";
 const columns = [
   {
-    name: "customerList",
+    name: "name",
     required: true,
     label: "Customer List",
     align: "left",
@@ -199,11 +219,11 @@ const columns = [
     sortable: true,
   },
   {
-    name: "addedOn",
+    name: "created_at",
     required: true,
     label: "Added On",
     align: "center",
-    field: (row) => row.name,
+    field: (row) => row.created_at,
     sortable: true,
   },
 
@@ -217,29 +237,29 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    name: "customerList",
-    image_url: "/images/tableimg.png",
-    userName: "Michael Nnamani",
-    kind: "Chat Lead",
-    addedOn: "October 7, 2022",
-  },
-  {
-    name: "addedOn",
-    image_url: "/images/tableimg2.png",
-    userName: "Aliyu Mohammad",
-    kind: "Chat Lead",
-    addedOn: "October 7, 2022",
-  },
-  {
-    name: "addedOn",
-    image_url: "/images/tableimg1.png",
-    userName: "Gold Adetutu",
-    kind: "Chat Lead",
-    addedOn: "October 7, 2022",
-  },
-];
+// const rows = [
+//   {
+//     name: "customerList",
+//     image_url: "/images/tableimg.png",
+//     userName: "Michael Nnamani",
+//     kind: "Chat Lead",
+//     addedOn: "October 7, 2022",
+//   },
+//   {
+//     name: "addedOn",
+//     image_url: "/images/tableimg2.png",
+//     userName: "Aliyu Mohammad",
+//     kind: "Chat Lead",
+//     addedOn: "October 7, 2022",
+//   },
+//   {
+//     name: "addedOn",
+//     image_url: "/images/tableimg1.png",
+//     userName: "Gold Adetutu",
+//     kind: "Chat Lead",
+//     addedOn: "October 7, 2022",
+//   },
+// ];
 
 export default {
   setup() {
@@ -251,7 +271,8 @@ export default {
     return {
       columns,
       advertdialog: false,
-      rows,
+      count: "",
+      rows: [],
       errors: [],
       image: ref(null),
       rowData: {},
@@ -293,6 +314,7 @@ export default {
           console.log(data);
           this.loading = false;
           this.rows = data.data;
+          this.count = data.count;
         })
         .catch(({ response }) => {
           console.log(response);

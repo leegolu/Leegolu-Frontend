@@ -3,7 +3,7 @@
     <div class="top">
       <span class="title">
         <i class="fa-solid q-mr-sm fa-list"></i>
-        Collections | 8
+        Collections | {{ count }}
       </span>
 
       <div class="sort_area">
@@ -359,6 +359,7 @@ export default {
       preview: "/images/sqrpreview.png",
       dialog: false,
       collections: [],
+      count: "",
       collectionData: {},
       dialogCreate: false,
       rows: [],
@@ -410,6 +411,7 @@ export default {
           console.log(data);
           this.loading = false;
           this.rows = data.data;
+          this.count = data.count;
         })
         .catch(({ response }) => {
           console.log(response);

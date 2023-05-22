@@ -3,7 +3,7 @@
     <div class="top">
       <span class="title">
         <i class="fa-solid q-mr-sm fa-list"></i>
-        My Listings | 98
+        My Listings | {{ listings.length }}
       </span>
 
       <div class="sort_area">

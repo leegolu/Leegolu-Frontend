@@ -82,7 +82,9 @@
           <div class="shoe_company">
             <img src="/images/buslogo.png" alt="" />
             <div class="detail_com">
-              <div class="logo_main_text">Logo Shoe Company</div>
+              <div class="logo_main_text">
+                {{ this.$store.leegoluauth.vendor.business_name }}
+              </div>
               <div class="logo_main_desc">Business Metrics</div>
             </div>
           </div>

@@ -3,7 +3,7 @@
     <div class="top">
       <span class="title">
         <i class="fa-solid q-mr-sm fa-message"></i>
-        My Favorites | 6
+        My Favorites | {{ favourites.length }}
       </span>
 
       <div class="sort_area">
@@ -14,31 +14,48 @@
       </div>
     </div>
 
-    <section class="products q-pt-xl container">
-      <div class="head_text">Featured Listings</div>
+    <section v-if="favourites.length > 0" class="products q-pt-xl container">
+      <div class="head_text">Favorite Listings</div>
       <div class="product_cards">
-        <div v-for="(product, index) in products" :key="index" class="product">
-          <router-link to="/ProductDetail">
-            <img :src="product.product_image" alt="" />
+        <div
+          v-for="(product, index) in favourites"
+          :key="index"
+          class="product"
+        >
+          <div @click="goto(product)">
+            <img :src="product.uploads[0].url" alt="" />
             <div class="location">
-              <p>{{ product.location }}</p>
+              <p>{{ product.area }}</p>
             </div>
             <div class="name">
               <p>{{ product.name }}</p>
             </div>
             <div class="price">
-              <p>{{ product.amount }}</p>
+              <p>₦{{ product.price.toLocaleString() }}</p>
             </div>
             <div class="desc">
-              <p>{{ product.desc }}</p>
+              <p>{{ product.description }}</p>
+              <p v-if="product.details">
+                <span
+                  v-for="(entry, index) in Object.entries(product.details)"
+                  :key="index"
+                >
+                  <span v-if="entry[1] !== null"
+                    >{{ entry[0] }}: {{ entry[1] + ", " }}</span
+                  >
+                </span>
+              </p>
+              <!-- <p> {{ Object.entries(product.details).toString() }}
+              {{ Object.entries(product.details)[0] }}</p> -->
             </div>
             <div class="kinds">
-              <p class="kind">{{ product.kind }}</p>
-              <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
+              <p class="kind">{{ product.condition }}</p>
+              <!-- <p v-if="product.make !== ''" class="make">{{ product.make }}</p> -->
             </div>
             <div class="owners">
               <p class="owner">
-                <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
+                <i class="fa-solid q-mr-xs fa-gift"></i
+                >{{ product.vendor_name }}
               </p>
               <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                 <q-rating
@@ -50,13 +67,26 @@
                 <span>{{ product.ratings_count }}</span>
               </p>
             </div>
-            <div class="love">
-              <i class="fa-regular fa-heart"></i>
-            </div>
-          </router-link>
+          </div>
+          <div class="love">
+            <q-btn flat @click="removeFav(product.slug)">
+              <i
+                :class="
+                  product.like
+                    ? 'fa-solid text-red fa-heart'
+                    : 'fa-regular fa-heart'
+                "
+              ></i
+            ></q-btn>
+          </div>
         </div>
       </div>
     </section>
+    <div v-else class="empty">
+      <img src="/images/empty.svg" alt="" />
+
+      <div class="empty_text">You currently have no favourites</div>
+    </div>
   </div>
 </template>
 
@@ -140,6 +170,7 @@ export default {
       ],
       errors: [],
       image: ref(null),
+      favourites: [],
       rowData: {},
       data: {},
       files: null,
@@ -151,16 +182,63 @@ export default {
   },
 
   mounted() {},
+  created() {
+    this.getFavourites();
+  },
 
   methods: {
-    getEvents() {},
-
     onItemClick() {},
+    goto(product) {
+      this.$router.replace({
+        name: "product.detail",
+        params: { slug: product.slug },
+      });
+    },
+
+    removeFav(slug) {
+      this.$api
+        .delete(`${slug}/like`)
+        .then((response) => {
+          this.getFavourites();
+          this.$q.notify({
+            message: "Product removed to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.$q.notify({
+            message: "An error occured",
+            color: "red",
+          });
+          this.errors = error.errors || {};
+        });
+    },
 
     toggleModal(props) {
       this.rowData = props;
       this.advertdialog = true;
       // console.log(props);
+    },
+    getFavourites() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/favorites`)
+        .then((response) => {
+          console.log("Success:", response);
+          this.favourites = response.data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.errors = response.data[0];
+          this.loading = false;
+          this.$q.notify({
+            message: `An error occured.`,
+            color: "red",
+            position: "bottom",
+          });
+          // console.log("Error:", response);
+        });
     },
   },
 };
@@ -181,7 +259,7 @@ export default {
 }
 
 .sort_area {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   display: flex;
@@ -309,6 +387,12 @@ export default {
   line-height: 24px;
   text-transform: capitalize;
   color: #000000;
+}
+
+.product img {
+  height: 150px;
+  /* height: 206px; */
+  object-fit: contain;
 }
 .product_cards .product .desc {
   font-weight: 500;

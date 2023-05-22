@@ -48,9 +48,30 @@
 
         <div class="q-gutter-sm row items-center no-wrap">
           <div class="right">
-            <router-link to="/login"> Sign In </router-link>
-            <router-link :to="{ name: 'register' }"> Join Now </router-link>
-            <q-btn color="secondary"> Start Selling </q-btn>
+            <div v-if="this.$store.leegoluauth.token === ''" class="div">
+              <router-link to="/login"> Sign In </router-link>
+              <router-link :to="{ name: 'register' }"> Join Now </router-link>
+              <q-btn :to="{ name: 'register' }" color="secondary">
+                Start Selling
+              </q-btn>
+            </div>
+
+            <div v-else class="div">
+              <q-btn
+                :to="{
+                  name: `${
+                    this.$store.leegoluauth.userDetails.role[0].name ===
+                    'business'
+                      ? 'business.dashboard'
+                      : 'regular.dashboard'
+                  }`,
+                }"
+                color="secondary"
+                class="q-px-md"
+              >
+                Go to dashboard
+              </q-btn>
+            </div>
           </div>
         </div>
       </q-toolbar>
@@ -64,21 +85,15 @@
               label="All Categories"
             >
               <q-list>
-                <q-item clickable v-close-popup @click="onItemClick">
+                <q-item
+                  v-for="(item, index) in categorys"
+                  :key="index"
+                  clickable
+                  :to="{ name: 'category-page', params: { slug: item.slug } }"
+                  v-close-popup
+                >
                   <q-item-section>
-                    <q-item-label>Cars</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup @click="onItemClick">
-                  <q-item-section>
-                    <q-item-label>Foods</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup @click="onItemClick">
-                  <q-item-section>
-                    <q-item-label>Construction</q-item-label>
+                    <q-item-label>{{ item.name }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -87,8 +102,9 @@
 
           <div class="category_items">
             <q-item
-              v-for="(item, index) in categories"
+              v-for="(item, index) in categorys"
               :key="index"
+              :to="{ name: 'category-page', params: { slug: item.slug } }"
               class="item"
             >
               {{ item.name }}
@@ -106,7 +122,6 @@
 
 <script>
 import { ref } from "vue";
-import useQuasar from "quasar/src/composables/use-quasar.js";
 import { fabYoutube } from "@quasar/extras/fontawesome-v6";
 export default {
   name: "MyLayout",
@@ -114,6 +129,7 @@ export default {
     return {
       preview: "/images/sqrpreview.png",
       image: null,
+      categorys: [],
       modal1: false,
       modal2: false,
       price: true,
@@ -122,102 +138,35 @@ export default {
     };
   },
   setup() {
-    const $q = useQuasar();
-
     const leftDrawerOpen = ref(false);
     const search = ref("");
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
     return {
-      editor: ref(
-        "After you define a new button," +
-          " you have to make sure to put it in the toolbar too!"
-      ),
-
-      saveWork() {
-        $q.notify({
-          message: "Saved your text to local storage",
-          color: "green-4",
-          textColor: "white",
-          icon: "cloud_done",
-        });
-      },
-      uploadIt() {
-        $q.notify({
-          message: "Server unavailable. Check connectivity.",
-          color: "red-5",
-          textColor: "white",
-          icon: "warning",
-        });
-      },
       fabYoutube,
       leftDrawerOpen,
       search,
       toggleLeftDrawer,
-      categories: [
-        {
-          id: 1,
-          name: "Cars",
-        },
-        {
-          id: 2,
-          name: "Mobile Phones",
-        },
-        {
-          id: 3,
-          name: "Housing & Apartments",
-        },
-        {
-          id: 4,
-          name: "Skin Care",
-        },
-        {
-          id: 5,
-          name: "Fashion",
-        },
-        {
-          id: 6,
-          name: "Jobs and Vacancies",
-        },
-        {
-          id: 7,
-          name: "Food and Agriculture",
-        },
-        {
-          id: 8,
-          name: "Repairs and Construction",
-        },
-      ],
-      links1: [
-        { icon: "home", text: "Overview", to: "dashboard" },
-        { icon: "fa-solid fa-file", text: "My Adverts", to: "adverts" },
-        { icon: "fa-solid fa-list", text: "My Listings", to: "listings" },
-        { icon: "fa-solid fa-user", text: "My Customers", to: "customers" },
-        {
-          icon: "fa-solid fa-pen",
-          text: "My Collections",
-          to: "collections",
-        },
-        {
-          icon: "fa-solid fa-heart",
-          text: "My Favorites",
-          to: "favourites",
-        },
-        { icon: "fa-solid fa-message", text: "Messages", to: "messages" },
-        {
-          icon: "fa-solid fa-bell",
-          text: "Notifications",
-          to: "notifications",
-        },
-        { icon: "fa-solid fa-gear", text: "Settings", to: "settings" },
-      ],
     };
   },
 
+  created() {
+    this.getCategorys();
+  },
+
   methods: {
-    onItemClick() {
-      // console.log('Clicked on an Item')
+    getCategorys() {
+      this.$api
+        .get(`categories`)
+        .then((response) => {
+          this.categorys = response.data.data;
+          console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
     },
   },
 };
@@ -232,7 +181,7 @@ a {
   white-space: nowrap;
 }
 
-.right {
+.right > div {
   display: flex;
   align-items: center;
   gap: 1rem;

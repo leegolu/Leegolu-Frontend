@@ -6,9 +6,32 @@
       </div>
 
       <div class="right">
-        <router-link to="/login"> Sign In </router-link>
+        <div v-if="this.$store.leegoluauth.token === ''" class="div">
+          <router-link to="/login"> Sign In </router-link>
+          <router-link :to="{ name: 'register' }"> Join Now </router-link>
+          <q-btn :to="{ name: 'register' }" color="secondary">
+            Start Selling
+          </q-btn>
+        </div>
+
+        <div v-else class="div">
+          <q-btn
+            :to="{
+              name: `${
+                this.$store.leegoluauth.userDetails.role[0].name === 'business'
+                  ? 'business.dashboard'
+                  : 'regular.dashboard'
+              }`,
+            }"
+            class="q-px-md"
+            color="secondary"
+          >
+            Go to dashboard
+          </q-btn>
+        </div>
+        <!-- <router-link to="/login"> Sign In </router-link>
         <router-link to="/register"> Join Now </router-link>
-        <q-btn color="secondary"> Start Selling </q-btn>
+        <q-btn color="secondary"> Start Selling </q-btn> -->
       </div>
     </div>
   </div>
@@ -42,7 +65,7 @@
   <section class="popular container">
     <div class="head_text">
       Popular Categories
-      <router-link :to="{ name: 'category-page' }"
+      <router-link :to="{ name: 'category-page', params: { slug: 'fashion' } }"
         ><span class="line"> | Veiw All </span></router-link
       >
     </div>
@@ -69,10 +92,15 @@
       }"
       aria-label="My Favorite Images"
     >
-      <SplideSlide v-for="(products, index) in popular" :key="index">
-        <router-link :to="{ name: 'category-page' }">
-          <img :src="products.img" alt="Sample 1" />
-        </router-link>
+      <SplideSlide v-for="(category, index) in categorys" :key="index">
+        <div @click="gotoCategory(category)">
+          <div v-if="category.name === 'Fashion'" class="category">
+            <img src="/images/shirt.png" alt="Sample 1" />
+          </div>
+          <div v-if="category.name === 'Electronics'" class="category">
+            <img src="/images/washingmachine.png" alt="Sample 1" />
+          </div>
+        </div>
       </SplideSlide>
     </Splide>
   </section>
@@ -113,7 +141,7 @@
           </div>
           <div class="owners">
             <p class="owner">
-              <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
+              <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.vendor_name }}
             </p>
             <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
               <q-rating
@@ -125,9 +153,24 @@
               <span>{{ product.ratings_count }}</span>
             </p>
           </div>
-          <div class="love">
-            <i class="fa-regular fa-heart"></i>
-          </div>
+        </div>
+        <div class="love">
+          <q-btn
+            flat
+            @click="
+              product.like === false
+                ? addtoFav(product.slug)
+                : removeFav(product.slug)
+            "
+          >
+            <i
+              :class="
+                product.like
+                  ? 'fa-solid text-red fa-heart'
+                  : 'fa-regular fa-heart'
+              "
+            ></i
+          ></q-btn>
         </div>
       </div>
     </div>
@@ -208,6 +251,7 @@ import { Splide, SplideSlide } from "@splidejs/vue-splide";
 import "@splidejs/vue-splide/css";
 // or only core styles
 import "@splidejs/vue-splide/css/core";
+import { colors } from "quasar";
 export default defineComponent({
   name: "IndexPage",
   setup() {
@@ -223,6 +267,7 @@ export default defineComponent({
   data() {
     return {
       listings: [],
+      categorys: [],
       popular: [
         {
           img: "/images/sneakPop.png",
@@ -399,6 +444,7 @@ export default defineComponent({
 
   created() {
     this.getFeaturedlistngs();
+    this.getCategorys();
   },
 
   methods: {
@@ -408,16 +454,95 @@ export default defineComponent({
         params: { slug: product.slug },
       });
     },
+
+    gotoCategory(category) {
+      this.$router.replace({
+        name: "category-page",
+        params: { slug: category.slug },
+      });
+    },
+
+    addtoFav(slug) {
+      this.$api
+        .post(`${slug}/like`)
+        .then((response) => {
+          this.getFeaturedlistngs();
+          this.$q.notify({
+            message: "Product added to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to like product",
+              color: "green",
+            });
+          }
+          this.$q.notify({
+            message: "An error occured",
+            color: "red",
+          });
+          this.errors = error.errors || {};
+        });
+    },
+
+    removeFav(slug) {
+      this.$api
+        .delete(`${slug}/like`)
+        .then((response) => {
+          this.getFeaturedlistngs();
+          this.$q.notify({
+            message: "Product removed to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to like product",
+              color: "green",
+            });
+          }
+          this.loading = false;
+          this.$q.notify({
+            message: "An error occured",
+            color: "red",
+          });
+          this.errors = error.errors || {};
+        });
+    },
     getFeaturedlistngs() {
       this.$api
-        .get(`listings`)
+        .get(`listings/all`)
         .then((response) => {
           this.listings = response.data.data;
           console.log(response);
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          // this.errors = error.errors || {};
+        });
+    },
+    getCategorys() {
+      this.$api
+        .get(`categories`)
+        .then((response) => {
+          this.categorys = response.data.data;
+          console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          // this.errors = error.errors || {};
         });
     },
   },
@@ -448,7 +573,7 @@ a {
   color: #ffffff;
 }
 
-.right {
+.right > div {
   display: flex;
   align-items: center;
   gap: 1rem;

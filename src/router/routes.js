@@ -3,12 +3,12 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
+      { path: "", component: () => import("pages/IndexPage.vue") },
       {
-        path: "",
+        path: "/register",
         component: () => import("src/pages/auth/Register.vue"),
         name: "register",
       },
-      { path: "/home", component: () => import("pages/IndexPage.vue") },
 
       // {
       //   path: "/product-detail/:slug",
@@ -69,9 +69,14 @@ const routes = [
     component: () => import("layouts/Visitors.vue"),
     children: [
       {
-        path: "/CategoryPage",
+        path: "/categorypage/:slug",
         component: () => import("pages/CategoryPage.vue"),
         name: "category-page",
+      },
+      {
+        path: "/subcategorypage/:slug",
+        component: () => import("pages/SubCategory.vue"),
+        name: "subcategory-page",
       },
 
       {
