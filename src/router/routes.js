@@ -62,6 +62,11 @@ const routes = [
         component: () => import("pages/VendorPageBuilder.vue"),
         name: "page.builder",
       },
+      {
+        path: "/business/:slug",
+        component: () => import("pages/business/VendorPage.vue"),
+        name: "vendor.page",
+      },
     ],
   },
   {

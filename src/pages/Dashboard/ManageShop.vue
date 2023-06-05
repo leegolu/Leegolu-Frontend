@@ -1,6 +1,6 @@
 <template>
-  <div class="wrapper">
-    <div class="top"><i class="fa-solid fa-shop"></i> Manage Shop</div>
+  <!-- <div class="wrapper">
+     <div class="top"><img src="/images/shopicon.svg" alt="" /> Manage Shop</div>
 
     <div class="main_area">
       <div class="main_area_top">
@@ -20,7 +20,7 @@
         </div>
 
         <div class="right">
-          <q-btn>
+          <q-btn flat :to="{ name: 'plans' }">
             Activate a plan <i class="fa-solid fa-arrow-right"></i>
           </q-btn>
         </div>
@@ -44,7 +44,7 @@
       >
         <template v-slot:body-cell-Subscription="props">
           <q-td :props="props">
-            <!-- {{ props.row }} -->
+            {{ props.row }}
             <div class="name_row">
               <div class="name">
                 <div class="name_top">
@@ -76,9 +76,14 @@
         </template>
       </q-table>
     </div>
+  </div> -->
+  <div class="loader" v-if="loading">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
   </div>
-  <div class="wrapper">
-    <div class="top"><i class="fa-solid fa-shop"></i> Manage Shop</div>
+  <div v-if="!loading" class="wrapper">
+    <div class="top"><img src="/images/shopicon.svg" alt="" /> Manage Shop</div>
 
     <div class="main_area">
       <div class="main_area_top act">
@@ -93,7 +98,22 @@
               <i class="fa-solid fa-link"></i> https://business.leegolu.com
             </div>
             <div class="btns row items-center">
-              <q-btn icon-right="fa-solid fa-copy" flat label="Copy" />
+              <q-btn
+                icon-right="fa-solid fa-eye"
+                flat
+                label="View"
+                :to="{
+                  name: 'vendor.page',
+                  params: { slug: `${vendor.slug}` },
+                }"
+              />
+              <q-btn
+                @click="copy"
+                class="q-ml-md"
+                icon-right="fa-solid fa-copy"
+                flat
+                label="Copy"
+              />
               <q-btn
                 icon-right="fa-solid fa-share"
                 class="q-ml-md"
@@ -105,13 +125,22 @@
         </div>
 
         <div class="right">
-          <q-btn>
+          <q-btn flat :to="{ name: 'page.builder' }">
             Manage business page <i class="fa-solid fa-arrow-right"></i>
           </q-btn>
         </div>
       </div>
 
       <div class="stats">
+        <!-- <div class="stat">
+          <div class="row items-center">
+            <div class="main"></div>
+            <div class="sub">
+              Free <br />
+              Plan
+            </div>
+          </div>
+        </div> -->
         <div class="stat">
           <div class="row items-center">
             <div class="main">20</div>
@@ -123,7 +152,7 @@
         </div>
         <div class="stat">
           <div class="row items-center">
-            <div class="main">4</div>
+            <div class="main">{{ vendor.products.length }}</div>
             <div class="sub">
               LISTINGS <br />
               CREATED
@@ -132,13 +161,19 @@
         </div>
         <div class="stat">
           <div class="row items-center">
+            <div class="main">{{ vendor.views }}</div>
+            <div class="sub">Views <br /></div>
+          </div>
+        </div>
+        <!-- <div class="stat">
+          <div class="row items-center">
             <div class="main">29</div>
             <div class="sub">
               DAYS <br />
               LEFT
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -225,21 +260,21 @@ const columns = [
 ];
 
 const rows = [
-  {
-    name: "Dec 2, 2023",
-    userName: "Leegolu Business - Shop",
-    addedOn: "2 Days ago",
-  },
-  {
-    name: "Dec 2, 2023",
-    userName: "Leegolu Business - Seller",
-    addedOn: "2 Days ago",
-  },
-  {
-    name: "Dec 2, 2023",
-    userName: "Leegolu Business - Shop",
-    addedOn: "2 Days ago",
-  },
+  // {
+  //   name: "Dec 2, 2023",
+  //   userName: "Leegolu Business - Shop",
+  //   addedOn: "2 Days ago",
+  // },
+  // {
+  //   name: "Dec 2, 2023",
+  //   userName: "Leegolu Business - Seller",
+  //   addedOn: "2 Days ago",
+  // },
+  // {
+  //   name: "Dec 2, 2023",
+  //   userName: "Leegolu Business - Shop",
+  //   addedOn: "2 Days ago",
+  // },
 ];
 
 export default {
@@ -261,10 +296,11 @@ export default {
       editstate: false,
       createstate: null,
       filter: "",
+      vendor: {},
       curl: "",
       separator: "",
       mode: "list",
-      loading: false,
+      loading: true,
       editLoad: false,
       create_title: false,
       loaders: {
@@ -274,6 +310,10 @@ export default {
         save: [],
       },
     };
+  },
+
+  created() {
+    this.getVendor();
   },
 
   mounted() {
@@ -288,13 +328,25 @@ export default {
     onRequest(props) {},
 
     copy() {
-      let Url = document.querySelector(".name_copy").textContent;
+      let Url = `https://leegolu.netlify.app/${this.$store.leegoluauth.vendor.business_name}`;
       navigator.clipboard.writeText(Url);
       this.$q.notify({
         message: "Copied!",
         color: "green",
         position: "top",
       });
+    },
+    getVendor() {
+      this.$api
+        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
+        .then((response) => {
+          this.loading = false;
+          this.vendor = response.data.vendor;
+          console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+        });
     },
 
     onItemClick() {},
@@ -347,6 +399,13 @@ export default {
   color: #000000;
   border-bottom: 1px solid #b0b0b0;
   padding: 0rem 0 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.top img {
+  width: 19.17px;
+  height: 19.12px;
 }
 
 .main_area_top {
@@ -371,6 +430,13 @@ export default {
   // max-width: 600px;
 }
 
+.loader {
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .link {
   font-family: "Open Sans";
   font-style: normal;
@@ -392,6 +458,7 @@ export default {
   font-weight: 600;
   font-size: 8px;
   line-height: 11px;
+  text-transform: capitalize;
   padding: 6px;
   color: #1f7bb5;
 }
@@ -424,6 +491,7 @@ export default {
   background: #1f7bb5;
   border-radius: 7px;
   height: 31px;
+  text-transform: capitalize;
 }
 .main_area_top i {
   margin-left: 1rem;
@@ -567,14 +635,55 @@ export default {
   line-height: 44px;
   text-align: center;
   color: #000000;
+  margin-bottom: 0;
 }
 
 .stats .stat .sub {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 10px !important;
   line-height: 10px;
   color: #000000;
+}
+
+@media (max-width: 800px) {
+  .main_area_top {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .main_area_top.act,
+  .btns {
+    justify-content: center;
+  }
+
+  .wrapper {
+    padding: 2rem;
+  }
+
+  // .details .sub_text {
+  //   line-height: 12px;
+  //   margin-top: 0.4rem;
+  // }
+
+  .details .main_text {
+    line-height: 40px;
+  }
+
+  .stats .stat .sub {
+    font-size: 10px !important;
+    line-height: 11.5px;
+  }
+
+  .main_area_top .main_area_left {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .main_area_top .main_area_left.act {
+    gap: 1rem;
+  }
 }
 </style>

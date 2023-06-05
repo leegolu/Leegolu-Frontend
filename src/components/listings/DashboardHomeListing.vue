@@ -1,23 +1,20 @@
 <template>
-  <div class="listings_hold">
-    <div class="listing">
+  <div class="listing_s_hold">
+    <div class="listing_">
       <div class="left">
         <div class="img">
-          <img :src="listing.img" alt="" />
-          <p v-if="listing.impressions > 0" class="tag">
-            <span class="main_textt">{{ listing.impressions }}</span>
-            <span>Views</span>
-          </p>
-          <p v-else class="tag red">
-            <span class="main_textt">{{ listing.impressions }}</span>
+          <img :src="listing.uploads[0].url" alt="" />
+
+          <p class="tag red">
+            <span class="main_textt">{{ listing.views }}</span>
             <span>Views</span>
           </p>
         </div>
 
         <div class="left_right">
-          <div class="title">{{ listing.title }}</div>
+          <div class="title">{{ listing.name }}</div>
 
-          <div class="price">{{ listing.price }}</div>
+          <div class="price">{{ listing.price.toLocaleString() }}</div>
         </div>
 
         <!-- <div class="view">
@@ -36,7 +33,7 @@
 
             <div class="det">
               <div class="title">
-                {{ listing.title }}
+                {{ listing.name }}
               </div>
               <div class="price">
                 {{ listing.price }}
@@ -44,7 +41,7 @@
             </div>
           </div>
           <div class="middle">
-            <div class="items">
+            <!-- <div class="items">
               <img src="/images/impressions.png" alt="" />
               <p>Impressions</p>
               <div class="count">{{ listing.impressions }}</div>
@@ -58,7 +55,7 @@
               <img src="/images/layer.png" alt="" />
               <p>Leads</p>
               <div class="count">{{ listing.leads }}</div>
-            </div>
+            </div> -->
           </div>
 
           <div class="performance">
@@ -152,16 +149,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.listings_hold {
-  background: rgba(233, 233, 233, 0.44);
-}
-.listing {
+// .listing_s_hold {
+//   background: rgba(233, 233, 233, 0.44);
+// }
+.listing_ {
   background: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   padding: 0.5rem;
   margin: 2rem 0;
-  min-height: 350px;
+  min-width: 250px;
+  // min-height: 350px;
   position: relative;
 }
 
@@ -206,17 +204,25 @@ export default {
   color: #ffffff;
 }
 
-.listing .left {
+.listing_ .left {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .img {
   position: relative;
+  max-width: 261.17px;
+  height: 206.58px;
+}
+
+.listing_s_hold {
+  max-width: 280px;
 }
 
 .img img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 .left_right .title {
@@ -263,26 +269,26 @@ export default {
 
 //  middle area
 
-.listing .middle img {
+.listing_ .middle img {
   width: 18.32px;
   height: 18.32px;
   object-fit: contain;
 }
 
-.listing .middle {
+.listing_ .middle {
   display: flex;
   align-items: center;
   // justify-content: space-between;
   gap: 5rem;
 }
 
-.listing .middle .item {
+.listing_ .middle .item {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 
-.listing .middle .count {
+.listing_ .middle .count {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 700;
@@ -292,7 +298,7 @@ export default {
   margin-top: 1rem;
 }
 
-.listing .middle p {
+.listing_ .middle p {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 400;
@@ -301,12 +307,12 @@ export default {
   color: #000000;
 }
 
-.listing .right {
+.listing_ .right {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-.listing .right .modify {
+.listing_ .right .modify {
   width: 106px;
   height: 31.5px;
   font-family: "Open Sans";
@@ -321,7 +327,7 @@ export default {
   color: #1f7bb5;
 }
 
-.listing .right .manage_ad {
+.listing_ .right .manage_ad {
   background: #03ae1e;
   border-radius: 5px;
   width: 156px;
@@ -561,7 +567,7 @@ p.advert {
 }
 
 @media (max-width: 1150px) {
-  .listing {
+  .listing_ {
     grid-template-columns: 1.5fr 1fr 1.5fr;
   }
 
@@ -569,23 +575,36 @@ p.advert {
     padding-top: 0.7rem;
   }
 
-  .listing .middle {
+  .listing_ .middle {
     gap: 3rem;
   }
 }
 @media (max-width: 1060px) {
-  .listing .middle {
+  .listing_ .middle {
     gap: 2rem;
   }
 
-  .listing .right .manage_ad {
+  .listing_ .right .manage_ad {
     width: 126px;
   }
 }
 
+@media (max-width: 800px) {
+  .listing_ {
+    min-width: 100%;
+  }
+}
 @media (max-width: 500px) {
   .main_card {
     padding: 1.5rem;
+  }
+
+  .img img {
+    object-fit: contain;
+  }
+
+  .listing_ {
+    min-width: 100%;
   }
 
   .main_textt {
@@ -600,6 +619,16 @@ p.advert {
 
   .view .q-btn {
     position: relative;
+  }
+  .img {
+    max-width: 100%;
+  }
+  .listing_s_hold {
+    max-width: 100%;
+  }
+
+  .listing_ {
+    margin: 0;
   }
 
   // .tag {

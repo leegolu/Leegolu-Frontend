@@ -462,7 +462,7 @@
             </div>
           </div> -->
 
-        <div class="row items-center justify-between">
+        <div class="row no-wrap items-center justify-between">
           <q-btn
             @click="finish"
             :loading="loading"
@@ -630,6 +630,22 @@
                   alt=""
                 />
                 <q-item-section>Favorites</q-item-section>
+              </q-item>
+              <q-separator />
+
+              <q-item
+                style="gap: 0.2rem"
+                class="row items-center"
+                :to="{ name: 'manage-shop' }"
+                clickable
+                v-close-popup
+              >
+                <img
+                  style="width: 25px; height: 25px"
+                  src="/images/shopicon.svg"
+                  alt=""
+                />
+                <q-item-section>Manage Shop</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -1558,6 +1574,19 @@ p.more {
   }
   .mybtn {
     width: 160px;
+  }
+
+  .btn {
+    font-size: 12px;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+  }
+
+  .q-btn.prev {
+    height: 40px;
   }
 }
 </style>

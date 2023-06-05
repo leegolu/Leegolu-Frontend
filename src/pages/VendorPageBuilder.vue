@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <div class="loader" v-if="loading">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loading" class="bg-white">
     <div
       class="row q-py-md no-wrap items-center container justify-between q-my-sm"
     >
@@ -150,7 +155,7 @@
       </div>
       <div class="mobile_categories">
         <div class="row items-center no-wrap justify-center">
-          <q-btn-dropdown class="drop" color="primary" label="All Products">
+          <q-btn-dropdown flat class="drop" color="white" label="All Products">
             <q-list>
               <q-item clickable v-close-popup @click="onItemClick">
                 <q-item-section>
@@ -211,7 +216,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-white">
+      <div class="">
         <div class="desc_text q-pt-lg container">
           It’s how we’ve always described our bars. What’s inside. <br />
           What isn’t. We think it’s everything you need...
@@ -225,7 +230,7 @@
         </div>
         <div class="responsive_autofit_grid container">
           <DashboardHomeListingVue
-            v-for="(listing, index) in arr"
+            v-for="(listing, index) in vendor.products"
             :key="index"
             :listing="listing"
           />
@@ -824,6 +829,7 @@ export default {
     return {
       preview: "/images/sqrpreview.png",
       ratingModel: ref(4),
+      vendor: {},
       businessDetailsModal: false,
       value: false,
       uploadModal: false,
@@ -831,6 +837,7 @@ export default {
       preview: "/images/sqrpreview.png",
       segmentsModal: false,
       radio: false,
+      loading: true,
       pageLayoutModal: false,
       colorschemeModal: false,
       arr: [
@@ -875,6 +882,10 @@ export default {
     DashboardHomeListingVue,
   },
 
+  created() {
+    this.getVendor();
+  },
+
   methods: {
     previewImage(event) {
       var input = event.target;
@@ -890,15 +901,32 @@ export default {
     onItemClick() {
       console.log("onItemClick");
     },
+
+    getVendor() {
+      this.loading = true;
+      let vendor = this.$router.currentRoute.value.params.slug;
+      this.$api
+        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
+        .then((response) => {
+          this.vendor = response.data.vendor;
+          this.loading = false;
+          console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+        });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .segment_wrap {
-  margin-top: 7rem;
+  // margin-top: 11rem;
   background: rgba(217, 217, 217, 0.31);
   border: 1px dashed #000000;
+  margin: 11rem auto 0rem;
+  width: 90%;
 }
 
 .segment_wrap .left_paragraph .outline.q-btn {
@@ -963,6 +991,7 @@ export default {
 
 .drop {
   background: #1f7bb5;
+  color: white;
   border: 0.5px solid #1f7bb5;
   border-radius: 20px;
   text-transform: capitalize;
@@ -1098,8 +1127,8 @@ export default {
   // background: #f5f5f5;
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0;
-  margin: 0.8rem 0;
+  padding: 0.5rem 0 0;
+  margin: 0.1rem 0 0;
 }
 
 .sort_area .left {
@@ -1122,6 +1151,7 @@ export default {
   white-space: nowrap;
   background: #1f7bb5;
   border-radius: 17px;
+  text-transform: capitalize;
 }
 .sort_area .regular {
   font-family: "Montserrat";
@@ -1129,7 +1159,7 @@ export default {
   font-weight: 500;
   font-size: 15px;
   line-height: 18px;
-
+  text-transform: capitalize;
   color: #000000;
 }
 
@@ -1286,6 +1316,15 @@ export default {
   color: #979797;
 }
 
+.left_wrap {
+  background: unset;
+  width: unset;
+  padding: unset;
+}
+
+// .left_wrap .left_details {
+//   padding-left: 0;
+// }
 //preview
 .previewMain {
   width: 100%;
@@ -1376,9 +1415,10 @@ export default {
   }
 
   .segment_wrap {
-    margin-top: 1.5rem;
+    margin-top: 7.5rem;
     background: transparent;
     border: none;
+    padding-bottom: 2rem;
   }
   .segment_wrap .left_paragraph .outline.q-btn {
     margin-top: -1rem;

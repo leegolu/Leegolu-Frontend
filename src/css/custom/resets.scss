@@ -582,13 +582,15 @@ select:focus {
   padding-top: 1rem;
 }
 
-.phone_dailog .q-btn {
+.phone_dailog .q-btn.close {
   position: absolute;
+  font-size: 15px;
   top: 1%;
   right: 1%;
 }
 
-.phone_dailog a {
+.phone_dailog .call_ven a,
+.phone_dailog .call_ven .q-btn {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 600;
@@ -600,10 +602,16 @@ select:focus {
   border-radius: 5px;
   display: inline-block;
   height: 39.89px;
+  text-transform: capitalize;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin: 0.5rem 0;
+}
+
+.phone_dailog .call_ven .q-btn {
+  background: #1f7bb5;
 }
 
 .phone_dailog img {
@@ -661,7 +669,7 @@ select:focus {
   padding-bottom: 1.5rem;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 700px) {
   .layout_footer {
     display: none;
   }
@@ -681,7 +689,7 @@ select:focus {
 @media (max-width: 1000px) {
   .bar {
     width: 100% !important;
-    margin-right: 5rem;
+    // margin-right: 5rem;
   }
   .bar .input_wrap {
     width: 100% !important;
@@ -771,7 +779,7 @@ select:focus {
     padding-top: 1rem;
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .modal .skip {
     width: auto;
   }
@@ -823,6 +831,24 @@ select:focus {
     font-size: 40px !important;
   }
 
+  .input-box.active-grey .input-1,
+  .input-box.active-grey select,
+  .input-box.active-grey textarea {
+    border: 1px solid #9d9d9d !important;
+    height: 40px !important;
+    padding: 9px 13px 5px !important;
+  }
+
+  .create_ad .text {
+    margin: 1.5rem 0 !important;
+  }
+
+  .input-box.active-grey .input-label {
+    font-size: 11px !important;
+  }
+  .create {
+    padding-top: 0.5rem;
+  }
   .wrapp .products {
     width: 100%;
     padding-top: 1rem;

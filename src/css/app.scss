@@ -220,6 +220,12 @@ th.text-right {
   min-height: auto;
   padding: 8px 0;
 }
+.loader {
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 @media (max-width: 500px) {
   .head_text {
