@@ -535,7 +535,7 @@ export default {
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/page-views`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -546,7 +546,7 @@ export default {
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/leads`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.myLeads = response.data.data;
           // this.categories = response.data.data;
           // this.vendordetails.business_type = response.data.data[0].id;

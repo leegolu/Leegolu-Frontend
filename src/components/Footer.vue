@@ -128,6 +128,10 @@ i {
   color: #ffffff;
   margin-right: 1.5rem;
 }
+
+.footer {
+  margin-top: 3rem;
+}
 .footer ul li {
   margin: 0.5rem 0;
 }
@@ -183,6 +187,10 @@ i {
 .footer_input_hold form {
   display: flex;
   align-items: center;
+}
+
+.footer .middle {
+  padding-top: 0;
 }
 
 .footer_input_hold p {
@@ -262,7 +270,23 @@ i {
   }
 
   .footer {
-    padding: 7rem 3rem 4rem;
+    padding: 4rem 3rem 1rem;
+  }
+
+  .footer_wrap_hold {
+    margin: 2rem auto;
+  }
+
+  .footer_input_area {
+    margin-top: 2rem;
+  }
+
+  .footer ul li a {
+    font-size: 14px;
+  }
+
+  .footer ul li {
+    margin: 0.3rem 0;
   }
 }
 </style>

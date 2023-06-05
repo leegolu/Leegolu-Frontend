@@ -408,13 +408,13 @@ export default {
       this.$api
         .get(url)
         .then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           this.loading = false;
           this.rows = data.data;
           this.count = data.count;
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.loading = false;
           this.rows = [];
         });
@@ -471,7 +471,7 @@ export default {
               });
             })
             .catch(({ response }) => {
-              console.log(response);
+              // console.log(response);
               this.loading = false;
             });
         })
@@ -490,12 +490,12 @@ export default {
 
     addListing(listing) {
       this.checkedListings.push(listing);
-      console.log(listing);
+      // console.log(listing);
     },
 
     addlistingTocollection() {
       const newArray = this.checkedListings.filter((item) => item.checked);
-      console.log(newArray);
+      // console.log(newArray);
       const formData = new FormData();
       newArray.forEach((item, index) => {
         formData.append(`products[]`, item.id);
@@ -523,7 +523,7 @@ export default {
           });
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.errors = response.data[0];
           this.loading = false;
           this.$q.notify({
@@ -536,12 +536,12 @@ export default {
     },
 
     onItemClick(action, collection) {
-      console.log(action);
-      console.log(collection);
+      // console.log(action);
+      // console.log(collection);
       if (action === "edit") {
-        console.log("edit");
+        // console.log("edit");
       } else {
-        console.log("delete");
+        // console.log("delete");
         this.loading = true;
         this.$api
           .delete(`collection/${collection.slug}/delete`)
@@ -550,7 +550,7 @@ export default {
             this.refreshcollections();
           })
           .catch(({ response }) => {
-            console.log(response);
+            // console.log(response);
             this.loading = false;
           });
       }
@@ -584,7 +584,7 @@ export default {
           }
         )
         .then((response) => {
-          console.log("Success:", response);
+          // console.log("Success:", response);
           this.collections = response.data.data;
           this.refreshcollections();
           this.loading = false;
@@ -596,7 +596,7 @@ export default {
           });
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.errors = response.data[0];
           this.loading = false;
           this.$q.notify({
@@ -619,7 +619,7 @@ export default {
           this.listings = newArray;
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.errors = response.data[0];
           this.loading = false;
           this.$q.notify({
@@ -640,10 +640,10 @@ export default {
           .then(({ data }) => {
             this.loading = false;
             this.rows = data.data;
-            console.log(data);
+            // console.log(data);
           })
           .catch(({ response }) => {
-            console.log(response);
+            // console.log(response);
             this.loading = false;
             this.rows = [];
           });

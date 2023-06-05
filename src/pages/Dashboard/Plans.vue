@@ -108,7 +108,7 @@ export default {
       this.$api
         .get("business-plans")
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.loading = false;
           this.businessPlans = response.data.data;
           // this.vendordetails.state = response.data.data[0].id;

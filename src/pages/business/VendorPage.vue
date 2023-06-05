@@ -692,9 +692,6 @@ export default {
   padding: unset;
 }
 
-// .left_wrap .left_details {
-//   padding-left: 0;
-// }
 //preview
 .previewMain {
   width: 100%;
@@ -883,6 +880,11 @@ export default {
     gap: 1rem;
     margin: 2rem auto 0;
     padding-bottom: 1rem;
+  }
+
+  .left_wrap .left_details {
+    width: 100%;
+    padding-left: 0.5rem;
   }
 }
 </style>

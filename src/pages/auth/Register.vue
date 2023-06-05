@@ -1258,7 +1258,7 @@ select:focus {
   }
 
   .right {
-    padding: 1rem;
+    padding: 2rem 1rem 1rem;
   }
 }
 </style>

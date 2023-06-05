@@ -836,9 +836,20 @@ select:focus {
   .input-box.active-grey textarea {
     border: 1px solid #9d9d9d !important;
     height: 40px !important;
-    padding: 9px 13px 5px !important;
+    padding: 9px 13px !important;
+  }
+  .input-box.active-grey .phone select {
+    border: unset !important;
+    height: unset !important;
+    padding: unset !important;
   }
 
+  .goggle_auth {
+    padding-bottom: 0rem;
+  }
+  .input-box.active-grey .phone .input-1 {
+    padding-left: 4.4rem !important;
+  }
   .create_ad .text {
     margin: 1.5rem 0 !important;
   }
@@ -935,11 +946,18 @@ select:focus {
   .small_cards .small_card_bus {
     width: 100% !important;
     height: 100% !important;
+    border-radius: 5px !important;
+  }
+  .right_card_top,
+  .right_card_top.down {
+    border-radius: 5px !important;
   }
 
   .main_card {
     padding: 0.9rem !important;
-    grid-template-columns: 1fr 1fr !important;
+    // grid-template-columns: 1fr 1fr !important;
+    border-radius: 5px !important;
+    box-shadow: none;
     display: flex !important;
     max-width: 93vw !important;
   }

@@ -342,7 +342,7 @@ export default {
         .then((response) => {
           this.loading = false;
           this.vendor = response.data.vendor;
-          console.log(response);
+          // console.log(response);
         })
         .catch(({ response }) => {
           this.loading = false;

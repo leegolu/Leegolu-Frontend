@@ -910,7 +910,7 @@ export default {
         .then((response) => {
           this.vendor = response.data.vendor;
           this.loading = false;
-          console.log(response);
+          // console.log(response);
         })
         .catch(({ response }) => {
           this.loading = false;

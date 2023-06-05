@@ -2,7 +2,7 @@
   <section class="products q-pt-xl container">
     <div class="category_wrapper">
       <div class="left">
-        <div class="section">
+        <!-- <div class="section">
           <div class="section_main_text">
             {{ thiscategory.category }}
             <span class="count">| {{ products.length }}</span>
@@ -19,10 +19,10 @@
               >
                 {{ each.name }}
               </q-item>
-              <!-- <span class="count"> | {{ each.count }} </span> -->
+              <span class="count"> | {{ each.count }} </span>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- <div class="section q-pt-lg">
           <div class="section_main_text">Location</div>
@@ -118,12 +118,12 @@
           </div>
 
           <div class="sort row items-center">
-            <span class="sort_by q-mr-sm">Sort By:</span
+            <!-- <span class="sort_by q-mr-sm">Sort By:</span
             ><q-select
               class="text-secondary"
               v-model="modelSort"
               :options="optionsSort"
-            />
+            /> -->
           </div>
         </div>
         <div class="product_cards">
@@ -285,7 +285,7 @@ export default defineComponent({
             message: "Product added to favourites",
             color: "green",
           });
-          console.log(response);
+          // console.log(response);
         })
         .catch(({ response }) => {
           if (response.status === 401) {
@@ -341,7 +341,7 @@ export default defineComponent({
         .get(`${category}/products/all`)
         .then((response) => {
           this.products = response.data.data;
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -356,7 +356,7 @@ export default defineComponent({
         .get(`products/search?query=${search}`)
         .then((response) => {
           this.products = response.data.data;
-          console.log(response);
+          // console.log(response);
         })
         .catch(({ response }) => {
           this.loading = false;

@@ -110,7 +110,7 @@ export default {
         this.$api
           .post("onboarding", data)
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             // console.log(response.data);
             // console.log(response.data.vendor);
             this.$store.leegoluauth.vendorDetails = response.data.vendor;
@@ -119,7 +119,7 @@ export default {
             this.loading = false;
           })
           .catch(({ response }) => {
-            console.log(response);
+            // console.log(response);
             this.loading = false;
             this.errors = response.data.errors || {};
           });
@@ -131,14 +131,14 @@ export default {
         this.$api
           .post("onboarding", data)
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             this.$store.leegoluauth.vendorDetails = response.data.vendor;
             this.$helper.notify(response.data.message, "success");
             this.$router.replace({ name: "business.dashboard" });
             this.loading = false;
           })
           .catch(({ response }) => {
-            console.log(response);
+            // console.log(response);
             this.loading = false;
             this.errors = response.data.errors || {};
           });

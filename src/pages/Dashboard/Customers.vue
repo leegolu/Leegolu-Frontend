@@ -311,13 +311,13 @@ export default {
       this.$api
         .get(url)
         .then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           this.loading = false;
           this.rows = data.data;
           this.count = data.count;
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.loading = false;
           this.rows = [];
         });
@@ -354,10 +354,10 @@ export default {
           .then(({ data }) => {
             this.loading = false;
             this.rows = data.data;
-            console.log(data);
+            // console.log(data);
           })
           .catch(({ response }) => {
-            console.log(response);
+            // console.log(response);
             this.loading = false;
             this.rows = [];
           });

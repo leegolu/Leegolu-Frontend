@@ -561,7 +561,7 @@ export default defineComponent({
         .get(`${category}/products`)
         .then((response) => {
           this.products = response.data.data;
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;

@@ -477,6 +477,7 @@ export default defineComponent({
     },
 
     addtoFav(slug) {
+      // console.log(slug);
       this.$api
         .post(`${slug}/like`)
         .then((response) => {
@@ -540,7 +541,7 @@ export default defineComponent({
         .get(`listings/all`)
         .then((response) => {
           this.listings = response.data.data;
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -552,7 +553,7 @@ export default defineComponent({
         .get(`categories`)
         .then((response) => {
           this.categorys = response.data.data;
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -714,7 +715,7 @@ a {
 .product_cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  gap: 2rem 1rem;
   padding-top: 1rem;
 }
 
@@ -724,6 +725,7 @@ a {
   border-radius: 5px;
   padding: 0.8rem;
   position: relative;
+  cursor: pointer;
 }
 
 .product_cards .product .love {

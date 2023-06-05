@@ -166,7 +166,7 @@ export default {
         .get(`categories`)
         .then((response) => {
           this.categorys = response.data.data;
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -252,6 +252,7 @@ a {
 
 .bar {
   width: 50%;
+  margin-right: 1rem;
 }
 
 .adDet {
@@ -273,6 +274,7 @@ a {
   width: 432px;
   margin-left: 3rem;
   height: 41.84px;
+  margin-right: 0.5rem;
 }
 
 .bar input {
@@ -354,6 +356,12 @@ input:focus {
 .active {
   color: #ee4e36 !important;
   font-weight: 700 !important;
+}
+
+@media (max-width: 1000px) {
+  .bar {
+    width: 50% !important;
+  }
 }
 
 @media (max-width: 900px) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="listing_s_hold">
+  <div @click="gotoProduct" class="listing_s_hold">
     <div class="listing_">
       <div class="left">
         <div class="img">
@@ -142,7 +142,13 @@ export default {
   props: ["listing"],
   methods: {
     onItemClick() {
-      console.log("clicked");
+      // console.log("clicked");
+    },
+    gotoProduct() {
+      this.$router.replace({
+        name: "product.detail",
+        params: { slug: this.listing.slug },
+      });
     },
   },
 };

@@ -225,11 +225,11 @@ export default {
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/favorites`)
         .then((response) => {
-          console.log("Success:", response);
+          // console.log("Success:", response);
           this.favourites = response.data.data;
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.errors = response.data[0];
           this.loading = false;
           this.$q.notify({

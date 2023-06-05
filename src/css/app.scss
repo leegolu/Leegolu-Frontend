@@ -213,7 +213,7 @@ th.text-right {
   justify-content: flex-start;
 }
 .product_cards .product {
-  max-width: 300px;
+  max-width: 340px;
 }
 
 .each_category .q-item {
@@ -258,14 +258,15 @@ th.text-right {
 }
 @media (max-width: 400px) {
   .product_detail_wrap .q-carousel {
-    height: 200px;
+    height: 230px;
   }
 
   .product_detail_wrap .q-carousel .q-carousel__thumbnail {
     height: 100px;
+    width: 100px;
   }
 
   .product_detail_wrap .q-carousel .q-carousel__navigation--bottom {
-    bottom: -60%;
+    bottom: -50%;
   }
 }

@@ -192,12 +192,12 @@ export default {
   props: ["listing"],
   methods: {
     onItemClick(action, selectedlisting) {
-      console.log(action);
-      console.log(selectedlisting);
+      // console.log(action);
+      // console.log(selectedlisting);
       if (action === "edit") {
-        console.log("edit");
+        // console.log("edit");
       } else {
-        console.log("delete");
+        // console.log("delete");
         this.loading = true;
         this.$api
           .delete(`${this.listing.slug}/delete`)
@@ -206,7 +206,7 @@ export default {
             this.$emit("refresh-event");
           })
           .catch(({ response }) => {
-            console.log(response);
+            // console.log(response);
             this.loading = false;
           });
       }

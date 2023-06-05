@@ -743,7 +743,7 @@ ul li {
 
 @media (max-width: 400px) {
   .product_detail_wrap {
-    gap: 10rem;
+    gap: 9rem;
   }
 }
 </style>
