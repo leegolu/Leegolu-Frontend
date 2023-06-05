@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div v-if="rows.length > 0" class="style q-pa-md">
+    <div v-if="rows.length > 0" class="style q-py-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"

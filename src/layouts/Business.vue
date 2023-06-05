@@ -10,9 +10,10 @@
           @click="toggleLeftDrawer"
           aria-label="Menu"
           icon="menu"
+          v-if="$q.screen.gt.xs"
         />
 
-        <q-btn flat no-caps no-wrap class="q-ml-xs logo" v-if="$q.screen.gt.xs">
+        <q-btn flat no-caps no-wrap class="q-ml-xs logo">
           <img src="/images/logored.png" alt="" />
         </q-btn>
 
@@ -41,14 +42,26 @@
 
         <div
           style="width: 100%; gap: 1.5rem"
-          class="q-gutter-sm header_icons justify-end row items-center no-wrap"
+          class="header_icons justify-end row items-center no-wrap"
         >
           <div style="gap: 1rem" class="le flex no-wrap items-center">
-            <q-btn style="padding: 4px 8px" size="10px" flat color="primary">
+            <q-btn
+              :to="{ name: 'messages' }"
+              style="padding: 4px 8px"
+              size="10px"
+              flat
+              color="primary"
+            >
               <img src="/images/headernotif.svg" alt="" />
               <q-badge floating color="red" rounded>4</q-badge>
             </q-btn>
-            <q-btn style="padding: 4px 8px" size="10px" color="primary" flat>
+            <q-btn
+              :to="{ name: 'notifications' }"
+              style="padding: 4px 8px"
+              size="10px"
+              color="primary"
+              flat
+            >
               <img src="/images/headericon.svg" alt="" />
               <q-badge floating color="red" rounded>4</q-badge>
             </q-btn>
@@ -58,7 +71,7 @@
             <q-btn @click="modal1 = true" text-color="primary" class="mybtn">
               Create Listing <i class="fa-solid q-ml-md fa-plus"></i
             ></q-btn>
-            <q-btn round flat>
+            <q-btn class="avatar" round flat>
               <q-avatar size="35px">
                 <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
               </q-avatar>
@@ -548,6 +561,81 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-footer class="layout_footer" elevated>
+      <div class="footer_holder">
+        <q-btn :to="{ name: 'business.dashboard' }" flat>
+          <div style="gap: 0.2rem" class="column justify-center items-center">
+            <img src="/images/over.svg" alt="" />
+
+            <div class="footer_tag">Overview</div>
+          </div>
+        </q-btn>
+        <q-btn :to="{ name: 'listings' }" flat>
+          <div style="gap: 0.2rem" class="column justify-center items-center">
+            <img src="/images/icon3.svg" alt="" />
+
+            <div class="footer_tag">Listings</div>
+          </div>
+        </q-btn>
+        <q-btn flat @click="modal1 = true">
+          <div style="gap: 0.2rem" class="column justify-center items-center">
+            <img src="/images/add.svg" alt="" />
+
+            <div class="footer_tag">New Listing</div>
+          </div>
+        </q-btn>
+        <q-btn :to="{ name: 'messages' }" flat>
+          <div style="gap: 0.2rem" class="column justify-center items-center">
+            <img src="/images/messages.svg" alt="" />
+
+            <div class="footer_tag">Messages</div>
+          </div>
+        </q-btn>
+        <q-btn flat>
+          <div style="gap: 0.2rem" class="column justify-center items-center">
+            <div class="more">
+              <img src="/images/more.svg" alt="" />
+            </div>
+
+            <div class="footer_tag">More</div>
+          </div>
+          <q-menu>
+            <q-list style="min-width: 100px; padding: 0" class="q-pa-none">
+              <q-item
+                style="gap: 0.2rem"
+                class="row items-center"
+                :to="{ name: 'collections' }"
+                clickable
+                v-close-popup
+              >
+                <img
+                  style="width: 25px; height: 25px"
+                  src="/images/collections.svg"
+                  alt=""
+                />
+                <q-item-section>Collections</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item
+                style="gap: 0.2rem"
+                class="row items-center"
+                :to="{ name: 'favourites' }"
+                clickable
+                v-close-popup
+              >
+                <img
+                  style="width: 25px; height: 25px"
+                  src="/images/fav.svg"
+                  alt=""
+                />
+                <q-item-section>Favorites</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+      </div>
+    </q-footer>
 
     <q-page-container>
       <router-view />

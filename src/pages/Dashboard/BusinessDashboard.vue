@@ -31,19 +31,19 @@
           <img src="/images/list.png" alt="" />
           <div class="small_card_main_text">My Adverts</div>
           <div class="small_card_sub">Adverts you created yourself.</div>
-          <div class="count">0</div>
+          <div class="count">{{ myAds }}</div>
         </div>
         <div class="small_card">
           <img src="/images/engagesvg.svg" alt="" />
           <div class="small_card_main_text">Engagement</div>
           <div class="small_card_sub">Adverts interacted with.</div>
-          <div class="count">0</div>
+          <div class="count">{{ myEngagements }}</div>
         </div>
         <div class="small_card">
           <img src="/images/layer.png" alt="" />
           <div class="small_card_main_text">Leads</div>
           <div class="small_card_sub">Customers that reached out.</div>
-          <div class="count">0</div>
+          <div class="count">{{ myLeads }}</div>
         </div>
         <div class="small_card_bus">
           <div class="wallet_left">
@@ -374,6 +374,7 @@
 
 <script>
 import VueApexCharts from "vue3-apexcharts";
+import { useMeta } from "quasar";
 import DashboardHomeListing from "../../components/listings/DashboardHomeListing.vue";
 // import Charts from "../../components/Charts.vue";
 import { ref, computed } from "vue";
@@ -388,6 +389,9 @@ export default {
       preview: "/images/preview.png",
       businessreg: false,
       image: null,
+      myAds: "",
+      myEngagements: "",
+      myLeads: "",
       errors: {},
       countrycode: "+243",
       vendordetails: {
@@ -469,12 +473,18 @@ export default {
     this.getRoles();
     this.getStates();
     this.getBusinessTypes();
+    this.getMyads();
+    this.getMyEngagements();
+    this.getMyLeads();
+    this.getMyPageViews();
     this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
   },
   setup() {
     const progress1 = ref(0.3);
     const progress2 = ref(0.9);
-
+    useMeta({
+      title: "Dashboard",
+    });
     return {
       progress1,
       progressLabel1: computed(() => (progress1.value * 100).toFixed(2) + "%"),
@@ -497,6 +507,54 @@ export default {
         this.image = input.files[0];
         reader.readAsDataURL(input.files[0]);
       }
+    },
+
+    getMyads() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/adverts`)
+        .then((response) => {
+          this.myAds = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getMyEngagements() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/engagements`)
+        .then((response) => {
+          this.myEngagements = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getMyPageViews() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/page-views`)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getMyLeads() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/leads`)
+        .then((response) => {
+          console.log(response);
+          this.myLeads = response.data.data;
+          // this.categories = response.data.data;
+          // this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
     },
 
     toggleModal() {

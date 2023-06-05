@@ -1212,6 +1212,10 @@ select:focus {
     display: none;
   }
 
+  .right {
+    padding: 1.5rem 1rem 1rem 2rem;
+  }
+
   .modal_main {
     font-size: 25px;
   }
@@ -1238,7 +1242,7 @@ select:focus {
   }
 
   .btn {
-    margin-top: 0;
+    margin-top: 2rem;
   }
 }
 @media (max-width: 500px) {
@@ -1251,6 +1255,10 @@ select:focus {
 
   .modal_main_text {
     font-size: 20px;
+  }
+
+  .right {
+    padding: 1rem;
   }
 }
 </style>

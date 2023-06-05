@@ -73,14 +73,18 @@
 
         <div class="btns q-mt-lg">
           <q-btn
-            color="secondary"
+            flat
+            class="bg-secondary"
+            color="white"
             @click="viewPhone"
             icon="fa-solid fa-phone-volume"
             label="Show Contact"
             :loading="loadingBtn"
           />
           <q-btn
-            color="primary"
+            flat
+            color="white"
+            class="bg-primary"
             icon="fa-solid fa-message"
             label="Chat Seller"
           />
@@ -221,6 +225,8 @@
       </div> -->
     </div>
 
+    <FooterVue />
+
     <q-dialog v-model="phoneDialog">
       <q-card class="contact_vendor">
         <div class="phone_dailog">
@@ -262,6 +268,7 @@
 
 <script>
 import { ref } from "vue";
+import FooterVue from "src/components/Footer.vue";
 export default {
   setup() {
     return {
@@ -277,6 +284,9 @@ export default {
     };
   },
 
+  components: {
+    FooterVue,
+  },
   // mounted() {
   //   var splide = new Splide("#main-carousel", {
   //     pagination: false,
@@ -501,6 +511,7 @@ hr {
   font-size: 100%;
   line-height: 24px;
   text-align: center;
+  text-transform: capitalize;
   color: #ffffff;
 }
 
@@ -689,6 +700,50 @@ ul li {
 
   .product_information {
     margin: 2rem auto 0;
+  }
+
+  .btns .q-btn {
+    padding: 0.55rem;
+  }
+
+  .product_detail_wrap .location {
+    font-size: 12px;
+  }
+  .product_detail_wrap .title {
+    font-size: 20px;
+  }
+  .product_detail_wrap .price {
+    font-size: 28px;
+  }
+
+  .posted small {
+    font-size: 10px;
+  }
+
+  p.desc {
+    font-size: 14px;
+  }
+
+  ul li {
+    font-size: 12px;
+  }
+
+  .detail {
+    padding-top: 20px;
+  }
+
+  .product_detail_wrap {
+    gap: 11rem;
+  }
+
+  .btns {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .product_detail_wrap {
+    gap: 10rem;
   }
 }
 </style>

@@ -40,9 +40,15 @@
       <div class="main_text">Find it. Buy it.</div>
       <p>Seek and ye shall find, Buy it and it shall be delivered unto you</p>
       <div class="input_area">
-        <form>
-          <input type="text" placeholder="Search for anything" />
-          <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        <form @submit.prevent="search">
+          <input
+            v-model="searchInp"
+            type="text"
+            placeholder="Search for anything"
+          />
+          <q-btn type="submit" flat
+            ><i class="fa-solid fa-magnifying-glass"></i
+          ></q-btn>
         </form>
       </div>
     </div>
@@ -268,6 +274,7 @@ export default defineComponent({
     return {
       listings: [],
       categorys: [],
+      searchInp: "",
       popular: [
         {
           img: "/images/sneakPop.png",
@@ -462,6 +469,13 @@ export default defineComponent({
       });
     },
 
+    search() {
+      this.$router.replace({
+        name: "search-page",
+        params: { slug: this.searchInp },
+      });
+    },
+
     addtoFav(slug) {
       this.$api
         .post(`${slug}/like`)
@@ -617,6 +631,7 @@ a {
 }
 .popular img {
   width: 150px;
+  cursor: pointer;
 }
 
 .popular .head_text {
@@ -874,7 +889,7 @@ a {
   }
 
   .logo {
-    width: 127px;
+    width: 100px;
     height: 39px;
     object-fit: contain;
   }
@@ -901,6 +916,23 @@ a {
 
   .footer_rights {
     flex-wrap: wrap;
+  }
+
+  .wrapper {
+    width: 90%;
+  }
+
+  .right > div {
+    gap: 0.5rem;
+  }
+
+  .join_area .join_title {
+    font-size: 30px;
+    line-height: 35px;
+  }
+
+  .join_area .join_desc {
+    font-size: 18px;
   }
 }
 </style>

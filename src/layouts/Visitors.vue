@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf" class="bg-accent">
-    <q-header class="header q-py-sm" height-hint="58">
+    <q-header class="header q-pt-xs" height-hint="58">
       <q-toolbar class="q-pb-sm">
         <q-btn
           flat
@@ -10,38 +10,34 @@
           @click="toggleLeftDrawer"
           aria-label="Menu"
           icon="menu"
+          v-if="$q.screen.gt.xs"
         />
 
-        <q-btn
-          to="/"
-          flat
-          no-caps
-          no-wrap
-          class="q-ml-xs logo"
-          v-if="$q.screen.gt.xs"
-        >
+        <q-btn to="/" flat no-caps no-wrap class="q-ml-xs logo">
           <img src="/images/logored.png" alt="" />
         </q-btn>
 
         <q-space />
-
         <div class="bar">
-          <div class="input_wrap">
-            <input
-              dense
-              outlined
-              square
-              v-model="search"
-              placeholder="Search your account..."
-              class="search_inp"
-            />
-            <q-btn
-              text-color="primary"
-              class="search-btn"
-              icon="search"
-              unelevated
-            />
-          </div>
+          <form @submit.prevent="search">
+            <div class="input_wrap">
+              <input
+                dense
+                outlined
+                square
+                v-model="searchinp"
+                placeholder="Search for anything..."
+                class="search_inp"
+              />
+              <q-btn
+                text-color="primary"
+                class="search-btn"
+                icon="search"
+                type="submit"
+                unelevated
+              />
+            </div>
+          </form>
         </div>
 
         <q-space />
@@ -75,7 +71,7 @@
           </div>
         </div>
       </q-toolbar>
-      <div class="sub_header q-pa-xs">
+      <div class="sub_header">
         <div class="sub_header_wrap">
           <div class="">
             <q-btn-dropdown
@@ -89,6 +85,7 @@
                   v-for="(item, index) in categorys"
                   :key="index"
                   clickable
+                  active-class="active"
                   :to="{ name: 'category-page', params: { slug: item.slug } }"
                   v-close-popup
                 >
@@ -106,6 +103,7 @@
               :key="index"
               :to="{ name: 'category-page', params: { slug: item.slug } }"
               class="item"
+              active-class="active"
             >
               {{ item.name }}
             </q-item>
@@ -134,6 +132,7 @@ export default {
       modal2: false,
       price: true,
       air: false,
+      searchinp: "",
       modal3: false,
     };
   },
@@ -156,6 +155,12 @@ export default {
   },
 
   methods: {
+    search() {
+      this.$router.replace({
+        name: "search-page",
+        params: { slug: this.searchinp },
+      });
+    },
     getCategorys() {
       this.$api
         .get(`categories`)
@@ -307,12 +312,6 @@ input:focus {
   min-width: 0;
 }
 
-.q-item.q-router-link--active,
-.q-item--active {
-  background: #e9e9e9;
-  border-radius: 5px;
-}
-
 // sub header
 .sub_header_wrap .all {
   font-family: "Montserrat";
@@ -320,13 +319,14 @@ input:focus {
   font-weight: 700;
   font-size: 15px;
   line-height: 18px;
+  text-transform: capitalize;
   color: #000000 !important;
 }
 
 .category_items {
   display: flex;
   align-items: center;
-  overflow-x: scroll;
+  // overflow-x: scroll;
   height: 50px;
 }
 .category_items .item {
@@ -349,6 +349,11 @@ input:focus {
   gap: 1rem;
   align-items: center;
   justify-content: center;
+}
+
+.active {
+  color: #ee4e36 !important;
+  font-weight: 700 !important;
 }
 
 @media (max-width: 900px) {

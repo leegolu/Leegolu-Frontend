@@ -74,6 +74,11 @@ const routes = [
         name: "category-page",
       },
       {
+        path: "/searchpage/:slug",
+        component: () => import("pages/SearchPage.vue"),
+        name: "search-page",
+      },
+      {
         path: "/subcategorypage/:slug",
         component: () => import("pages/SubCategory.vue"),
         name: "subcategory-page",

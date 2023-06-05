@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div class="style q-pa-md">
+    <div class="style q-py-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"
@@ -271,7 +271,7 @@ export default {
 }
 
 .sort_area {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   display: flex;
