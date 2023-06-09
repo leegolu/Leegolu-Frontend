@@ -407,41 +407,7 @@ export default {
       states: [],
       areas: [],
       addphotoforleegolubusinessmodal: false,
-      arr: [
-        {
-          img: "/images/listing1.png",
-          title: "Ankara 3 Piece Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-        {
-          img: "/images/listing2.png",
-          title: "Princess Cut Peplum Sleeve...",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: false,
-        },
-        {
-          img: "/images/listing3.png",
-          title: "Off Shoulder Peperdem Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 0,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-      ],
+
       chartOptions: {
         chart: {
           id: "basic-bar",

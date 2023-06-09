@@ -3,9 +3,18 @@
     <div class="left_main">
       <div class="main_card">
         <div class="left">
-          <div class="main_text">Hello Chris,</div>
+          <div class="main_text">
+            Hello
+            {{
+              this.$store.leegoluauth.userDetails
+                ? this.$store.leegoluauth.userDetails.name
+                : "User"
+            }},
+          </div>
           <div class="sub">Welcome to your Leegolu dashboard.</div>
-          <q-btn color="primary" class="q-mt-lg tour"> Take a tour </q-btn>
+          <q-btn :to="{ name: 'plans' }" color="primary" class="q-mt-lg tour">
+            Upgrade
+          </q-btn>
         </div>
 
         <div class="right">
@@ -18,6 +27,7 @@
           <img src="/images/list.png" alt="" />
           <div class="small_card_main_text">My Adverts</div>
           <div class="small_card_sub">Adverts you created yourself.</div>
+          <!-- <div class="count">{{ myAds }}</div> -->
           <div class="count">0</div>
         </div>
         <div class="small_card">
@@ -25,12 +35,14 @@
           <div class="small_card_main_text">Engagement</div>
           <div class="small_card_sub">Adverts interacted with.</div>
           <div class="count">0</div>
+          <!-- <div class="count">{{ myEngagements }}</div> -->
         </div>
         <div class="small_card">
           <img src="/images/layer.png" alt="" />
           <div class="small_card_main_text">Leads</div>
           <div class="small_card_sub">Customers that reached out.</div>
           <div class="count">0</div>
+          <!-- <div class="count">{{ myLeads }}</div> -->
         </div>
         <div class="small_card_bus">
           <div class="wallet_left">
@@ -107,13 +119,13 @@
         <q-btn flat style="padding: 0" :to="{ name: 'listings' }"
           >| View All</q-btn
         >
-        <div class="responsive_autofit_grid">
+        <!-- <div class="responsive_autofit_grid">
           <DashboardHomeListing
             v-for="(listing, index) in arr"
             :key="index"
             :listing="listing"
           />
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -292,42 +304,16 @@ export default {
       welcometoleegoluregularmodal: false,
       preview: "/images/preview.png",
       addphotoforleegoluregularmodal: false,
-      arr: [
-        {
-          img: "/images/listing1.png",
-          title: "Ankara 3 Piece Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-        {
-          img: "/images/listing2.png",
-          title: "Princess Cut Peplum Sleeve...",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: false,
-        },
-        {
-          img: "/images/listing3.png",
-          title: "Off Shoulder Peperdem Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 0,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-      ],
+      myAds: "",
+      myEngagements: "",
+      myLeads: "",
     };
+  },
+
+  created() {
+    this.getMyEngagements();
+    this.getMyLeads();
+    this.getMyads();
   },
 
   mounted() {
@@ -344,6 +330,45 @@ export default {
       progress2,
       progressLabel2: computed(() => (progress2.value * 100).toFixed(2) + "%"),
     };
+  },
+
+  methods: {
+    getMyads() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/adverts`)
+        .then((response) => {
+          this.myAds = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getMyEngagements() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/engagements`)
+        .then((response) => {
+          this.myEngagements = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getMyLeads() {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/leads`)
+        .then((response) => {
+          // console.log(response);
+          this.myLeads = response.data.data;
+          // this.categories = response.data.data;
+          // this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
   },
 };
 </script>
@@ -495,16 +520,6 @@ export default {
   }
 }
 
-@media (max-width: 1000px) {
-  .small_card_bus {
-    width: auto;
-  }
-
-  .small_cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-}
 @media (max-width: 1200px) {
   .small_card {
     width: 100%;
@@ -513,6 +528,17 @@ export default {
 @media (max-width: 1170px) {
   .small_card_bus {
     width: 321px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .small_card_bus {
+    width: auto;
+  }
+
+  .small_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 

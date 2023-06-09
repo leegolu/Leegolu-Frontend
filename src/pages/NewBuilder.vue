@@ -46,8 +46,8 @@
           <q-btn
             @click="previewRender"
             style="color: white"
+            color="secondary"
             label="Preview"
-            class="preview"
           />
         </div>
         <!-- <div class="span">
@@ -80,7 +80,6 @@
       </div>
     </div>
     <div
-      v-if="data.coveruploads"
       :style="`background: url(${coverpreview}); background-repeat: no-repeat; background-size:cover`"
       class="editor_hero"
     >
@@ -88,18 +87,11 @@
         Upload <span> | Cover photo</span>
       </q-btn>
     </div>
-    <div v-else class="editor_hero">
-      <q-btn @click="uploadCoverModal = true" icon="camera" class="outline">
-        Upload <span> | Cover photo</span>
-      </q-btn>
-    </div>
-    <!-- {{ data }} -->
+
     <div class="upload_logo_area">
       <div class="upload_wrap container row justify-between items-center">
         <div class="left">
-          <div
-            class="left_wrap mobile row no-wrap items-center q-col-gutter-x-md"
-          >
+          <div class="left_wrap mobile row items-center q-col-gutter-x-md">
             <div class="left_logo_area">
               <img :src="preview" alt="" />
               <q-btn @click="uploadModal = true" icon="camera" class="outline">
@@ -148,7 +140,7 @@
         <div class="right">
           <q-btn
             class="none_"
-            flat
+            color="secondary"
             icon="fa-solid fa-phone-volume"
             label="Contact Business"
           />
@@ -156,22 +148,22 @@
           <div class="row none_desktop q-gutter-md no-wrap items-center">
             <q-btn
               class="none_desktop"
+              color="secondary"
               icon="fa-solid fa-heart"
               label=""
-              flat
             />
             <q-btn
               class="none_desktop"
+              color="secondary"
               icon="fa-solid fa-phone-volume"
               label=""
-              flat
             />
           </div>
         </div>
       </div>
     </div>
-    <!-- {{ data }} -->
-    <div v-if="data.segments === 'Segment A'" class="segment_wrap">
+
+    <div class="segment_wrap">
       <div class="row manage_seg q-mr-md justify-end">
         <div class="left_paragraph">
           <q-btn @click="segmentsModal = true" icon="edit" class="outline">
@@ -188,106 +180,37 @@
                   <q-item-label>All Products</q-item-label>
                 </q-item-section>
               </q-item>
-            </q-list>
-          </q-btn-dropdown>
-          <div class="input_search">
-            <input
-              v-model="sorted"
-              placeholder="Search products..."
-              type="text"
-            />
-            <i class="fa-solid text-primary fa-magnifying-glass"></i>
-          </div>
-        </div>
-      </div>
-      <div class="top container">
-        <div class="sort_area">
-          <div class="left">
-            <!-- <q-btn class="">  </q-btn> -->
-            <div class="segmentA">All Products</div>
-          </div>
 
-          <div class="right">
-            <div class="input_search">
-              <input
-                v-model="sorted"
-                placeholder="Search products..."
-                type="text"
-              />
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
-          >
-            Read more
-          </q-btn>
-        </div>
-        <!-- <div class="segmentA q-pt-lg container">My Collections</div> -->
-        <div
-          v-if="!loading && vendor && products.length"
-          class="responsive_autofit_grid container"
-        >
-          <DashboardHomeListingVue
-            v-for="(listing, index) in sortproducts"
-            :key="index"
-            :listing="listing"
-          />
-        </div>
-        <div v-else class="empty">
-          <img src="/images/empty.svg" alt="" />
-
-          <div class="empty_text">
-            You currently have not listed any products
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-if="data.segments === 'Segment B'" class="segment_wrap">
-      <div class="row manage_seg q-mr-md justify-end">
-        <div class="left_paragraph">
-          <q-btn @click="segmentsModal = true" icon="edit" class="outline">
-            Manage <span>| Segment</span>
-          </q-btn>
-        </div>
-      </div>
-      <div class="mobile_categories">
-        <div class="row items-center no-wrap justify-center">
-          <q-btn-dropdown
-            flat
-            class="drop"
-            color="white"
-            label="Categorized Collections"
-          >
-            <q-list>
-              <q-item
-                v-for="(collections, index) in grandAllProductsArr"
-                :key="index"
-                clickable
-                v-close-popup
-                @click="grandselectCollection(collections)"
-              >
+              <q-item clickable v-close-popup @click="onItemClick">
                 <q-item-section>
-                  <q-item-label>{{ collections.name }}</q-item-label>
+                  <q-item-label>Sneakers</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Corporate</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Casuals</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Loafers</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Boots</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
           </q-btn-dropdown>
           <div class="input_search">
-            <input
-              v-model="sortingCriteria"
-              placeholder="Search products..."
-              type="text"
-            />
+            <input placeholder="Search products..." type="text" />
             <i class="fa-solid text-primary fa-magnifying-glass"></i>
           </div>
         </div>
@@ -295,30 +218,17 @@
       <div class="top container">
         <div class="sort_area">
           <div class="left">
-            <q-btn
-              v-for="(collections, index) in grandAllProductsArr"
-              :key="index"
-              @click="grandselectCollection(collections)"
-              :class="
-                collections.name === 'All products' ? 'active' : 'regular'
-              "
-            >
-              {{ collections.name }}
-            </q-btn>
-            <!-- <q-btn class="regular"> Sneakers </q-btn>
+            <q-btn class="active"> All Products </q-btn>
+            <q-btn class="regular"> Sneakers </q-btn>
             <q-btn class="regular"> Corporate </q-btn>
             <q-btn class="regular"> Casuals </q-btn>
             <q-btn class="regular"> Loafers </q-btn>
-            <q-btn class="regular"> Boots </q-btn> -->
+            <q-btn class="regular"> Boots </q-btn>
           </div>
 
           <div class="right">
             <div class="input_search">
-              <input
-                v-model="sortingCriteria"
-                placeholder="Search products..."
-                type="text"
-              />
+              <input placeholder="Search products..." type="text" />
               <i class="fa-solid fa-magnifying-glass"></i>
             </div>
           </div>
@@ -336,164 +246,17 @@
             Read more
           </q-btn>
         </div>
-        <div
-          v-if="grandselectedCollectionProducts.length"
-          class="responsive_autofit_grid container"
-        >
+        <div class="responsive_autofit_grid container">
           <DashboardHomeListingVue
-            v-for="(listing, index) in sortedProducts"
+            v-for="(listing, index) in vendor.products"
             :key="index"
             :listing="listing"
           />
         </div>
-        <div v-else class="empty">
-          <img src="/images/empty.svg" alt="" />
-
-          <div class="empty_text">
-            You currently have not listed any products under this collection
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-if="data.segments === 'Segment C'" class="segment_wrap">
-      <div class="row manage_seg q-mr-md justify-end">
-        <div class="left_paragraph">
-          <q-btn @click="segmentsModal = true" icon="edit" class="outline">
-            Manage <span>| Segment</span>
-          </q-btn>
-        </div>
-      </div>
-      <div class="mobile_categories">
-        <div class="row items-center no-wrap justify-center">
-          <q-btn-dropdown
-            flat
-            class="drop"
-            color="white"
-            label="All Collections"
-          >
-            <q-list>
-              <q-item clickable v-close-popup @click="showCollectionsFnc">
-                <q-item-section>
-                  <q-item-label>All Collections</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-          <div class="input_search">
-            <input
-              v-if="showCollections"
-              v-model="sortedCollections"
-              placeholder="Search collections..."
-              type="text"
-            />
-            <input
-              v-if="!showCollections"
-              v-model="sortingcolCriteria"
-              placeholder="Search products..."
-              type="text"
-            />
-            <i class="fa-solid text-primary fa-magnifying-glass"></i>
-          </div>
-        </div>
-      </div>
-      <div class="top container">
-        <div class="sort_area">
-          <div class="left">
-            <div class="segmentA">All Collections</div>
-          </div>
-
-          <div class="right">
-            <div class="input_search">
-              <input
-                v-if="showCollections"
-                v-model="sortedCollections"
-                placeholder="Search collections..."
-                type="text"
-              />
-              <input
-                v-if="!showCollections"
-                v-model="sortingcolCriteria"
-                placeholder="Search products..."
-                type="text"
-              />
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
-          >
-            Read more
-          </q-btn>
-        </div>
-
-        <!-- {{ collections.length }} -->
-        <div v-if="showCollections">
-          <div
-            v-if="collections.length"
-            class="responsive_autofit_grid q-pt-lg q-pb-xl container"
-          >
-            <div
-              @click="selectCollection(collection)"
-              v-for="(collection, index) in sortCollections"
-              :key="index"
-            >
-              <img :src="collection.avatar.url" alt="" />
-              <div class="collection_name">
-                {{ collection.name }}
-              </div>
-            </div>
-          </div>
-          <div v-else class="empty">
-            <img src="/images/empty.svg" alt="" />
-
-            <div class="empty_text">
-              You currently have not created any collections
-            </div>
-          </div>
-        </div>
-
-        <div v-if="!showCollections">
-          <div
-            v-if="selectedCollectionProducts.length"
-            class="responsive_autofit_grid container"
-          >
-            <DashboardHomeListingVue
-              v-for="(listing, index) in sortedColProducts"
-              :key="index"
-              :listing="listing"
-            />
-          </div>
-          <div v-else class="empty">
-            <img src="/images/empty.svg" alt="" />
-
-            <div class="empty_text">
-              You currently have not listed any products on this collection
-            </div>
-          </div>
-
-          <div class="flex justify-center">
-            <q-btn
-              @click="showCollectionsFnc"
-              v-if="!showCollections"
-              flat
-              class="showcollections"
-            >
-              Show Collections
-            </q-btn>
-          </div>
-        </div>
       </div>
     </div>
 
-    <q-dialog :style="colorSchemeStyles" v-model="businessDetailsModal">
+    <q-dialog v-model="businessDetailsModal">
       <q-card class="card modal">
         <div class="row items-center justify-between">
           <div class="title">Business Details</div>
@@ -502,7 +265,7 @@
           </q-btn>
         </div>
         <div class="row q-mt-lg no-wrap items-center justify-between">
-          <div :class="namevalue ? 'det active_' : 'det'">
+          <div class="det">
             <div class="business_name">Business Name</div>
             <input
               :disabled="enableEdit"
@@ -513,7 +276,7 @@
           <q-toggle v-model="namevalue" />
         </div>
         <div class="row q-my-md no-wrap items-center justify-between">
-          <div :class="tagvalue ? 'det active_' : 'det'">
+          <div class="det">
             <div class="business_name">Tagline</div>
             <input
               :disabled="enableTagEdit"
@@ -523,7 +286,7 @@
           </div>
           <q-toggle v-model="tagvalue" />
         </div>
-        <div class="row no-wrap items-center justify-between">
+        <div class="row items-center justify-between">
           <div class="det">
             <div class="business_name">Review</div>
             <div class="rating row items-center">
@@ -553,16 +316,13 @@
         </div>
 
         <div class="submit">
-          <q-btn
-            @click="businessDetailsModal = false"
-            class="submitBTN bg-newcolor"
+          <q-btn @click="businessDetailsModal = false" flat class="q-btn"
+            >Save Changes</q-btn
           >
-            Save Changes
-          </q-btn>
         </div>
       </q-card>
     </q-dialog>
-    <q-dialog :style="colorSchemeStyles" v-model="uploadModal">
+    <q-dialog v-model="uploadModal">
       <q-card class="card modal">
         <div class="row items-center justify-between">
           <div class="title">Upload Images</div>
@@ -591,7 +351,7 @@
             </div>
           </div>
         </div>
-        <div class="row q-my-md items-center no-wrap justify-between">
+        <div class="row q-my-md items-center justify-between">
           <div class="det">
             <div class="business_name">Branding</div>
             <div class="company">Show Profile Image</div>
@@ -600,13 +360,13 @@
         </div>
 
         <div class="submit">
-          <q-btn flat @click="uploadModal = false" class="submitBTN q-btn"
+          <q-btn flat @click="uploadModal = false" class="q-btn"
             >Save Changes</q-btn
           >
         </div>
       </q-card>
     </q-dialog>
-    <q-dialog :style="colorSchemeStyles" v-model="uploadCoverModal">
+    <q-dialog v-model="uploadCoverModal">
       <q-card class="card modal">
         <div class="row items-center justify-between">
           <div class="title">Upload Cover Photo</div>
@@ -635,7 +395,7 @@
             </div>
           </div>
         </div>
-        <div class="row q-my-md items-center no-wrap justify-between">
+        <div class="row q-my-md items-center justify-between">
           <div class="det">
             <div class="business_name">Branding</div>
             <div class="company">Show Cover Image</div>
@@ -644,14 +404,14 @@
         </div>
 
         <div class="submit">
-          <q-btn flat @click="uploadCoverModal = false" class="submitBTN q-btn"
+          <q-btn flat @click="uploadCoverModal = false" class="q-btn"
             >Save Changes</q-btn
           >
         </div>
       </q-card>
     </q-dialog>
 
-    <q-dialog :style="colorSchemeStyles" v-model="segmentsModal">
+    <q-dialog v-model="segmentsModal">
       <q-card class="card modal">
         <div class="row items-center justify-between">
           <div class="title">Segments</div>
@@ -659,23 +419,39 @@
             <i class="fa-light fa-xmark"></i>
           </q-btn>
         </div>
-        <div
-          v-for="segment in segments"
-          :key="segment.name"
-          class="row q-mt-lg no-wrap items-center justify-between"
-        >
+        <div class="row q-mt-lg items-center justify-between">
           <div class="det row no-wrap items-center q-col-gutter-md">
             <div class="img">
               <img src="/images/segment1.svg" alt="" />
             </div>
 
-            <div class="category">{{ segment.showname }}</div>
+            <div class="category">Display Categorized product list</div>
           </div>
-          <q-radio v-model="data.segments" :val="segment.name" />
+          <q-radio v-model="radio" val="hello" />
+        </div>
+        <div class="row no-wrap q-mt-lg items-center justify-between">
+          <div class="det row items-center q-col-gutter-md">
+            <div class="img">
+              <img src="/images/segment1.svg" alt="" />
+            </div>
+
+            <div class="category">Display category list</div>
+          </div>
+          <q-radio v-model="radio" val="hello" />
+        </div>
+        <div class="row no-wrap q-mt-lg items-center justify-between">
+          <div class="det row items-center q-col-gutter-md">
+            <div class="img">
+              <img src="/images/segment1.svg" alt="" />
+            </div>
+
+            <div class="category">Display all products</div>
+          </div>
+          <q-radio v-model="radio" val="hello" />
         </div>
       </q-card>
     </q-dialog>
-    <q-dialog :style="colorSchemeStyles" v-model="pageLayoutModal">
+    <q-dialog v-model="pageLayoutModal">
       <q-card class="card modal">
         <div class="row items-center justify-between">
           <div class="row items-center">
@@ -697,25 +473,38 @@
           </div>
         </div>
         <div class="layouts">
-          <div
-            v-for="(pageLayout, index) in pageLayouts"
-            :key="index"
-            class="layout"
-          >
+          <div class="layout">
             <img src="/images/layout1.png" alt="" />
             <div class="row items-center justify-between">
-              <div class="layout_text">{{ pageLayout.name }}</div>
-              <q-radio
-                color="secondary"
-                v-model="data.pageLayout"
-                :val="pageLayout.name"
-              />
+              <div class="layout_text">Default Layout</div>
+              <q-radio color="secondary" v-model="radio" val="hello" />
+            </div>
+          </div>
+          <div class="layout">
+            <img src="/images/layout1.png" alt="" />
+            <div class="row items-center justify-between">
+              <div class="layout_text">Mandarine</div>
+              <q-radio color="secondary" v-model="radio" val="hello" />
+            </div>
+          </div>
+          <div class="layout">
+            <img src="/images/layout1.png" alt="" />
+            <div class="row items-center justify-between">
+              <div class="layout_text">Quick Fox</div>
+              <q-radio color="secondary" v-model="radio" val="hello" />
+            </div>
+          </div>
+          <div class="layout">
+            <img src="/images/layout1.png" alt="" />
+            <div class="row items-center justify-between">
+              <div class="layout_text">Omni Display</div>
+              <q-radio color="secondary" v-model="radio" val="hello" />
             </div>
           </div>
         </div>
       </q-card>
     </q-dialog>
-    <q-dialog :style="colorSchemeStyles" v-model="colorschemeModal">
+    <q-dialog v-model="colorschemeModal">
       <q-card class="card modal">
         <div class="row items-center justify-between">
           <div class="row items-center">
@@ -737,29 +526,328 @@
           </div>
         </div>
 
-        <div
-          v-for="(scheme, index) in colorSchemes"
-          :key="index"
-          class="row q-mt-sm items-center justify-between"
-        >
+        <div class="row q-mt-sm items-center justify-between">
           <div class="color">
-            <div class="color_text">{{ scheme.name }}</div>
+            <div class="color_text">Leegolu default</div>
 
-            <div style="gap: 0.5rem" class="row no-wrap items-center">
-              <div
-                :style="`width:29.13px; height:29.08px; background: ${color}`"
-                v-for="color in scheme.colors"
-                :key="color"
-              ></div>
+            <div class="q-gutter-sm">
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="primary"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="secondary"
+                icon=""
+              />
+              <q-btn
+                size="10px"
+                style="width: 29.13px; height: 29.08px"
+                square
+                color="amber"
+                glossy
+                text-color="black"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="brown-5"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="deep-orange"
+                icon=""
+              />
             </div>
           </div>
-          <q-radio
-            color="secondary"
-            v-model="data.colorScheme"
-            :val="scheme.name"
-          />
+          <q-radio color="secondary" v-model="radio" val="hello" />
         </div>
-        <!-- {{ data.colorScheme }} -->
+        <div class="row q-mt-md items-center justify-between">
+          <div class="color">
+            <div class="color_text">Leegolu default</div>
+
+            <div class="q-gutter-sm">
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="primary"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="secondary"
+                icon=""
+              />
+              <q-btn
+                size="10px"
+                style="width: 29.13px; height: 29.08px"
+                square
+                color="amber"
+                glossy
+                text-color="black"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="brown-5"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="deep-orange"
+                icon=""
+              />
+            </div>
+          </div>
+          <q-radio color="secondary" v-model="radio" val="hello" />
+        </div>
+        <div class="row q-mt-md items-center justify-between">
+          <div class="color">
+            <div class="color_text">Leegolu default</div>
+
+            <div class="q-gutter-sm">
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="primary"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="secondary"
+                icon=""
+              />
+              <q-btn
+                size="10px"
+                style="width: 29.13px; height: 29.08px"
+                square
+                color="amber"
+                glossy
+                text-color="black"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="brown-5"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="deep-orange"
+                icon=""
+              />
+            </div>
+          </div>
+          <q-radio color="secondary" v-model="radio" val="hello" />
+        </div>
+        <div class="row q-mt-md items-center justify-between">
+          <div class="color">
+            <div class="color_text">Leegolu default</div>
+
+            <div class="q-gutter-sm">
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="primary"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="secondary"
+                icon=""
+              />
+              <q-btn
+                size="10px"
+                style="width: 29.13px; height: 29.08px"
+                square
+                color="amber"
+                glossy
+                text-color="black"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="brown-5"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="deep-orange"
+                icon=""
+              />
+            </div>
+          </div>
+          <q-radio color="secondary" v-model="radio" val="hello" />
+        </div>
+        <div class="row q-mt-md items-center justify-between">
+          <div class="color">
+            <div class="color_text">Leegolu default</div>
+
+            <div class="q-gutter-sm">
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="primary"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="secondary"
+                icon=""
+              />
+              <q-btn
+                size="10px"
+                style="width: 29.13px; height: 29.08px"
+                square
+                color="amber"
+                glossy
+                text-color="black"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="brown-5"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="deep-orange"
+                icon=""
+              />
+            </div>
+          </div>
+          <q-radio color="secondary" v-model="radio" val="hello" />
+        </div>
+        <div class="row q-mt-md items-center justify-between">
+          <div class="color">
+            <div class="color_text">Leegolu default</div>
+
+            <div class="q-gutter-sm">
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="primary"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="secondary"
+                icon=""
+              />
+              <q-btn
+                size="10px"
+                style="width: 29.13px; height: 29.08px"
+                square
+                color="amber"
+                glossy
+                text-color="black"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="brown-5"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="deep-orange"
+                icon=""
+              />
+            </div>
+          </div>
+          <q-radio color="secondary" v-model="radio" val="hello" />
+        </div>
+        <div class="row q-mt-md items-center justify-between">
+          <div class="color">
+            <div class="color_text">Leegolu default</div>
+
+            <div class="q-gutter-sm">
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="primary"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="secondary"
+                icon=""
+              />
+              <q-btn
+                size="10px"
+                style="width: 29.13px; height: 29.08px"
+                square
+                color="amber"
+                glossy
+                text-color="black"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="brown-5"
+                icon=""
+              />
+              <q-btn
+                style="width: 29.13px; height: 29.08px"
+                size="10px"
+                square
+                color="deep-orange"
+                icon=""
+              />
+            </div>
+          </div>
+          <q-radio color="secondary" v-model="radio" val="hello" />
+        </div>
       </q-card>
     </q-dialog>
   </div>
@@ -772,11 +860,7 @@ export default {
   data() {
     return {
       abouttext: "",
-      data: {
-        colorScheme: "default",
-        pageLayout: "grid",
-        segments: "Segment B",
-      },
+      data: {},
       value: false,
       tagvalue: false,
       namevalue: false,
@@ -798,185 +882,40 @@ export default {
       loading: true,
       pageLayoutModal: false,
       colorschemeModal: false,
-      colorScheme: "default",
+      colorScheme: "dark",
       pageLayout: "grid",
-      collections: [],
-      showCollections: true,
-      products: [],
-      collectionsArr: [],
-      allProductsArr: [],
-      grandAllProductsArr: [],
-      selectedCollectionId: null,
-      grandselectedCollectionId: null,
-      selectedCollectionProducts: [],
-      grandselectedCollectionProducts: [],
-      sortingCriteria: "",
-      sortingcolCriteria: "",
-      sorted: "",
-      sortedCollections: "",
       colorSchemes: [
         {
           name: "default",
-          img: "",
           variables: {
-            "--primary-color": "#000000",
-            "--secondary-color": "#EE4E36",
-            "--color-one": "#1F7BB5",
-            "--color-two": "rgba(31, 123, 181, 0.57)",
-            "--color-three": "#CCCCCC",
+            "--primary-color": "#007bff",
+            "--secondary-color": "#6c757d",
             // Add more CSS variables for the color scheme
           },
-          colors: [
-            "#000",
-            "#EE4E36",
-            "#1F7BB5",
-            "rgba(31, 123, 181, 0.57)",
-            "#CCCCCC",
-          ],
-        },
-        // {
-        //   name: "dark",
-        //   img: "",
-        //   variables: {
-        //     "--primary-color": "#000",
-        //     "--secondary-color": "#1C9E73",
-        //     "--color-one": "#33CC99",
-        //     "--color-two": "#93E6CA",
-        //     "--color-three": "#CCCCCC",
-        //     // Add more CSS variables for the color scheme
-        //   },
-        //   colors: ["#000", "#1C9E73", "#33CC99", "#93E6CA", "#CCCCCC"],
-        // },
-        {
-          name: "Mint Green",
-          img: "",
-          variables: {
-            "--primary-color": "#000",
-            "--secondary-color": "#1C9E73",
-            "--color-one": "#33CC99",
-            "--color-two": "#93E6CA",
-            "--color-three": "#CCCCCC",
-            // Add more CSS variables for the color scheme
-          },
-          colors: ["#000", "#1C9E73", "#33CC99", "#93E6CA", "#CCCCCC"],
         },
         {
-          name: "Purple",
-          img: "",
+          name: "dark",
           variables: {
-            "--primary-color": "#000",
-            "--secondary-color": "#461FB5",
-            "--color-one": "#B336EE",
-            "--color-two": "rgba(160, 31, 181, 0.57)",
-            "--color-three": "#CCCCCC",
+            "--primary-color": "#343a40",
+            "--secondary-color": "#6c757d",
             // Add more CSS variables for the color scheme
           },
-
-          colors: [
-            "#000",
-            "#461FB5",
-            "#B336EE",
-            "rgba(160, 31, 181, 0.57)",
-            "#CCCCCC",
-          ],
-        },
-        {
-          name: "Yellow",
-          img: "",
-          variables: {
-            "--primary-color": "#000",
-            "--secondary-color": "#CB9200",
-            "--color-one": "#D9C831",
-            "--color-two": "rgba(202, 220, 0, 0.57)",
-            "--color-three": "#CCCCCC",
-            // Add more CSS variables for the color scheme
-          },
-          colors: [
-            "#000",
-            "#CB9200",
-            "#D9C831",
-            "rgba(202, 220, 0, 0.57)",
-            "#CCCCCC",
-          ],
-        },
-        {
-          name: "Blue",
-          img: "",
-          variables: {
-            "--primary-color": "#000",
-            "--secondary-color": "#002C83",
-            "--color-one": "#1F7BB5",
-            "--color-two": "rgba(31, 123, 181, 0.57)",
-            "--color-three": "#CCCCCC",
-            // Add more CSS variables for the color scheme
-          },
-          colors: [
-            "#000",
-            "#002C83",
-            "#1F7BB5",
-            "rgba(31, 123, 181, 0.57)",
-            "#CCCCCC",
-          ],
-        },
-        {
-          name: "Red",
-          img: "",
-          variables: {
-            "--primary-color": "#000",
-            "--secondary-color": "#920000",
-            "--color-one": "#D93131",
-            "--color-two": "rgba(220, 0, 0, 0.57)",
-            "--color-three": "#CCCCCC",
-            // Add more CSS variables for the color scheme
-          },
-
-          colors: [
-            "#000",
-            "#920000",
-            "#D93131",
-            "rgba(220, 0, 0, 0.57)",
-            "#CCCCCC",
-          ],
         },
         // Add more color schemes
       ],
 
       pageLayouts: [
         {
-          name: "Default",
+          name: "grid",
           class: "grid-layout",
           // Add more properties specific to the grid layout
         },
-        // {
-        //   name: "flexbox",
-        //   class: "flexbox-layout",
-        //   // Add more properties specific to the flexbox layout
-        // },
+        {
+          name: "flexbox",
+          class: "flexbox-layout",
+          // Add more properties specific to the flexbox layout
+        },
         // Add more page layouts
-      ],
-
-      segments: [
-        {
-          name: "Segment A",
-          showname: "Display all products",
-          class: "segment-a",
-          // Add more properties specific to the segment
-        },
-
-        {
-          name: "Segment B",
-          showname: "Display Categorized collections",
-          class: "segment-b",
-          // Add more properties specific to the segment
-        },
-
-        {
-          name: "Segment C",
-          showname: "Display Collections",
-          class: "segment-c",
-          // Add more properties specific to the segment
-        },
-        // Add more segment options
       ],
     };
   },
@@ -1010,16 +949,13 @@ export default {
 
   created() {
     this.getVendor();
-    this.getCollections();
-    this.loadData();
   },
 
   computed: {
     colorSchemeStyles() {
       const selectedScheme = this.colorSchemes.find(
-        (scheme) => scheme.name === this.data.colorScheme
+        (scheme) => scheme.name === this.colorScheme
       );
-      this.data.selectedcoScheme = selectedScheme;
       return selectedScheme ? selectedScheme.variables : {};
     },
     pageLayoutClass() {
@@ -1027,58 +963,6 @@ export default {
         (layout) => layout.name === this.pageLayout
       );
       return selectedLayout ? selectedLayout.class : "";
-    },
-
-    sortedProducts() {
-      let products = this.grandselectedCollectionProducts;
-
-      if (this.sortingCriteria) {
-        // products = products.sort((a, b) => a.name.localeCompare(b.name));
-        products = products.filter((product) =>
-          product.name
-            .toLowerCase()
-            .includes(this.sortingCriteria.toLowerCase())
-        );
-      }
-
-      return products;
-    },
-    sortedColProducts() {
-      let products = this.selectedCollectionProducts;
-
-      if (this.sortingcolCriteria) {
-        products = products.filter((product) =>
-          product.name
-            .toLowerCase()
-            .includes(this.sortingcolCriteria.toLowerCase())
-        );
-      }
-
-      return products;
-    },
-    sortproducts() {
-      let products = this.products;
-
-      if (this.sorted) {
-        products = products.filter((product) =>
-          product.name.toLowerCase().includes(this.sorted.toLowerCase())
-        );
-      }
-
-      return products;
-    },
-    sortCollections() {
-      let products = this.collections;
-
-      if (this.sortedCollections) {
-        products = products.filter((product) =>
-          product.name
-            .toLowerCase()
-            .includes(this.sortedCollections.toLowerCase())
-        );
-      }
-
-      return products;
     },
   },
 
@@ -1114,107 +998,38 @@ export default {
       console.log("onItemClick");
     },
 
-    selectCollection(collection) {
-      // console.log(collection);
-      this.selectedCollectionId = collection.id;
-      this.selectedCollectionProducts = collection.products;
-      this.showCollections = false;
-    },
-    grandselectCollection(collection) {
-      // console.log(collection);
-      if (collection.name === "All products") {
-        this.grandselectedCollectionProducts = this.allProductsArr;
-      } else {
-        const selectedCollection = this.collectionsArr.find(
-          (c) => c.id === collection.id
-        );
-        console.log(selectedCollection);
-        this.grandselectedCollectionProducts = selectedCollection.products;
-        // this.grandselectedCollectionProducts = this.allProductsArr.filter(
-        //   (product) => selectedCollection.products.includes(product)
-        // );
-      }
-      this.grandselectedCollectionId = collection.id;
-    },
-
-    showCollectionsFnc() {
-      this.selectedCollectionId = null;
-      this.selectedCollectionProducts = [];
-      this.showCollections = true;
-    },
-
     previewRender() {
+      this.loading = true;
+
       // console.log(datar);
       const reader1 = new FileReader();
       const reader2 = new FileReader();
-      if (this.data.uploads && this.data.coveruploads) {
-        this.loading = true;
 
-        reader1.onload = () => {
-          const base64Data = reader1.result.split(",")[1];
-          this.data.uploads = base64Data;
-        };
-        reader2.onload = () => {
-          const base64Data2 = reader2.result.split(",")[1];
-          this.data.coveruploads = base64Data2;
-        };
+      reader1.onload = () => {
+        const base64Data = reader1.result.split(",")[1];
+        this.data.uploads = base64Data;
+      };
+      reader2.onload = () => {
+        const base64Data2 = reader2.result.split(",")[1];
+        this.data.coveruploads = base64Data2;
+      };
 
-        reader1.readAsDataURL(this.data.uploads);
-        reader2.readAsDataURL(this.data.coveruploads);
-
-        setTimeout(() => {
-          this.loading = false;
-          this.$store.leegoluauth.pageBuilderData = this.data;
-          // this.coverUploaded =
-          // this.readFileData();
-
-          this.$router.replace({
-            name: "vendor.page",
-            params: { slug: this.$store.leegoluauth.vendor.slug },
-          });
-        }, 2000);
-      } else {
-        this.$q.notify({
-          message: "Please upload a cover photo and a logo",
-          color: "red",
-        });
-      }
+      reader1.readAsDataURL(this.data.uploads);
+      reader2.readAsDataURL(this.data.coveruploads);
 
       // console.log(this.data);
-    },
 
-    async loadData() {
-      try {
-        const [collections, allProducts] = await Promise.all([
-          this.loadCollections(),
-          this.loadAllProducts(),
-        ]);
-        this.collectionsArr = collections;
-        this.allProductsArr = allProducts;
-        this.grandselectedCollectionProducts = allProducts;
+      setTimeout(() => {
+        this.loading = false;
+        this.$store.leegoluauth.pageBuilderData = this.data;
+        // this.coverUploaded =
+        // this.readFileData();
 
-        // console.log(collections, allProducts);
-        this.combineProducts();
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    },
-    loadCollections() {
-      return this.$api
-        .get(`collection/${this.$store.leegoluauth.vendorDetails.slug}/all`)
-        .then((response) => response.data.data);
-    },
-    loadAllProducts() {
-      return this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
-        .then((response) => response.data.vendor.products);
-    },
-    combineProducts() {
-      let allPData = {
-        name: "All products",
-        products: [...this.allProductsArr],
-      };
-      this.grandAllProductsArr = [allPData, ...this.collectionsArr];
+        this.$router.replace({
+          name: "vendor.page",
+          params: { slug: this.$store.leegoluauth.vendor.slug },
+        });
+      }, 2000);
     },
 
     getVendor() {
@@ -1223,27 +1038,12 @@ export default {
         .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
         .then((response) => {
           this.vendor = response.data.vendor;
-          this.products = response.data.vendor.products;
           this.loading = false;
           this.data.business_name = response.data.vendor.business_name;
           this.data.business_tagline = "This is a custom tagline";
           // console.log(response);
         })
         .catch(({ response }) => {
-          this.loading = false;
-        });
-    },
-
-    getCollections() {
-      this.$api
-        .get(`collection/${this.$store.leegoluauth.vendorDetails.slug}/all`)
-        .then(({ data }) => {
-          console.log(data);
-          this.collections = data.data;
-          this.loading = false;
-        })
-        .catch(({ response }) => {
-          // console.log(response);
           this.loading = false;
         });
     },
@@ -1255,7 +1055,7 @@ export default {
 .segment_wrap {
   // margin-top: 11rem;
   background: rgba(217, 217, 217, 0.31);
-  border: 1px dashed var(--primary-color);
+  border: 1px dashed #000000;
   margin: 11rem auto 0rem;
   width: 90%;
 }
@@ -1270,7 +1070,7 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 29px;
-  color: var(--primary-color);
+  color: #000000;
 }
 .right_nav img {
   width: 25px;
@@ -1282,7 +1082,7 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
-  background: var(--color-one);
+  background: var(--primary-color);
 }
 
 .editor_hero .q-btn {
@@ -1293,10 +1093,11 @@ export default {
   font-style: normal;
   font-weight: 700;
   background: #ffffff;
+
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .editor_hero .q-btn span {
@@ -1306,48 +1107,23 @@ export default {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .color_text {
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 10px;
   line-height: 12px;
-  color: var(--primary-color);
+  color: #000000;
   margin-bottom: 0.5rem;
 }
 
-.preview,
-.right .none_ {
-  background: var(--color-one);
-  color: #fff;
-}
-
-.collection_name {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 19px;
-  color: #000000;
-}
-
-.q-btn.none_,
-.showcollections {
-  background: var(--secondary-color);
-  color: #a15858;
-}
-
-.search {
-  margin-top: 1rem;
-}
-
 .drop {
-  background: var(--color-one);
+  background: #1f7bb5;
   color: white;
-  border: 0.5px solid var(--color-one);
+  border: 0.5px solid #1f7bb5;
   border-radius: 20px;
   text-transform: capitalize;
 }
@@ -1358,16 +1134,7 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: var(--primary-color);
-}
-
-.segmentA {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 29px;
-  color: #010101;
+  color: #000000;
 }
 
 .desc_text {
@@ -1377,11 +1144,7 @@ export default {
   font-weight: 400;
   font-size: 10px;
   line-height: 12px;
-  color: var(--primary-color);
-}
-
-.det {
-  width: 100%;
+  color: #000000;
 }
 
 .menu {
@@ -1403,7 +1166,7 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 29px;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .left_paragraph {
@@ -1412,7 +1175,7 @@ export default {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .layout {
@@ -1423,12 +1186,12 @@ export default {
   display: none;
 }
 
-.none_desktop.q-btn {
-  color: white;
-  text-transform: capitalize;
-  text-align: center;
-  background: var(--secondary-color);
-}
+// .none_desktop.q-btn {
+//   color: #1f7bb5 !important;
+//   text-transform: capitalize;
+//   text-align: center;
+//   background: #ffffff;
+// }
 
 .layout_text {
   font-family: "Inter";
@@ -1436,7 +1199,7 @@ export default {
   font-weight: 700;
   font-size: 14px;
   line-height: 17px;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .right .q-btn {
@@ -1452,8 +1215,7 @@ export default {
 }
 
 .upload_logo_area {
-  background: var(--color-two);
-  // background: var(--primary-color);
+  background: var(--primary-color);
   // background: #cedfeb;
   height: 132px;
 }
@@ -1464,7 +1226,7 @@ export default {
 .left_logo_area img {
   width: 147.72px;
   height: 147.72px;
-  border: 6px solid var(--color-two);
+  border: 6px solid var(--secondary-color);
   // border: 6px solid #cedfeb;
   border-radius: 10px;
 }
@@ -1477,7 +1239,7 @@ export default {
   position: absolute;
   bottom: 20%;
   background: #ffffff;
-  left: -5%;
+  left: -10%;
   z-index: 5;
 }
 
@@ -1488,13 +1250,13 @@ export default {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: var(--primary-color);
+  color: #000000;
   background: #ffffff;
 }
 
 .outline.q-btn::before {
   background: #ffffff;
-  border: 1px solid var(--primary-color);
+  border: 1px solid #000000;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.44);
   border-radius: 5px 5px 0px 0px;
 }
@@ -1508,30 +1270,12 @@ export default {
   justify-content: space-between;
   padding: 0.5rem 0 0;
   margin: 0.1rem 0 0;
-  flex-wrap: nowrap;
-  padding-bottom: 0.6rem;
-  // overflow-x: scroll;
 }
 
 .sort_area .left {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
-  overflow-x: scroll;
   gap: 1rem;
-}
-
-.sort_area .left::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-}
-
-.sort_area .left::-webkit-scrollbar-track {
-  background: #f4f4f4;
-}
-
-.sort_area .left::-webkit-scrollbar-thumb {
-  background-color: #ee4e36;
 }
 
 .sort_area .active {
@@ -1544,8 +1288,9 @@ export default {
   color: #ffffff;
   height: 34px;
   text-align: center;
+  color: #ffffff;
   white-space: nowrap;
-  background: var(--color-one);
+  background: #1f7bb5;
   border-radius: 17px;
   text-transform: capitalize;
 }
@@ -1556,8 +1301,7 @@ export default {
   font-size: 15px;
   line-height: 18px;
   text-transform: capitalize;
-  white-space: nowrap;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .sort_area .regular::before {
@@ -1644,7 +1388,7 @@ export default {
   font-size: 12px;
   line-height: 15px;
   display: block;
-  color: var(--primary-color);
+  color: #000000;
   margin-bottom: 0.5rem;
 }
 
@@ -1655,7 +1399,7 @@ export default {
   font-size: 20px;
   line-height: 24px;
   text-align: center;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .modal .business_name {
@@ -1664,7 +1408,7 @@ export default {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .modal .company {
@@ -1673,8 +1417,7 @@ export default {
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  width: 100%;
-  color: var(--primary-color);
+  color: #000000;
   border: none;
   background: transparent;
 }
@@ -1691,10 +1434,10 @@ export default {
 .submit {
   margin: 1rem 0;
 }
-.submit .submitBTN {
+.submit .q-btn {
   width: 100%;
   height: 55px;
-  background: var(--color-one);
+  background: #1f7bb5;
   border-radius: 5px;
   font-family: "Inter";
   font-style: normal;
@@ -1702,10 +1445,10 @@ export default {
   font-size: 18px;
   line-height: 22px;
   text-align: center;
-  color: white;
+  color: #ffffff;
 }
 
-.submit .submitBTN .q-btn__content {
+.submit .q-btn .q-btn__content {
   justify-content: center;
 }
 .close {
@@ -1713,7 +1456,7 @@ export default {
   min-height: 0;
 }
 .close i {
-  color: var(--color-two);
+  color: #979797;
 }
 
 .left_wrap {
@@ -1736,7 +1479,7 @@ export default {
   position: absolute;
   content: "";
   background: rgba(0, 0, 0, 0.5);
-  border: 6px solid var(--color-one);
+  border: 6px solid #cedfeb;
   border-radius: 10px;
   width: 100%;
   height: 100%;
@@ -1775,33 +1518,14 @@ export default {
   background: transparent;
   opacity: 0;
 }
-.sort_area .right {
-  padding-top: 0rem;
-}
 
-.active_ {
-  background: linear-gradient(0deg, #d9d9d9 -10%, rgba(217, 217, 217, 0) 80%);
-  border-bottom: 1px solid #1f7bb5;
-}
-
-@media (max-width: 1050px) {
-  .left_logo_area .outline.q-btn {
-    left: -2%;
-  }
-}
 @media (max-width: 950px) {
   .form img.previewimg.cover {
     width: 100%;
   }
-  .left_logo_area .outline.q-btn {
-    right: -30%;
-  }
+
   .lay {
-    // display: none;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 0 1rem;
+    display: none;
   }
 
   .mobile_categories {
@@ -1809,7 +1533,7 @@ export default {
     justify-content: space-between;
     background: rgba(31, 123, 181, 0.24);
     padding: 0.5rem;
-    background: var(--color-two);
+    background: rgba(31, 123, 181, 0.74);
   }
 
   .mobile_categories > .row {
@@ -1833,15 +1557,10 @@ export default {
     left: unset;
   }
 
-  .left_paragraph .q-btn {
-    margin-top: 0.8rem;
-  }
-
   .segment_wrap {
     margin-top: 7.5rem;
     background: transparent;
     border: none;
-    width: 100%;
     padding-bottom: 2rem;
   }
   .segment_wrap .left_paragraph .outline.q-btn {
@@ -1911,9 +1630,9 @@ export default {
     display: block;
   }
 
-  // .responsive_autofit_grid {
-  //   background: #fff;
-  // }
+  .responsive_autofit_grid {
+    background: #fff;
+  }
 }
 
 @media (min-width: 500px) {
@@ -1922,16 +1641,12 @@ export default {
   }
 }
 @media (max-width: 500px) {
-  .submit .submitBTN {
+  .submit .q-btn {
     height: 45px;
     font-size: 15px;
   }
   .logo {
     white-space: nowrap;
-  }
-
-  .lay {
-    display: none;
   }
 
   .segment_wrap {
@@ -1940,14 +1655,6 @@ export default {
   .desc_text {
     display: block;
     margin-bottom: 3rem;
-  }
-
-  .left_logo_area {
-    width: 100%;
-  }
-
-  .left_logo_area .outline.q-btn {
-    right: -20%;
   }
 
   .left_details_title {

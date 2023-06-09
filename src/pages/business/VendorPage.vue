@@ -4,8 +4,11 @@
       <q-spinner-comment color="primary" size="5em" />
     </div>
   </div>
-  <div v-else class="bg-white">
-    <div style="" class="editor_hero"></div>
+  <div v-if="!loading" :style="colorSchemeStyles" class="bg-white">
+    <div
+      :style="`background: url(${coverpreview}); background-repeat: no-repeat; background-size:cover`"
+      class="editor_hero"
+    ></div>
 
     <div class="upload_logo_area">
       <div class="upload_wrap container row justify-between items-center">
@@ -16,7 +19,9 @@
             </div>
             <!-- {{ vendor }} -->
             <div class="left_details">
-              <div class="left_details_title">{{ vendor.business_name }}</div>
+              <div class="left_details_title">
+                {{ this.$store.leegoluauth.pageBuilderData.business_name }}
+              </div>
               <div v-if="vendor.about" class="left_details_desc q-mt-sm">
                 {{ vendor.about.name }}
               </div>
@@ -61,15 +66,9 @@
           </div>
 
           <div class="row none_desktop q-gutter-md no-wrap items-center">
+            <q-btn class="none_desktop" icon="fa-solid fa-heart" label="" />
             <q-btn
               class="none_desktop"
-              color="secondary"
-              icon="fa-solid fa-heart"
-              label=""
-            />
-            <q-btn
-              class="none_desktop"
-              color="secondary"
               icon="fa-solid fa-phone-volume"
               label=""
               @click="phoneDialog = true"
@@ -79,47 +78,24 @@
       </div>
     </div>
 
-    <div class="segment_wrap">
+    <div v-if="segments === 'Segment A'" class="segment_wrap">
       <div class="mobile_categories">
         <div class="row items-center no-wrap justify-center">
-          <q-btn-dropdown flat class="drop" label="All Products">
+          <q-btn-dropdown flat class="drop" color="white" label="All Products">
             <q-list>
               <q-item clickable v-close-popup @click="onItemClick">
                 <q-item-section>
                   <q-item-label>All Products</q-item-label>
                 </q-item-section>
               </q-item>
-
-              <!-- <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Sneakers</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Corporate</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Casuals</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Loafers</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Boots</q-item-label>
-                </q-item-section>
-              </q-item> -->
             </q-list>
           </q-btn-dropdown>
           <div class="input_search">
-            <input placeholder="Search products..." type="text" />
+            <input
+              v-model="sorted"
+              placeholder="Search products..."
+              type="text"
+            />
             <i class="fa-solid text-primary fa-magnifying-glass"></i>
           </div>
         </div>
@@ -127,24 +103,25 @@
       <div class="top container">
         <div class="sort_area">
           <div class="left">
-            <q-btn class="active"> All Products </q-btn>
-            <!-- <q-btn class="regular"> Sneakers </q-btn>
-            <q-btn class="regular"> Corporate </q-btn>
-            <q-btn class="regular"> Casuals </q-btn>
-            <q-btn class="regular"> Loafers </q-btn>
-            <q-btn class="regular"> Boots </q-btn> -->
+            <!-- <q-btn class="">  </q-btn> -->
+            <div class="segmentA">All Products</div>
           </div>
 
           <div class="right">
             <div class="input_search">
-              <input placeholder="Search products..." type="text" />
+              <input
+                v-model="sorted"
+                placeholder="Search products..."
+                type="text"
+              />
               <i class="fa-solid fa-magnifying-glass"></i>
             </div>
           </div>
         </div>
       </div>
+
       <div class="">
-        <!-- <div class="desc_text q-pt-lg container">
+        <div class="desc_text q-pt-lg container">
           It’s how we’ve always described our bars. What’s inside. <br />
           What isn’t. We think it’s everything you need...
           <q-btn
@@ -154,13 +131,250 @@
           >
             Read more
           </q-btn>
-        </div> -->
-        <div v-if="vendor" class="responsive_autofit_grid container">
+        </div>
+        <!-- <div class="segmentA q-pt-lg container">My Collections</div> -->
+        <div
+          v-if="!loading && vendor && products.length"
+          class="responsive_autofit_grid container"
+        >
           <DashboardHomeListingVue
-            v-for="(listing, index) in vendor.products"
+            v-for="(listing, index) in sortproducts"
             :key="index"
             :listing="listing"
           />
+        </div>
+        <div v-else class="empty">
+          <img src="/images/empty.svg" alt="" />
+
+          <div class="empty_text">
+            You currently have not listed any products
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="segments === 'Segment B'" class="segment_wrap">
+      <div class="mobile_categories">
+        <div class="row items-center no-wrap justify-center">
+          <q-btn-dropdown
+            flat
+            class="drop"
+            color="white"
+            label="Categorized Collections"
+          >
+            <q-list>
+              <q-item
+                v-for="(collections, index) in grandAllProductsArr"
+                :key="index"
+                clickable
+                v-close-popup
+                @click="grandselectCollection(collections)"
+              >
+                <q-item-section>
+                  <q-item-label>{{ collections.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <div class="input_search">
+            <input
+              v-model="sortingCriteria"
+              placeholder="Search products..."
+              type="text"
+            />
+            <i class="fa-solid text-primary fa-magnifying-glass"></i>
+          </div>
+        </div>
+      </div>
+      <div class="top container">
+        <div class="sort_area">
+          <div class="left">
+            <q-btn
+              v-for="(collections, index) in grandAllProductsArr"
+              :key="index"
+              @click="grandselectCollection(collections)"
+              :class="
+                collections.name === 'All products' ? 'active' : 'regular'
+              "
+            >
+              {{ collections.name }}
+            </q-btn>
+            <!-- <q-btn class="regular"> Sneakers </q-btn>
+            <q-btn class="regular"> Corporate </q-btn>
+            <q-btn class="regular"> Casuals </q-btn>
+            <q-btn class="regular"> Loafers </q-btn>
+            <q-btn class="regular"> Boots </q-btn> -->
+          </div>
+
+          <div class="right">
+            <div class="input_search">
+              <input
+                v-model="sortingCriteria"
+                placeholder="Search products..."
+                type="text"
+              />
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="">
+        <div class="desc_text q-pt-lg container">
+          It’s how we’ve always described our bars. What’s inside. <br />
+          What isn’t. We think it’s everything you need...
+          <q-btn
+            style="min-height: 0; padding: 0; text-transform: capitalize"
+            flat
+            class="text-weight-bold"
+          >
+            Read more
+          </q-btn>
+        </div>
+        <div
+          v-if="grandselectedCollectionProducts.length"
+          class="responsive_autofit_grid container"
+        >
+          <DashboardHomeListingVue
+            v-for="(listing, index) in sortedProducts"
+            :key="index"
+            :listing="listing"
+          />
+        </div>
+        <div v-else class="empty">
+          <img src="/images/empty.svg" alt="" />
+
+          <div class="empty_text">
+            You currently have not listed any products under this collection
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="segments === 'Segment C'" class="segment_wrap">
+      <div class="mobile_categories">
+        <div class="row items-center no-wrap justify-center">
+          <q-btn-dropdown
+            flat
+            class="drop"
+            color="white"
+            label="All Collections"
+          >
+            <q-list>
+              <q-item clickable v-close-popup @click="showCollectionsFnc">
+                <q-item-section>
+                  <q-item-label>All Collections</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <div class="input_search">
+            <input
+              v-if="showCollections"
+              v-model="sortedCollections"
+              placeholder="Search collections..."
+              type="text"
+            />
+            <input
+              v-if="!showCollections"
+              v-model="sortingcolCriteria"
+              placeholder="Search products..."
+              type="text"
+            />
+            <i class="fa-solid text-primary fa-magnifying-glass"></i>
+          </div>
+        </div>
+      </div>
+      <div class="top container">
+        <div class="sort_area">
+          <div class="left">
+            <div class="segmentA">All Collections</div>
+          </div>
+
+          <div class="right">
+            <div class="input_search">
+              <input
+                v-if="showCollections"
+                v-model="sortedCollections"
+                placeholder="Search collections..."
+                type="text"
+              />
+              <input
+                v-if="!showCollections"
+                v-model="sortingcolCriteria"
+                placeholder="Search products..."
+                type="text"
+              />
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="">
+        <div class="desc_text q-pt-lg container">
+          It’s how we’ve always described our bars. What’s inside. <br />
+          What isn’t. We think it’s everything you need...
+          <q-btn
+            style="min-height: 0; padding: 0; text-transform: capitalize"
+            flat
+            class="text-weight-bold"
+          >
+            Read more
+          </q-btn>
+        </div>
+
+        <!-- {{ collections.length }} -->
+        <div v-if="showCollections">
+          <div
+            v-if="collections.length"
+            class="responsive_autofit_grid q-pt-lg q-pb-xl container"
+          >
+            <div
+              @click="selectCollection(collection)"
+              v-for="(collection, index) in sortCollections"
+              :key="index"
+            >
+              <img :src="collection.avatar.url" alt="" />
+              <div class="collection_name">
+                {{ collection.name }}
+              </div>
+            </div>
+          </div>
+          <div v-else class="empty">
+            <img src="/images/empty.svg" alt="" />
+
+            <div class="empty_text">
+              You currently have not created any collections
+            </div>
+          </div>
+        </div>
+
+        <div v-if="!showCollections">
+          <div
+            v-if="selectedCollectionProducts.length"
+            class="responsive_autofit_grid container"
+          >
+            <DashboardHomeListingVue
+              v-for="(listing, index) in sortedColProducts"
+              :key="index"
+              :listing="listing"
+            />
+          </div>
+          <div v-else class="empty">
+            <img src="/images/empty.svg" alt="" />
+
+            <div class="empty_text">
+              You currently have not listed any products on this collection
+            </div>
+          </div>
+
+          <div class="flex justify-center">
+            <q-btn
+              @click="showCollectionsFnc"
+              v-if="!showCollections"
+              flat
+              class="showcollections"
+            >
+              Show Collections
+            </q-btn>
+          </div>
         </div>
       </div>
     </div>
@@ -214,6 +428,7 @@ export default {
       preview: "/images/sqrpreview.png",
       ratingModel: ref(4),
       businessDetailsModal: false,
+      coverpreview: "/images/coverbg.svg",
       value: false,
       phoneDialog: false,
       preview: "/images/sqrpreview.png",
@@ -222,66 +437,164 @@ export default {
       vendorPhone: "",
       vendor: [],
       loading: true,
-      arr: [
-        {
-          img: "/images/listing1.png",
-          title: "Ankara 3 Piece Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-        {
-          img: "/images/listing2.png",
-          title: "Princess Cut Peplum Sleeve...",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: false,
-        },
-        {
-          img: "/images/listing3.png",
-          title: "Off Shoulder Peperdem Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 0,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-      ],
+      colorSchemeStyles: "",
+      segments: "",
+      collections: [],
+      showCollections: true,
+      products: [],
+      collectionsArr: [],
+      allProductsArr: [],
+      grandAllProductsArr: [],
+      selectedCollectionId: null,
+      grandselectedCollectionId: null,
+      selectedCollectionProducts: [],
+      grandselectedCollectionProducts: [],
+      sortingCriteria: "",
+      sortingcolCriteria: "",
+      sorted: "",
+      sortedCollections: "",
     };
   },
 
   components: {
     DashboardHomeListingVue,
   },
+  mounted() {
+    console.log(this.$store.leegoluauth.pageBuilderData);
+    this.colorSchemeStyles =
+      this.$store.leegoluauth.pageBuilderData.selectedcoScheme.variables;
+    this.segments = this.$store.leegoluauth.pageBuilderData.segments;
+    if (this.$store.leegoluauth.pageBuilderData.business_name) {
+      this.coverpreview =
+        "data:image/png;base64," +
+        this.$store.leegoluauth.pageBuilderData.coveruploads;
+      this.preview =
+        "data:image/png;base64," +
+        this.$store.leegoluauth.pageBuilderData.uploads;
+    } else {
+    }
+  },
 
   created() {
     this.getVendor();
+    this.getCollections();
     this.getVendorPhone();
+    this.loadData();
+  },
+  computed: {
+    sortedProducts() {
+      let products = this.grandselectedCollectionProducts;
+
+      if (this.sortingCriteria) {
+        // products = products.sort((a, b) => a.name.localeCompare(b.name));
+        products = products.filter((product) =>
+          product.name
+            .toLowerCase()
+            .includes(this.sortingCriteria.toLowerCase())
+        );
+      }
+
+      return products;
+    },
+    sortedColProducts() {
+      let products = this.selectedCollectionProducts;
+
+      if (this.sortingcolCriteria) {
+        products = products.filter((product) =>
+          product.name
+            .toLowerCase()
+            .includes(this.sortingcolCriteria.toLowerCase())
+        );
+      }
+
+      return products;
+    },
+    sortproducts() {
+      let products = this.products;
+
+      if (this.sorted) {
+        products = products.filter((product) =>
+          product.name.toLowerCase().includes(this.sorted.toLowerCase())
+        );
+      }
+
+      return products;
+    },
+    sortCollections() {
+      let products = this.collections;
+
+      if (this.sortedCollections) {
+        products = products.filter((product) =>
+          product.name
+            .toLowerCase()
+            .includes(this.sortedCollections.toLowerCase())
+        );
+      }
+
+      return products;
+    },
   },
   methods: {
-    previewImage(event) {
-      var input = event.target;
-      if (input.files) {
-        var reader = new FileReader();
-        reader.onload = (e) => {
-          this.preview = e.target.result;
-        };
-        this.image = input.files[0];
-        reader.readAsDataURL(input.files[0]);
+    selectCollection(collection) {
+      // console.log(collection);
+      this.selectedCollectionId = collection.id;
+      this.selectedCollectionProducts = collection.products;
+      this.showCollections = false;
+    },
+    grandselectCollection(collection) {
+      // console.log(collection);
+      if (collection.name === "All products") {
+        this.grandselectedCollectionProducts = this.allProductsArr;
+      } else {
+        const selectedCollection = this.collectionsArr.find(
+          (c) => c.id === collection.id
+        );
+        console.log(selectedCollection);
+        this.grandselectedCollectionProducts = selectedCollection.products;
+        // this.grandselectedCollectionProducts = this.allProductsArr.filter(
+        //   (product) => selectedCollection.products.includes(product)
+        // );
+      }
+      this.grandselectedCollectionId = collection.id;
+    },
+
+    showCollectionsFnc() {
+      this.selectedCollectionId = null;
+      this.selectedCollectionProducts = [];
+      this.showCollections = true;
+    },
+    async loadData() {
+      try {
+        const [collections, allProducts] = await Promise.all([
+          this.loadCollections(),
+          this.loadAllProducts(),
+        ]);
+        this.collectionsArr = collections;
+        this.allProductsArr = allProducts;
+        this.grandselectedCollectionProducts = allProducts;
+
+        // console.log(collections, allProducts);
+        this.combineProducts();
+      } catch (error) {
+        console.error("Error loading data:", error);
       }
     },
-    onItemClick() {
-      console.log("onItemClick");
+    loadCollections() {
+      return this.$api
+        .get(`collection/${this.$store.leegoluauth.vendorDetails.slug}/all`)
+        .then((response) => response.data.data);
+    },
+    loadAllProducts() {
+      return this.$api
+        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
+        .then((response) => response.data.vendor.products);
+    },
+    combineProducts() {
+      let allPData = {
+        name: "All products",
+        products: [...this.allProductsArr],
+      };
+      this.grandAllProductsArr = [allPData, ...this.collectionsArr];
     },
 
     getVendorPhone() {
@@ -290,7 +603,7 @@ export default {
       this.$api
         .get(`${vendor}/view-phone`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.vendorPhone = response.data.phone;
           this.loading = false;
         })
@@ -305,10 +618,25 @@ export default {
         .get(`vendor/${vendor}`)
         .then((response) => {
           this.vendor = response.data.vendor;
+          this.products = response.data.vendor.products;
           this.loading = false;
-          console.log(response);
+          // console.log(response);
         })
         .catch(({ response }) => {
+          this.loading = false;
+        });
+    },
+
+    getCollections() {
+      this.$api
+        .get(`collection/${this.$store.leegoluauth.vendorDetails.slug}/all`)
+        .then(({ data }) => {
+          console.log(data);
+          this.collections = data.data;
+          this.loading = false;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
           this.loading = false;
         });
     },
@@ -320,7 +648,7 @@ export default {
 .segment_wrap {
   // margin-top: 11rem;
   // background: rgba(217, 217, 217, 0.31);
-  // border: 1px dashed #000000;
+  // border: 1px dashed var(--primary-color);
   margin: 8rem auto 0rem;
   // width: 90%;
 }
@@ -335,7 +663,7 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 29px;
-  color: #000000;
+  color: var(--primary-color);
 }
 .right_nav img {
   width: 25px;
@@ -350,6 +678,22 @@ export default {
   background: #83b8db;
 }
 
+.segmentA {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+  color: #010101;
+}
+
+.showcollections {
+  background: var(--color-one);
+  color: #fff;
+  text-transform: capitalize;
+  margin-bottom: 2rem;
+}
+
 .editor_hero .q-btn {
   position: absolute;
   top: 5%;
@@ -362,12 +706,21 @@ export default {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: #000000;
+  color: var(--primary-color);
 }
 .vendor_btns {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.collection_name {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
 }
 
 .vendor_btns .q-btn.vendor_btn {
@@ -378,7 +731,7 @@ export default {
   font-weight: 600;
   font-size: 15px;
   line-height: 18px;
-  color: #1f7bb5;
+  color: var(--color-one);
   text-transform: capitalize;
   text-align: center;
   background: #ffffff;
@@ -393,7 +746,14 @@ export default {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: #000000;
+  color: var(--primary-color);
+}
+
+.none_desktop.q-btn {
+  color: var(--color-one) !important;
+  text-transform: capitalize;
+  text-align: center;
+  background: #ffffff;
 }
 
 .color_text {
@@ -402,13 +762,14 @@ export default {
   font-weight: 400;
   font-size: 10px;
   line-height: 12px;
-  color: #000000;
+  color: var(--primary-color);
   margin-bottom: 0.5rem;
 }
 
 .drop {
-  background: #1f7bb5;
-  border: 0.5px solid #1f7bb5;
+  background: var(--color-one);
+  border: 0.5px solid var(--color-one);
+  // border: 0.5px solid #1f7bb5;
   border-radius: 20px;
   color: #fff;
   text-transform: capitalize;
@@ -420,7 +781,7 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: #000000;
+  color: var(--primary-color);
 }
 
 .desc_text {
@@ -430,7 +791,7 @@ export default {
   font-weight: 400;
   font-size: 10px;
   line-height: 12px;
-  color: #000000;
+  color: var(--primary-color);
 }
 
 .menu {
@@ -442,7 +803,7 @@ export default {
   font-weight: 400;
   font-size: 10px;
   line-height: 12px;
-  color: #1f7bb5;
+  color: var(--color-two);
 }
 
 .left_details_title {
@@ -451,7 +812,7 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 29px;
-  color: #000000;
+  color: var(--primary-color);
 }
 
 .left_paragraph {
@@ -461,7 +822,7 @@ export default {
   font-size: 12px;
   line-height: 15px;
   margin-top: 1rem;
-  color: #000000;
+  color: var(--primary-color);
 }
 
 .layout {
@@ -478,7 +839,7 @@ export default {
   font-weight: 700;
   font-size: 14px;
   line-height: 17px;
-  color: #000000;
+  color: var(--primary-color);
 }
 
 .right .q-btn {
@@ -494,7 +855,7 @@ export default {
 }
 
 .upload_logo_area {
-  background: #cedfeb;
+  background: var(--color-two);
   height: 132px;
 }
 .upload_wrap {
@@ -504,12 +865,13 @@ export default {
 .left_logo_area img {
   width: 147.72px;
   height: 147.72px;
-  border: 6px solid #cedfeb;
+  border: 6px solid var(--color-two);
   border-radius: 10px;
 }
 
 .left_logo_area {
   position: relative;
+  // width: 100%;
 }
 
 .left_logo_area .outline.q-btn {
@@ -527,13 +889,13 @@ export default {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: #000000;
+  color: var(--primary-color);
   background: #ffffff;
 }
 
 .outline.q-btn::before {
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 1px solid var(--primary-color);
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.44);
   border-radius: 5px 5px 0px 0px;
 }
@@ -567,7 +929,7 @@ export default {
   text-align: center;
   color: #ffffff;
   white-space: nowrap;
-  background: #1f7bb5;
+  background: var(--color-one);
   border-radius: 17px;
   text-transform: capitalize;
 }
@@ -578,7 +940,7 @@ export default {
   font-size: 15px;
   line-height: 18px;
   text-transform: capitalize;
-  color: #000000;
+  color: var(--primary-color);
 }
 
 .sort_area .regular::before {
@@ -703,7 +1065,7 @@ export default {
   position: absolute;
   content: "";
   background: rgba(0, 0, 0, 0.5);
-  border: 6px solid #cedfeb;
+  border: 6px solid var(--color-two);
   border-radius: 10px;
   width: 100%;
   height: 100%;
@@ -767,7 +1129,8 @@ export default {
     justify-content: space-between;
     background: rgba(31, 123, 181, 0.24);
     padding: 0.5rem;
-    background: rgba(31, 123, 181, 0.74);
+    background: var(--color-two);
+    // background: rgba(31, 123, 181, 0.74);
   }
 
   .mobile_categories > .row {
@@ -792,7 +1155,8 @@ export default {
   }
 
   .segment_wrap {
-    margin-top: 1.5rem;
+    margin-top: 0rem;
+    // margin-top: 1.5rem;
     background: transparent;
     border: none;
   }
@@ -881,10 +1245,62 @@ export default {
     margin: 2rem auto 0;
     padding-bottom: 1rem;
   }
+  .left_logo_area {
+    width: 100%;
+  }
 
   .left_wrap .left_details {
     width: 100%;
     padding-left: 0.5rem;
   }
+}
+
+@media (max-width: 500px) {
+  .submit .q-btn {
+    height: 45px;
+    font-size: 15px;
+  }
+  .logo {
+    white-space: nowrap;
+  }
+
+  .segment_wrap {
+    margin-top: 2rem;
+  }
+  .desc_text {
+    display: block;
+    margin-bottom: 3rem;
+  }
+
+  .left_details_title {
+    font-size: 15px;
+    line-height: 4px;
+  }
+
+  .right .q-btn {
+    font-size: 10px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .left_details_desc {
+    font-size: 10px;
+  }
+  .outline.q-btn {
+    font-size: 10px;
+  }
+  .editor_hero {
+    height: 30vh;
+  }
+  .segment_wrap {
+    width: 100%;
+  }
+  // .left_logo_area img {
+  //   width: 63px;
+  //   height: 63px;
+  // }
 }
 </style>

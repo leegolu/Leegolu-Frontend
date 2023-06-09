@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf" class="bg-accent">
     <q-header class="header q-pt-xs" height-hint="58">
       <q-toolbar class="q-pb-sm">
-        <q-btn
+        <!-- <q-btn
           flat
           dense
           round
@@ -11,7 +11,7 @@
           aria-label="Menu"
           icon="menu"
           v-if="$q.screen.gt.xs"
-        />
+        /> -->
 
         <q-btn to="/" flat no-caps no-wrap class="q-ml-xs logo">
           <img src="/images/logored.png" alt="" />

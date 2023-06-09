@@ -209,6 +209,11 @@ export default {
   text-transform: capitalize;
   color: #ffffff;
 }
+.responsive_autofit_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
 
 .listing_ .left {
   display: flex;

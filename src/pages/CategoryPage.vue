@@ -220,7 +220,7 @@
       :class="$q.dark.isActive ? 'bg-grey-9' : 'white'"
     >
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-        <q-list class="q-px-sm q-py-xl" padding>
+        <q-list class="q-px-md q-py-xl" padding>
           <div class="left">
             <div class="section">
               <div class="section_main_text">
@@ -404,15 +404,26 @@ export default defineComponent({
       return filtered;
     },
 
+    // sortedProducts() {
+    //   let sorted = this.filteredProducts;
+
+    //   if (this.modelSort === "Lowest Price - Highest Price") {
+    //     sorted = sorted.sort((a, b) => a.price - b.price);
+    //   } else if (this.modelSort === "Highest Price - Lowest Price") {
+    //     sorted = sorted.sort((a, b) => b.price - a.price);
+    //   }
+    //   this.drawer = false;
+
+    //   return sorted;
+    // },
     sortedProducts() {
-      let sorted = this.filteredProducts;
+      let sorted = [...this.filteredProducts];
 
       if (this.modelSort === "Lowest Price - Highest Price") {
         sorted = sorted.sort((a, b) => a.price - b.price);
       } else if (this.modelSort === "Highest Price - Lowest Price") {
         sorted = sorted.sort((a, b) => b.price - a.price);
       }
-      this.drawer = false;
 
       return sorted;
     },
@@ -421,7 +432,7 @@ export default defineComponent({
   watch: {
     "$route.params.slug": {
       handler(to, from) {
-        console.log(to, from);
+        // console.log(to, from);
         this.getCategoryProducts();
         this.getcategory();
         this.pricegroup = "All";

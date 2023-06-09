@@ -2,7 +2,7 @@
   <section class="products q-pt-xl container">
     <div class="category_wrapper">
       <div class="left">
-        <div class="section">
+        <!-- <div class="section">
           <div class="each_category_wrap">
             <div
               v-for="(each, index) in thiscategory.subcategories"
@@ -17,93 +17,46 @@
               >
                 {{ each.name }}
               </q-item>
-              <!-- <span class="count"> | {{ each.count }} </span> -->
-            </div>
-          </div>
-        </div>
-
-        <!-- <div class="section q-pt-lg">
-          <div class="section_main_text">Location</div>
-          <q-select v-model="model" :options="options" />
-        </div>
-        <div class="section q-pt-lg">
-          <div class="section_main_text">Condition</div>
-          <q-option-group :options="optionsG" type="checkbox" v-model="group" />
-        </div>
-        <div class="section q-pt-lg">
-          <div class="section_main_text">Rating</div>
-          <div class="sort_rating">
-            <div class="row items-center">
-              <q-checkbox v-model="val" />
-              <q-rating
-                v-model="ratingModel"
-                size="1.5em"
-                :max="5"
-                color="secondary"
-              />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" />
-              <q-rating
-                v-model="ratingModel"
-                size="1.5em"
-                :max="4"
-                color="secondary"
-              />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" />
-              <q-rating
-                v-model="ratingModel"
-                size="1.5em"
-                :max="3"
-                color="secondary"
-              />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" />
-              <q-rating
-                v-model="ratingModel"
-                size="1.5em"
-                :max="2"
-                color="secondary"
-              />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" />
-              <q-rating
-                v-model="ratingModel"
-                size="1.5em"
-                :max="1"
-                color="secondary"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="section q-pt-lg">
-          <div class="section_main_text">Pricing</div>
-          <div class="sort_rating">
-            <div class="row items-center">
-              <q-checkbox v-model="val" label="₦2,000 to 5000" />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" label="₦5,000 to 10000" />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" label="₦10,000 to 20,000" />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" label="₦20,000 to 50,000" />
-            </div>
-            <div class="row items-center">
-              <q-checkbox v-model="val" label="₦50,000 to 100,000" />
+              <span class="count"> | {{ each.count }} </span>
             </div>
           </div>
         </div> -->
+        <div v-if="showState" class="section q-pt-lg">
+          <div class="section_main_text">Location (state)</div>
+
+          <q-select v-model="model" :options="options" />
+        </div>
+        <div v-else class="section q-pt-lg">
+          <div class="section_main_text">
+            Location(<small class="text-secondary">area</small>)
+          </div>
+          <q-select v-model="modelAreas" :options="options">
+            <template v-slot:append>
+              <q-icon
+                name="close"
+                @click.stop.prevent="closeLocationFilter"
+              /> </template
+          ></q-select>
+        </div>
+        <div class="section q-pt-lg">
+          <div class="section_main_text">Condition</div>
+          <q-option-group :options="optionsG" type="radio" v-model="group" />
+        </div>
+
+        <div class="section q-pt-lg">
+          <div class="section_main_text">Pricing</div>
+          <div class="sort_rating">
+            <q-option-group
+              :options="priceOptions"
+              type="radio"
+              v-model="pricegroup"
+            />
+          </div>
+        </div>
       </div>
 
       <div class="righ">
-        <div class="search_text_wrap q-pb-lg row justify-end items-start">
+        <div class="search_text_wrap q-pb-lg row justify-between items-center">
           <!-- <div class="search_left">
             <div class="search_small">200 results for</div>
             <div class="main_result_text">
@@ -111,6 +64,15 @@
               <span class="main_result_text_span"> | View All </span>
             </div>
           </div> -->
+          <q-btn
+            dense
+            v-if="!$q.screen.gt.xs"
+            unelevated
+            label="Filter"
+            color="secondary"
+            icon="chevron_left"
+            @click="drawer = !drawer"
+          />
 
           <div class="sort row items-center">
             <span class="sort_by q-mr-sm">Sort By:</span
@@ -121,9 +83,9 @@
             />
           </div>
         </div>
-        <div class="product_cards">
+        <div v-if="sortedProducts.length" class="product_cards">
           <div
-            v-for="(product, index) in products"
+            v-for="(product, index) in sortedProducts"
             :key="index"
             class="product"
           >
@@ -193,49 +155,84 @@
             </div>
           </div>
         </div>
+        <div v-else>No products fall under this Sub category</div>
       </div>
     </div>
-  </section>
-  <section class="products q-mb-lg q-pt-xl container">
-    <div class="head_text">Top Rated Shops</div>
-    <div class="product_cards">
-      <div v-for="(product, index) in topProducts" :key="index" class="product">
-        <img :src="product.product_image" alt="" />
-        <div class="location">
-          <p>{{ product.location }}</p>
-        </div>
-        <div class="name">
-          <p>{{ product.name }}</p>
-        </div>
-        <div class="price">
-          <p>{{ product.amount }}</p>
-        </div>
-        <div class="desc">
-          <p>{{ product.desc }}</p>
-        </div>
-        <div class="kinds">
-          <p class="kind">{{ product.kind }}</p>
-          <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
-        </div>
-        <div class="owners">
-          <p class="owner">
-            <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
-          </p>
-          <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
-            <q-rating
-              v-model="ratingModel"
-              size="1.5em"
-              :max="4"
-              color="black"
-            />
-            <span>{{ product.ratings_count }}</span>
-          </p>
-        </div>
-        <div class="love">
-          <i class="fa-regular fa-heart"></i>
-        </div>
-      </div>
-    </div>
+    <q-drawer
+      v-model="drawer"
+      :width="280"
+      :breakpoint="500"
+      bordered
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'white'"
+    >
+      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+        <q-list class="q-px-md q-py-xl" padding>
+          <div class="left">
+            <!-- <div class="section">
+              <div class="section_main_text">
+                {{ thiscategory.category }}
+                <span class="count">| {{ products.length }}</span>
+              </div>
+
+              <div class="each_category_wrap">
+                <div
+                  v-for="(each, index) in thiscategory.subcategories"
+                  :key="index"
+                  class="each_category"
+                >
+                  <q-item
+                    :to="{
+                      name: 'subcategory-page',
+                      params: { slug: each.slug },
+                    }"
+                  >
+                    {{ each.name }}
+                  </q-item>
+                </div>
+              </div>
+            </div> -->
+
+            <div v-if="showState" class="section q-pt-lg">
+              <div class="section_main_text">Location (state)</div>
+
+              <q-select v-model="model" :options="options" />
+            </div>
+            <div v-else class="section q-pt-lg">
+              <div class="section_main_text">
+                Location(<small class="text-secondary">area</small>)
+              </div>
+              <q-select v-model="modelAreas" :options="options">
+                <template v-slot:append>
+                  <q-icon
+                    name="close"
+                    @click.stop.prevent="closeLocationFilter"
+                    class="cursor-pointer"
+                  /> </template
+              ></q-select>
+            </div>
+            <div class="section q-pt-lg">
+              <div class="section_main_text">Condition</div>
+              <q-option-group
+                :options="optionsG"
+                type="radio"
+                v-model="group"
+              />
+            </div>
+
+            <div class="section q-pt-lg">
+              <div class="section_main_text">Pricing</div>
+              <div class="sort_rating">
+                <q-option-group
+                  :options="priceOptions"
+                  type="radio"
+                  v-model="pricegroup"
+                />
+              </div>
+            </div>
+          </div>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
   </section>
 
   <FooterVue class="q-mt-xl" />
@@ -252,8 +249,19 @@ import "@splidejs/vue-splide/css/core";
 export default defineComponent({
   name: "IndexPage",
   setup() {
+    const miniState = ref(false);
     return {
       ratingModel: ref(4),
+      miniState,
+      drawer: ref(false),
+
+      drawerClick(e) {
+        if (miniState.value) {
+          miniState.value = false;
+
+          e.stopPropagation();
+        }
+      },
     };
   },
   components: {
@@ -274,203 +282,37 @@ export default defineComponent({
         "Akwa Ibom, Nigeria",
         "Delta, Nigeria",
       ],
-      optionsSort: ["Lowest Price", "Highest Price"],
-      group: ref([]),
+      optionsSort: [
+        "none",
+        "Lowest Price - Highest Price",
+        "Highest Price - Lowest Price",
+      ],
+      group: ref("All"),
+      pricegroup: ref("All"),
       optionsG: [
+        { label: "All", value: "All" },
         { label: "Brand New", value: "Brand New" },
-        { label: "Used", value: "Used", color: "green" },
+        { label: "Used", value: "Used" },
+      ],
+      priceOptions: [
+        { label: "All", value: "All" },
+        { label: "₦2,000 - ₦5,000", value: "2000 - 5000" },
+        { label: "₦5,000 - ₦10,000", value: "5000 - 10000" },
+        { label: "₦10,000 - ₦20,000", value: "10000 - 20000" },
+        { label: "₦20,000 - ₦50,000", value: "20000 - 50000" },
+        {
+          label: "₦50,000 - ₦100,000",
+          value: "59000 - 100000",
+        },
       ],
 
-      model: "Lagos, Nigeria",
-      modelSort: "Lowest Price",
+      model: "",
+      modelAreas: "",
+      modelSort: "none",
+      selectedLocation: "",
+      showState: true,
       val: false,
       ratingModel: ref(3),
-      category: {
-        name: "Electronics",
-        count: "2000",
-        subCategory: [
-          {
-            name: "Laptops and Computers",
-            count: "11291",
-          },
-          {
-            name: "Home Appliances",
-            count: "2390",
-          },
-          {
-            name: "Gaming and Entertainment",
-            count: "11291",
-          },
-          {
-            name: "Head Phones",
-            count: "89",
-          },
-          {
-            name: "Speakers & Sound",
-            count: "704",
-          },
-          {
-            name: "Musical Instruments",
-            count: "203",
-          },
-          {
-            name: "Cameras",
-            count: "803",
-          },
-          {
-            name: "Interior Lighting",
-            count: "1002",
-          },
-        ],
-      },
-      topProducts: [
-        {
-          product_image: "/images/car.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/sneakers.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "",
-        },
-        {
-          product_image: "/images/tv.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Used",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/computer.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "New",
-          make: "",
-        },
-      ],
-      productss: [
-        {
-          product_image: "/images/car.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/sneakers.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "",
-        },
-        {
-          product_image: "/images/tv.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Used",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/computer.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "New",
-          make: "",
-        },
-        {
-          product_image: "/images/ac.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/keyboard.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/sneak.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "",
-        },
-        {
-          product_image: "/images/mytv.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-      ],
     };
   },
 
@@ -478,6 +320,29 @@ export default defineComponent({
     "$route.params.slug": {
       handler() {
         this.getsubCategoryProducts();
+        this.pricegroup = "All";
+        this.modelSort = "none";
+        this.group = "All";
+      },
+      immediate: true,
+    },
+    model: {
+      handler() {
+        if (this.model !== "") {
+          this.getAreas(this.model);
+          this.showState = false;
+        }
+      },
+      immediate: true,
+    },
+    modelAreas: {
+      handler() {
+        // console.log(this.selectedLocation);
+        // console.log(this.modelAreas);
+        // console.log(this.modelAreas.name);
+        if (this.modelAreas) {
+          this.selectedLocation = this.modelAreas.name;
+        }
       },
       immediate: true,
     },
@@ -485,6 +350,54 @@ export default defineComponent({
 
   created() {
     this.getsubCategoryProducts();
+    this.getStates();
+  },
+
+  computed: {
+    filteredProducts() {
+      let filtered = this.products;
+      if (this.group === "Brand New") {
+        filtered = filtered.filter(
+          (product) => product.condition === "Brand new"
+        );
+      } else if (this.group === "Used") {
+        filtered = filtered.filter((product) => product.condition === "Used");
+      } else {
+        filtered = this.products;
+      }
+
+      if (this.pricegroup !== "All") {
+        const [min, max] = this.pricegroup.split("-");
+        filtered = filtered.filter(
+          (product) =>
+            product.price >= parseInt(min) &&
+            (max ? product.price <= parseInt(max) : true)
+        );
+      }
+
+      // console.log(this.selectedLocation);
+
+      if (this.selectedLocation.trim() !== "") {
+        const location = this.selectedLocation.trim().toLowerCase();
+        filtered = filtered.filter((product) =>
+          product.area.toLowerCase().includes(location)
+        );
+      }
+      this.drawer = false;
+      return filtered;
+    },
+
+    sortedProducts() {
+      let sorted = [...this.filteredProducts];
+
+      if (this.modelSort === "Lowest Price - Highest Price") {
+        sorted = sorted.sort((a, b) => a.price - b.price);
+      } else if (this.modelSort === "Highest Price - Lowest Price") {
+        sorted = sorted.sort((a, b) => b.price - a.price);
+      }
+
+      return sorted;
+    },
   },
 
   methods: {
@@ -493,6 +406,54 @@ export default defineComponent({
         name: "product.detail",
         params: { slug: product.slug },
       });
+    },
+    closeLocationFilter() {
+      // console.log("close");
+      this.selectedLocation = "";
+      this.modelAreas = "";
+      this.getStates();
+      this.model = "";
+    },
+    getStates() {
+      this.showState = true;
+      this.$api
+        .get("states")
+        .then((response) => {
+          // console.log(response);
+
+          const modifiedArray = response.data.data.map((obj) => ({
+            label: obj.name,
+            value: obj.id,
+            ...obj,
+          }));
+          this.options = modifiedArray;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getAreas(id) {
+      this.showarea = true;
+      this.loading = true;
+      this.$api
+        .get(`${id.value}/areas`)
+        .then((response) => {
+          // console.log(response);
+          this.loading = false;
+          const modifiedArray = response.data.data.map((obj) => ({
+            label: obj.name,
+            value: obj.id,
+            ...obj,
+          }));
+          this.options = modifiedArray;
+          this.showState = false;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
     },
     addtoFav(slug) {
       this.$api
@@ -561,7 +522,7 @@ export default defineComponent({
         .get(`${category}/products`)
         .then((response) => {
           this.products = response.data.data;
-          // console.log(response);
+          console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -650,6 +611,7 @@ p {
   padding: 2rem;
   position: sticky;
   top: 20%;
+  min-width: 250px;
   height: fit-content;
 }
 
@@ -839,7 +801,11 @@ p {
     flex-wrap: wrap;
   }
 }
-@media (max-width: 500px) {
+
+@media (max-width: 600px) {
+  .category_wrapper .left {
+    display: none;
+  }
   .category_wrapper {
     grid-template-columns: 1fr;
   }

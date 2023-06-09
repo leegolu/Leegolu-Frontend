@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf" class="">
     <q-header class="header q-py-xs" height-hint="58">
       <q-toolbar>
-        <q-btn
+        <!-- <q-btn
           flat
           dense
           round
@@ -11,7 +11,7 @@
           aria-label="Menu"
           icon="menu"
           v-if="$q.screen.gt.xs"
-        />
+        /> -->
 
         <q-btn flat no-caps no-wrap class="q-ml-xs logo">
           <img src="/images/logored.png" alt="" />

@@ -403,6 +403,11 @@ export default {
   align-items: center;
 }
 
+.btns {
+  gap: 0.4rem;
+  justify-content: center;
+}
+
 .top img {
   width: 19.17px;
   height: 19.12px;
@@ -419,6 +424,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 2rem 0 1rem;
+  flex-wrap: wrap;
   // max-width: 600px;
 }
 .main_area_top {
@@ -444,6 +450,9 @@ export default {
   font-size: 14px;
   line-height: 19px;
   color: #1f7bb5;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .link i {

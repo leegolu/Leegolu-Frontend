@@ -150,7 +150,7 @@ th.text-right {
 
 .responsive_autofit_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
 }
 
@@ -170,7 +170,8 @@ th.text-right {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
-  color: #969696;
+  color: #000;
+  // color: #969696;
 }
 .submit .q-btn .q-btn__content {
   justify-content: center;

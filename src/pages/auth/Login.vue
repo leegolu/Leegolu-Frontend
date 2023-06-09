@@ -15,6 +15,8 @@
           </div>
         </div>
 
+        <!-- {{ errors }} -->
+
         <form @submit.prevent="login" id="form">
           <div class="input-box active-grey">
             <label class="input-label">Email Address</label>
@@ -109,10 +111,11 @@ export default {
 
           // this.$router.replace({ name: "business.dashboard" });
         })
-        .catch((e) => {
+        .catch(({ response }) => {
           this.loading = false;
           // let error = this.$plugins.reader.error(e);
-          this.errors = error.errors || {};
+          this.errors = response.data.errors || {};
+          // this.errors = error.errors || {};
           // this.$helper.notify(error.message || error, error.status || "error");
         });
     },

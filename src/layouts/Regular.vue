@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf" class="bg-accent">
     <q-header class="header q-py-xs" height-hint="58">
       <q-toolbar>
-        <q-btn
+        <!-- <q-btn
           flat
           dense
           round
@@ -10,7 +10,7 @@
           @click="toggleLeftDrawer"
           aria-label="Menu"
           icon="menu"
-        />
+        /> -->
 
         <q-btn flat no-caps no-wrap class="q-ml-xs logo" v-if="$q.screen.gt.xs">
           <img src="/images/logored.png" alt="" />
@@ -592,6 +592,7 @@ export default {
       areas: [],
       errors: [],
       loading: false,
+      successModal: false,
       data: { negotiable: true },
       data2: {},
     };

@@ -588,7 +588,7 @@ export default {
           this.$store.leegoluauth.modal = true;
         })
         .catch(({ response }) => {
-          console.log(response);
+          // console.log(response);
           this.loading = false;
           // let error = this.$plugins.reader.error(e);
           this.errors = response.data.errors || {};
