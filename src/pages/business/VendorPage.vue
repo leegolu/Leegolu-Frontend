@@ -460,7 +460,7 @@ export default {
     DashboardHomeListingVue,
   },
   mounted() {
-    console.log(this.$store.leegoluauth.pageBuilderData);
+    // console.log(this.$store.leegoluauth.pageBuilderData);
     this.colorSchemeStyles =
       this.$store.leegoluauth.pageBuilderData.selectedcoScheme.variables;
     this.segments = this.$store.leegoluauth.pageBuilderData.segments;
@@ -549,7 +549,7 @@ export default {
         const selectedCollection = this.collectionsArr.find(
           (c) => c.id === collection.id
         );
-        console.log(selectedCollection);
+        // console.log(selectedCollection);
         this.grandselectedCollectionProducts = selectedCollection.products;
         // this.grandselectedCollectionProducts = this.allProductsArr.filter(
         //   (product) => selectedCollection.products.includes(product)
@@ -631,7 +631,7 @@ export default {
       this.$api
         .get(`collection/${this.$store.leegoluauth.vendorDetails.slug}/all`)
         .then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           this.collections = data.data;
           this.loading = false;
         })
