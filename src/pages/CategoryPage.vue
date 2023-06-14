@@ -562,10 +562,10 @@ export default defineComponent({
               color: "green",
             });
           }
-          this.$q.notify({
-            message: "An error occured",
-            color: "green",
-          });
+          // this.$q.notify({
+          //   message: "An error occured",
+          //   color: "green",
+          // });
           this.loading = false;
           this.errors = error.errors || {};
         });

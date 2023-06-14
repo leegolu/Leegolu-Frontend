@@ -2,19 +2,19 @@
   <div class="wrapp">
     <div class="top">
       <span class="title">
-        <i class="fa-solid q-mr-sm fa-message"></i>
+        <!-- <i class="fa-solid q-mr-sm fa-message"></i> -->
         My Favorites | {{ favourites.length }}
       </span>
 
       <div class="sort_area">
         <div class="left">
-          <q-btn class="active">Listings </q-btn>
-          <q-btn class="regular"> Shop</q-btn>
+          <q-btn flat class="active">Listings </q-btn>
+          <q-btn flat class="regular"> Shop</q-btn>
         </div>
       </div>
     </div>
 
-    <section v-if="favourites.length > 0" class="products q-pt-xl container">
+    <section v-if="favourites.length > 0" class="products q-pt-sm container">
       <div class="head_text">Favorite Listings</div>
       <div class="product_cards">
         <div
@@ -230,12 +230,13 @@ export default {
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.errors = response.data[0];
+          this.errors = response.data.message;
           this.loading = false;
           this.$q.notify({
-            message: `An error occured.`,
+            message: response.data.message,
             color: "red",
-            position: "bottom",
+            position: "top",
+            actions: [{ icon: "close", color: "white" }],
           });
           // console.log("Error:", response);
         });

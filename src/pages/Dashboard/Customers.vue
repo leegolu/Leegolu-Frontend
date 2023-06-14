@@ -8,13 +8,13 @@
 
       <div class="sort_area">
         <div class="left">
-          <q-btn class="active"> All Customers </q-btn>
-          <q-btn class="regular"> Call Leads </q-btn>
-          <q-btn class="regular"> Chat Leads </q-btn>
+          <q-btn flat class="active"> All Customers </q-btn>
+          <q-btn flat class="regular"> Call Leads </q-btn>
+          <q-btn flat class="regular"> Chat Leads </q-btn>
         </div>
       </div>
     </div>
-    <div v-if="rows.length > 0" class="style q-pa-md">
+    <div v-if="rows.length > 0" class="style q-py-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"
@@ -59,7 +59,13 @@
         <template v-slot:body-cell-created_at="props">
           <q-td :props="props">
             <div class="added">
-              {{ new Date(props.row.created_at) }}
+              {{
+                new Date(props.row.created_at).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }}
             </div>
           </q-td>
         </template>
@@ -72,19 +78,21 @@
                 size="13px"
                 text-color="primary"
                 rounded
+                :disable="props.row.mode === 'chat'"
                 target="_blank"
                 :href="`tel:${props.row.phone}`"
                 class="actn_btn"
-                icon="fa-solid fa-phone-volume"
-              />
+                ><img src="/images/call.svg" alt=""
+              /></q-btn>
               <q-btn
                 text-color="primary"
                 rounded
+                :disable="props.row.mode === 'call'"
                 @click="toggleModal(props.row)"
                 class="actn_btn"
-                icon="fa-solid fa-message"
-              />
-              <q-btn-dropdown class="modify" color="primary" label="Modify">
+                ><img src="/images/headernotif.svg" alt=""
+              /></q-btn>
+              <q-btn-dropdown class="modify" label="Modify">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
@@ -124,17 +132,27 @@
     <q-dialog v-model="advertdialog" persistent>
       <q-card class="card">
         <div class="dialog_content">
-          <p class="advert text-center">Chat Lead</p>
+          <p class="advert text-center">{{ rowData.mode }} Lead</p>
+          <!-- <p class="advert text-center">Chat Lead</p> -->
           <div class="dialog_top advert">
             <div class="left_dialog">
-              <img :src="rowData.image_url" alt="" />
+              <img
+                :src="
+                  rowData.image_url
+                    ? rowData.image_url
+                    : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU'
+                "
+                alt=""
+              />
             </div>
 
             <div class="det">
+              <!-- {{ rowData }} -->
               <div class="title name_top">{{ rowData.userName }}</div>
               <div class="name_down">{{ rowData.kind }}</div>
+
               <div class="name_copy">
-                08099999694
+                <a :href="`tel:${rowData.phone}`">{{ rowData.phone }}</a>
                 <span @click="copy"><i class="fa-solid fa-copy"></i></span>
               </div>
             </div>
@@ -192,7 +210,8 @@
 
           <div class="boost">
             <div class="minimize">
-              Minimize <i class="fa-solid fa-arrow-up"></i>
+              Minimize
+              <i @click="advertdialog = false" class="fa-solid fa-arrow-up"></i>
             </div>
             <q-btn> Call Now </q-btn>
           </div>
@@ -381,6 +400,19 @@ export default {
   color: #000000;
 }
 
+.modify {
+  background: #c2e6e9;
+  border-radius: 5px;
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  color: #1f7bb5;
+  text-transform: capitalize;
+}
+
 .sort_area {
   // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
@@ -468,6 +500,11 @@ export default {
   align-items: center;
 }
 
+.actn_btn img {
+  width: 18px;
+  height: 18px;
+}
+
 .name_row {
   display: flex;
   align-items: center;
@@ -481,7 +518,7 @@ export default {
   font-weight: 600;
   font-size: 12px;
   line-height: 16px;
-  text-align: center;
+  // text-align: center;
 
   color: #b0b0b0;
 }
@@ -520,7 +557,7 @@ export default {
 
 .name_copy span {
   position: absolute;
-  right: -1%;
+  // right: -1%;
   top: -32%;
 }
 

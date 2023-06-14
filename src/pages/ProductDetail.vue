@@ -11,6 +11,7 @@
           v-model="slide"
           arrows
           thumbnails
+          class="carou"
           infinite
         >
           <q-carousel-slide
@@ -83,10 +84,12 @@
           />
           <q-btn
             flat
+            @click="viewChat"
             color="white"
             class="bg-primary"
             icon="fa-solid fa-message"
             label="Chat Seller"
+            :loading="loadingChatBtn"
           />
         </div>
         <hr class="q-mt-xl q-mb-md" />
@@ -259,9 +262,17 @@
             >
           </div>
 
-          <q-btn @click="phoneDialog = false" flat icon="close" />
+          <q-btn class="close" @click="phoneDialog = false" flat icon="close" />
         </div>
       </q-card>
+    </q-dialog>
+    <q-dialog v-model="chat">
+      <ChatPageVue
+        :conversationDetails="conversationDetails"
+        :conversationMessages="conversationMessages"
+        :productData="productData"
+        @closeModal="close"
+      />
     </q-dialog>
   </div>
 </template>
@@ -269,6 +280,8 @@
 <script>
 import { ref } from "vue";
 import FooterVue from "src/components/Footer.vue";
+import ChatPageVue from "src/components/ChatPage.vue";
+
 export default {
   setup() {
     return {
@@ -279,6 +292,11 @@ export default {
       hoursago: "",
       loading: ref(true),
       loadingBtn: ref(false),
+      loadingChatBtn: ref(false),
+      conversationDetails: {},
+      conversationMessages: [],
+      productData: {},
+      chat: ref(false),
       phone_number: "",
       phoneDialog: ref(false),
     };
@@ -286,47 +304,30 @@ export default {
 
   components: {
     FooterVue,
+    ChatPageVue,
   },
-  // mounted() {
-  //   var splide = new Splide("#main-carousel", {
-  //     pagination: false,
-  //   });
-
-  //   var thumbnails = document.getElementsByClassName("thumbnail");
-  //   var current;
-
-  //   for (var i = 0; i < thumbnails.length; i++) {
-  //     initThumbnail(thumbnails[i], i);
-  //   }
-
-  //   function initThumbnail(thumbnail, index) {
-  //     thumbnail.addEventListener("click", function () {
-  //       splide.go(index);
-  //     });
-  //   }
-
-  //   splide.on("mounted move", function () {
-  //     var thumbnail = thumbnails[splide.index];
-
-  //     if (thumbnail) {
-  //       if (current) {
-  //         current.classList.remove("is-active");
-  //       }
-
-  //       thumbnail.classList.add("is-active");
-  //       current = thumbnail;
-  //     }
-  //   });
-
-  //   splide.mount();
-  // },
 
   created() {
     this.getProduct();
+
+    // this.$watch(
+    //   (e) => echo.listen,
+    //   (listen) => {
+    //     if (listen) {
+    //       !this.whispering && this.listenForIsTyping();
+    //       !this.listening && this.listenForNewMessage();
+    //     }
+    //   },
+    //   { immediate: true, deep: true }
+    // );
     // console.log(this.$router.currentRoute.value.fullPath);
   },
 
   methods: {
+    close() {
+      this.chat = false;
+      // console.log("first");
+    },
     getProduct() {
       let product = this.$router.currentRoute.value.params.slug;
       this.loading = true;
@@ -381,6 +382,28 @@ export default {
           this.loadingBtn = false;
           this.errors = error.errors || {};
         });
+    },
+
+    viewChat() {
+      this.loadingChatBtn = true;
+      let product = this.$router.currentRoute.value.params.slug;
+      // .post(`${product}/${this.product.vendor.slug}/create/conversation`)
+
+      this.$api
+        .post(`${product}/create/conversation`)
+        .then((response) => {
+          this.loadingChatBtn = false;
+          // console.log(response);
+          this.conversationDetails = response.data.conversation;
+          this.productData = response.data.product;
+          this.chat = true;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.loadingChatBtn = false;
+          this.errors = error.errors || {};
+        });
+      // this.chat = true;
     },
   },
 };

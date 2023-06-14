@@ -4,7 +4,7 @@
       <q-spinner-comment color="primary" size="5em" />
     </div>
   </div>
-  <div v-if="!loading" :style="colorSchemeStyles" class="bg-white">
+  <div v-if="!loading" :style="colorSchemeStyles">
     <div
       :style="`background: url(${coverpreview}); background-repeat: no-repeat; background-size:cover`"
       class="editor_hero"
@@ -25,7 +25,7 @@
               <div v-if="vendor.about" class="left_details_desc q-mt-sm">
                 {{ vendor.about.name }}
               </div>
-              <div class="rating row items-center">
+              <!-- <div class="rating row items-center">
                 <q-rating
                   v-model="ratingModel"
                   size="1em"
@@ -34,7 +34,7 @@
                   class="q-my-sm"
                 />
                 <span>240</span>
-              </div>
+              </div> -->
               <!-- <div class="rating row items-center"></div> -->
 
               <div class="location">
@@ -56,13 +56,10 @@
               label="Like"
               flat
             />
-            <q-btn
-              class="none_ vendor_btn"
-              icon="fa-solid fa-phone-volume"
-              label="Contact Business"
-              flat
-              @click="phoneDialog = true"
-            />
+            <q-btn class="none_ vendor_btn" flat @click="phoneDialog = true">
+              <img src="/images/cal.svg" alt="" />
+              <span class="q-ml-sm">Contact Business</span></q-btn
+            >
           </div>
 
           <div class="row none_desktop q-gutter-md no-wrap items-center">
@@ -81,7 +78,9 @@
     <div v-if="segments === 'Segment A'" class="segment_wrap">
       <div class="mobile_categories">
         <div class="row items-center no-wrap justify-center">
-          <q-btn-dropdown flat class="drop" color="white" label="All Products">
+          <q-btn flat class="drop" color="white" label="All Products" />
+
+          <!-- <q-btn-dropdown flat class="drop" color="white" label="All Products">
             <q-list>
               <q-item clickable v-close-popup @click="onItemClick">
                 <q-item-section>
@@ -89,14 +88,19 @@
                 </q-item-section>
               </q-item>
             </q-list>
-          </q-btn-dropdown>
-          <div class="input_search">
+          </q-btn-dropdown> -->
+          <div @click="toggleModalSearch = true" class="input_search">
             <input
               v-model="sorted"
               placeholder="Search products..."
               type="text"
             />
-            <i class="fa-solid text-primary fa-magnifying-glass"></i>
+            <i
+              @click="toggleModalSearch = true"
+              class="fa-solid text-primary fa-magnifying-glass"
+            ></i>
+
+            <!-- <i @click="toggleModalSearch = true"  class="fa-solid text-primary  fa-magnifying-glass mobile"></i> -->
           </div>
         </div>
       </div>
@@ -120,34 +124,36 @@
         </div>
       </div>
 
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
+      <div class="holder">
+        <div class="">
+          <div class="desc_text q-pt-lg container">
+            It’s how we’ve always described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...
+            <q-btn
+              style="min-height: 0; padding: 0; text-transform: capitalize"
+              flat
+              class="text-weight-bold"
+            >
+              Read more
+            </q-btn>
+          </div>
+          <!-- <div class="segmentA q-pt-lg container">My Collections</div> -->
+          <div
+            v-if="!loading && vendor && products.length"
+            class="responsive_autofit_grid container"
           >
-            Read more
-          </q-btn>
-        </div>
-        <!-- <div class="segmentA q-pt-lg container">My Collections</div> -->
-        <div
-          v-if="!loading && vendor && products.length"
-          class="responsive_autofit_grid container"
-        >
-          <DashboardHomeListingVue
-            v-for="(listing, index) in sortproducts"
-            :key="index"
-            :listing="listing"
-          />
-        </div>
-        <div v-else class="empty">
-          <img src="/images/empty.svg" alt="" />
+            <DashboardHomeListingVue
+              v-for="(listing, index) in sortproducts"
+              :key="index"
+              :listing="listing"
+            />
+          </div>
+          <div v-else class="empty">
+            <img src="/images/empty.svg" alt="" />
 
-          <div class="empty_text">
-            You currently have not listed any products
+            <div class="empty_text">
+              You currently have not listed any products
+            </div>
           </div>
         </div>
       </div>
@@ -175,13 +181,16 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <div class="input_search">
+          <div @click="toggleModalSearch = true" class="input_search">
             <input
               v-model="sortingCriteria"
               placeholder="Search products..."
               type="text"
             />
-            <i class="fa-solid text-primary fa-magnifying-glass"></i>
+            <i
+              @click="toggleModalSearch = true"
+              class="fa-solid text-primary fa-magnifying-glass"
+            ></i>
           </div>
         </div>
       </div>
@@ -217,33 +226,35 @@
           </div>
         </div>
       </div>
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
+      <div class="holder">
+        <div class="">
+          <div class="desc_text q-pt-lg container">
+            It’s how we’ve always described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...
+            <q-btn
+              style="min-height: 0; padding: 0; text-transform: capitalize"
+              flat
+              class="text-weight-bold"
+            >
+              Read more
+            </q-btn>
+          </div>
+          <div
+            v-if="grandselectedCollectionProducts.length"
+            class="responsive_autofit_grid container"
           >
-            Read more
-          </q-btn>
-        </div>
-        <div
-          v-if="grandselectedCollectionProducts.length"
-          class="responsive_autofit_grid container"
-        >
-          <DashboardHomeListingVue
-            v-for="(listing, index) in sortedProducts"
-            :key="index"
-            :listing="listing"
-          />
-        </div>
-        <div v-else class="empty">
-          <img src="/images/empty.svg" alt="" />
+            <DashboardHomeListingVue
+              v-for="(listing, index) in sortedProducts"
+              :key="index"
+              :listing="listing"
+            />
+          </div>
+          <div v-else class="empty">
+            <img src="/images/empty.svg" alt="" />
 
-          <div class="empty_text">
-            You currently have not listed any products under this collection
+            <div class="empty_text">
+              You currently have not listed any products under this collection
+            </div>
           </div>
         </div>
       </div>
@@ -265,7 +276,7 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <div class="input_search">
+          <div @click="toggleModalSearch = true" class="input_search">
             <input
               v-if="showCollections"
               v-model="sortedCollections"
@@ -278,7 +289,10 @@
               placeholder="Search products..."
               type="text"
             />
-            <i class="fa-solid text-primary fa-magnifying-glass"></i>
+            <i
+              @click="toggleModalSearch = true"
+              class="fa-solid text-primary fa-magnifying-glass"
+            ></i>
           </div>
         </div>
       </div>
@@ -307,73 +321,75 @@
           </div>
         </div>
       </div>
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
-          >
-            Read more
-          </q-btn>
-        </div>
-
-        <!-- {{ collections.length }} -->
-        <div v-if="showCollections">
-          <div
-            v-if="collections.length"
-            class="responsive_autofit_grid q-pt-lg q-pb-xl container"
-          >
-            <div
-              @click="selectCollection(collection)"
-              v-for="(collection, index) in sortCollections"
-              :key="index"
+      <div class="holder">
+        <div class="">
+          <div class="desc_text q-pt-lg container">
+            It’s how we’ve always described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...
+            <q-btn
+              style="min-height: 0; padding: 0; text-transform: capitalize"
+              flat
+              class="text-weight-bold"
             >
-              <img :src="collection.avatar.url" alt="" />
-              <div class="collection_name">
-                {{ collection.name }}
+              Read more
+            </q-btn>
+          </div>
+
+          <!-- {{ collections.length }} -->
+          <div v-if="showCollections">
+            <div
+              v-if="collections.length"
+              class="responsive_autofit_grid q-pt-lg q-pb-xl container"
+            >
+              <div
+                @click="selectCollection(collection)"
+                v-for="(collection, index) in sortCollections"
+                :key="index"
+              >
+                <img :src="collection.avatar.url" alt="" />
+                <div class="collection_name">
+                  {{ collection.name }}
+                </div>
+              </div>
+            </div>
+            <div v-else class="empty">
+              <img src="/images/empty.svg" alt="" />
+
+              <div class="empty_text">
+                You currently have not created any collections
               </div>
             </div>
           </div>
-          <div v-else class="empty">
-            <img src="/images/empty.svg" alt="" />
 
-            <div class="empty_text">
-              You currently have not created any collections
-            </div>
-          </div>
-        </div>
-
-        <div v-if="!showCollections">
-          <div
-            v-if="selectedCollectionProducts.length"
-            class="responsive_autofit_grid container"
-          >
-            <DashboardHomeListingVue
-              v-for="(listing, index) in sortedColProducts"
-              :key="index"
-              :listing="listing"
-            />
-          </div>
-          <div v-else class="empty">
-            <img src="/images/empty.svg" alt="" />
-
-            <div class="empty_text">
-              You currently have not listed any products on this collection
-            </div>
-          </div>
-
-          <div class="flex justify-center">
-            <q-btn
-              @click="showCollectionsFnc"
-              v-if="!showCollections"
-              flat
-              class="showcollections"
+          <div v-if="!showCollections">
+            <div
+              v-if="selectedCollectionProducts.length"
+              class="responsive_autofit_grid container"
             >
-              Show Collections
-            </q-btn>
+              <DashboardHomeListingVue
+                v-for="(listing, index) in sortedColProducts"
+                :key="index"
+                :listing="listing"
+              />
+            </div>
+            <div v-else class="empty">
+              <img src="/images/empty.svg" alt="" />
+
+              <div class="empty_text">
+                You currently have not listed any products on this collection
+              </div>
+            </div>
+
+            <div class="flex justify-center">
+              <q-btn
+                @click="showCollectionsFnc"
+                v-if="!showCollections"
+                flat
+                class="showcollections"
+              >
+                Show Collections
+              </q-btn>
+            </div>
           </div>
         </div>
       </div>
@@ -410,18 +426,74 @@
           <a target="_blank" :href="`tel:${vendorPhone}`"
             >Call {{ vendorPhone }}</a
           >
-          <q-btn flat>Chat Seller </q-btn>
+          <q-btn @click="viewChat" :loading="loadingChatBtn" flat
+            >Chat Seller
+          </q-btn>
         </div>
 
         <q-btn class="close" @click="phoneDialog = false" flat icon="close" />
       </div>
     </q-card>
   </q-dialog>
+  <q-dialog v-model="toggleModalSearch" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Search</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          v-if="segments === 'Segment A'"
+          v-model="sorted"
+          autofocus
+          @keyup.enter="toggleModalSearch = false"
+        />
+        <q-input
+          dense
+          v-if="segments === 'Segment B'"
+          v-model="sortingCriteria"
+          autofocus
+          @keyup.enter="toggleModalSearch = false"
+        />
+
+        <div v-if="segments === 'Segment C'">
+          <q-input
+            dense
+            v-if="showCollections"
+            v-model="sortedCollections"
+            autofocus
+            @keyup.enter="toggleModalSearch = false"
+          />
+          <q-input
+            dense
+            v-if="!showCollections"
+            v-model="sortingcolCriteria"
+            autofocus
+            @keyup.enter="toggleModalSearch = false"
+          />
+        </div>
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Close" v-close-popup />
+        <!-- <q-btn flat label="Add address" v-close-popup /> -->
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+  <q-dialog v-model="chat">
+    <ChatPageVue
+      :conversationDetails="conversationDetails"
+      :conversationMessages="conversationMessages"
+      @closeModal="close"
+    />
+  </q-dialog>
 </template>
 
 <script>
 import { ref } from "vue";
 import DashboardHomeListingVue from "src/components/listings/DashboardHomeListing.vue";
+import ChatPageVue from "src/components/ChatPage.vue";
 export default {
   data() {
     return {
@@ -430,6 +502,8 @@ export default {
       businessDetailsModal: false,
       coverpreview: "/images/coverbg.svg",
       value: false,
+      chat: false,
+      loadingChatBtn: false,
       phoneDialog: false,
       preview: "/images/sqrpreview.png",
       segmentsModal: false,
@@ -440,8 +514,11 @@ export default {
       colorSchemeStyles: "",
       segments: "",
       collections: [],
+      toggleModalSearch: false,
       showCollections: true,
       products: [],
+      conversationDetails: {},
+      conversationMessages: [],
       collectionsArr: [],
       allProductsArr: [],
       grandAllProductsArr: [],
@@ -458,9 +535,10 @@ export default {
 
   components: {
     DashboardHomeListingVue,
+    ChatPageVue,
   },
   mounted() {
-    // console.log(this.$store.leegoluauth.pageBuilderData);
+    console.log(this.$store.leegoluauth.pageBuilderData);
     this.colorSchemeStyles =
       this.$store.leegoluauth.pageBuilderData.selectedcoScheme.variables;
     this.segments = this.$store.leegoluauth.pageBuilderData.segments;
@@ -535,6 +613,11 @@ export default {
     },
   },
   methods: {
+    close() {
+      this.chat = false;
+      // console.log("first");
+    },
+
     selectCollection(collection) {
       // console.log(collection);
       this.selectedCollectionId = collection.id;
@@ -640,6 +723,26 @@ export default {
           this.loading = false;
         });
     },
+
+    viewChat() {
+      this.loadingChatBtn = true;
+      let vendor = this.$router.currentRoute.value.params.slug;
+
+      this.$api
+        .post(`${vendor}/create/conversation`)
+        .then((response) => {
+          this.loadingChatBtn = false;
+          console.log(response);
+          this.conversationDetails = response.data.conversation;
+          this.chat = true;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.loadingChatBtn = false;
+          this.errors = error.errors || {};
+        });
+      // this.chat = true;
+    },
   },
 };
 </script>
@@ -647,14 +750,30 @@ export default {
 <style lang="scss" scoped>
 .segment_wrap {
   // margin-top: 11rem;
-  // background: rgba(217, 217, 217, 0.31);
-  // border: 1px dashed var(--primary-color);
-  margin: 8rem auto 0rem;
-  // width: 90%;
+  background: rgba(217, 217, 217, 0.31);
+  border: 1px dashed var(--primary-color);
+  margin: 11rem auto 0rem;
+  width: 95%;
+}
+
+.upload_logo_area {
+  width: 95%;
+  margin: 0 auto;
 }
 
 .segment_wrap .left_paragraph .outline.q-btn {
   margin-top: -4rem;
+}
+
+.nav_area {
+  background: #ffffff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  margin: 0.5rem auto;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  width: 95%;
+  height: 59px;
 }
 
 .logo {
@@ -663,6 +782,9 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 29px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
   color: var(--primary-color);
 }
 .right_nav img {
@@ -671,27 +793,13 @@ export default {
 }
 .editor_hero {
   height: 40vh;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
   position: relative;
-  background: #83b8db;
-}
-
-.segmentA {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 29px;
-  color: #010101;
-}
-
-.showcollections {
+  width: 95%;
+  margin: 0 auto;
   background: var(--color-one);
-  color: #fff;
-  text-transform: capitalize;
-  margin-bottom: 2rem;
 }
 
 .editor_hero .q-btn {
@@ -702,41 +810,36 @@ export default {
   font-style: normal;
   font-weight: 700;
   background: #ffffff;
-
   font-size: 14px;
   line-height: 17px;
   text-align: center;
   color: var(--primary-color);
 }
-.vendor_btns {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
 
-.collection_name {
+.desktop_icon {
+  background: rgba(160, 160, 160, 0.51);
+  border-radius: 19px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.q-btn.none_ img {
+  width: 17px;
+  height: 17px;
+}
+.nav_btn_icon {
   font-family: "Inter";
   font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 19px;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
   color: #000000;
 }
 
-.vendor_btns .q-btn.vendor_btn {
-  // width: 94px;
-  height: 41px;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 18px;
-  color: var(--color-one);
-  text-transform: capitalize;
-  text-align: center;
-  background: #ffffff;
-  border: 0.5px solid rgba(31, 123, 181, 0.4);
-  border-radius: 5px;
+.nav_btn_icon span {
+  white-space: nowrap;
 }
 
 .editor_hero .q-btn span {
@@ -749,29 +852,70 @@ export default {
   color: var(--primary-color);
 }
 
-.none_desktop.q-btn {
-  color: var(--color-one) !important;
-  text-transform: capitalize;
-  text-align: center;
-  background: #ffffff;
-}
-
 .color_text {
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
-  font-size: 10px;
+  font-size: 15px;
   line-height: 12px;
   color: var(--primary-color);
   margin-bottom: 0.5rem;
 }
 
+.preview {
+  margin: 0 1.5rem;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+}
+
+.preview,
+.right .none_ {
+  background: var(--color-one);
+  color: #fff;
+  width: 115px;
+  height: 39px;
+  text-transform: capitalize;
+  border-radius: 5px;
+}
+
+@media (min-width: 980px) {
+  .preview,
+  .right .none_ {
+    width: auto;
+  }
+}
+
+.collection_name {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+}
+
+.q-btn.none_,
+.showcollections {
+  background: var(--secondary-color);
+  color: #a15858;
+}
+
+.search {
+  margin-top: 1rem;
+}
+
 .drop {
   background: var(--color-one);
+  color: white;
   border: 0.5px solid var(--color-one);
-  // border: 0.5px solid #1f7bb5;
   border-radius: 20px;
-  color: #fff;
   text-transform: capitalize;
 }
 
@@ -781,10 +925,31 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
+  margin-top: 4px;
   color: var(--primary-color);
 }
 
+@media (min-width: 700px) {
+  .left_details_desc {
+    margin-top: 0;
+  }
+}
+
+.segmentA {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+  color: #010101;
+}
+
 .desc_text {
+  padding: 0 1.5rem;
+}
+
+.desc_text,
+.desc_text .q-btn {
   display: none;
   font-family: "Inter";
   font-style: normal;
@@ -792,6 +957,18 @@ export default {
   font-size: 10px;
   line-height: 12px;
   color: var(--primary-color);
+}
+// .desc_text > .q-btn {
+//   margin-top: 0.5rem;
+// }
+
+.desc_text .q-btn span,
+.desc_text .q-btn img {
+  position: relative;
+}
+
+.det {
+  width: 100%;
 }
 
 .menu {
@@ -803,7 +980,9 @@ export default {
   font-weight: 400;
   font-size: 10px;
   line-height: 12px;
-  color: var(--color-two);
+  color: var(--color-one);
+  margin-top: 0.3rem;
+  // color: #1f7bb5;
 }
 
 .left_details_title {
@@ -821,8 +1000,11 @@ export default {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
-  margin-top: 1rem;
   color: var(--primary-color);
+}
+
+.left_wrap .left_paragraph {
+  padding-bottom: 1rem;
 }
 
 .layout {
@@ -831,6 +1013,15 @@ export default {
 
 .none_desktop {
   display: none;
+}
+
+.none_desktop.q-btn {
+  text-transform: capitalize;
+  text-align: center;
+  background: #ffffff;
+  border: 0.2px solid rgba(31, 123, 181, 0.4);
+  border-radius: 2px;
+  color: var(--color-one);
 }
 
 .layout_text {
@@ -851,11 +1042,17 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
-  color: #ffffff;
+}
+
+.right .q-btn.none_ {
+  white-space: nowrap;
+  width: auto;
 }
 
 .upload_logo_area {
   background: var(--color-two);
+  // background: var(--primary-color);
+  // background: #cedfeb;
   height: 132px;
 }
 .upload_wrap {
@@ -866,19 +1063,19 @@ export default {
   width: 147.72px;
   height: 147.72px;
   border: 6px solid var(--color-two);
+  // border: 6px solid #cedfeb;
   border-radius: 10px;
 }
 
 .left_logo_area {
   position: relative;
-  // width: 100%;
 }
 
 .left_logo_area .outline.q-btn {
   position: absolute;
   bottom: 20%;
   background: #ffffff;
-  left: -10%;
+  left: -5%;
   z-index: 5;
 }
 
@@ -889,8 +1086,17 @@ export default {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
+  text-transform: capitalize;
   color: var(--primary-color);
+  padding: 4px 8px;
   background: #ffffff;
+}
+
+.outline.q-btn img {
+  width: 25px;
+  height: 25px;
+  border: none;
+  margin: 0 0.3rem 0 0;
 }
 
 .outline.q-btn::before {
@@ -901,6 +1107,7 @@ export default {
 }
 .outline.q-btn span {
   font-weight: 500;
+  margin-left: 0.3rem;
 }
 
 .sort_area {
@@ -909,12 +1116,30 @@ export default {
   justify-content: space-between;
   padding: 0.5rem 0 0;
   margin: 0.1rem 0 0;
+  flex-wrap: nowrap;
+  padding-bottom: 0.6rem;
+  // overflow-x: scroll;
 }
 
 .sort_area .left {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
   gap: 1rem;
+}
+
+.sort_area .left::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.sort_area .left::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+
+.sort_area .left::-webkit-scrollbar-thumb {
+  background-color: #ee4e36;
 }
 
 .sort_area .active {
@@ -927,7 +1152,6 @@ export default {
   color: #ffffff;
   height: 34px;
   text-align: center;
-  color: #ffffff;
   white-space: nowrap;
   background: var(--color-one);
   border-radius: 17px;
@@ -940,6 +1164,7 @@ export default {
   font-size: 15px;
   line-height: 18px;
   text-transform: capitalize;
+  white-space: nowrap;
   color: var(--primary-color);
 }
 
@@ -969,6 +1194,25 @@ export default {
 
 .mobile_categories {
   display: none;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.holder {
+  background: #ffffff;
+  width: 95%;
+  margin: 0 auto;
+}
+
+@media (min-width: 980px) {
+  .holder {
+    background: none;
+  }
+}
+
+.holder .responsive_autofit_grid {
+  width: 95%;
+  margin: 0 auto;
 }
 
 .input_search {
@@ -1007,6 +1251,20 @@ export default {
 .input_search i {
   padding: 1rem;
   font-size: 1rem;
+  color: var(--color-two) !important;
+}
+.input_search i.mobile {
+  display: none;
+}
+
+.vendor_btns {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vendor_btns .q-btn {
+  color: white;
 }
 
 .card {
@@ -1020,24 +1278,76 @@ export default {
   // height: 522px;
 }
 
+.modal label {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  display: block;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.modal .title {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.modal .business_name {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--primary-color);
+}
+
+.modal .company {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  width: 100%;
+  color: var(--primary-color);
+  border: none;
+  background: transparent;
+}
+
+.modal .category {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  color: #64737c;
+}
+
 .submit {
   margin: 1rem 0;
 }
-.submit .q-btn {
+.submit .submitBTN {
   width: 100%;
   height: 55px;
-  background: #1f7bb5;
+  background: var(--color-one);
   border-radius: 5px;
   font-family: "Inter";
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
   line-height: 22px;
+  text-transform: capitalize;
   text-align: center;
-  color: #ffffff;
+  color: white;
 }
 
-.submit .q-btn .q-btn__content {
+.submit .submitBTN .q-btn__content {
   justify-content: center;
 }
 .close {
@@ -1045,7 +1355,7 @@ export default {
   min-height: 0;
 }
 .close i {
-  color: #979797;
+  color: var(--color-two);
 }
 
 .left_wrap {
@@ -1054,19 +1364,25 @@ export default {
   padding: unset;
 }
 
+// .left_wrap .left_details {
+//   padding-left: 0;
+// }
 //preview
 .previewMain {
   width: 100%;
 }
 .previewDiv {
   position: relative;
+  background: url("/images/sqrpreview.png") no-repeat center;
+  background-position: center;
+  background-size: cover;
 }
 .previewDiv::before {
   position: absolute;
   content: "";
-  background: rgba(0, 0, 0, 0.5);
-  border: 6px solid var(--color-two);
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  // border: 6px solid var(--color-one);
+  // border-radius: 10px;
   width: 100%;
   height: 100%;
 }
@@ -1086,24 +1402,21 @@ export default {
 }
 .form img.previewimg {
   width: 296px;
-  height: 296px;
+  height: 100%;
+  // height: 296px;
+  border-radius: 0;
+  border: none;
 }
 .form img.previewimg.cover {
-  width: 411px;
-  height: 200px;
+  // width: 411px;
+  height: 250px;
+  border-radius: 0;
+  border: none;
+  position: relative;
+  z-index: -1;
 }
 .form img.click {
   width: 120px;
-}
-
-.responsive_autofit_grid {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-}
-@media (max-width: 800px) {
-  .responsive_autofit_grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
 }
 
 .previewinput {
@@ -1114,23 +1427,64 @@ export default {
   background: transparent;
   opacity: 0;
 }
+.sort_area .right {
+  padding-top: 0rem;
+}
 
-@media (max-width: 950px) {
-  .form img.previewimg.cover {
-    width: 100%;
+.active_ {
+  background: linear-gradient(0deg, #d9d9d9 -10%, rgba(217, 217, 217, 0) 80%);
+  border-bottom: 1px solid #1f7bb5;
+}
+
+@media (max-width: 1050px) {
+  .left_logo_area .outline.q-btn {
+    left: -2%;
   }
 
+  .segment_wrap {
+    margin: 6rem auto 0rem;
+  }
+}
+@media (max-width: 950px) {
+  // .form img.previewimg.cover {
+  //   width: 100%;
+  // }
+  .left_logo_area .outline.q-btn {
+    right: -30%;
+  }
   .lay {
-    display: none;
+    // display: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 1rem;
+  }
+
+  .right_nav .q-ml-xl {
+    margin-left: 0.3rem !important;
+  }
+  .preview {
+    margin: 0 0.5rem;
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    width: 85px;
+  }
+
+  .left_paragraph .outline.q-btn img {
+    width: 12px;
+    height: 13px;
+    margin-right: 0.3rem;
   }
 
   .mobile_categories {
     display: flex;
     justify-content: space-between;
-    background: rgba(31, 123, 181, 0.24);
     padding: 0.5rem;
-    background: var(--color-two);
-    // background: rgba(31, 123, 181, 0.74);
+    background: var(--color-four);
   }
 
   .mobile_categories > .row {
@@ -1154,11 +1508,16 @@ export default {
     left: unset;
   }
 
+  .left_paragraph .q-btn {
+    margin-top: 0.8rem;
+  }
+
   .segment_wrap {
-    margin-top: 0rem;
-    // margin-top: 1.5rem;
+    margin-top: 7.5rem;
     background: transparent;
     border: none;
+    width: 100%;
+    padding-bottom: 2rem;
   }
   .segment_wrap .left_paragraph .outline.q-btn {
     margin-top: -1rem;
@@ -1176,10 +1535,16 @@ export default {
     padding-bottom: 2rem;
   }
 
+  .desc_text {
+    padding: 1.5rem;
+  }
+
   .manage_seg {
     margin-top: -48px;
   }
-
+  .left_wrap .left_paragraph .q-btn {
+    display: none;
+  }
   .upload_wrap {
     align-items: flex-end;
   }
@@ -1200,12 +1565,6 @@ export default {
     font-size: 16px;
   }
 
-  .menu {
-    display: block;
-    padding: 0;
-    min-height: 0;
-  }
-
   .none_desktop {
     display: flex;
   }
@@ -1223,53 +1582,110 @@ export default {
     padding-left: 0;
   }
 
-  .desc_text {
-    display: block;
+  .desc_text,
+  .desc_text .q-btn {
+    display: inline-block;
   }
 
-  .responsive_autofit_grid {
-    background: #fff;
+  // .desc_text > .q-btn {
+  //   display: flex;
+  // }
+  .desc_text .q-btn {
+    font-weight: 700;
   }
+
+  // .responsive_autofit_grid {
+  //   background: #fff;
+  // }
 }
 
+@media (max-width: 700px) {
+  .lay {
+    display: none;
+  }
+  .menu {
+    display: block;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .outline.q-btn img {
+    width: 15px;
+    height: 12.75px;
+  }
+
+  .upload_logo_area {
+    height: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .fit .span {
+    margin: 0.5rem 0;
+  }
+}
 @media (min-width: 500px) {
   .hide_desktop {
     display: none;
   }
 }
 @media (max-width: 500px) {
-  .responsive_autofit_grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 2rem auto 0;
-    padding-bottom: 1rem;
-  }
-  .left_logo_area {
-    width: 100%;
-  }
-
-  .left_wrap .left_details {
-    width: 100%;
-    padding-left: 0.5rem;
-  }
-}
-
-@media (max-width: 500px) {
-  .submit .q-btn {
+  .submit .submitBTN {
     height: 45px;
     font-size: 15px;
+  }
+
+  .desc_text .outline.q-btn span {
+    color: #000;
   }
   .logo {
     white-space: nowrap;
   }
 
+  .desc_text .outline.q-btn img {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+  }
+
+  .lay {
+    display: none;
+  }
+
   .segment_wrap {
-    margin-top: 2rem;
+    margin-top: 0rem;
   }
   .desc_text {
     display: block;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 1rem 0.6rem;
+  }
+
+  // .holder {
+  //   background-color: #ffffff;
+  //   width: 95%;
+  //   margin: 0 auto;
+  // }
+
+  // .holder .responsive_autofit_grid {
+  //   width: 95%;
+  //   margin: 0 auto;
+  // }
+
+  .left_logo_area {
+    width: 100%;
+  }
+
+  .outline.q-btn {
+    background: #ffffff;
+    border: 1px solid #000000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.44);
+    border-radius: 5px;
+  }
+
+  .left_logo_area .outline.q-btn {
+    // right: -1%;
+    width: 100%;
+    right: -32%;
   }
 
   .left_details_title {
@@ -1288,19 +1704,155 @@ export default {
 
   .left_details_desc {
     font-size: 10px;
+    line-height: 13px;
+    margin-top: 10px;
   }
-  .outline.q-btn {
+  .outline.q-btn,
+  .outline.q-btn span {
     font-size: 10px;
+    // height: 23px;
   }
   .editor_hero {
-    height: 30vh;
+    height: 20vh;
   }
+
+  .drop {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    color: #ffffff;
+  }
+
+  .nav_area {
+    height: 45px;
+  }
+
+  .preview {
+    height: 38.07px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .input_search {
+    background: transparent;
+    border: none;
+  }
+
+  .input_search input,
+  input_search i.mobile_ {
+    display: none;
+  }
+  .input_search i.mobile {
+    display: flex;
+  }
+
+  .input_search i {
+    font-size: 1.5rem;
+  }
+
   .segment_wrap {
     width: 100%;
   }
-  // .left_logo_area img {
-  //   width: 63px;
-  //   height: 63px;
+
+  .span img {
+    width: 30px !important;
+    height: 30px !important;
+    width: 22.69px !important;
+    height: 22.69px !important;
+  }
+  .right_nav .q-ml-xl {
+    margin: 0;
+    gap: 0.3rem !important;
+  }
+  .preview {
+    margin: 0 0.1rem;
+    width: 74.67px;
+    height: 28.07px;
+  }
+
+  .span .q-btn {
+    padding: 5px;
+    min-height: auto;
+    text-transform: capitalize;
+  }
+
+  // .location {
+  //   margin-bottom: 0.5rem;
   // }
+
+  .span span {
+    font-size: 12px;
+  }
+
+  .modal .business_name {
+    font-size: 10px;
+  }
+
+  .modal .company {
+    font-size: 13px;
+  }
+
+  .textarea .texta {
+    font-size: 10px;
+    color: #000;
+  }
+  .upload_logo_area {
+    margin-top: -20%;
+  }
+  .left_logo_area img {
+    width: 83px;
+    height: 83px;
+    // margin-left: 1.4rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .left_wrap.mobile {
+    padding-left: 1rem;
+  }
+
+  .left_details {
+    padding: 0;
+  }
+
+  .desktop_icon img {
+    width: 22.69px;
+    height: 22.69px;
+  }
+}
+
+@media (max-width: 360px) {
+  .span img {
+    width: 15.69px !important;
+    height: 15.69px !important;
+  }
+  .desktop_icon {
+    width: 25px;
+    height: 25px;
+  }
+  .right_nav .q-ml-xl {
+    gap: 0rem !important;
+  }
+
+  .desc_text {
+    padding: 2rem 1rem 0;
+  }
+}
+@media (max-width: 340px) {
+  .logo {
+    font-size: 14px;
+  }
+
+  .logo .q-btn {
+    font-size: 12px;
+  }
+
+  .preview {
+    margin: 0 0.1rem;
+    width: 49.67px;
+    height: 22.07px;
+  }
 }
 </style>

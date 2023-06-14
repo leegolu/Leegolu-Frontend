@@ -1,5 +1,6 @@
 <template>
-  <div @click="gotoProduct" class="listing_s_hold">
+  <!-- @click="gotoProduct" -->
+  <div class="listing_s_hold">
     <div class="listing_">
       <div class="left">
         <div class="img">
@@ -603,6 +604,9 @@ p.advert {
 @media (max-width: 800px) {
   .listing_ {
     min-width: 100%;
+  }
+  .responsive_autofit_grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 @media (max-width: 500px) {

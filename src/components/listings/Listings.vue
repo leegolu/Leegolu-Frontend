@@ -25,7 +25,7 @@
           <div class="count">10</div>
         </div>
         <div class="items">
-          <img src="/images/engage.png" alt="" />
+          <img src="/images/engagesvg.svg" alt="" />
           <p>Engagement</p>
           <div class="count">10</div>
         </div>
@@ -514,6 +514,7 @@ export default {
 .dialog_content .middle img {
   width: 19.96px;
   height: 19.96px;
+  object-fit: contain;
 }
 
 .dialog_content .middle .count {
@@ -636,6 +637,11 @@ p.advert {
     overflow-x: scroll;
     gap: 2rem;
     padding-bottom: 0.6rem;
+  }
+}
+@media (max-width: 500px) {
+  .dialog_content ul li {
+    font-size: 12px;
   }
 }
 </style>

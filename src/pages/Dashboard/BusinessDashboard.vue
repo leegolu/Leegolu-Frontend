@@ -7,7 +7,7 @@
             Hello
             {{
               this.$store.leegoluauth.userDetails
-                ? this.$store.leegoluauth.userDetails.name
+                ? this.$store.leegoluauth.userDetails.name.split(" ")[0]
                 : "User"
             }},
           </div>
@@ -48,8 +48,15 @@
         <div class="small_card_bus">
           <div class="wallet_left">
             <img src="/images/gift.png" alt="" />
+
+            <div class="di">
+              <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
+              <div class="type">Leegolu Business</div>
+            </div>
           </div>
-          <div class="">
+
+          <div class="free">Free <img src="/images/arrwhite.svg" alt="" /></div>
+          <!-- <div class="">
             <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
             <div class="wallet_amt">Leegolu Business</div>
             <div class="wallet_small">Shop | ₦3000</div>
@@ -66,7 +73,7 @@
                 </q-linear-progress>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -92,9 +99,9 @@
           <div class="business_seive">
             <q-btn color="white" class="bg-primary" flat> Page Visits </q-btn>
           </div>
-          <div class="business_seive">
+          <!-- <div class="business_seive">
             <q-btn flat> Callback Requests </q-btn>
-          </div>
+          </div> -->
           <div class="business_seive">
             <q-btn flat> Message Requests </q-btn>
           </div>
@@ -137,7 +144,9 @@
         </div>
 
         <div class="started_btn">
-          <q-btn icon-right="send" label="Get Started" />
+          <q-btn label="Get Started">
+            <img class="q-pl-sm" src="/images/arr.svg" alt="" />
+          </q-btn>
         </div>
       </div>
       <div class="right_card_top down">
@@ -156,7 +165,9 @@
         </div>
 
         <div class="started_btn">
-          <q-btn icon-right="send" label="Learn More" />
+          <q-btn label="Learn More">
+            <img class="q-pl-sm" src="/images/arr.svg" alt="" />
+          </q-btn>
         </div>
       </div>
     </div>
@@ -167,7 +178,14 @@
       <div class="modal">
         <div class="modal_wrap">
           <div class="left">
-            <div class="modal_main">Hello Chris,</div>
+            <div class="modal_main">
+              Hello
+              {{
+                this.$store.leegoluauth.userDetails
+                  ? this.$store.leegoluauth.userDetails.name.split(" ")[0]
+                  : "User"
+              }},
+            </div>
             <div class="modal_main_text">Welcome to Leegolu Business.</div>
             <div class="modal_sub_text">
               Your account gives you full access to all basic features available
@@ -199,11 +217,7 @@
         </div>
 
         <div class="row q-pb-lg items-center justify-between">
-          <q-btn
-            @click="addphotoforleegolubusinessmodal = true"
-            color="primary"
-            class="q-px-xl proceed"
-          >
+          <q-btn @click="toggleModals" color="primary" class="q-px-xl proceed">
             Proceed
           </q-btn>
           <q-btn @click="toggleModal" class="q-px-sm skip"> Skip </q-btn>
@@ -256,11 +270,7 @@
         </div>
 
         <div class="row q-pb-lg items-center justify-between">
-          <q-btn
-            @click="businessreg = true"
-            color="primary"
-            class="q-px-xl proceed"
-          >
+          <q-btn @click="toggleBus" color="primary" class="q-px-xl proceed">
             Proceed
           </q-btn>
           <q-btn @click="skipImg" class="q-px-sm skip"> Skip </q-btn>
@@ -352,7 +362,7 @@
                 />
               </div>
 
-              <q-btn @click="finish" type="button" color="primary" class="btn"
+              <q-btn @click="finish" flat type="button" class="btn"
                 >Finish</q-btn
               >
               <div class="clear"></div>
@@ -473,6 +483,15 @@ export default {
         this.image = input.files[0];
         reader.readAsDataURL(input.files[0]);
       }
+    },
+
+    toggleModals() {
+      this.welcometoleegolubusinessmodal = false;
+      this.addphotoforleegolubusinessmodal = true;
+    },
+    toggleBus() {
+      this.addphotoforleegolubusinessmodal = false;
+      this.businessreg = true;
     },
 
     getMyads() {
@@ -666,6 +685,13 @@ export default {
   line-height: 44px;
   color: #000000;
 }
+
+.q-btn {
+  text-transform: capitalize;
+}
+.q-btn::before {
+  box-shadow: none;
+}
 .sub {
   font-family: "Open Sans";
   font-style: normal;
@@ -762,6 +788,11 @@ export default {
   min-height: 0;
 }
 
+.started_btn img {
+  width: 18px;
+  height: 12px;
+}
+
 .started_btn .q-btn::before {
   box-shadow: none;
 }
@@ -774,7 +805,7 @@ export default {
   gap: 1rem;
   margin-top: 2rem;
   // overflow: hidden;
-  padding-bottom: 1rem;
+  padding-bottom: 2rem;
   // padding-left: 0.5rem;
   // overflow-x: scroll;
 }
@@ -856,20 +887,67 @@ export default {
   display: flex;
   justify-content: space-between;
   // width: 314px;
+  align-items: center;
   flex: 2;
+  gap: 1rem;
   height: 165px;
   padding: 1rem;
 }
 
+.small_card_bus .di .type {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+
+  color: #ffffff;
+}
+
+.small_card_bus .free {
+  background: #ee4e36;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 12px;
+  text-align: center;
+  width: 100px;
+  justify-content: center;
+  color: #ffffff;
+  height: 32px;
+}
+
+@media (min-width: 600px) {
+  .small_card_bus {
+    flex-wrap: wrap;
+  }
+}
+.small_card_bus .free img {
+  width: 15.5px;
+  height: 7.76px;
+}
+
+.small_card_bus .wallet_left {
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 .small_card_bus .wallet_amt {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 700;
   font-size: 15px;
   line-height: 20px;
-  text-align: right;
-
+  // text-align: right;
   color: #ffffff;
+  display: flex;
+  align-items: center;
 }
 
 .small_card_bus .wallet_small {
@@ -892,7 +970,7 @@ export default {
   font-weight: 400;
   font-size: 7px;
   line-height: 10px;
-  text-align: right;
+  // text-align: right;
   color: #ffffff;
 }
 
@@ -1031,6 +1109,23 @@ export default {
   color: #000000;
 }
 
+.btn {
+  width: 199px;
+  background: #1f7bb5;
+  border-radius: 5px;
+  height: 46px;
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
 @media (min-width: 1200px) {
   .main_card {
     max-width: 100%;
@@ -1111,8 +1206,17 @@ export default {
     padding: 1.5rem;
   }
 
+  .main_card .right {
+    width: 100%;
+    position: relative;
+  }
+
+  .main_card .right img {
+    padding-left: 2rem;
+  }
+
   .main {
-    margin: 1.3rem 1rem 2rem;
+    margin: 1.3rem 0rem 2rem;
   }
   .btn {
     width: 106px;
@@ -1126,6 +1230,41 @@ export default {
   .small_card_bus {
     width: 90%;
     margin: 0 auto;
+  }
+
+  .sub {
+    font-size: 10px !important;
+    white-space: nowrap;
+    line-height: 14px;
+  }
+
+  .main_text {
+    font-size: 20px !important;
+    line-height: 27px;
+  }
+
+  .main_card {
+    padding-left: 0.6rem !important;
+    padding-right: 0rem !important;
+    height: 134px;
+  }
+
+  .small_card_bus {
+    height: 66px !important;
+    background: linear-gradient(180deg, #1f7bb5 0%, #0f476a 132.69%);
+    box-shadow: 0px 0px 20px rgba(0, 83, 95, 0.4);
+    border-radius: 5px;
+  }
+  .small_card_bus .di .type {
+    font-size: 13px;
+  }
+
+  .small_card_bus .free {
+    font-size: 12px;
+  }
+
+  .small_card {
+    height: 155px;
   }
 }
 </style>

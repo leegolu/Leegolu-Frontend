@@ -499,10 +499,10 @@ export default defineComponent({
               color: "green",
             });
           }
-          this.$q.notify({
-            message: "An error occured",
-            color: "red",
-          });
+          // this.$q.notify({
+          //   message: "An error occured",
+          //   color: "red",
+          // });
           this.errors = error.errors || {};
         });
     },
@@ -872,6 +872,19 @@ a {
     flex-wrap: wrap;
   }
 }
+@media (max-width: 800px) {
+  .wrapper {
+    width: 80%;
+  }
+  .wrapper .main_text {
+    font-size: 38px !important;
+    line-height: 38px;
+    margin-bottom: 1rem;
+  }
+  .nav {
+    padding: 0.7rem 1rem;
+  }
+}
 @media (max-width: 500px) {
   .wrapper input {
     font-size: 15px;
@@ -882,12 +895,6 @@ a {
 
   .wrapper button {
     height: 39.63px;
-  }
-
-  .wrapper .main_text {
-    font-size: 40px;
-    line-height: 38px;
-    margin-bottom: 1rem;
   }
 
   .logo {
@@ -935,6 +942,11 @@ a {
 
   .join_area .join_desc {
     font-size: 18px;
+  }
+
+  .wrapper p {
+    width: 90%;
+    margin: 0 auto 1rem;
   }
 }
 </style>

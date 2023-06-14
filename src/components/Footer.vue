@@ -245,7 +245,7 @@ i {
   margin-bottom: 0;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 800px) {
   .footer_rights {
     flex-wrap: wrap;
   }

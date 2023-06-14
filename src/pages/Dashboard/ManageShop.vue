@@ -91,11 +91,14 @@
           <div class="imgs_wrap active">
             <img src="/images/shop.png" alt="" />
           </div>
-
+          <!-- https://business.leegolu.com -->
           <div class="details">
             <div class="main_text">Leegolu - Shop</div>
             <div class="link">
-              <i class="fa-solid fa-link"></i> https://business.leegolu.com
+              <i class="fa-solid fa-link"></i>
+              <span>{{
+                `leegolu.com/business/${this.$store.leegoluauth.vendorDetails.slug}`
+              }}</span>
             </div>
             <div class="btns row items-center">
               <q-btn
@@ -328,10 +331,10 @@ export default {
     onRequest(props) {},
 
     copy() {
-      let Url = `https://leegolu.netlify.app/${this.$store.leegoluauth.vendor.business_name}`;
+      let Url = `https://leegolu.netlify.app/business/${this.$store.leegoluauth.vendor.business_name}`;
       navigator.clipboard.writeText(Url);
       this.$q.notify({
-        message: "Copied!",
+        message: "You have copied your business address!",
         color: "green",
         position: "top",
       });
@@ -693,6 +696,11 @@ export default {
 
   .main_area_top .main_area_left.act {
     gap: 1rem;
+  }
+
+  .link {
+    font-size: 12px;
+    margin-bottom: 0.5rem;
   }
 }
 </style>

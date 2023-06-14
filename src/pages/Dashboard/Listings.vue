@@ -8,11 +8,11 @@
 
       <div class="sort_area">
         <div class="left">
-          <q-btn class="active"> All Listings </q-btn>
-          <q-btn class="regular"> Active </q-btn>
-          <q-btn class="regular"> Declined </q-btn>
-          <q-btn class="regular"> Drafts </q-btn>
-          <q-btn class="regular boosted"> Boosted </q-btn>
+          <q-btn flat class="active"> All Listings </q-btn>
+          <q-btn flat class="regular"> Active </q-btn>
+          <q-btn flat class="regular"> Declined </q-btn>
+          <q-btn flat class="regular"> Drafts </q-btn>
+          <q-btn flat class="regular boosted"> Boosted </q-btn>
         </div>
 
         <div class="right">
@@ -152,10 +152,10 @@ export default {
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.errors = response.data[0];
+          this.errors = response.data.message;
           this.loading = false;
           this.$q.notify({
-            message: `An error occured, please recheck credentials or check your internet settings.`,
+            message: response.data.message,
             color: "red",
             position: "bottom",
             actions: [{ icon: "close", color: "white" }],

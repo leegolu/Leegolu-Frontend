@@ -2,7 +2,8 @@
   <div class="wrapp">
     <div class="top">
       <span class="title">
-        <i class="fa-solid q-mr-sm fa-list"></i>
+        <img src="/images/collections.svg" alt="" />
+        <!-- <i class="fa-solid q-mr-sm fa-list"></i> -->
         Collections | {{ count }}
       </span>
 
@@ -80,7 +81,13 @@
         <template v-slot:body-cell-created_at="props">
           <q-td :props="props">
             <div class="added">
-              {{ new Date(props.row.created_at) }}
+              {{
+                new Date(props.row.created_at).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }}
             </div>
           </q-td>
         </template>
@@ -524,12 +531,12 @@ export default {
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.errors = response.data[0];
+          this.errors = response.data.message;
           this.loading = false;
           this.$q.notify({
-            message: `An error occured.`,
+            message: response.data.message,
             color: "red",
-            position: "bottom",
+            position: "top",
             actions: [{ icon: "close", color: "white" }],
           });
         });
@@ -597,10 +604,10 @@ export default {
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.errors = response.data[0];
+          this.errors = response.data.message;
           this.loading = false;
           this.$q.notify({
-            message: `An error occured.`,
+            message: response.data.message,
             color: "red",
             position: "bottom",
             actions: [{ icon: "close", color: "white" }],
@@ -620,15 +627,6 @@ export default {
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.errors = response.data[0];
-          this.loading = false;
-          this.$q.notify({
-            message: `An error occured, please recheck credentials or check your internet settings.`,
-            color: "red",
-            position: "bottom",
-            actions: [{ icon: "close", color: "white" }],
-          });
-          // console.log("Error:", response);
         });
     },
 
@@ -868,6 +866,7 @@ p.count {
   box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
   border-radius: 4px;
   position: relative;
+  padding: 0.5rem;
 }
 .dialog_content .dialog_top {
   display: flex;

@@ -241,6 +241,7 @@ export default {
   justify-content: center;
   position: absolute;
   bottom: 10%;
+  background: white;
   left: 50%;
   transform: translateX(-50%);
 }

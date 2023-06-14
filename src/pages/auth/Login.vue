@@ -38,7 +38,7 @@
               <label class="input-label">Password</label>
               <input
                 v-model="data.password"
-                type="text"
+                type="password"
                 name="password"
                 required
                 class="input-1"

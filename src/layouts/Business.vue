@@ -44,7 +44,7 @@
           style="width: 100%; gap: 1.5rem"
           class="header_icons justify-end row items-center no-wrap"
         >
-          <div style="gap: 1rem" class="le flex no-wrap items-center">
+          <div style="gap: 0.5rem" class="le flex no-wrap items-center">
             <q-btn
               :to="{ name: 'messages' }"
               style="padding: 4px 8px"
@@ -53,7 +53,7 @@
               color="primary"
             >
               <img src="/images/headernotif.svg" alt="" />
-              <q-badge floating color="red" rounded>4</q-badge>
+              <q-badge floating color="red" rounded>0</q-badge>
             </q-btn>
             <q-btn
               :to="{ name: 'notifications' }"
@@ -63,7 +63,9 @@
               flat
             >
               <img src="/images/headericon.svg" alt="" />
-              <q-badge floating color="red" rounded>4</q-badge>
+              <q-badge floating color="red" rounded>{{
+                notifications.length
+              }}</q-badge>
             </q-btn>
           </div>
 
@@ -115,7 +117,7 @@
               class="q-ml-md"
               text-color="white"
               style="height: 20px"
-              label="2"
+              :label="notifications.length"
             />
           </q-item>
 
@@ -290,7 +292,7 @@
 
           <div class="create">Create advert</div>
         </div>
-
+        <!-- {{ errors }} -->
         <div class="text">
           <p class="more">Add more details</p>
           Upload the shot that best sells your design. High quality images
@@ -312,6 +314,14 @@
                   {{ option }}
                 </option>
               </select>
+              <!-- {{ requirement }} -->
+              <!-- {{ errors[requirement.name] }} -->
+              <small
+                v-if="errors[requirement.name]"
+                class="text-red text-weight-bold"
+              >
+                {{ errors[requirement.name][0] }}
+              </small>
             </div>
           </template>
 
@@ -682,7 +692,7 @@ export default {
       requirements: [],
       showsubCat: false,
       areas: [],
-      errors: [],
+      errors: {},
       loading: false,
       data: { negotiable: true },
       data2: {},
@@ -721,6 +731,7 @@ export default {
       fabYoutube,
       leftDrawerOpen,
       search,
+      notifications: ref([]),
       toggleLeftDrawer,
       links1: [
         {
@@ -792,6 +803,7 @@ export default {
   created() {
     this.getCategory();
     this.getStates();
+    this.getNotifications();
     // this.getUploadRequirements();
   },
 
@@ -837,6 +849,23 @@ export default {
         .catch((e) => {
           this.loading = false;
           this.errors = error.errors || {};
+        });
+    },
+
+    getNotifications() {
+      const url = `${this.$store.leegoluauth.vendorDetails.slug}/notifications`;
+      this.curl = url;
+      this.$api
+        .get(url)
+        .then(({ data }) => {
+          console.log(data);
+          this.loading = false;
+          this.notifications = data.data;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.loading = false;
+          this.rows = [];
         });
     },
 
@@ -929,7 +958,7 @@ export default {
           }
         )
         .then((response) => {
-          // console.log("Success:", response);
+          console.log("Success:", response);
           this.loading = false;
           this.$q.notify({
             message: response.data.message,
@@ -943,14 +972,14 @@ export default {
           this.successModal = true;
           this.data = { negotiable: true, uploads: "" };
         })
-        .catch(({ response }) => {
-          // console.log(response);
-          this.errors = response.data[0];
+        .catch((e) => {
+          // console.log(e.response);
+          this.errors = e.response.data.errors;
           this.loading = false;
           this.$q.notify({
-            message: `An error occured, please recheck credentials or check your internet settings.`,
+            message: e.response.data.message,
             color: "red",
-            position: "bottom",
+            position: "top",
             actions: [{ icon: "close", color: "white" }],
           });
           // console.log("Error:", response);
@@ -958,7 +987,12 @@ export default {
     },
 
     create() {
-      if (!this.data.subcategory) {
+      if (!this.data2.uploads) {
+        this.$q.notify({
+          color: "red",
+          message: "Image field field is required",
+        });
+      } else if (!this.data.subcategory) {
         this.$q.notify({
           color: "red",
           message: "Sub Category field is required",
@@ -1002,6 +1036,7 @@ export default {
         });
         return;
       } else {
+        this.modal1 = false;
         this.modal2 = true;
       }
     },
@@ -1027,6 +1062,10 @@ export default {
   line-height: 17px;
   text-transform: capitalize;
   color: #000000;
+}
+
+.mybtn .fa-plus {
+  color: #ee4e36;
 }
 
 .Features {
@@ -1554,6 +1593,12 @@ p.more {
   text-transform: capitalize;
 }
 
+@media (max-width: 950px) {
+  .bar .input_wrap {
+    width: 70%;
+    margin-left: 0;
+  }
+}
 @media (max-width: 900px) {
   .mybtn {
     font-size: 12px;
@@ -1587,6 +1632,21 @@ p.more {
 
   .q-btn.prev {
     height: 40px;
+  }
+
+  .create_ad .text {
+    font-size: 12px;
+    line-height: 16px;
+    margin: 1.5rem 0;
+  }
+
+  .form img.previewimg {
+    width: 128px;
+    height: 138px;
+    border: 3px solid rgba(53, 113, 150, 0.26);
+  }
+  .form img.click {
+    width: 50px;
   }
 }
 </style>

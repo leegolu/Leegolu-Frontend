@@ -48,6 +48,8 @@ export default {};
   background: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
+  width: 90%;
+  margin: 0 auto;
 }
 img {
   width: 103px;
@@ -63,6 +65,7 @@ img {
   text-align: center;
   letter-spacing: -0.01em;
   color: #000000;
+  margin: 0.5rem 0;
   // max-width: 260px;
 }
 
@@ -108,5 +111,11 @@ img {
   font-size: 12px;
   line-height: 100%;
   text-transform: capitalize;
+}
+
+@media (max-width: 500px) {
+  .wrapp {
+    min-width: 90%;
+  }
 }
 </style>

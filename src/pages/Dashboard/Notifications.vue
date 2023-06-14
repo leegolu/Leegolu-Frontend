@@ -2,8 +2,8 @@
   <div class="wrapp">
     <div class="top">
       <span class="title">
-        <i class="fa-solid q-mr-sm fa-bell"></i>
-        Notifications | 6
+        <img src="/images/notif.svg" alt="" />
+        Notifications | {{ rows.length }}
       </span>
 
       <div class="sort_area">
@@ -15,13 +15,13 @@
               color="negative"
               class="q-ml-md"
               text-color="wjite"
-              label="2"
+              :label="rows.length"
             />
           </q-btn>
         </div>
       </div>
     </div>
-    <div class="style q-pa-md">
+    <div v-if="rows.length" class="style q-py-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"
@@ -35,16 +35,22 @@
         <template v-slot:body-cell-Notifications="props">
           <q-td :props="props">
             <!-- {{ props.row }} -->
-            <div @click="toggleModal" class="name_row">
+            <div @click="readNotification(props.row)" class="name_row">
               <q-avatar size="50px" class="shadow-10">
-                <img :src="props.row.image_url" />
+                <img
+                  :src="
+                    props.row.image_url
+                      ? props.row.image_url
+                      : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU'
+                  "
+                />
               </q-avatar>
               <div class="name">
                 <div class="name_top">
-                  {{ props.row.userName }}
+                  {{ props.row.message }}
                 </div>
                 <div class="name_down">
-                  {{ props.row.kind }}
+                  {{ props.row.product_name }}
                 </div>
               </div>
             </div>
@@ -53,7 +59,13 @@
         <template v-slot:body-cell-addedOn="props">
           <q-td :props="props">
             <div class="added">
-              {{ props.row.addedOn }}
+              {{
+                new Date(props.row.created_at).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }}
             </div>
           </q-td>
         </template>
@@ -64,6 +76,12 @@
           </div>
         </template>
       </q-table>
+    </div>
+
+    <div v-else class="empty">
+      <img src="/images/empty.svg" alt="" />
+
+      <div class="empty_text">You currently have no notifications</div>
     </div>
     <q-dialog v-model="advertdialog" persistent>
       <q-card class="card">
@@ -137,30 +155,30 @@ const columns = [
 ];
 
 const rows = [
-  {
-    name: "customerList",
-    image_url: "/images/tableimg.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
-    addedOn: "2 Days ago",
-  },
-  {
-    name: "customerList",
-    image_url: "/images/tableimg1.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
-    addedOn: "2 Days ago",
-  },
-  {
-    name: "customerList",
-    image_url: "/images/tableimg2.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
-    addedOn: "2 Days ago",
-  },
+  // {
+  //   name: "customerList",
+  //   image_url: "/images/tableimg.png",
+  //   userName: "Michael Nnamani",
+  //   kind: "Hisense 1.5HP Split Air Conditioner",
+  //   chat: "You: Good Afternoon Michael.",
+  //   addedOn: "2 Days ago",
+  // },
+  // {
+  //   name: "customerList",
+  //   image_url: "/images/tableimg1.png",
+  //   userName: "Michael Nnamani",
+  //   kind: "Hisense 1.5HP Split Air Conditioner",
+  //   chat: "You: Good Afternoon Michael.",
+  //   addedOn: "2 Days ago",
+  // },
+  // {
+  //   name: "customerList",
+  //   image_url: "/images/tableimg2.png",
+  //   userName: "Michael Nnamani",
+  //   kind: "Hisense 1.5HP Split Air Conditioner",
+  //   chat: "You: Good Afternoon Michael.",
+  //   addedOn: "2 Days ago",
+  // },
 ];
 
 export default {
@@ -205,8 +223,24 @@ export default {
   },
 
   methods: {
-    getEvents() {},
-    onRequest(props) {},
+    onRequest(props) {
+      this.loading = true;
+      const url = `${this.$store.leegoluauth.vendorDetails.slug}/notifications`;
+      this.curl = url;
+      this.$api
+        .get(url)
+        .then(({ data }) => {
+          // console.log(data);
+          this.loading = false;
+          this.rows = data.data;
+          // this.count = data.count;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.loading = false;
+          this.rows = [];
+        });
+    },
 
     copy() {
       let Url = document.querySelector(".name_copy").textContent;
@@ -220,35 +254,55 @@ export default {
 
     onItemClick() {},
 
-    creatTicketBtn() {
-      this.editstate = false;
-      this.create_title = true;
-    },
-    createEventTicket(e) {
-      e.preventDefault();
-    },
-    editTicketing(category) {
-      this.editstate = true;
-      this.create_title = true;
-    },
-
-    editedFunction(e) {
-      e.preventDefault();
-    },
-    deleteTicketing(id) {},
-
-    deletemultiple(id) {},
-
-    refreshtitle() {
-      if (this.curl !== "") {
-        this.loading = true;
-      }
+    readNotification(notification) {
+      this.$q
+        .dialog({
+          message:
+            "Are you sure you have attented to this notification? It would disappear when you continue!",
+        })
+        .onOk(() => {
+          this.$api
+            .get(
+              `${this.$store.leegoluauth.vendorDetails.slug}/${notification.id}/read`
+            )
+            .then(({ data }) => {
+              // console.log(data);
+              this.loading = false;
+              this.$q.notify({
+                message: "You have now read this notification",
+              });
+              this.refreshNotifs();
+            })
+            .catch(({ response }) => {
+              // console.log(response);
+              this.loading = false;
+              this.rows = [];
+            });
+        });
     },
 
     toggleModal(props) {
       this.rowData = props;
       this.advertdialog = true;
       // console.log(props);
+    },
+
+    refreshNotifs() {
+      if (this.curl !== "") {
+        this.loading = true;
+        this.$api
+          .get(this.curl)
+          .then(({ data }) => {
+            this.loading = false;
+            this.rows = data.data;
+            // console.log(data);
+          })
+          .catch(({ response }) => {
+            // console.log(response);
+            this.loading = false;
+            this.rows = [];
+          });
+      }
     },
   },
 };
@@ -269,7 +323,7 @@ export default {
 }
 
 .sort_area {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   display: flex;

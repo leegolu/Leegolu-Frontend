@@ -1,5 +1,6 @@
 import axios from "axios";
 import { boot } from "quasar/wrappers";
+import { Notify } from "quasar";
 
 axios.defaults.baseURL = "https://moon.leegolu.com/api/v2/";
 axios.defaults.headers.common["Content-Type"] =
@@ -60,6 +61,59 @@ export default boot(({ router, store, app }) => {
     }
     return response;
   });
+  api.interceptors.response.use(
+    (response) => {
+      console.log(response);
+      // if (response.data && response.data.token) {
+      //   token = response.data.token;
+      // }
+      return response;
+    },
+    (e) => {
+      console.log(e);
+      let status_code = !e.response || e.response.status;
+      console.log(status_code);
+      // let error = reader.error(e, true);
+      if (status_code === 401) {
+        // store.auth.setToken(null);
+        Notify.create({
+          message: "You need to log in to view this page",
+          color: "red",
+        });
+        // helpers.notify("You need to log in to view this page", "error");
+        return router.replace({ name: "login" });
+      } else if (e.message === "Network Error") {
+        Notify.create({
+          message: e.message + "check your internet connection",
+          color: "red",
+        });
+      } else {
+        return Promise.reject(e);
+      }
+      // console.log(e);
+      // return e.response;
+      // if (status_code === 422) {
+      //   return e.response;
+      // }
+      // return e.response;
+
+      // if (
+      //   status_code === 403 &&
+      //   error.status === "error" &&
+      //   ["broadcasting/auth", "broadcasting/socket"].indexOf(
+      //     e.response.config.url
+      //   ) < 0
+      // ) {
+      //   helpers.notify(
+      //     error.message || error,
+      //     error.status || "error",
+      //     true
+      //     // "persistent"
+      //   );
+      // }
+      // return Promise.reject(e);
+    }
+  );
 
   api.interceptors.request.use(function (config) {
     if (auth.token) {

@@ -108,6 +108,8 @@ input {
 
 .login_wrapper {
   width: 100%;
+  display: grid;
+  place-items: center;
 }
 
 .right {

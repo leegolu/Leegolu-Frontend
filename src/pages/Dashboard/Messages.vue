@@ -2,19 +2,20 @@
   <div class="wrapp">
     <div class="top">
       <span class="title">
-        <i class="fa-solid q-mr-sm fa-message"></i>
-        Messages | 6
+        <!-- <i class="fa-solid q-mr-sm fa-message"></i> -->
+        <img src="/images/messages.svg" alt="" />
+        Messages | {{ rows.length }}
       </span>
 
       <div class="sort_area">
         <div class="left">
-          <q-btn class="active">Recent </q-btn>
-          <q-btn class="regular"> Exppired </q-btn>
-          <q-btn class="regular"> Archived </q-btn>
+          <q-btn flat class="active">Recent </q-btn>
+          <q-btn flat class="regular"> Expired </q-btn>
+          <q-btn flat class="regular"> Archived </q-btn>
         </div>
       </div>
     </div>
-    <div class="style q-py-md">
+    <div v-if="rows.length" class="style q-py-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"
@@ -25,16 +26,22 @@
         :loading="loading"
         @request="onRequest"
       >
-        <template v-slot:body-cell-messages="props">
+        <template v-slot:body-cell-user="props">
           <q-td :props="props">
             <!-- {{ props.row }} -->
-            <div @click="advertdialog = true" class="name_row">
+            <div @click="getConversations(props.row)" class="name_row">
               <q-avatar size="50px" class="shadow-10">
-                <img :src="props.row.image_url" />
+                <img
+                  :src="
+                    props.row.image_url
+                      ? props.row.image_url
+                      : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU'
+                  "
+                />
               </q-avatar>
               <div class="name">
                 <div class="name_top">
-                  {{ props.row.userName }}
+                  {{ props.row.user }}
                 </div>
                 <div class="name_down">
                   {{ props.row.kind }}
@@ -49,7 +56,13 @@
         <template v-slot:body-cell-addedOn="props">
           <q-td :props="props">
             <div class="added">
-              {{ props.row.addedOn }}
+              {{
+                new Date(props.row.created_at).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }}
             </div>
           </q-td>
         </template>
@@ -61,6 +74,20 @@
         </template>
       </q-table>
     </div>
+
+    <div v-else class="empty">
+      <img src="/images/empty.svg" alt="" />
+
+      <div class="empty_text">You currently have no notifications</div>
+    </div>
+
+    <q-dialog v-model="chatDialog" class="dailog" persistent>
+      <chat-page
+        :conversationMessages="conversationMessages"
+        :conversationDetails="conversationDetails"
+        @closeModal="close"
+      />
+    </q-dialog>
     <q-dialog v-model="advertdialog" persistent>
       <q-card class="card">
         <div class="dialog_content">
@@ -129,13 +156,14 @@
 <script>
 import { useMeta } from "quasar";
 import { ref } from "vue";
+import ChatPage from "src/components/ChatPage.vue";
 const columns = [
   {
-    name: "messages",
+    name: "user",
     required: true,
     label: "Messages",
     align: "left",
-    field: (row) => row.name,
+    field: (row) => row.user,
     sortable: true,
   },
   {
@@ -148,34 +176,35 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    name: "customerList",
-    image_url: "/images/tableimg.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
-    addedOn: "October 7, 2022",
-  },
-  {
-    name: "customerList",
-    image_url: "/images/tableimg1.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
-    addedOn: "October 7, 2022",
-  },
-  {
-    name: "customerList",
-    image_url: "/images/tableimg2.png",
-    userName: "Michael Nnamani",
-    kind: "Hisense 1.5HP Split Air Conditioner",
-    chat: "You: Good Afternoon Michael.",
-    addedOn: "October 7, 2022",
-  },
-];
+// const rows = [
+//   {
+//     name: "customerList",
+//     image_url: "/images/tableimg.png",
+//     userName: "Michael Nnamani",
+//     kind: "Hisense 1.5HP Split Air Conditioner",
+//     chat: "You: Good Afternoon Michael.",
+//     addedOn: "October 7, 2022",
+//   },
+//   {
+//     name: "customerList",
+//     image_url: "/images/tableimg1.png",
+//     userName: "Michael Nnamani",
+//     kind: "Hisense 1.5HP Split Air Conditioner",
+//     chat: "You: Good Afternoon Michael.",
+//     addedOn: "October 7, 2022",
+//   },
+//   {
+//     name: "customerList",
+//     image_url: "/images/tableimg2.png",
+//     userName: "Michael Nnamani",
+//     kind: "Hisense 1.5HP Split Air Conditioner",
+//     chat: "You: Good Afternoon Michael.",
+//     addedOn: "October 7, 2022",
+//   },
+// ];
 
 export default {
+  components: { ChatPage },
   setup() {
     useMeta({
       title: "Messages",
@@ -185,7 +214,7 @@ export default {
     return {
       columns,
       advertdialog: false,
-      rows,
+      rows: [],
       errors: [],
       image: ref(null),
       rowData: {},
@@ -193,6 +222,10 @@ export default {
       files: null,
       editstate: false,
       createstate: null,
+      conversationDetails: {},
+      productData: {},
+      conversationMessages: [],
+      chatDialog: false,
       filter: "",
       curl: "",
       separator: "",
@@ -217,9 +250,47 @@ export default {
   },
 
   methods: {
-    getEvents() {},
-    onRequest(props) {},
+    close() {
+      this.chatDialog = false;
+      // console.log("first");
+    },
+    onRequest(props) {
+      this.loading = true;
+      const url = `${this.$store.leegoluauth.vendorDetails.slug}/conversations`;
+      this.curl = url;
+      this.$api
+        .get(url)
+        .then(({ data }) => {
+          // console.log(data);
+          this.loading = false;
+          this.rows = data.conversations;
+          // this.count = data.count;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.loading = false;
+          this.rows = [];
+        });
+    },
 
+    getConversations(id) {
+      this.$q.loading.show();
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/${id.id}/messages`)
+        .then((response) => {
+          this.$q.loading.hide();
+          // console.log(response);
+          this.conversationMessages = response.data.messages;
+          this.conversationDetails = id;
+          this.chatDialog = true;
+        })
+        .catch(({ response }) => {
+          this.loadingBtn = false;
+          this.$q.loading.hide();
+
+          this.errors = error.errors || {};
+        });
+    },
     onItemClick() {},
 
     creatTicketBtn() {
@@ -284,6 +355,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 2rem;
+  padding-bottom: 1rem;
 }
 
 .sort_area .right .sort_by_date {
@@ -308,6 +380,8 @@ export default {
   line-height: 19px;
   text-align: center;
   color: #ffffff;
+  // margin-bottom: 1rem;
+
   background: #1f7bb5;
   border-radius: 17px;
 }
@@ -452,7 +526,7 @@ export default {
   background: #ffffff;
   box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
   border-radius: 4px;
-  width: 366px;
+  // width: 366px;
   // height: 522px;
 }
 

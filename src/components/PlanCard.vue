@@ -60,7 +60,7 @@
               {{ errors.name[0] }}
             </small>
           </div>
-          <div class="input-box active-grey">
+          <div class="input-box q-mx-md active-grey">
             <label class="input-label">Duration</label>
             <select name="" id="">
               <option value="+243">1 Month</option>

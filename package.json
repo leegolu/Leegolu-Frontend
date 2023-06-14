@@ -9,18 +9,22 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@mahdikhashan/vue3-click-outside": "^0.1.2",
     "@quasar/extras": "^1.0.0",
     "@splidejs/vue-splide": "^0.6.12",
     "apexcharts": "^3.39.0",
     "axios": "^1.2.1",
     "core-js": "^3.6.5",
+    "laravel-echo": "^1.15.1",
     "pinia": "^2.0.11",
     "pinia-persists": "^1.2.0",
+    "pusher-js": "^8.1.0",
     "quasar": "^2.6.0",
     "v-offline": "^3.4.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0",
-    "vue3-apexcharts": "^1.4.1"
+    "vue3-apexcharts": "^1.4.1",
+    "vue3-emoji-picker": "^1.1.7"
   },
   "devDependencies": {
     "@quasar/app-webpack": "^3.0.0"

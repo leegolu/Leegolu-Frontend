@@ -6,6 +6,16 @@ input::placeholder {
   opacity: 0.5;
 }
 
+.top .title {
+  display: flex;
+  align-items: center;
+}
+
+.top .title img {
+  width: 27px;
+  height: 17px;
+}
+
 .empty {
   display: flex;
   flex-direction: column;
@@ -56,7 +66,7 @@ $btn-primary-boxshadow-color: 0 1px 1px 0 rgba(66, 133, 244, 0.45),
   0 1px 3px 1px rgba(66, 133, 244, 0.3);
 $btn-primary-text-color: #fff;
 .login {
-  background: aliceblue;
+  // background: aliceblue;
   // height: 100vh;
   padding: 2rem 2rem 5rem;
 }
@@ -621,8 +631,8 @@ select:focus {
 
 .layout_footer {
   background: #ffffff;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
-  height: 74px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.65);
+  height: 64px;
   padding: 1rem 0.3rem;
   bottom: -0.2% !important;
 }
@@ -647,8 +657,8 @@ select:focus {
 .layout_footer .more {
   border: 1px solid #000000;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -661,8 +671,10 @@ select:focus {
 
 .layout_footer img,
 .layout_footer .q-item img {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
+  // width: 30px;
+  // height: 30px;
 }
 
 .goggle_auth {
@@ -748,6 +760,7 @@ select:focus {
 
   .modal_main {
     font-size: 25px;
+    line-height: 1.32;
   }
   .modal {
     padding: 0rem 1rem 0;
@@ -959,14 +972,14 @@ select:focus {
     border-radius: 5px !important;
     box-shadow: none;
     display: flex !important;
-    max-width: 93vw !important;
+    max-width: 95vw !important;
   }
   .main_card .left {
-    max-width: 48% !important;
+    max-width: 78% !important;
   }
   .main_card .right img {
-    width: 152px !important;
-    height: 134px !important;
+    width: 100% !important;
+    height: 170px !important;
     object-fit: contain;
   }
   .main_text {
@@ -982,7 +995,7 @@ select:focus {
     font-size: 12px !important;
   }
 }
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .small_card .small_card_sub {
     font-size: 9px !important;
   }
@@ -990,6 +1003,9 @@ select:focus {
     font-size: 12px !important;
   }
 
+  .empty_text {
+    padding: 1.2rem;
+  }
   // .header_icons {
   //   padding-right: 2rem;
   // }
@@ -998,8 +1014,9 @@ select:focus {
     overflow: hidden;
   }
 
-  .left_main {
-    width: 90vw;
+  .left_main,
+  .right_card {
+    width: 95vw;
     margin: 0 auto;
   }
 
@@ -1013,7 +1030,7 @@ select:focus {
   // }
 
   .left_main {
-    width: 90vw;
+    width: 95vw;
     margin: 0 auto;
   }
 

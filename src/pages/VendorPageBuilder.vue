@@ -11,10 +11,15 @@
     :class="['page-builder', pageLayoutClass]"
   >
     <div
-      class="row q-py-md no-wrap items-center container justify-between q-my-sm"
+      class="row nav_area q-py-md no-wrap items-center container justify-between q-my-sm"
     >
       <div class="logo row no-wrap">
-        <q-btn class="menu q-mr-xs" flat icon="fa-solid fa-bars"></q-btn>
+        <q-btn
+          @click="drawer = !drawer"
+          class="menu q-mr-xs"
+          flat
+          icon="fa-solid fa-bars"
+        ></q-btn>
         Page Editor
       </div>
 
@@ -22,40 +27,48 @@
 
       </div> -->
       <div class="right_nav no-wrap row q-col-gutter-x-md items-center">
-        <div class="lay row items-center q-col-gutter-x-md">
+        <div class="lay no-wrap row items-center q-col-gutter-x-md">
           <div
             @click="colorschemeModal = true"
-            class="span q-col-gutter-x-sm row items-center"
+            class="span nav_btn_icon no-wrap q-col-gutter-x-sm row items-center"
           >
             <img src="/images/scheme.svg" alt="" /> <span>Color Scheme</span>
           </div>
           <div
             @click="pageLayoutModal = true"
-            class="span q-col-gutter-x-sm row items-center"
+            class="span nav_btn_icon no-wrap q-col-gutter-x-sm row items-center"
           >
             <img src="/images/layout.svg" alt="" /> <span>Page Layout</span>
           </div>
         </div>
-        <!-- <div class="q-ml-xl span">
-          <q-btn flat round size="10px" icon="fa-solid fa-desktop" />
+        <div style="gap: 0.6rem" class="q-ml-xl row items-center no-wrap">
+          <div class="span">
+            <q-btn flat round class="desktop_icon" size="10px">
+              <img src="/images/desktop.svg" alt="" />
+            </q-btn>
+          </div>
+          <div class="span">
+            <q-btn flat round size="10px">
+              <img src="/images/mobile.svg" alt="" />
+            </q-btn>
+          </div>
+          <div class="span">
+            <q-btn
+              @click="previewRender"
+              style="color: white"
+              label="Preview"
+              class="preview"
+            />
+          </div>
+          <div class="span">
+            <q-btn :to="{ name: 'business.dashboard' }" flat round size="10px">
+              <img src="/images/cancel.svg" alt="" />
+            </q-btn>
+          </div>
         </div>
-        <div class="span">
-          <q-btn flat round size="10px" icon="fa-solid fa-mobile" />
-        </div> -->
-        <div class="span">
-          <q-btn
-            @click="previewRender"
-            style="color: white"
-            label="Preview"
-            class="preview"
-          />
-        </div>
-        <!-- <div class="span">
-          <q-btn flat round size="10px" icon="fa-solid fa-xmark" />
-        </div> -->
       </div>
     </div>
-    <div class="row text-center hide_desktop justify-center items-center">
+    <!-- <div class="row text-center hide_desktop justify-center items-center">
       <div
         @click="colorschemeModal = true"
         class="span q-col-gutter-x-sm row items-center"
@@ -78,19 +91,22 @@
         />
         <span>Page Layout</span>
       </div>
-    </div>
+    </div> -->
     <div
       v-if="data.coveruploads"
       :style="`background: url(${coverpreview}); background-repeat: no-repeat; background-size:cover`"
       class="editor_hero"
+      @click="uploadCoverModal = true"
     >
-      <q-btn @click="uploadCoverModal = true" icon="camera" class="outline">
+      <q-btn @click="uploadCoverModal = true" class="outline">
+        <img src="/images/camerabtn.svg" alt="" />
         Upload <span> | Cover photo</span>
       </q-btn>
     </div>
-    <div v-else class="editor_hero">
-      <q-btn @click="uploadCoverModal = true" icon="camera" class="outline">
-        Upload <span> | Cover photo</span>
+    <div v-else @click="uploadCoverModal = true" class="editor_hero">
+      <q-btn @click="uploadCoverModal = true" class="outline">
+        <img src="/images/camerabtn.svg" alt="" /> Upload
+        <span> | Cover photo</span>
       </q-btn>
     </div>
     <!-- {{ data }} -->
@@ -100,9 +116,10 @@
           <div
             class="left_wrap mobile row no-wrap items-center q-col-gutter-x-md"
           >
-            <div class="left_logo_area">
+            <div @click="uploadModal = true" class="left_logo_area">
               <img :src="preview" alt="" />
-              <q-btn @click="uploadModal = true" icon="camera" class="outline">
+              <q-btn @click="uploadModal = true" class="outline">
+                <img src="/images/camerabtn.svg" alt="" />
                 Upload <span>| Logo</span>
               </q-btn>
             </div>
@@ -112,7 +129,7 @@
                 Makers of African designs
               </div>
 
-              <div class="rating row items-center">
+              <!-- <div class="rating row items-center">
                 <q-rating
                   v-model="ratingModel"
                   size="1em"
@@ -121,11 +138,11 @@
                   class="q-my-sm"
                 />
                 <span>240</span>
-              </div>
+              </div> -->
 
               <div class="location">
                 <i class="fa-solid fa-location"></i>
-                {{ vendor.address }}
+                <!-- {{ vendor.address }} -->
                 {{ vendor.area }}
               </div>
 
@@ -133,12 +150,9 @@
                 <span class="none_"
                   >Add a brief summary of what your business does.</span
                 >
-                <q-btn
-                  @click="businessDetailsModal = true"
-                  icon="edit"
-                  class="outline"
-                >
-                  Edit <span>| Details</span>
+                <q-btn @click="businessDetailsModal = true" class="outline">
+                  <img src="/images/editbtn.svg" alt="" />
+                  <span>Edit</span> <span>| Details</span>
                 </q-btn>
               </div>
             </div>
@@ -146,12 +160,10 @@
         </div>
 
         <div class="right">
-          <q-btn
-            class="none_"
-            flat
-            icon="fa-solid fa-phone-volume"
-            label="Contact Business"
-          />
+          <q-btn class="none_" flat>
+            <img src="/images/cal.svg" alt="" />
+            <span class="q-ml-sm">Contact Business</span></q-btn
+          >
 
           <div class="row none_desktop q-gutter-md no-wrap items-center">
             <q-btn
@@ -174,22 +186,15 @@
     <div v-if="data.segments === 'Segment A'" class="segment_wrap">
       <div class="row manage_seg q-mr-md justify-end">
         <div class="left_paragraph">
-          <q-btn @click="segmentsModal = true" icon="edit" class="outline">
+          <q-btn @click="segmentsModal = true" class="outline">
+            <img src="/images/editbtn.svg" alt="" />
             Manage <span>| Segment</span>
           </q-btn>
         </div>
       </div>
       <div class="mobile_categories">
         <div class="row items-center no-wrap justify-center">
-          <q-btn-dropdown flat class="drop" color="white" label="All Products">
-            <q-list>
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>All Products</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
+          <q-btn flat class="drop" color="white" label="All Products" />
           <div class="input_search">
             <input
               v-model="sorted"
@@ -220,16 +225,23 @@
         </div>
       </div>
 
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
-          >
-            Read more
+      <div class="holder">
+        <div class="desc_text">
+          <div class="">
+            It’s how we’ve always described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...
+            <q-btn
+              style="min-height: 0; padding: 0; text-transform: capitalize"
+              flat
+              class="text-weight-bold"
+            >
+              Read more
+            </q-btn>
+          </div>
+
+          <q-btn @click="businessDetailsModal = true" class="outline">
+            <img src="/images/editbtn.svg" alt="" />
+            <span>Edit</span> <span>| Details</span>
           </q-btn>
         </div>
         <!-- <div class="segmentA q-pt-lg container">My Collections</div> -->
@@ -255,7 +267,8 @@
     <div v-if="data.segments === 'Segment B'" class="segment_wrap">
       <div class="row manage_seg q-mr-md justify-end">
         <div class="left_paragraph">
-          <q-btn @click="segmentsModal = true" icon="edit" class="outline">
+          <q-btn @click="segmentsModal = true" class="outline">
+            <img src="/images/editbtn.svg" alt="" />
             Manage <span>| Segment</span>
           </q-btn>
         </div>
@@ -324,16 +337,23 @@
           </div>
         </div>
       </div>
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
-          >
-            Read more
+      <div class="holder">
+        <div class="desc_text">
+          <div class="">
+            It’s how we’ve always described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...
+            <q-btn
+              style="min-height: 0; padding: 0; text-transform: capitalize"
+              flat
+              class="text-weight-bold"
+            >
+              Read more
+            </q-btn>
+          </div>
+
+          <q-btn @click="businessDetailsModal = true" class="outline">
+            <img src="/images/editbtn.svg" alt="" />
+            <span>Edit</span> <span>| Details</span>
           </q-btn>
         </div>
         <div
@@ -358,7 +378,8 @@
     <div v-if="data.segments === 'Segment C'" class="segment_wrap">
       <div class="row manage_seg q-mr-md justify-end">
         <div class="left_paragraph">
-          <q-btn @click="segmentsModal = true" icon="edit" class="outline">
+          <q-btn @click="segmentsModal = true" class="outline">
+            <img src="/images/editbtn.svg" alt="" />
             Manage <span>| Segment</span>
           </q-btn>
         </div>
@@ -421,16 +442,23 @@
           </div>
         </div>
       </div>
-      <div class="">
-        <div class="desc_text q-pt-lg container">
-          It’s how we’ve always described our bars. What’s inside. <br />
-          What isn’t. We think it’s everything you need...
-          <q-btn
-            style="min-height: 0; padding: 0; text-transform: capitalize"
-            flat
-            class="text-weight-bold"
-          >
-            Read more
+      <div class="holder">
+        <div class="desc_text">
+          <div class="">
+            It’s how we’ve always described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...
+            <q-btn
+              style="min-height: 0; padding: 0; text-transform: capitalize"
+              flat
+              class="text-weight-bold"
+            >
+              Read more
+            </q-btn>
+          </div>
+
+          <q-btn @click="businessDetailsModal = true" class="outline">
+            <img src="/images/editbtn.svg" alt="" />
+            <span>Edit</span> <span>| Details</span>
           </q-btn>
         </div>
 
@@ -762,6 +790,32 @@
         <!-- {{ data.colorScheme }} -->
       </q-card>
     </q-dialog>
+
+    <q-drawer
+      v-model="drawer"
+      :width="200"
+      :breakpoint="700"
+      bordered
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'white'"
+    >
+      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+        <q-list class="q-px-md q-py-xl" padding>
+          <div
+            @click="colorschemeModal = true"
+            class="span q-col-gutter-x-sm row items-center"
+          >
+            <img src="/images/scheme.svg" alt="" /> <span>Color Scheme</span>
+          </div>
+          <!-- <q-seperator /> -->
+          <div
+            @click="pageLayoutModal = true"
+            class="span q-col-gutter-x-sm row items-center"
+          >
+            <img src="/images/layout.svg" alt="" /> <span>Page Layout</span>
+          </div>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
   </div>
 </template>
 
@@ -778,6 +832,7 @@ export default {
         segments: "Segment B",
       },
       value: false,
+      drawer: false,
       tagvalue: false,
       namevalue: false,
       enableEdit: true,
@@ -792,7 +847,7 @@ export default {
       value: false,
       uploadModal: false,
       uploadCoverModal: false,
-      preview: "/images/sqrpreview.png",
+      // preview: "/images/sqrpreview.png",
       segmentsModal: false,
       radio: false,
       loading: true,
@@ -822,8 +877,9 @@ export default {
             "--primary-color": "#000000",
             "--secondary-color": "#EE4E36",
             "--color-one": "#1F7BB5",
-            "--color-two": "rgba(31, 123, 181, 0.57)",
+            "--color-two": "#CEDFEB",
             "--color-three": "#CCCCCC",
+            "--color-four": "rgba(31, 123, 181, 0.4)",
             // Add more CSS variables for the color scheme
           },
           colors: [
@@ -856,6 +912,7 @@ export default {
             "--color-one": "#33CC99",
             "--color-two": "#93E6CA",
             "--color-three": "#CCCCCC",
+            "--color-four": "#334499",
             // Add more CSS variables for the color scheme
           },
           colors: ["#000", "#1C9E73", "#33CC99", "#93E6CA", "#CCCCCC"],
@@ -869,6 +926,7 @@ export default {
             "--color-one": "#B336EE",
             "--color-two": "rgba(160, 31, 181, 0.57)",
             "--color-three": "#CCCCCC",
+            "--color-four": "rgba(160, 31, 181, 0.27)",
             // Add more CSS variables for the color scheme
           },
 
@@ -889,6 +947,7 @@ export default {
             "--color-one": "#D9C831",
             "--color-two": "rgba(202, 220, 0, 0.57)",
             "--color-three": "#CCCCCC",
+            "--color-four": "rgba(202, 220, 0, 0.27)",
             // Add more CSS variables for the color scheme
           },
           colors: [
@@ -908,6 +967,7 @@ export default {
             "--color-one": "#1F7BB5",
             "--color-two": "rgba(31, 123, 181, 0.57)",
             "--color-three": "#CCCCCC",
+            "--color-four": "rgba(31, 123, 181, 0.27)",
             // Add more CSS variables for the color scheme
           },
           colors: [
@@ -927,6 +987,7 @@ export default {
             "--color-one": "#D93131",
             "--color-two": "rgba(220, 0, 0, 0.57)",
             "--color-three": "#CCCCCC",
+            "--color-four": "rgba(220, 0, 0, 0.27)",
             // Add more CSS variables for the color scheme
           },
 
@@ -999,6 +1060,18 @@ export default {
         } else {
           this.enableTagEdit = true;
         }
+      },
+      immediate: true,
+    },
+    "data.segments": {
+      handler() {
+        this.$q.loading.show({
+          message: "Your changes are taking effect",
+        });
+        setTimeout(() => {
+          this.$q.loading.hide();
+        }, 1000);
+        // console.log(this.data.segments);
       },
       immediate: true,
     },
@@ -1257,11 +1330,28 @@ export default {
   background: rgba(217, 217, 217, 0.31);
   border: 1px dashed var(--primary-color);
   margin: 11rem auto 0rem;
-  width: 90%;
+  width: 95%;
+}
+
+.upload_logo_area {
+  width: 95%;
+  margin: 0 auto;
 }
 
 .segment_wrap .left_paragraph .outline.q-btn {
   margin-top: -4rem;
+}
+
+.nav_area {
+  background: #ffffff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  margin: 0.5rem auto;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  width: 95%;
+  height: 59px;
+  max-width: 100%;
 }
 
 .logo {
@@ -1270,6 +1360,9 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 29px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
   color: var(--primary-color);
 }
 .right_nav img {
@@ -1278,10 +1371,12 @@ export default {
 }
 .editor_hero {
   height: 40vh;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
   position: relative;
+  width: 95%;
+  margin: 0 auto;
   background: var(--color-one);
 }
 
@@ -1297,6 +1392,29 @@ export default {
   line-height: 17px;
   text-align: center;
   color: var(--primary-color);
+}
+
+.desktop_icon {
+  background: rgba(160, 160, 160, 0.51);
+  border-radius: 19px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav_btn_icon {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
+  color: #000000;
+}
+
+.nav_btn_icon span {
+  white-space: nowrap;
 }
 
 .editor_hero .q-btn span {
@@ -1319,10 +1437,34 @@ export default {
   margin-bottom: 0.5rem;
 }
 
+.preview {
+  margin: 0 1.5rem;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+}
+
 .preview,
 .right .none_ {
   background: var(--color-one);
   color: #fff;
+  width: 115px;
+  height: 39px;
+  text-transform: capitalize;
+  border-radius: 5px;
+}
+
+@media (min-width: 980px) {
+  .preview,
+  .right .none_ {
+    width: auto;
+  }
 }
 
 .collection_name {
@@ -1338,6 +1480,11 @@ export default {
 .showcollections {
   background: var(--secondary-color);
   color: #a15858;
+}
+
+.q-btn.none_ img {
+  width: 17px;
+  height: 17px;
 }
 
 .search {
@@ -1358,7 +1505,14 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
+  margin-top: 4px;
   color: var(--primary-color);
+}
+
+@media (min-width: 700px) {
+  .left_details_desc {
+    margin-top: 0;
+  }
 }
 
 .segmentA {
@@ -1371,6 +1525,11 @@ export default {
 }
 
 .desc_text {
+  padding: 0 1.5rem;
+}
+
+.desc_text,
+.desc_text .q-btn {
   display: none;
   font-family: "Inter";
   font-style: normal;
@@ -1378,6 +1537,14 @@ export default {
   font-size: 10px;
   line-height: 12px;
   color: var(--primary-color);
+}
+.desc_text > .q-btn {
+  margin-top: 0.5rem;
+}
+
+.desc_text .q-btn span,
+.desc_text .q-btn img {
+  position: relative;
 }
 
 .det {
@@ -1393,7 +1560,8 @@ export default {
   font-weight: 400;
   font-size: 10px;
   line-height: 12px;
-  color: var(--primary-color);
+  color: var(--color-one);
+  margin-top: 0.3rem;
   // color: #1f7bb5;
 }
 
@@ -1413,6 +1581,10 @@ export default {
   font-size: 12px;
   line-height: 15px;
   color: var(--primary-color);
+}
+
+.left_wrap .left_paragraph {
+  padding-bottom: 1rem;
 }
 
 .layout {
@@ -1449,6 +1621,11 @@ export default {
   align-items: center;
   text-align: center;
   color: #ffffff;
+}
+
+.right .q-btn.none_ {
+  white-space: nowrap;
+  width: auto;
 }
 
 .upload_logo_area {
@@ -1488,8 +1665,17 @@ export default {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
+  text-transform: capitalize;
   color: var(--primary-color);
+  padding: 4px 8px;
   background: #ffffff;
+}
+
+.outline.q-btn img {
+  width: 25px;
+  height: 25px;
+  border: none;
+  margin: 0 0.3rem 0 0;
 }
 
 .outline.q-btn::before {
@@ -1500,6 +1686,7 @@ export default {
 }
 .outline.q-btn span {
   font-weight: 500;
+  margin-left: 0.3rem;
 }
 
 .sort_area {
@@ -1586,6 +1773,25 @@ export default {
 
 .mobile_categories {
   display: none;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.holder {
+  background: #ffffff;
+  width: 95%;
+  margin: 0 auto;
+}
+
+@media (min-width: 980px) {
+  .holder {
+    background: none;
+  }
+}
+
+.holder .responsive_autofit_grid {
+  width: 95%;
+  margin: 0 auto;
 }
 
 .input_search {
@@ -1701,6 +1907,7 @@ export default {
   font-weight: 600;
   font-size: 18px;
   line-height: 22px;
+  text-transform: capitalize;
   text-align: center;
   color: white;
 }
@@ -1731,13 +1938,16 @@ export default {
 }
 .previewDiv {
   position: relative;
+  background: url("/images/sqrpreview.png") no-repeat center;
+  background-position: center;
+  background-size: cover;
 }
 .previewDiv::before {
   position: absolute;
   content: "";
-  background: rgba(0, 0, 0, 0.5);
-  border: 6px solid var(--color-one);
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  // border: 6px solid var(--color-one);
+  // border-radius: 10px;
   width: 100%;
   height: 100%;
 }
@@ -1757,11 +1967,19 @@ export default {
 }
 .form img.previewimg {
   width: 296px;
-  height: 296px;
+  height: 100%;
+  // height: 296px;
+  border-radius: 0;
+  border: none;
 }
 .form img.previewimg.cover {
-  width: 411px;
-  height: 200px;
+  // width: 411px;
+  height: 250px;
+  border-radius: 0;
+  border: none;
+  position: relative;
+  object-fit: cover;
+  // z-index: -1;
 }
 .form img.click {
   width: 120px;
@@ -1788,11 +2006,15 @@ export default {
   .left_logo_area .outline.q-btn {
     left: -2%;
   }
+
+  .segment_wrap {
+    margin: 6rem auto 0rem;
+  }
 }
 @media (max-width: 950px) {
-  .form img.previewimg.cover {
-    width: 100%;
-  }
+  // .form img.previewimg.cover {
+  //   width: 100%;
+  // }
   .left_logo_area .outline.q-btn {
     right: -30%;
   }
@@ -1804,12 +2026,31 @@ export default {
     margin: 0 1rem;
   }
 
+  .right_nav .q-ml-xl {
+    margin-left: 0.3rem !important;
+  }
+  .preview {
+    margin: 0 0.5rem;
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    width: 85px;
+  }
+
+  .left_paragraph .outline.q-btn img {
+    width: 12px;
+    height: 13px;
+    margin-right: 0.3rem;
+  }
+
   .mobile_categories {
     display: flex;
     justify-content: space-between;
-    background: rgba(31, 123, 181, 0.24);
     padding: 0.5rem;
-    background: var(--color-two);
+    background: var(--color-four);
   }
 
   .mobile_categories > .row {
@@ -1860,10 +2101,16 @@ export default {
     padding-bottom: 2rem;
   }
 
+  .desc_text {
+    padding: 1.5rem;
+  }
+
   .manage_seg {
     margin-top: -48px;
   }
-
+  .left_wrap .left_paragraph .q-btn {
+    display: none;
+  }
   .upload_wrap {
     align-items: flex-end;
   }
@@ -1884,12 +2131,6 @@ export default {
     font-size: 16px;
   }
 
-  .menu {
-    display: block;
-    padding: 0;
-    min-height: 0;
-  }
-
   .none_desktop {
     display: flex;
   }
@@ -1907,8 +2148,16 @@ export default {
     padding-left: 0;
   }
 
-  .desc_text {
-    display: block;
+  .desc_text,
+  .desc_text .q-btn {
+    display: inline-block;
+  }
+
+  .desc_text > .q-btn {
+    display: flex;
+  }
+  .desc_text .q-btn {
+    font-weight: 700;
   }
 
   // .responsive_autofit_grid {
@@ -1916,6 +2165,46 @@ export default {
   // }
 }
 
+@media (max-width: 700px) {
+  .lay {
+    display: none;
+  }
+  .menu {
+    display: block;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .outline.q-btn img {
+    width: 15px;
+    height: 12.75px;
+  }
+
+  .q-list .span span {
+    font-size: 15px;
+  }
+  .search .input_search {
+    height: 45px;
+  }
+
+  .color_text {
+    font-size: 12px;
+    margin-bottom: 0.2rem;
+  }
+  .q-list .span img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .upload_logo_area {
+    height: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .fit .span {
+    margin: 0.5rem 0;
+  }
+}
 @media (min-width: 500px) {
   .hide_desktop {
     display: none;
@@ -1926,8 +2215,22 @@ export default {
     height: 45px;
     font-size: 15px;
   }
+
+  .modal .title {
+    font-size: 16px;
+  }
+
+  .desc_text .outline.q-btn span {
+    color: #000;
+  }
   .logo {
     white-space: nowrap;
+  }
+
+  .desc_text .outline.q-btn img {
+    width: 15px;
+    height: 15px;
+    margin: 0;
   }
 
   .lay {
@@ -1939,15 +2242,36 @@ export default {
   }
   .desc_text {
     display: block;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+    padding: 2rem 2rem 0;
   }
+
+  // .holder {
+  //   background-color: #ffffff;
+  //   width: 95%;
+  //   margin: 0 auto;
+  // }
+
+  // .holder .responsive_autofit_grid {
+  //   width: 95%;
+  //   margin: 0 auto;
+  // }
 
   .left_logo_area {
     width: 100%;
   }
 
+  .outline.q-btn {
+    background: #ffffff;
+    border: 1px solid #000000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.44);
+    border-radius: 5px;
+  }
+
   .left_logo_area .outline.q-btn {
-    right: -20%;
+    // right: -1%;
+    width: 100%;
+    right: -32%;
   }
 
   .left_details_title {
@@ -1967,12 +2291,48 @@ export default {
   .left_details_desc {
     font-size: 10px;
     line-height: 13px;
+    margin-top: 10px;
   }
-  .outline.q-btn {
+  .outline.q-btn,
+  .outline.q-btn span {
     font-size: 10px;
+    // height: 23px;
   }
   .editor_hero {
-    height: 30vh;
+    height: 20vh;
+  }
+
+  .drop {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    color: #ffffff;
+  }
+
+  .nav_area {
+    height: 45px;
+  }
+
+  .preview {
+    height: 38.07px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .input_search {
+    background: transparent;
+    border: none;
+  }
+
+  .mobile_categories .input_search input {
+    display: none;
+  }
+
+  .input_search i {
+    font-size: 1.5rem;
   }
 
   .segment_wrap {
@@ -1982,6 +2342,17 @@ export default {
   .span img {
     width: 30px !important;
     height: 30px !important;
+    width: 22.69px !important;
+    height: 22.69px !important;
+  }
+  .right_nav .q-ml-xl {
+    margin: 0;
+    gap: 0.3rem !important;
+  }
+  .preview {
+    margin: 0 0.1rem;
+    width: 74.67px;
+    height: 28.07px;
   }
 
   .span .q-btn {
@@ -1990,9 +2361,9 @@ export default {
     text-transform: capitalize;
   }
 
-  .location {
-    margin-bottom: 0.5rem;
-  }
+  // .location {
+  //   margin-bottom: 0.5rem;
+  // }
 
   .span span {
     font-size: 12px;
@@ -2009,6 +2380,61 @@ export default {
   .textarea .texta {
     font-size: 10px;
     color: #000;
+  }
+  .upload_logo_area {
+    margin-top: -20%;
+  }
+  .left_logo_area img {
+    width: 83px;
+    height: 83px;
+    // margin-left: 1.4rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .left_wrap.mobile {
+    padding-left: 1rem;
+  }
+
+  .left_details {
+    padding: 0;
+  }
+
+  .desktop_icon img {
+    width: 22.69px;
+    height: 22.69px;
+  }
+}
+
+@media (max-width: 360px) {
+  .span img {
+    width: 15.69px !important;
+    height: 15.69px !important;
+  }
+  .desktop_icon {
+    width: 25px;
+    height: 25px;
+  }
+  .right_nav .q-ml-xl {
+    gap: 0rem !important;
+  }
+
+  .desc_text {
+    padding: 2rem 1rem 0;
+  }
+}
+@media (max-width: 340px) {
+  .logo {
+    font-size: 14px;
+  }
+
+  .logo .q-btn {
+    font-size: 12px;
+  }
+
+  .preview {
+    margin: 0 0.1rem;
+    width: 49.67px;
+    height: 22.07px;
   }
 }
 </style>

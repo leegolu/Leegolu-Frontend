@@ -60,6 +60,8 @@ export default {};
   background: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
+  width: 90%;
+  margin: 0 auto;
 }
 img {
   width: 103px;
@@ -157,5 +159,11 @@ img {
 
 .socials i {
   font-size: 20px;
+}
+
+@media (max-width: 500px) {
+  .wrapp {
+    min-width: 90%;
+  }
 }
 </style>
