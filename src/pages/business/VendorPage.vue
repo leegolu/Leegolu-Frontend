@@ -4,7 +4,7 @@
       <q-spinner-comment color="primary" size="5em" />
     </div>
   </div>
-  <div v-if="!loading" :style="colorSchemeStyles">
+  <div v-if="!loading" class="main_content" :style="colorSchemeStyles">
     <div
       :style="`background: url(${coverpreview}); background-repeat: no-repeat; background-size:cover`"
       class="editor_hero"
@@ -202,7 +202,9 @@
               :key="index"
               @click="grandselectCollection(collections)"
               :class="
-                collections.name === 'All products' ? 'active' : 'regular'
+                collections.id === grandselectedCollectionId
+                  ? 'active'
+                  : 'regular'
               "
             >
               {{ collections.name }}
@@ -523,7 +525,7 @@ export default {
       allProductsArr: [],
       grandAllProductsArr: [],
       selectedCollectionId: null,
-      grandselectedCollectionId: null,
+      grandselectedCollectionId: "allpro",
       selectedCollectionProducts: [],
       grandselectedCollectionProducts: [],
       sortingCriteria: "",
@@ -675,9 +677,11 @@ export default {
     combineProducts() {
       let allPData = {
         name: "All products",
+        id: "allpro",
         products: [...this.allProductsArr],
       };
       this.grandAllProductsArr = [allPData, ...this.collectionsArr];
+      // console.log(this.grandAllProductsArr);
     },
 
     getVendorPhone() {
@@ -750,14 +754,14 @@ export default {
 <style lang="scss" scoped>
 .segment_wrap {
   // margin-top: 11rem;
-  background: rgba(217, 217, 217, 0.31);
-  border: 1px dashed var(--primary-color);
+  // background: rgba(217, 217, 217, 0.31);
+  // border: 1px dashed var(--primary-color);
   margin: 11rem auto 0rem;
-  width: 95%;
+  // width: 95%;
 }
 
 .upload_logo_area {
-  width: 95%;
+  // width: 95%;
   margin: 0 auto;
 }
 
@@ -774,6 +778,10 @@ export default {
   padding-right: 0.4rem;
   width: 95%;
   height: 59px;
+}
+
+.main_content {
+  background: #f5f5f5;
 }
 
 .logo {
@@ -797,7 +805,7 @@ export default {
   background-position: center !important;
   background-repeat: no-repeat !important;
   position: relative;
-  width: 95%;
+  // width: 95%;
   margin: 0 auto;
   background: var(--color-one);
 }
@@ -903,8 +911,9 @@ export default {
 
 .q-btn.none_,
 .showcollections {
-  background: var(--secondary-color);
-  color: #a15858;
+  background: white;
+  // background: var(--color-four);
+  color: var(--color-one) !important;
 }
 
 .search {
@@ -1251,7 +1260,7 @@ export default {
 .input_search i {
   padding: 1rem;
   font-size: 1rem;
-  color: var(--color-two) !important;
+  color: var(--primary-color) !important;
 }
 .input_search i.mobile {
   display: none;

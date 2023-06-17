@@ -1,7 +1,7 @@
 // app global css in SCSS form
 @import "custom/resets";
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&family=Lato:wght@300;400;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&family=Open+Sans:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&family=Lato:wght@300;400;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&family=Open+Sans:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300&family=PT+Serif:wght@400;700&display=swap");
 
 * {
   margin: 0;
@@ -127,11 +127,43 @@ th.text-right {
   position: fixed;
 }
 
+.popular .splide__slide {
+  width: 162.62px !important;
+  height: 184px !important;
+}
+
 .splide__arrow {
   background: #fff !important;
   width: 3em !important;
   height: 3em !important;
   opacity: 1 !important;
+}
+.q-item.q-router-link--active svg path {
+  display: block;
+  color: white;
+  fill: #fff;
+}
+.q-item.q-router-link--active svg path {
+  fill: #fff;
+  color: white;
+}
+
+.check .q-checkbox__bg {
+  width: 24px;
+  height: 23px;
+  background: rgb(49, 228, 49);
+  border: 1px solid #1f7bb5;
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.check .q-checkbox__bg .q-checkbox__svg {
+  width: 80% !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80% !important;
 }
 
 .splide__arrow--prev {
@@ -182,6 +214,30 @@ th.text-right {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.carou .q-carousel__control.q-carousel__next-arrow--horizontal {
+  right: 16px;
+}
+// .carou .q-carousel__control.q-carousel__prev-arrow--horizontal {
+//   left: 16px;
+// }
+
+.carou .q-carousel__control .q-btn {
+  background: black;
+  color: white;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.42);
+  border-radius: 13.5px;
+  // transform: matrix(-1, 0, 0, 1, 0, 0);
+}
+.carou .q-carousel__control .q-btn::before {
+  box-shadow: none;
+}
+
+.product_cards .product .owners {
+  position: absolute;
+  bottom: 1%;
+  width: 90%;
 }
 
 .modal .q-field {
@@ -284,6 +340,28 @@ th.text-right {
 
   .product_detail_wrap .q-carousel .q-carousel__navigation--bottom {
     bottom: -60%;
+  }
+  .headermenu.q-menu img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .headermenu.q-menu .text-subtitle1 {
+    font-size: 0.7rem;
+    margin-top: 0;
+  }
+
+  .headermenu.q-menu > div {
+    padding: 0.5rem;
+  }
+
+  .q-menu .q-btn {
+    font-size: 0.6rem;
+  }
+
+  .q-menu.menu_footer img {
+    width: 20px !important;
+    height: 20px !important;
   }
 }
 @media (max-width: 400px) {

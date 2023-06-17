@@ -48,7 +48,7 @@
             <img
               :src="
                 product.vendor.avatar !== null
-                  ? `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU`
+                  ? `/images/usersvg.svg`
                   : product.vendor.avatar
               "
               alt=""
@@ -59,7 +59,7 @@
               {{ product.vendor.business_name }}
               <!-- <span> | 7 Months</span> -->
             </p>
-            <!-- <div class="ratings_area">
+            <div @click="ratingsView = true" class="ratings_area">
               <span class="rating_main_text">4.0</span>
               <q-rating
                 v-model="ratingModel"
@@ -68,7 +68,7 @@
                 color="secondary"
               />
               <span class="ratings_subtext"> (2345) </span>
-            </div> -->
+            </div>
           </div>
         </div>
 
@@ -239,7 +239,7 @@
             <img
               :src="
                 product.vendor.avatar !== null
-                  ? `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU`
+                  ? `/images/usersvg.svg`
                   : product.vendor.avatar
               "
               alt=""
@@ -271,7 +271,15 @@
         :conversationDetails="conversationDetails"
         :conversationMessages="conversationMessages"
         :productData="productData"
+        @convo="getConversations"
+        @refresh-message="getConversations"
         @closeModal="close"
+      />
+    </q-dialog>
+    <q-dialog v-model="ratingsView">
+      <RatingsComponentVue
+        :productData="product"
+        @closeModalRatings="closeRatings"
       />
     </q-dialog>
   </div>
@@ -281,7 +289,7 @@
 import { ref } from "vue";
 import FooterVue from "src/components/Footer.vue";
 import ChatPageVue from "src/components/ChatPage.vue";
-
+import RatingsComponentVue from "src/components/RatingsComponent.vue";
 export default {
   setup() {
     return {
@@ -295,7 +303,8 @@ export default {
       loadingChatBtn: ref(false),
       conversationDetails: {},
       conversationMessages: [],
-      productData: {},
+      productData: ref({}),
+      ratingsView: ref(false),
       chat: ref(false),
       phone_number: "",
       phoneDialog: ref(false),
@@ -305,6 +314,7 @@ export default {
   components: {
     FooterVue,
     ChatPageVue,
+    RatingsComponentVue,
   },
 
   created() {
@@ -327,6 +337,10 @@ export default {
     close() {
       this.chat = false;
       // console.log("first");
+    },
+    closeRatings() {
+      // console.log("how fa");
+      this.ratingsView = false;
     },
     getProduct() {
       let product = this.$router.currentRoute.value.params.slug;
@@ -351,7 +365,7 @@ export default {
           this.loading = false;
           this.hoursago = hoursAgo;
           // console.log(hoursAgo);
-          // console.log(response);
+          console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -388,13 +402,13 @@ export default {
       this.loadingChatBtn = true;
       let product = this.$router.currentRoute.value.params.slug;
       // .post(`${product}/${this.product.vendor.slug}/create/conversation`)
-
+      // console.log("triggered");
       this.$api
         .post(`${product}/create/conversation`)
         .then((response) => {
           this.loadingChatBtn = false;
           // console.log(response);
-          this.conversationDetails = response.data.conversation;
+          this.conversationDetails = response.data.conversation.id;
           this.productData = response.data.product;
           this.chat = true;
         })
@@ -404,6 +418,23 @@ export default {
           this.errors = error.errors || {};
         });
       // this.chat = true;
+    },
+
+    getConversations(id) {
+      this.$q.loading.show();
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/${id}/messages`)
+        .then((response) => {
+          this.$q.loading.hide();
+          console.log(response);
+          this.conversationMessages = response.data.messages;
+        })
+        .catch(({ response }) => {
+          this.loadingBtn = false;
+          this.$q.loading.hide();
+
+          this.errors = error.errors || {};
+        });
     },
   },
 };

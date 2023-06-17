@@ -1,5 +1,10 @@
 <template>
-  <div class="wrapp">
+  <div class="loader" v-if="loadingCol">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loadingCol" class="wrapp">
     <div class="top">
       <span class="title">
         <!-- <i class="fa-solid q-mr-sm fa-message"></i> -->
@@ -29,13 +34,13 @@
         <template v-slot:body-cell-user="props">
           <q-td :props="props">
             <!-- {{ props.row }} -->
-            <div @click="getConversations(props.row)" class="name_row">
+            <div @click="getConversations(props.row.id)" class="name_row">
               <q-avatar size="50px" class="shadow-10">
                 <img
                   :src="
                     props.row.image_url
                       ? props.row.image_url
-                      : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU'
+                      : '/images/usersvg.svg'
                   "
                 />
               </q-avatar>
@@ -84,8 +89,11 @@
     <q-dialog v-model="chatDialog" class="dailog" persistent>
       <chat-page
         :conversationMessages="conversationMessages"
+        :productData="productData"
         :conversationDetails="conversationDetails"
+        @refresh-message="getConversations"
         @closeModal="close"
+        @convo="getConversations"
       />
     </q-dialog>
     <q-dialog v-model="advertdialog" persistent>
@@ -231,8 +239,10 @@ export default {
       separator: "",
       mode: "list",
       loading: false,
+      loadingCol: true,
       editLoad: false,
       create_title: false,
+      thisId: "",
       loaders: {
         delete: false,
         category: false,
@@ -255,33 +265,37 @@ export default {
       // console.log("first");
     },
     onRequest(props) {
-      this.loading = true;
+      this.loadingCol = true;
       const url = `${this.$store.leegoluauth.vendorDetails.slug}/conversations`;
       this.curl = url;
       this.$api
         .get(url)
         .then(({ data }) => {
           // console.log(data);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = data.conversations;
           // this.count = data.count;
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = [];
         });
     },
 
     getConversations(id) {
+      this.thisId = id.id;
+      console.log(id);
       this.$q.loading.show();
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/${id.id}/messages`)
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/${id}/messages`)
         .then((response) => {
           this.$q.loading.hide();
-          // console.log(response);
+          console.log(response);
           this.conversationMessages = response.data.messages;
           this.conversationDetails = id;
+          this.productData = response.data.product;
+          // this.subscribeToChannel(id);
           this.chatDialog = true;
         })
         .catch(({ response }) => {
@@ -291,26 +305,16 @@ export default {
           this.errors = error.errors || {};
         });
     },
-    onItemClick() {},
 
-    creatTicketBtn() {
-      this.editstate = false;
-      this.create_title = true;
-    },
-    createEventTicket(e) {
-      e.preventDefault();
-    },
-    editTicketing(category) {
-      this.editstate = true;
-      this.create_title = true;
-    },
+    subscribeToChannel(id) {
+      // console.log(id);
+      const channel = window.Echo.join(`message.${id.id}`);
 
-    editedFunction(e) {
-      e.preventDefault();
+      channel.listen("message", (event) => {
+        console.log("Received new message:", event.message);
+        this.conversationMessages.push(event.message);
+      });
     },
-    deleteTicketing(id) {},
-
-    deletemultiple(id) {},
 
     refreshtitle() {
       if (this.curl !== "") {
@@ -355,7 +359,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 2rem;
-  padding-bottom: 1rem;
+  // padding-bottom: 1rem;
 }
 
 .sort_area .right .sort_by_date {

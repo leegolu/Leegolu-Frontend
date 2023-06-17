@@ -2,19 +2,23 @@
   <div>
     <q-card class="card">
       <div class="dialog_content">
-        <div v-if="productData" class="dialog_top advert">
+        <div
+          v-if="productData || this.$store.leegoluauth.vendorDetails.name"
+          class="dialog_top advert"
+        >
           <div class="left_dialog">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU"
-              alt=""
-            />
+            <img src="/images/usersvg.svg" alt="" />
             <!-- <img src="/images/listing1.png" alt="" /> -->
           </div>
 
           <div class="det">
             <!-- {{ productData }} -->
             <div class="title name_top">
-              {{ productData.vendor_name }}
+              {{
+                productData.vendor_name
+                  ? productData.vendor_name
+                  : this.$store.leegoluauth.vendorDetails.name
+              }}
               <!-- {{ productData ? productData.vendor.name : "" }} -->
             </div>
             <div class="name_down act text-weight-bold">Active</div>
@@ -36,6 +40,7 @@
         </div>
         <div class="chatArea">
           <p class="text-center today">Today</p>
+          <!-- {{ conversationMessages }} -->
           <div
             v-if="conversationMessages.length"
             style="width: 100%; max-width: 400px"
@@ -45,10 +50,7 @@
                 <div v-if="chat.bool === false" class="user chat">
                   <div class="div">
                     <span>
-                      <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU"
-                        alt=""
-                      />
+                      <img src="/images/usersvg.svg" alt="" />
                     </span>
                     <span>
                       {{ chat.messages }}
@@ -142,6 +144,7 @@ import { ref } from "vue";
 import EmojiPicker from "vue3-emoji-picker";
 import ClickOutside from "@mahdikhashan/vue3-click-outside";
 import "vue3-emoji-picker/css";
+// import { echo } from "src/boot/echo";
 export default {
   data() {
     return {
@@ -176,13 +179,58 @@ export default {
     // console.log(this.$router.currentRoute.value.fullPath);
   },
 
+  // created() {
+  //   this.$watch(
+  //     (e) => echo.listen,
+  //     (listen) => {
+  //       if (listen) {
+  //         this.listenForNewMessage();
+  //       }
+  //     },
+  //     { immediate: true, deep: true }
+  //   );
+  // },
+
   mounted() {
     if (this.conversationMessages.length) {
       this.scrollToBottom();
     }
+
+    // console.log(this.conversationDetails.id);
+
+    const channel = window.Echo.join(`message.${this.conversationDetails}`);
+    // console.log(channel);
+    // console.log(channel.listen);
+    channel.here((users) => {
+      console.log("Users in the channel:", users);
+    });
+
+    window.Echo.connector.pusher.connection.bind("state_change", (states) => {
+      console.log("Pusher connection state:", states.current);
+    });
+
+    channel.listen("message", (event) => {
+      console.log(event);
+      this.conversationMessages.push(event.message);
+    });
   },
 
   methods: {
+    // listenForNewMessage() {
+    //   const channel = window.Echo.private(
+    //     `messages.${this.conversationDetails.id}`
+    //   );
+    //   console.log(channel);
+
+    //   channel.listen("message", (event) => {
+    //     console.log(event);
+    //     // const updatedConversation = event.conversation
+    //     // const index = this.conversations.findIndex(c => c.id === updatedConversation.id)
+    //     // if (index > -1) {
+    //     //   this.conversations.splice(index, 1, updatedConversation)
+    //     // }
+    //   });
+    // },
     scrollToBottom() {
       this.$nextTick(() => {
         // console.log("i scrolled");
@@ -273,15 +321,16 @@ export default {
       // console.log(this.conversationDetails);
       // this.loadingChatBtn = true;
       this.$api
-        .post(`${this.conversationDetails.id}/chat/send`, this.data)
+        .post(`${this.conversationDetails}/chat/send`, this.data)
         .then((response) => {
           this.loadingChatBtn = false;
           // console.log(response);
           this.$q.notify({
             message: "Message sent",
           });
-
           this.data.message = "";
+          this.$emit("convo", this.conversationDetails);
+          this.$emit("refresh-message", this.conversationDetails);
         })
         .catch(({ response }) => {
           console.log(response);

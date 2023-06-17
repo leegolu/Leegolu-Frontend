@@ -1,5 +1,10 @@
 <template>
-  <div class="wrapp">
+  <div class="loader" v-if="loadingCol">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loadingCol" class="wrapp">
     <div class="top">
       <span class="title">
         <i class="fa-solid q-mr-sm fa-list"></i>
@@ -8,15 +13,33 @@
 
       <div class="sort_area">
         <div class="left">
-          <q-btn flat class="active"> All Customers </q-btn>
-          <q-btn flat class="regular"> Call Leads </q-btn>
-          <q-btn flat class="regular"> Chat Leads </q-btn>
+          <q-btn
+            @click="setCategory('all')"
+            flat
+            :class="selectedCategory === 'all' ? 'active' : 'regular'"
+          >
+            All Customers
+          </q-btn>
+          <q-btn
+            @click="setCategory('call')"
+            flat
+            :class="selectedCategory === 'call' ? 'active' : 'regular'"
+          >
+            Call Leads
+          </q-btn>
+          <q-btn
+            @click="setCategory('chat')"
+            flat
+            :class="selectedCategory === 'chat' ? 'active' : 'regular'"
+          >
+            Chat Leads
+          </q-btn>
         </div>
       </div>
     </div>
     <div v-if="rows.length > 0" class="style q-py-md">
       <q-table
-        :rows="rows"
+        :rows="sortedCustomers"
         :hide-header="mode === 'grid'"
         :columns="columns"
         row-key="id"
@@ -33,7 +56,7 @@
                 <img
                   :src="
                     props.row.avatar === null
-                      ? `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU`
+                      ? `/images/usersvg.svg`
                       : props.row.avatar
                   "
                   alt=""
@@ -304,8 +327,10 @@ export default {
       separator: "",
       mode: "list",
       loading: false,
+      loadingCol: true,
       editLoad: false,
       create_title: false,
+      selectedCategory: "all",
       loaders: {
         delete: false,
         category: false,
@@ -322,22 +347,37 @@ export default {
     });
   },
 
+  computed: {
+    sortedCustomers() {
+      if (this.selectedCategory === "all") {
+        return this.rows;
+      } else {
+        return this.rows.filter(
+          (customer) => customer.mode === this.selectedCategory
+        );
+      }
+    },
+  },
+
   methods: {
+    setCategory(category) {
+      this.selectedCategory = category;
+    },
     onRequest(props) {
-      // this.loading = true;
+      this.loadingCol = true;
       const url = `${this.$store.leegoluauth.vendorDetails.slug}/customers`;
       this.curl = url;
       this.$api
         .get(url)
         .then(({ data }) => {
           // console.log(data);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = data.data;
           this.count = data.count;
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = [];
         });
     },

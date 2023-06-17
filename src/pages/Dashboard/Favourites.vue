@@ -1,5 +1,10 @@
 <template>
-  <div class="wrapp">
+  <div class="loader" v-if="loading">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loading" class="wrapp">
     <div class="top">
       <span class="title">
         <!-- <i class="fa-solid q-mr-sm fa-message"></i> -->
@@ -15,7 +20,7 @@
     </div>
 
     <section v-if="favourites.length > 0" class="products q-pt-sm container">
-      <div class="head_text">Favorite Listings</div>
+      <!-- <div class="head_text">Favorite Listings</div> -->
       <div class="product_cards">
         <div
           v-for="(product, index) in favourites"
@@ -106,6 +111,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       products: [
         {
           product_image: "/images/car.png",
@@ -177,7 +183,6 @@ export default {
       filter: "",
       curl: "",
       separator: "",
-      loading: false,
     };
   },
 
@@ -222,11 +227,13 @@ export default {
       // console.log(props);
     },
     getFavourites() {
+      this.loading = true;
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/favorites`)
         .then((response) => {
           // console.log("Success:", response);
           this.favourites = response.data.data;
+          this.loading = false;
         })
         .catch(({ response }) => {
           // console.log(response);

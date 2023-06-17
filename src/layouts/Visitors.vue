@@ -53,6 +53,36 @@
             </div>
 
             <div v-else class="div">
+              <q-btn-dropdown flat color="secondary" icon="fa-solid fa-user">
+                <div class="q-pa-md">
+                  <div class="column items-center">
+                    <q-avatar size="72px">
+                      <img src="/images/usersvg.svg" />
+                    </q-avatar>
+                    <div class="text-subtitle1 q-mt-md q-mb-xs">
+                      {{ this.$store.leegoluauth.userDetails.name }}
+                    </div>
+                    <q-btn
+                      style="white-space: nowrap"
+                      no-caps
+                      :to="{
+                        name: `${
+                          this.$store.leegoluauth.userDetails.role[0].name ===
+                          'business'
+                            ? 'business.dashboard'
+                            : 'regular.dashboard'
+                        }`,
+                      }"
+                      color="secondary"
+                      class="q-px-md"
+                    >
+                      Go to dashboard
+                    </q-btn>
+                  </div>
+                </div>
+              </q-btn-dropdown>
+            </div>
+            <!-- <div v-else class="div">
               <q-btn
                 :to="{
                   name: `${
@@ -67,7 +97,7 @@
               >
                 Go to dashboard
               </q-btn>
-            </div>
+            </div> -->
           </div>
         </div>
       </q-toolbar>

@@ -1,5 +1,10 @@
 <template>
-  <div class="wrapp">
+  <div class="loader" v-if="loading">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loading" class="wrapp">
     <div class="top">
       <span class="title">
         <i class="fa-solid q-mr-sm fa-list"></i>
@@ -19,16 +24,24 @@
           <q-btn-dropdown
             v-model="value"
             class="sort_by_date"
-            label="Sort by date"
+            :label="sortDirectionSelected"
           >
             <q-list>
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item
+                clickable
+                v-close-popup
+                @click="onItemClick('Latest - Oldest')"
+              >
                 <q-item-section>
                   <q-item-label>Latest - Oldest</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item
+                clickable
+                v-close-popup
+                @click="onItemClick('Oldest - Latest')"
+              >
                 <q-item-section>
                   <q-item-label>Oldest - Latest</q-item-label>
                 </q-item-section>
@@ -39,7 +52,7 @@
       </div>
     </div>
     <div v-if="listings.length > 0" class="listings">
-      <div v-for="(listing, index) in listings" :key="index">
+      <div v-for="(listing, index) in sortedArray" :key="index">
         <Listings @refresh-event="getListings" :listing="listing" />
       </div>
     </div>
@@ -71,63 +84,9 @@ export default {
     return {
       value: false,
       listings: [],
-      arr: [
-        {
-          img: "/images/listing1.png",
-          title: "Ankara 3 Piece Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-        {
-          img: "/images/listing2.png",
-          title: "Princess Cut Peplum Sleeve...",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: false,
-        },
-        {
-          img: "/images/listing3.png",
-          title: "Off Shoulder Peperdem Gown",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: true,
-        },
-        {
-          img: "/images/listing1.png",
-          title: "Peplum Collar Ankara wrap g...",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: false,
-        },
-        {
-          img: "/images/listing3.png",
-          title: "Amber Rizzy Ear Rings",
-          price: "₦50,000",
-          status: "Active",
-          date: "Created 17 Oct, 2023",
-          impressions: 236,
-          engagements: 97,
-          leads: 2,
-          boosted: false,
-        },
-      ],
+      loading: true,
+      sortDirection: "",
+      sortDirectionSelected: "Sort by Date",
     };
   },
   components: {
@@ -137,18 +96,44 @@ export default {
   created() {
     this.getListings();
   },
+  watch: {
+    sortDirection: {
+      handler: function () {
+        if (this.sortDirection !== "") {
+          this.sortDirectionSelected = this.sortDirection;
+        }
+      },
+      deep: true,
+    },
+  },
+  computed: {
+    sortedArray() {
+      return this.listings.slice().sort((a, b) => {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
 
+        if (this.sortDirection === "Oldest - Latest") {
+          return dateA - dateB;
+        } else {
+          return dateB - dateA;
+        }
+      });
+    },
+  },
   methods: {
-    onItemClick() {
+    onItemClick(clickDir) {
+      this.sortDirection = clickDir;
       // console.log("first");
     },
 
     getListings() {
+      this.loading = true;
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
         .then((response) => {
           // console.log("Success:", response);
           this.listings = response.data.data;
+          this.loading = false;
         })
         .catch(({ response }) => {
           // console.log(response);

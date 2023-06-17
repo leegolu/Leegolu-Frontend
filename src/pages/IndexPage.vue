@@ -15,6 +15,57 @@
         </div>
 
         <div v-else class="div">
+          <q-btn-dropdown no-caps flat icon="fa-solid fa-user">
+            <div class="q-pa-md">
+              <div class="column items-center">
+                <q-avatar size="72px">
+                  <img src="/images/usersvg.svg" />
+                </q-avatar>
+                <div class="text-subtitle1 q-mt-md q-mb-xs">
+                  {{ this.$store.leegoluauth.userDetails.name }}
+                </div>
+                <q-btn
+                  style="white-space: nowrap"
+                  no-caps
+                  :to="{
+                    name: `${
+                      this.$store.leegoluauth.userDetails.role[0].name ===
+                      'business'
+                        ? 'business.dashboard'
+                        : 'regular.dashboard'
+                    }`,
+                  }"
+                  color="secondary"
+                  class="q-px-md"
+                >
+                  Go to dashboard
+                </q-btn>
+              </div>
+            </div>
+          </q-btn-dropdown>
+          <!-- <q-btn flat icon="fa-solid fa-user" color="secondary">
+            <q-menu>
+              <q-list>
+                <q-btn
+                  style="white-space: nowrap"
+                  :to="{
+                    name: `${
+                      this.$store.leegoluauth.userDetails.role[0].name ===
+                      'business'
+                        ? 'business.dashboard'
+                        : 'regular.dashboard'
+                    }`,
+                  }"
+                  color="secondary"
+                  class="q-px-md"
+                >
+                  Go to dashboard
+                </q-btn>
+              </q-list>
+            </q-menu>
+          </q-btn> -->
+        </div>
+        <!-- <div v-else class="div">
           <q-btn
             :to="{
               name: `${
@@ -28,7 +79,7 @@
           >
             Go to dashboard
           </q-btn>
-        </div>
+        </div> -->
         <!-- <router-link to="/login"> Sign In </router-link>
         <router-link to="/register"> Join Now </router-link>
         <q-btn color="secondary"> Start Selling </q-btn> -->
@@ -50,6 +101,46 @@
             ><i class="fa-solid fa-magnifying-glass"></i
           ></q-btn>
         </form>
+      </div>
+    </div>
+
+    <div class="sub_header">
+      <div class="sub_header_wrap">
+        <div class="">
+          <q-btn-dropdown
+            class="all"
+            flat
+            color="primary"
+            label="All Categories"
+          >
+            <q-list>
+              <q-item
+                v-for="(item, index) in categorys"
+                :key="index"
+                clickable
+                active-class="active"
+                :to="{ name: 'category-page', params: { slug: item.slug } }"
+                v-close-popup
+              >
+                <q-item-section>
+                  <q-item-label>{{ item.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
+
+        <div class="category_items">
+          <q-item
+            v-for="(item, index) in categorys"
+            :key="index"
+            :to="{ name: 'category-page', params: { slug: item.slug } }"
+            class="item"
+            active-class="active"
+          >
+            {{ item.name }}
+          </q-item>
+        </div>
       </div>
     </div>
   </main>
@@ -81,6 +172,7 @@
         perPage: 6,
         rewind: true,
         autoplay: true,
+        arrows: false,
         breakpoints: {
           640: {
             perPage: 2,
@@ -111,7 +203,7 @@
     </Splide>
   </section>
 
-  <section class="products q-pt-xl container">
+  <section class="products container">
     <div class="head_text">Featured Listings</div>
     <div v-if="listings.length > 0" class="product_cards">
       <div v-for="(product, index) in listings" :key="index" class="product">
@@ -182,7 +274,9 @@
     </div>
 
     <div v-else class="else">
-      <div class="text-h6 text-center">No products</div>
+      <div style="font-size: 15px" class="text-grey text-center">
+        No products
+      </div>
     </div>
   </section>
   <section class="products q-pt-xl container">
@@ -564,7 +658,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 p {
   margin-bottom: 5px;
 }
@@ -596,7 +690,7 @@ a {
 
 .right .q-btn {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 17px;
   text-transform: uppercase;
   border-radius: 6px;
@@ -611,6 +705,7 @@ a {
   height: 60vh;
   display: flex;
   justify-content: center;
+  position: relative;
   align-items: center;
   background: linear-gradient(180deg, #1a3f55 0%, #357196 84.27%);
 }
@@ -628,10 +723,10 @@ a {
 }
 
 .popular {
-  margin: 3rem auto;
+  margin: 3rem auto 2rem;
 }
 .popular img {
-  width: 150px;
+  width: 120px;
   cursor: pointer;
 }
 
@@ -664,7 +759,7 @@ a {
 
 .wrapper p {
   font-weight: 500;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 18px;
   margin-bottom: 0.8rem;
   color: #ffffff;
@@ -698,6 +793,51 @@ a {
   font-size: 1.5rem;
 }
 
+/* subheader */
+
+.sub_header {
+  position: absolute;
+  bottom: 1%;
+  z-index: 100;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.sub_header_wrap {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+.sub_header_wrap .all {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
+  text-transform: capitalize;
+  color: #fff !important;
+}
+
+.category_items {
+  display: flex;
+  align-items: center;
+  overflow-x: scroll;
+  height: 50px;
+}
+
+.category_items::-webkit-scrollbar {
+  display: none;
+}
+.category_items .item {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  white-space: nowrap;
+  font-size: 15px;
+  color: #ffffff;
+  line-height: 18px;
+  min-height: 0;
+}
 /* process */
 
 .process {
@@ -714,7 +854,7 @@ a {
 /* prodcut card */
 .product_cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 2rem 1rem;
   padding-top: 1rem;
 }
@@ -857,9 +997,9 @@ a {
   width: 200px;
 }
 
-@media (min-width: 1300px) {
+@media (min-width: 1348px) {
   .product_cards {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 
@@ -877,7 +1017,7 @@ a {
     width: 80%;
   }
   .wrapper .main_text {
-    font-size: 38px !important;
+    font-size: 40px !important;
     line-height: 38px;
     margin-bottom: 1rem;
   }
@@ -888,13 +1028,13 @@ a {
 @media (max-width: 500px) {
   .wrapper input {
     font-size: 15px;
-    height: 39.63px;
+    height: 45.63px;
     width: 799px;
     border: none;
   }
 
   .wrapper button {
-    height: 39.63px;
+    height: 45.63px;
   }
 
   .logo {
@@ -904,16 +1044,16 @@ a {
   }
 
   a {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .right .q-btn {
-    font-size: 10px;
+    font-size: 13px;
     padding: 4px 5px;
   }
   .right {
     gap: 0.5rem;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.7rem;
   }
   .nav {
     padding: 0.7rem 0.6rem;
@@ -947,6 +1087,13 @@ a {
   .wrapper p {
     width: 90%;
     margin: 0 auto 1rem;
+  }
+
+  .sub_header_wrap .all {
+    font-size: 13px;
+  }
+  .category_items .item {
+    font-size: 13px;
   }
 }
 </style>

@@ -1,5 +1,10 @@
 <template>
-  <div class="wrapp">
+  <div class="loader" v-if="loadingCol">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loadingCol" class="wrapp">
     <div class="top">
       <span class="title">
         <img src="/images/collections.svg" alt="" />
@@ -49,23 +54,36 @@
                   style="height: 80px"
                 >
                   <q-avatar
+                    :style="`left: ${index * 25}px`"
                     v-for="(n, index) in props.row.products"
-                    :key="n"
+                    :key="index"
                     square
                     size="40px"
                     class="overlapping no-wrap"
-                    :style="`left: ${index === 0 ? 0 : n * 50}px`"
                   >
+                    <!-- {{ n }} -->
                     <img
+                      v-if="index < 5"
+                      class="overImgs"
+                      :src="`${n.uploads[0].url}`"
+                      alt=""
+                    />
+
+                    <!-- <img
                       v-for="(n, index) in props.row.products"
                       :key="index"
                       :src="`${n.uploads[0].url}`"
-                    />
+                    /> -->
 
                     <!-- <img
                       :src="`https://cdn.quasar.dev/img/avatar${n + 1}.jpg`"
                     /> -->
                   </q-avatar>
+                  <!-- <q-icon
+                    v-if="props.row.products.length >= 5"
+                    name="add"
+                    size="20px"
+                  /> -->
                 </div>
 
                 <div style="line-height: 1.1" v-else>
@@ -155,17 +173,17 @@
           <div class="dialog_top advert">
             <div class="left_dialog collection">
               <img src="/images/collection1.png" alt="" />
-              <div class="title">{{ collectionData.row.name }}</div>
+              <div class="title">{{ collectionData.name }}</div>
             </div>
           </div>
           <!-- {{ collectionData.products.length }} -->
           <p class="count">
-            {{ collectionData.row.products.length }} Listings in this collection
+            {{ collectionData.products.length }} Listings in this collection
           </p>
-          <div v-if="collectionData.row.products.length > 0" class="hold">
+          <div v-if="collectionData.products.length > 0" class="hold">
             <div class="topDetails">
               <div
-                v-for="listing in collectionData.row.products"
+                v-for="listing in collectionData.products"
                 :key="listing.id"
                 class="lead_details"
               >
@@ -182,7 +200,12 @@
                     </div>
                   </div>
                   <div class="q-pa-md">
-                    <q-checkbox keep-color color="info" v-model="val" />
+                    <q-checkbox
+                      keep-color
+                      @click="handleProductChange(listing)"
+                      color="secondary"
+                      v-model="listing.checked"
+                    />
                   </div>
                 </div>
               </div>
@@ -196,7 +219,16 @@
             </div>
           </div>
           <div class="boost">
-            <q-btn @click="dialogAdd = true">Add Listing</q-btn>
+            <q-btn v-if="showDeleteBtn === false" @click="dialogToggle"
+              >Add Listing</q-btn
+            >
+            <q-btn
+              :loading="deleteBtn"
+              class="removee"
+              v-else
+              @click="deleteMultipleFnc"
+              >Remove Selected Listings</q-btn
+            >
           </div>
 
           <q-btn @click="dialog = false" class="close">
@@ -231,7 +263,7 @@
                     <q-checkbox
                       @click="addListing(listing)"
                       keep-color
-                      color="info"
+                      color="secondary"
                       v-model="listing.checked"
                     />
                   </div>
@@ -367,11 +399,13 @@ export default {
       dialog: false,
       collections: [],
       count: "",
+      showDeleteBtn: false,
       collectionData: {},
       dialogCreate: false,
       rows: [],
       listings: [],
       checkedListings: [],
+      deletemul: [],
       val: false,
       errors: [],
       image: ref(null),
@@ -385,8 +419,10 @@ export default {
       separator: "",
       mode: "list",
       loading: false,
+      loadingCol: true,
       editLoad: false,
       create_title: false,
+      deleteBtn: false,
       loaders: {
         delete: false,
         category: false,
@@ -394,6 +430,22 @@ export default {
         save: [],
       },
     };
+  },
+
+  watch: {
+    deletemul: {
+      handler: function () {
+        // console.log("caught!");
+
+        // console.log(this.deletemul.length);
+        if (this.deletemul.length > 0) {
+          this.showDeleteBtn = true;
+        } else {
+          this.showDeleteBtn = false;
+        }
+      },
+      deep: true,
+    },
   },
 
   mounted() {
@@ -408,21 +460,25 @@ export default {
   },
 
   methods: {
+    dialogToggle() {
+      this.dialog = false;
+      this.dialogAdd = true;
+    },
     onRequest(props) {
-      this.loading = true;
+      this.loadingCol = true;
       const url = `collection/${this.$store.leegoluauth.vendorDetails.slug}/all`;
       this.curl = url;
       this.$api
         .get(url)
         .then(({ data }) => {
           // console.log(data);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = data.data;
           this.count = data.count;
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = [];
         });
     },
@@ -464,9 +520,7 @@ export default {
         })
         .onOk(() => {
           this.$api
-            .post(
-              `collection/${this.collectionData.row.slug}/${listing.id}/remove`
-            )
+            .post(`collection/${this.collectionData.slug}/${listing.id}/remove`)
             .then(({ data }) => {
               this.dialog = false;
               this.refreshcollections();
@@ -492,7 +546,69 @@ export default {
 
     getCollection(props) {
       this.dialog = true;
-      this.collectionData = props;
+      console.log(props);
+
+      const newArray = props.row.products.map((item) => {
+        return { ...item, checked: false };
+      });
+
+      this.collectionData = {
+        ...props.row,
+        products: newArray,
+      };
+
+      // console.log(this.collectionData);
+    },
+
+    handleProductChange(product) {
+      // console.log(product);
+      if (product.checked) {
+        this.deletemul.push(product);
+      } else {
+        const productIndex = this.deletemul.findIndex((p) => p === product);
+        if (productIndex > -1) {
+          this.deletemul.splice(productIndex, 1);
+        }
+      }
+      // console.log('Checked Products:', this.checkedProducts);
+    },
+
+    deleteMultipleFnc() {
+      // console.log("dele");
+      // console.log(this.deletemul);
+      this.deleteBtn = true;
+      const ids = this.deletemul.map((obj) => obj.id);
+      const payload = {
+        products: ids,
+      };
+      console.log(payload, ids);
+      this.$api
+        .delete(`collection/${this.collectionData.slug}/multiple-delete`, {
+          data: payload,
+        })
+        .then(({ data }) => {
+          this.deleteBtn = false;
+          this.showDeleteBtn = false;
+          this.getListings();
+          this.refreshcollections();
+          this.$q.notify({
+            message: data.message,
+            color: "green",
+            position: "bottom",
+          });
+
+          // console.log(this.rows);
+          // this.dialog = false;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          this.deleteBtn = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+            position: "bottom",
+          });
+        });
     },
 
     addListing(listing) {
@@ -512,7 +628,7 @@ export default {
       // console.log(formData);
       this.loading = true;
       this.$api
-        .post(`collection/${this.collectionData.row.id}/add`, formData, {
+        .post(`collection/${this.collectionData.id}/add`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -521,13 +637,13 @@ export default {
           // console.log("Success:", response);
           this.dialogAdd = false;
           this.loading = false;
-          this.dialog = false;
           this.refreshcollections();
           this.$q.notify({
             message: response.data.message,
             color: "green",
             position: "bottom",
           });
+          this.dialog = true;
         })
         .catch(({ response }) => {
           // console.log(response);
@@ -638,6 +754,21 @@ export default {
           .then(({ data }) => {
             this.loading = false;
             this.rows = data.data;
+            if (this.collectionData) {
+              let updateDataa = [...data.data];
+              let updateData = updateDataa.find(
+                (data) => data.id === this.collectionData.id
+              );
+
+              let newData = {
+                ...updateData,
+                products: updateData.products.map((item) => {
+                  return { ...item, checked: false };
+                }),
+              };
+              this.collectionData = newData;
+            }
+            // console.log(this.rows);
             // console.log(data);
           })
           .catch(({ response }) => {
@@ -748,6 +879,10 @@ export default {
   box-shadow: none;
 }
 
+.overImgs {
+  background: #e4e4e4;
+}
+
 // table
 .modify {
   background: #c2e6e9 !important;
@@ -795,6 +930,17 @@ p.count {
 
 .avatars {
   position: relative;
+}
+
+.avatars .q-icon {
+  position: absolute;
+  font-size: 1rem !important;
+  right: 0;
+  background: #8e8e8e;
+  color: white;
+  border-radius: 10px;
+  // top: 50%;
+  // transform: translateY(-50%);
 }
 
 .added {
@@ -994,7 +1140,9 @@ p.count {
   border-radius: 5px;
   text-transform: capitalize;
 }
-
+.dialog_content .boost .q-btn.removee {
+  background: #ee4e36;
+}
 .dialog_content .boost {
   padding: 1rem;
 }
@@ -1179,5 +1327,14 @@ input {
   line-height: 100%;
   letter-spacing: -0.01em;
   color: #000000;
+}
+
+@media (max-width: 500px) {
+  .topDetails {
+    padding: 0.5rem;
+    height: 200px;
+    padding: 0 1rem 1rem;
+    overflow-y: scroll;
+  }
 }
 </style>

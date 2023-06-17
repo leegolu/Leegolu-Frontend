@@ -22,7 +22,7 @@
         </div>
 
         <div class="right">
-          <img src="/images/rocket.png" alt="" />
+          <img src="/images/dashsvg.svg" alt="" />
         </div>
       </div>
 
@@ -243,24 +243,24 @@
             </div>
 
             <div class="previewMain">
-              <form>
-                <div class="form">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    @change="previewImage"
-                    class="previewinput"
-                    id="my-file"
-                  />
+              <div class="form">
+                <q-file
+                  type="file"
+                  v-model="avatar.avatar"
+                  accept=".jpg,.png,.svg,.jpeg"
+                  name="avatar"
+                  @update:model-value="setAvatar"
+                  class="previewinput"
+                  id="my-file"
+                />
 
-                  <div class="previewDiv">
-                    <template v-if="preview">
-                      <img :src="preview" class="previewimg" />
-                      <img src="/images/click.png" class="click" alt="" />
-                    </template>
-                  </div>
+                <div class="previewDiv">
+                  <template v-if="preview">
+                    <img :src="preview" class="previewimg" />
+                    <img src="/images/click.png" class="click" alt="" />
+                  </template>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
 
@@ -270,7 +270,12 @@
         </div>
 
         <div class="row q-pb-lg items-center justify-between">
-          <q-btn @click="toggleBus" color="primary" class="q-px-xl proceed">
+          <q-btn
+            @click="addAvatar"
+            :loading="loadingAvatar"
+            color="primary"
+            class="q-px-xl proceed"
+          >
             Proceed
           </q-btn>
           <q-btn @click="skipImg" class="q-px-sm skip"> Skip </q-btn>
@@ -398,6 +403,8 @@ export default {
       welcometoleegolubusinessmodal: false,
       preview: "/images/preview.png",
       businessreg: false,
+      loadingAvatar: false,
+      avatar: {},
       image: null,
       myAds: "",
       myEngagements: "",
@@ -483,6 +490,50 @@ export default {
         this.image = input.files[0];
         reader.readAsDataURL(input.files[0]);
       }
+    },
+
+    setAvatar(props) {
+      // console.log(props);
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        this.preview = e.target.result;
+      };
+      reader.readAsDataURL(props);
+    },
+
+    addAvatar() {
+      const formData = new FormData();
+      formData.append("avatar", this.avatar.avatar);
+
+      this.loadingAvatar = true;
+      this.$api
+        .post(`upload-avatar`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          // console.log("Success:", response);
+          this.loadingAvatar = false;
+          this.addphotoforleegolubusinessmodal = false;
+          this.businessreg = true;
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+            position: "bottom",
+          });
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.errors = response.data.message;
+          this.loadingAvatar = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+        });
     },
 
     toggleModals() {
@@ -660,8 +711,8 @@ export default {
 .main {
   display: grid;
   grid-template-columns: 5fr 2fr;
-  gap: 1rem;
-  margin: 1.3rem 2rem 2rem;
+  gap: 1.7rem;
+  margin: 2.1rem 1.7rem 2rem;
 }
 .main_card {
   display: grid;
@@ -672,6 +723,7 @@ export default {
   max-width: 844px;
   width: 100%;
   height: fit-content;
+  height: 185px;
   padding: 0 1rem;
   align-items: center;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -711,6 +763,8 @@ export default {
 .main_card .right {
   display: flex;
   justify-content: flex-end;
+  height: 100%;
+  position: relative;
 }
 
 .tour {
@@ -730,7 +784,11 @@ export default {
 }
 
 .main_card .right img {
-  width: 200px;
+  width: 310px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -5%;
 }
 
 .right_card_top,
@@ -817,6 +875,7 @@ export default {
   width: 140px;
   max-width: 100%;
   height: 165px;
+  position: relative;
 }
 
 @media (min-width: 1200px) {
@@ -868,6 +927,8 @@ export default {
   font-size: 24px;
   line-height: 33px;
   color: #000000;
+  position: absolute;
+  bottom: 3%;
 }
 
 .small_card .wallet_amt {

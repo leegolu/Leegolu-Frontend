@@ -11,10 +11,20 @@
           <div class="title">{{ listing.name }}</div>
 
           <div class="price">₦{{ listing.price.toLocaleString() }}</div>
+          <div class="div">
+            <div class="status">{{ listing.condition }}</div>
 
-          <div class="status">{{ listing.condition }}</div>
-
-          <div class="q-pt-lg date">{{ listing.date }}</div>
+            <div class="q-pt-lg date">
+              Created
+              {{
+                new Date(listing.created_at).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -27,7 +37,7 @@
         <div class="items">
           <img src="/images/engagesvg.svg" alt="" />
           <p>Engagement</p>
-          <div class="count">10</div>
+          <div class="count">{{ listing.views }}</div>
         </div>
         <div class="items">
           <img src="/images/layer.png" alt="" />
@@ -198,16 +208,40 @@ export default {
         // console.log("edit");
       } else {
         // console.log("delete");
-        this.loading = true;
-        this.$api
-          .delete(`${this.listing.slug}/delete`)
-          .then(({ data }) => {
-            this.loading = false;
-            this.$emit("refresh-event");
+        this.$q
+          .dialog({
+            title: "Remove Listing",
+            message:
+              "Please confirm you want to remove this listing from this collection. You can always re-include a removed listing.",
+            ok: {
+              push: true,
+              label: "Delete",
+              color: "negative",
+            },
+            cancel: {
+              push: true,
+              color: "grey",
+            },
+            persistent: true,
           })
-          .catch(({ response }) => {
-            // console.log(response);
-            this.loading = false;
+          .onOk(() => {
+            this.loading = true;
+            this.$api
+              .delete(`${this.listing.slug}/delete`)
+              .then(({ data }) => {
+                this.loading = false;
+                this.$emit("refresh-event");
+              })
+              .catch(({ response }) => {
+                // console.log(response);
+                this.loading = false;
+              });
+          })
+          .onCancel(() => {
+            // console.log('>>>> Cancel')
+          })
+          .onDismiss(() => {
+            // console.log('I am triggered on both OK and Cancel')
           });
       }
     },
@@ -319,9 +353,12 @@ export default {
 //  middle area
 
 .listing .middle img {
-  width: 18.32px;
-  height: 18.32px;
+  width: 20.32px;
+  height: 20.32px;
   object-fit: contain;
+  background: rgba(31, 123, 181, 0.4);
+  border-radius: 4px;
+  padding: 0.2rem;
 }
 
 .listing .middle {
@@ -639,9 +676,69 @@ p.advert {
     padding-bottom: 0.6rem;
   }
 }
+
 @media (max-width: 500px) {
   .dialog_content ul li {
     font-size: 12px;
+  }
+  .listing {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    max-width: 80%;
+    margin: 2rem auto;
+  }
+
+  .listing .right {
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .listing .middle {
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .img img {
+    width: 100%;
+    height: 195px;
+    object-fit: cover;
+  }
+
+  .listing .left {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+  .left_right .price {
+    margin: 0rem 0 0.4rem;
+  }
+
+  .left_right .title {
+    font-size: 14px;
+  }
+  .left_right .price {
+    font-weight: 600;
+  }
+
+  .listing .right .modify {
+    width: 100% !important;
+    background: #c2e6e9;
+  }
+
+  .listing .right .manage_ad {
+    width: 100% !important;
+  }
+  .left_right .date {
+    padding-top: 0rem;
+    font-size: 8px;
+  }
+
+  .div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+    margin: 0.2rem 0;
   }
 }
 </style>

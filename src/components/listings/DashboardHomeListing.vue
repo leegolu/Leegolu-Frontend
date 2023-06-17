@@ -159,12 +159,15 @@ export default {
 // .listing_s_hold {
 //   background: rgba(233, 233, 233, 0.44);
 // }
+
+.listing_s_hold {
+  margin: 2rem 0;
+}
 .listing_ {
   background: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   padding: 0.5rem;
-  margin: 2rem 0;
   min-width: 250px;
   // min-height: 350px;
   position: relative;

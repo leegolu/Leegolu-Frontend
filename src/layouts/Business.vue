@@ -13,7 +13,7 @@
           v-if="$q.screen.gt.xs"
         /> -->
 
-        <q-btn flat no-caps no-wrap class="q-ml-xs logo">
+        <q-btn to="/" flat no-caps no-wrap class="q-ml-xs logo">
           <img src="/images/logored.png" alt="" />
         </q-btn>
 
@@ -73,12 +73,41 @@
             <q-btn @click="modal1 = true" text-color="primary" class="mybtn">
               Create Listing <i class="fa-solid q-ml-md fa-plus"></i
             ></q-btn>
-            <q-btn class="avatar" round flat>
-              <q-avatar size="35px">
-                <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+            <q-btn class="" style="min-height: auto; padding: 3px" no-caps flat>
+              <img class="ava" src="/images/usersvg.svg" />
+              <q-menu class="headermenu">
+                <div class="q-pa-md">
+                  <div class="column items-center">
+                    <q-avatar size="72px">
+                      <img src="/images/usersvg.svg" />
+                    </q-avatar>
+                    <div class="text-subtitle1 q-mt-md q-mb-xs">
+                      {{ this.$store.leegoluauth.userDetails.name }}
+                    </div>
+                    <q-btn
+                      style="white-space: nowrap"
+                      no-caps
+                      :to="{
+                        name: `settingf`,
+                      }"
+                      color="secondary"
+                      class="q-px-md"
+                    >
+                      Go to settings
+                    </q-btn>
+                  </div>
+                </div>
+              </q-menu>
+            </q-btn>
+            <!-- <q-btn @click="dialogAvatar = true" class="avatar" round flat>
+              <q-avatar size="55px">
+                <img
+                  class="ava"
+                  src="https://cdn.quasar.dev/img/boy-avatar.png"
+                />
               </q-avatar>
               <q-tooltip>Account</q-tooltip>
-            </q-btn>
+            </q-btn> -->
           </div>
         </div>
       </q-toolbar>
@@ -105,7 +134,15 @@
             }"
           >
             <q-item-section class="avater_side" avatar>
-              <img :src="link.icon" alt="" />
+              <OverviewVue v-if="link.text === 'Overview'" />
+              <ManageIcon v-if="link.text === 'Manage Shop'" />
+              <ListingsIcon v-if="link.text === 'My Listings'" />
+              <Collicons v-if="link.text === 'My Collections'" />
+              <CusIcons v-if="link.text === 'My Customers'" />
+              <MessIcons v-if="link.text === 'Messages'" />
+              <FavouriteIcon v-if="link.text === 'My Favorites'" />
+              <BellIcons v-if="link.text === 'Notifications'" />
+              <!-- <img v-else :src="link.icon" alt="" /> -->
               <!-- <q-icon size="18px" :name="link.icon" /> -->
             </q-item-section>
             <q-item-section>
@@ -572,6 +609,46 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="dialogAvatar" persistent>
+      <q-card class="card avatar">
+        <div class="dialog_content">
+          <p class="advert text-center">Add Avatar</p>
+          <div class="dialog_top">
+            <div class="previewMain">
+              <div class="form">
+                <q-file
+                  type="file"
+                  v-model="avatar.avatar"
+                  accept=".jpg,.png,.svg,.jpeg"
+                  name="avatar"
+                  @update:model-value="setAvatar"
+                  class="previewinput"
+                  id="my-file"
+                />
+
+                <div class="previewDiv">
+                  <template v-if="previewAvatar">
+                    <img :src="previewAvatar" class="previewimg" />
+                    <img src="/images/upload.png" class="click" alt="" />
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="boost">
+            <q-btn :loading="loadingAvatar" @click="addAvatar"
+              >Add Avatar</q-btn
+            >
+          </div>
+
+          <q-btn @click="dialogAvatar = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
+          </q-btn>
+        </div>
+      </q-card>
+    </q-dialog>
+
     <q-footer class="layout_footer" elevated>
       <div class="footer_holder">
         <q-btn :to="{ name: 'business.dashboard' }" flat>
@@ -610,7 +687,7 @@
 
             <div class="footer_tag">More</div>
           </div>
-          <q-menu>
+          <q-menu class="menu_footer">
             <q-list style="min-width: 100px; padding: 0" class="q-pa-none">
               <q-item
                 style="gap: 0.2rem"
@@ -657,6 +734,38 @@
                 />
                 <q-item-section>Manage Shop</q-item-section>
               </q-item>
+              <q-separator />
+
+              <q-item
+                style="gap: 0.2rem"
+                class="row items-center"
+                :to="{ name: 'notifications' }"
+                clickable
+                v-close-popup
+              >
+                <img
+                  style="width: 25px; height: 25px"
+                  src="/images/notif.svg"
+                  alt=""
+                />
+                <q-item-section>Notifications</q-item-section>
+              </q-item>
+              <q-separator />
+
+              <q-item
+                style="gap: 0.2rem"
+                class="row items-center"
+                :to="{ name: 'customers' }"
+                clickable
+                v-close-popup
+              >
+                <img
+                  style="width: 25px; height: 25px"
+                  src="/images/customers.svg"
+                  alt=""
+                />
+                <q-item-section>Customers</q-item-section>
+              </q-item>
             </q-list>
           </q-menu>
         </q-btn>
@@ -673,11 +782,20 @@
 import { ref } from "vue";
 import useQuasar from "quasar/src/composables/use-quasar.js";
 import { fabYoutube } from "@quasar/extras/fontawesome-v6";
+import OverviewVue from "src/components/icons/Overview.vue";
+import Collicons from "src/components/icons/CollIcons.vue";
+import CusIcons from "src/components/icons/Cusicons.vue";
+import BellIcons from "src/components/icons/BellIcons.vue";
+import ListingsIcon from "src/components/icons/MylistingsIcon.vue";
+import MessIcons from "src/components/icons/MessIcons.vue";
+import ManageIcon from "src/components/icons/ManageIcon.vue";
+import FavouriteIcon from "src/components/icons/FavIcons.vue";
 export default {
   name: "MyLayout",
   data() {
     return {
       preview: "/images/sqrpreview.png",
+      previewAvatar: "/images/sqrpreview.png",
       image: null,
       successModal: false,
       modal1: false,
@@ -691,9 +809,12 @@ export default {
       showarea: false,
       requirements: [],
       showsubCat: false,
+      loadingAvatar: false,
+      avatar: {},
       areas: [],
       errors: {},
       loading: false,
+      dialogAvatar: false,
       data: { negotiable: true },
       data2: {},
     };
@@ -735,12 +856,12 @@ export default {
       toggleLeftDrawer,
       links1: [
         {
-          icon: "/images/overview.svg",
+          icon: "/images/svgmanage.svg",
           text: "Overview",
           to: "business.dashboard",
         },
         {
-          icon: "/images/shopicon.svg",
+          icon: "/images/svgoverview.svg",
           text: "Manage Shop",
           to: "manage-shop",
         },
@@ -799,7 +920,16 @@ export default {
       // ],
     };
   },
-
+  components: {
+    OverviewVue,
+    Collicons,
+    MessIcons,
+    ListingsIcon,
+    CusIcons,
+    FavouriteIcon,
+    ManageIcon,
+    BellIcons,
+  },
   created() {
     this.getCategory();
     this.getStates();
@@ -808,6 +938,63 @@ export default {
   },
 
   methods: {
+    setAvatar(props) {
+      // console.log(props);
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        this.previewAvatar = e.target.result;
+      };
+      reader.readAsDataURL(props);
+    },
+
+    addAvatar() {
+      const formData = new FormData();
+      formData.append("avatar", this.avatar.avatar);
+
+      this.loadingAvatar = true;
+      this.$api
+        .post(`upload-avatar`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          // console.log("Success:", response);
+          this.loadingAvatar = false;
+          this.dialogAvatar = false;
+          this.avatar = {};
+          this.getVendor();
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+            position: "bottom",
+          });
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.errors = response.data.message;
+          this.loadingAvatar = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+        });
+    },
+
+    getVendor() {
+      this.$api
+        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
     setFile(props) {
       // console.log(props);
       var reader = new FileReader();
@@ -1503,6 +1690,50 @@ p.more {
   height: 26px;
 }
 
+.card.avatar {
+  position: relative;
+  max-width: 366px;
+}
+
+.card.avatar .previewDiv img:first-of-type {
+  width: 229px;
+  height: 195px;
+}
+
+.card.avatar .previewDiv img.click {
+  width: 120px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+}
+
+.card.avatar .dialog_content .dialog_top {
+  justify-content: center;
+}
+
+.card.avatar .boost .q-btn {
+  width: 100%;
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  color: #ffffff;
+  background: #1f7bb5;
+  border-radius: 5px;
+  text-transform: capitalize;
+}
+
+.card.avatar .close {
+  position: absolute;
+  top: 1%;
+  right: 2%;
+  color: #979797;
+  font-size: 1rem;
+}
+
 .create_ad .create,
 .dialog_top .create {
   font-family: "Open Sans";
@@ -1510,6 +1741,17 @@ p.more {
   font-weight: 700;
   font-size: 24px;
   line-height: 33px;
+  color: #000000;
+}
+
+p.advert {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 27px;
+  margin-bottom: 0;
+  padding: 0rem 0;
   color: #000000;
 }
 

@@ -63,16 +63,16 @@ export default boot(({ router, store, app }) => {
   });
   api.interceptors.response.use(
     (response) => {
-      console.log(response);
+      // console.log(response);
       // if (response.data && response.data.token) {
       //   token = response.data.token;
       // }
       return response;
     },
     (e) => {
-      console.log(e);
+      // console.log(e);
       let status_code = !e.response || e.response.status;
-      console.log(status_code);
+      // console.log(status_code);
       // let error = reader.error(e, true);
       if (status_code === 401) {
         // store.auth.setToken(null);
@@ -85,6 +85,12 @@ export default boot(({ router, store, app }) => {
       } else if (e.message === "Network Error") {
         Notify.create({
           message: e.message + "check your internet connection",
+          color: "red",
+        });
+      } else if (status_code === 500) {
+        Notify.create({
+          message:
+            "This is not your fault, we have been notified and is currently fixing any issues.",
           color: "red",
         });
       } else {

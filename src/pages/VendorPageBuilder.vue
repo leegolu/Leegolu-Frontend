@@ -30,13 +30,13 @@
         <div class="lay no-wrap row items-center q-col-gutter-x-md">
           <div
             @click="colorschemeModal = true"
-            class="span nav_btn_icon no-wrap q-col-gutter-x-sm row items-center"
+            class="span cursor-pointer nav_btn_icon no-wrap q-col-gutter-x-sm row items-center"
           >
             <img src="/images/scheme.svg" alt="" /> <span>Color Scheme</span>
           </div>
           <div
             @click="pageLayoutModal = true"
-            class="span nav_btn_icon no-wrap q-col-gutter-x-sm row items-center"
+            class="span nav_btn_icon cursor-pointer no-wrap q-col-gutter-x-sm row items-center"
           >
             <img src="/images/layout.svg" alt="" /> <span>Page Layout</span>
           </div>
@@ -61,7 +61,7 @@
             />
           </div>
           <div class="span">
-            <q-btn :to="{ name: 'business.dashboard' }" flat round size="10px">
+            <q-btn :to="{ name: 'manage-shop' }" flat round size="10px">
               <img src="/images/cancel.svg" alt="" />
             </q-btn>
           </div>
@@ -117,7 +117,10 @@
             class="left_wrap mobile row no-wrap items-center q-col-gutter-x-md"
           >
             <div @click="uploadModal = true" class="left_logo_area">
-              <img :src="preview" alt="" />
+              <img v-if="preview !== ''" :src="preview" alt="" />
+              <template v-else>
+                <div class="initials logoside">{{ initials }}</div>
+              </template>
               <q-btn @click="uploadModal = true" class="outline">
                 <img src="/images/camerabtn.svg" alt="" />
                 Upload <span>| Logo</span>
@@ -126,7 +129,11 @@
             <div class="left_details">
               <div class="left_details_title">{{ data.business_name }}.</div>
               <div class="left_details_desc q-mt-sm">
-                Makers of African designs
+                {{
+                  data.business_tagline !== ""
+                    ? data.business_tagline
+                    : "This is a custom tagline, please edit"
+                }}
               </div>
 
               <!-- <div class="rating row items-center">
@@ -145,11 +152,15 @@
                 <!-- {{ vendor.address }} -->
                 {{ vendor.area }}
               </div>
-
+              <!-- {{ data.abouttext }} -->
               <div class="left_paragraph">
                 <span class="none_"
-                  >Add a brief summary of what your business does.</span
-                >
+                  >{{
+                    data.abouttext !== ""
+                      ? data.abouttext
+                      : "Add a brief summary of what your business does."
+                  }}
+                </span>
                 <q-btn @click="businessDetailsModal = true" class="outline">
                   <img src="/images/editbtn.svg" alt="" />
                   <span>Edit</span> <span>| Details</span>
@@ -228,15 +239,17 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            It’s how we’ve always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...
-            <q-btn
+            {{ data.abouttext !== "" ? data.abouttext : `It’s how we’ve always
+            described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...` }}
+
+            <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
               class="text-weight-bold"
             >
               Read more
-            </q-btn>
+            </q-btn> -->
           </div>
 
           <q-btn @click="businessDetailsModal = true" class="outline">
@@ -313,7 +326,9 @@
               :key="index"
               @click="grandselectCollection(collections)"
               :class="
-                collections.name === 'All products' ? 'active' : 'regular'
+                collections.id === grandselectedCollectionId
+                  ? 'active'
+                  : 'regular'
               "
             >
               {{ collections.name }}
@@ -340,15 +355,16 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            It’s how we’ve always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...
-            <q-btn
+            {{ data.abouttext !== "" ? data.abouttext : `It’s how we’ve always
+            described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...` }}
+            <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
               class="text-weight-bold"
             >
               Read more
-            </q-btn>
+            </q-btn> -->
           </div>
 
           <q-btn @click="businessDetailsModal = true" class="outline">
@@ -445,15 +461,16 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            It’s how we’ve always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...
-            <q-btn
+            {{ data.abouttext !== "" ? data.abouttext : `It’s how we’ve always
+            described our bars. What’s inside. <br />
+            What isn’t. We think it’s everything you need...` }}
+            <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
               class="text-weight-bold"
             >
               Read more
-            </q-btn>
+            </q-btn> -->
           </div>
 
           <q-btn @click="businessDetailsModal = true" class="outline">
@@ -603,6 +620,7 @@
             <div class="form">
               <q-file
                 type="file"
+                v-if="!showlogovalue"
                 v-model="data.uploads"
                 accept=".jpg,.png,.svg,.jpeg"
                 name="uploads"
@@ -615,6 +633,9 @@
                   <img :src="preview" class="previewimg" />
                   <img src="/images/upload.png" class="click" alt="" />
                 </template>
+                <template v-else>
+                  <div class="initials">{{ initials }}</div>
+                </template>
               </div>
             </div>
           </div>
@@ -624,7 +645,7 @@
             <div class="business_name">Branding</div>
             <div class="company">Show Profile Image</div>
           </div>
-          <q-toggle v-model="value" />
+          <q-toggle v-model="showlogovalue" />
         </div>
 
         <div class="submit">
@@ -690,7 +711,11 @@
         <div
           v-for="segment in segments"
           :key="segment.name"
-          class="row q-mt-lg no-wrap items-center justify-between"
+          :class="
+            segment.name === data.segments
+              ? 'row q-mt-lg active_segment no-wrap items-center justify-between'
+              : 'row q-mt-lg no-wrap items-center justify-between'
+          "
         >
           <div class="det row no-wrap items-center q-col-gutter-md">
             <div class="img">
@@ -726,6 +751,7 @@
         </div>
         <div class="layouts">
           <div
+            @click="check(pageLayout)"
             v-for="(pageLayout, index) in pageLayouts"
             :key="index"
             class="layout"
@@ -744,7 +770,7 @@
       </q-card>
     </q-dialog>
     <q-dialog :style="colorSchemeStyles" v-model="colorschemeModal">
-      <q-card class="card modal">
+      <q-card class="card colorscheme modal">
         <div class="row items-center justify-between">
           <div class="row items-center">
             <img
@@ -760,32 +786,49 @@
         </div>
         <div class="search">
           <div class="input_search schemes q-mt-sm q-mb-md">
-            <input placeholder="Search color schemes..." type="text" />
+            <input
+              v-model="colorschemesearch"
+              placeholder="Search color schemes..."
+              type="text"
+            />
             <i class="fa-solid text-primary fa-magnifying-glass"></i>
           </div>
         </div>
 
         <div
-          v-for="(scheme, index) in colorSchemes"
+          v-for="(scheme, index) in sortedschemes"
           :key="index"
-          class="row q-mt-sm items-center justify-between"
+          class="q-mt-sm scheme items-center justify-between"
         >
           <div class="color">
             <div class="color_text">{{ scheme.name }}</div>
 
-            <div style="gap: 0.5rem" class="row no-wrap items-center">
+            <div
+              style="gap: 0.5rem"
+              class="row no-wrap justify-between items-center"
+            >
               <div
-                :style="`width:29.13px; height:29.08px; background: ${color}`"
-                v-for="color in scheme.colors"
-                :key="color"
-              ></div>
+                style="gap: 0.5rem"
+                class="row no-wrap justify-between items-center"
+              >
+                <div
+                  :style="`width:29.13px; height:29.08px; background: ${color}`"
+                  v-for="color in scheme.colors"
+                  :key="color"
+                ></div>
+              </div>
+              <q-radio
+                color="secondary"
+                v-model="data.colorScheme"
+                :val="scheme.name"
+              />
             </div>
           </div>
-          <q-radio
+          <!-- <q-radio
             color="secondary"
             v-model="data.colorScheme"
             :val="scheme.name"
-          />
+          /> -->
         </div>
         <!-- {{ data.colorScheme }} -->
       </q-card>
@@ -828,8 +871,9 @@ export default {
       abouttext: "",
       data: {
         colorScheme: "default",
-        pageLayout: "grid",
+        pageLayout: "default",
         segments: "Segment B",
+        abouttext: "",
       },
       value: false,
       drawer: false,
@@ -839,12 +883,12 @@ export default {
       enableTagEdit: true,
       logoUploaded: "",
       coverUploaded: "",
-      coverpreview: "/images/coverbg.svg",
+      coverpreview: "/images/sqrpreview.png",
       preview: "/images/sqrpreview.png",
       ratingModel: ref(4),
       vendor: {},
       businessDetailsModal: false,
-      value: false,
+      showlogovalue: false,
       uploadModal: false,
       uploadCoverModal: false,
       // preview: "/images/sqrpreview.png",
@@ -862,11 +906,12 @@ export default {
       allProductsArr: [],
       grandAllProductsArr: [],
       selectedCollectionId: null,
-      grandselectedCollectionId: null,
+      grandselectedCollectionId: "allpro",
       selectedCollectionProducts: [],
       grandselectedCollectionProducts: [],
       sortingCriteria: "",
       sortingcolCriteria: "",
+      colorschemesearch: "",
       sorted: "",
       sortedCollections: "",
       colorSchemes: [
@@ -1063,6 +1108,16 @@ export default {
       },
       immediate: true,
     },
+    showlogovalue: {
+      handler() {
+        if (!this.showlogovalue === true) {
+          this.preview = "";
+        } else {
+          this.preview = "/images/sqrpreview.png";
+        }
+      },
+      immediate: true,
+    },
     "data.segments": {
       handler() {
         this.$q.loading.show({
@@ -1071,6 +1126,13 @@ export default {
         setTimeout(() => {
           this.$q.loading.hide();
         }, 1000);
+        // console.log(this.data.segments);
+      },
+      immediate: true,
+    },
+    "data.pageLayout": {
+      handler() {
+        // console.log(this.data.pageLayout);
         // console.log(this.data.segments);
       },
       immediate: true,
@@ -1088,6 +1150,30 @@ export default {
   },
 
   computed: {
+    initials() {
+      // Logic to extract initials from the person's name
+      // Replace this with your own implementation
+      const name = this.data.business_name;
+      const nameParts = name.split(" ");
+      let initials = "";
+
+      // if (nameParts.length > 0) {
+      //   initials += nameParts[0][0].toUpperCase();
+
+      //   if (nameParts.length > 1) {
+      //     initials += nameParts[nameParts.length - 1][0].toUpperCase();
+      //   }
+      // }
+      if (nameParts.length > 0) {
+        initials += nameParts[0].substring(0, 3).toUpperCase();
+
+        if (nameParts.length > 1) {
+          initials += nameParts[nameParts.length - 1][0].toUpperCase();
+        }
+      }
+
+      return initials;
+    },
     colorSchemeStyles() {
       const selectedScheme = this.colorSchemes.find(
         (scheme) => scheme.name === this.data.colorScheme
@@ -1129,6 +1215,20 @@ export default {
 
       return products;
     },
+
+    sortedschemes() {
+      let schemes = this.colorSchemes;
+
+      if (this.colorschemesearch) {
+        schemes = schemes.filter((schemes) =>
+          schemes.name
+            .toLowerCase()
+            .includes(this.colorschemesearch.toLowerCase())
+        );
+      }
+
+      return schemes;
+    },
     sortproducts() {
       let products = this.products;
 
@@ -1156,6 +1256,11 @@ export default {
   },
 
   methods: {
+    check(arg) {
+      // console.log(this.data.pageLayout);
+      // console.log(this.data);
+      this.data.pageLayout = arg.name;
+    },
     previewImage(event) {
       var input = event.target;
       if (input.files) {
@@ -1218,34 +1323,90 @@ export default {
 
     previewRender() {
       // console.log(datar);
-      const reader1 = new FileReader();
-      const reader2 = new FileReader();
+      // const reader1 = new FileReader();
+      // const reader2 = new FileReader();
       if (this.data.uploads && this.data.coveruploads) {
-        this.loading = true;
+        // this.loading = true;
 
-        reader1.onload = () => {
-          const base64Data = reader1.result.split(",")[1];
-          this.data.uploads = base64Data;
-        };
-        reader2.onload = () => {
-          const base64Data2 = reader2.result.split(",")[1];
-          this.data.coveruploads = base64Data2;
-        };
+        // reader1.onload = () => {
+        //   const base64Data = reader1.result.split(",")[1];
+        //   this.data.uploads = base64Data;
+        // };
+        // reader2.onload = () => {
+        //   const base64Data2 = reader2.result.split(",")[1];
+        //   this.data.coveruploads = base64Data2;
+        // };
 
-        reader1.readAsDataURL(this.data.uploads);
-        reader2.readAsDataURL(this.data.coveruploads);
+        // reader1.readAsDataURL(this.data.uploads);
+        // reader2.readAsDataURL(this.data.coveruploads);
 
-        setTimeout(() => {
-          this.loading = false;
-          this.$store.leegoluauth.pageBuilderData = this.data;
-          // this.coverUploaded =
-          // this.readFileData();
+        // setTimeout(() => {
+        //   this.loading = false;
+        //   this.$store.leegoluauth.pageBuilderData = this.data;
+        //   // this.coverUploaded =
+        //   // this.readFileData();
 
-          this.$router.replace({
-            name: "vendor.page",
-            params: { slug: this.$store.leegoluauth.vendor.slug },
+        //   this.$router.replace({
+        //     name: "vendor.page",
+        //     params: { slug: this.$store.leegoluauth.vendor.slug },
+        //   });
+        // }, 2000);istores/builder/update
+        // let persistBuilder = this.data;
+        const formData = new FormData();
+        formData.append("coverimg", this.data.coveruploads);
+        formData.append("logo", this.data.uploads);
+        formData.append(
+          "selectedcoScheme",
+          JSON.stringify(this.data.selectedcoScheme)
+        );
+        formData.append("METHOD", "PUT");
+        formData.append("business_name", this.data.business_name);
+        formData.append("abouttext", this.data.abouttext);
+        formData.append("business_tagline", this.data.business_tagline);
+        formData.append("colorScheme", this.data.colorScheme);
+        formData.append("pageLayout", this.data.pageLayout);
+        formData.append("segments", this.data.segments);
+        formData.append("colorScheme", this.data.colorScheme);
+
+        // for (var key in persistBuilder) {
+        //   formData.append(key, persistBuilder[key]);
+        // if (key === "selectedcoScheme") {
+        //   formData.append(key, JSON.stringify(persistBuilder[key]));
+        // }
+        // }
+        this.$q.loading.show({
+          message: "Your changes are taking effect",
+        });
+        this.$api
+          .put(
+            `${this.$store.leegoluauth.vendorDetails.slug}/builder/update`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then((response) => {
+            console.log("Success:", response);
+            this.$q.loading.hide();
+            this.$q.notify({
+              message: response.data.message,
+              color: "green",
+              position: "bottom",
+            });
+          })
+          .catch(({ response }) => {
+            // console.log(response);
+            this.errors = response.data.message;
+            this.$q.loading.hide();
+            this.$q.notify({
+              message: response.data.message,
+              color: "red",
+              position: "bottom",
+              actions: [{ icon: "close", color: "white" }],
+            });
           });
-        }, 2000);
       } else {
         this.$q.notify({
           message: "Please upload a cover photo and a logo",
@@ -1285,6 +1446,7 @@ export default {
     combineProducts() {
       let allPData = {
         name: "All products",
+        id: "allpro",
         products: [...this.allProductsArr],
       };
       this.grandAllProductsArr = [allPData, ...this.collectionsArr];
@@ -1299,7 +1461,7 @@ export default {
           this.products = response.data.vendor.products;
           this.loading = false;
           this.data.business_name = response.data.vendor.business_name;
-          this.data.business_tagline = "This is a custom tagline";
+          this.data.business_tagline = "";
           // console.log(response);
         })
         .catch(({ response }) => {
@@ -1329,7 +1491,7 @@ export default {
   // margin-top: 11rem;
   background: rgba(217, 217, 217, 0.31);
   border: 1px dashed var(--primary-color);
-  margin: 11rem auto 0rem;
+  margin: 8rem auto 4rem;
   width: 95%;
 }
 
@@ -1347,8 +1509,11 @@ export default {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   margin: 0.5rem auto;
-  padding-left: 0.4rem;
-  padding-right: 0.4rem;
+  padding-left: 1.3rem;
+  padding-right: 1.3rem;
+  position: sticky;
+  top: 0.4%;
+  z-index: 100;
   width: 95%;
   height: 59px;
   max-width: 100%;
@@ -1378,6 +1543,10 @@ export default {
   width: 95%;
   margin: 0 auto;
   background: var(--color-one);
+}
+
+.left_paragraph .outline.q-btn {
+  margin-left: 0.4rem;
 }
 
 .editor_hero .q-btn {
@@ -1415,6 +1584,28 @@ export default {
 
 .nav_btn_icon span {
   white-space: nowrap;
+}
+
+.initials {
+  width: 296px;
+  height: 257.55px;
+  // border-radius: 50%;
+  background-color: #0000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  font-family: "PT Serif";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
 }
 
 .editor_hero .q-btn span {
@@ -1526,6 +1717,13 @@ export default {
 
 .desc_text {
   padding: 0 1.5rem;
+}
+
+.active_segment {
+  background: #ffffff;
+  border: 3px solid #1f7bb5;
+  border-radius: 17px !important;
+  padding: 1rem;
 }
 
 .desc_text,
@@ -1643,6 +1841,16 @@ export default {
   height: 147.72px;
   border: 6px solid var(--color-two);
   // border: 6px solid #cedfeb;
+  border-radius: 10px;
+}
+
+.left_logo_area .logoside {
+  width: 147.72px;
+  height: 147.72px;
+  border: 6px solid var(--color-two);
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  background: #000000;
   border-radius: 10px;
 }
 
@@ -1792,6 +2000,8 @@ export default {
 .holder .responsive_autofit_grid {
   width: 95%;
   margin: 0 auto;
+  padding-bottom: 3rem;
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .input_search {
@@ -1821,7 +2031,8 @@ export default {
   font-weight: 500;
   font-size: 14px;
   line-height: 17px;
-  color: #9a9a9a;
+  color: #000;
+  // color: #9a9a9a;
   padding: 1rem;
   height: 42px;
   width: 100%;
@@ -1831,7 +2042,9 @@ export default {
   padding: 1rem;
   font-size: 1rem;
 }
-
+.colorscheme .scheme {
+  margin-bottom: 1rem;
+}
 .card {
   padding: 1rem;
   min-width: 363px;
@@ -1941,14 +2154,16 @@ export default {
   background: url("/images/sqrpreview.png") no-repeat center;
   background-position: center;
   background-size: cover;
+  height: 256.55px;
 }
 .previewDiv::before {
   position: absolute;
   content: "";
   background: rgba(0, 0, 0, 0.3);
   // border: 6px solid var(--color-one);
-  // border-radius: 10px;
+  border-radius: 10px;
   width: 100%;
+
   height: 100%;
 }
 
@@ -1968,13 +2183,13 @@ export default {
 .form img.previewimg {
   width: 296px;
   height: 100%;
-  // height: 296px;
+  max-height: 280px;
   border-radius: 0;
   border: none;
 }
 .form img.previewimg.cover {
-  // width: 411px;
-  height: 250px;
+  width: 296px;
+  height: 256.55px;
   border-radius: 0;
   border: none;
   position: relative;
@@ -2017,6 +2232,10 @@ export default {
   // }
   .left_logo_area .outline.q-btn {
     right: -30%;
+  }
+
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
   .lay {
     // display: none;
@@ -2215,8 +2434,15 @@ export default {
     height: 45px;
     font-size: 15px;
   }
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
 
-  .modal .title {
+  .listing_s_hold {
+    margin: 0.5rem 0;
+  }
+
+  .resp .modal .title {
     font-size: 16px;
   }
 
@@ -2270,8 +2496,8 @@ export default {
 
   .left_logo_area .outline.q-btn {
     // right: -1%;
-    width: 100%;
-    right: -32%;
+    width: fit-content;
+    right: 2%;
   }
 
   .left_details_title {
@@ -2313,6 +2539,8 @@ export default {
 
   .nav_area {
     height: 45px;
+    padding-left: 0.8rem;
+    padding-right: 0.5rem;
   }
 
   .preview {
@@ -2384,11 +2612,19 @@ export default {
   .upload_logo_area {
     margin-top: -20%;
   }
-  .left_logo_area img {
+  .left_logo_area img,
+  .left_logo_area .logoside {
     width: 83px;
     height: 83px;
     // margin-left: 1.4rem;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .left_logo_area .logoside {
+    background: #000000;
+    border: 2px solid white;
+    // border: 2px solid var(--color-one);
+    border-radius: 10px;
   }
 
   .left_wrap.mobile {

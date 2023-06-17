@@ -1,5 +1,10 @@
 <template>
-  <div class="wrapp">
+  <div class="loader" v-if="loadingCol">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loadingCol" class="wrapp">
     <div class="top">
       <span class="title">
         <img src="/images/notif.svg" alt="" />
@@ -41,7 +46,7 @@
                   :src="
                     props.row.image_url
                       ? props.row.image_url
-                      : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU'
+                      : '/images/usersvg.svg'
                   "
                 />
               </q-avatar>
@@ -204,6 +209,7 @@ export default {
       separator: "",
       mode: "list",
       loading: false,
+      loadingCol: true,
       editLoad: false,
       create_title: false,
       loaders: {
@@ -224,20 +230,20 @@ export default {
 
   methods: {
     onRequest(props) {
-      this.loading = true;
+      this.loadingCol = true;
       const url = `${this.$store.leegoluauth.vendorDetails.slug}/notifications`;
       this.curl = url;
       this.$api
         .get(url)
         .then(({ data }) => {
           // console.log(data);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = data.data;
           // this.count = data.count;
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.loading = false;
+          this.loadingCol = false;
           this.rows = [];
         });
     },

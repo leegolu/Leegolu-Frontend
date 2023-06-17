@@ -146,6 +146,11 @@ const routes = [
         component: () => import("pages/Dashboard/Notifications.vue"),
         name: "notifications",
       },
+      {
+        path: "/business/settings",
+        component: () => import("pages/Dashboard/Settings.vue"),
+        name: "settings",
+      },
     ],
   },
   {

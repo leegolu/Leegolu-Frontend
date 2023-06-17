@@ -536,6 +536,11 @@ select:focus {
   width: 20px !important;
   height: 20px !important;
 }
+.header_icons .le .q-btn img.ava {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+}
 
 .sort_area {
   flex-wrap: wrap;
@@ -548,6 +553,10 @@ select:focus {
 
 .sort_area .left::-webkit-scrollbar {
   display: none;
+}
+
+.sort_area .q-btn {
+  text-transform: capitalize;
 }
 
 // seller phone_dailog
@@ -681,7 +690,11 @@ select:focus {
   padding-bottom: 1.5rem;
 }
 
-@media (min-width: 700px) {
+.name_row .q-avatar {
+  box-shadow: none !important;
+}
+
+@media (min-width: 800px) {
   .layout_footer {
     display: none;
   }
@@ -801,13 +814,13 @@ select:focus {
   }
 
   .sort_area {
-    gap: 0 !important;
+    gap: 0.5rem !important;
   }
 
   .sort_area .left {
     flex-wrap: unset !important;
     overflow-x: scroll;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0rem;
   }
 
   .sort_area .regular,
@@ -820,7 +833,7 @@ select:focus {
   }
 
   .sort_area .right {
-    padding-top: 0.5rem !important;
+    padding-top: 0rem !important;
   }
 
   .sort_area .left {
