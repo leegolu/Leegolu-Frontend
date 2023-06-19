@@ -31,19 +31,22 @@
           <img src="/images/list.png" alt="" />
           <div class="small_card_main_text">My Adverts</div>
           <div class="small_card_sub">Adverts you created yourself.</div>
+          <div v-if="myAds === ''" class="count">{{ myAds }}</div>
           <div class="count">{{ myAds }}</div>
         </div>
         <div class="small_card">
           <img src="/images/engagesvg.svg" alt="" />
           <div class="small_card_main_text">Engagement</div>
           <div class="small_card_sub">Adverts interacted with.</div>
-          <div class="count">{{ myEngagements }}</div>
+          <div v-if="myEngagements === ''" class="count">0</div>
+          <div v-else class="count">{{ myEngagements }}</div>
         </div>
         <div class="small_card">
           <img src="/images/layer.png" alt="" />
           <div class="small_card_main_text">Leads</div>
           <div class="small_card_sub">Customers that reached out.</div>
-          <div class="count">{{ myLeads }}</div>
+          <div v-if="myLeads === ''" class="count">{{ myLeads }}</div>
+          <div v-else class="count">{{ myLeads }}</div>
         </div>
         <div class="small_card_bus">
           <div class="wallet_left">
@@ -77,12 +80,37 @@
         </div>
       </div>
 
-      <!-- <div class="flag_section">
+      <hr />
+
+      <div v-if="listings.length" class="recent_listing_head q-mb-lg">
+        Recent Listings
+        <q-btn flat style="padding: 0" :to="{ name: 'listings' }"
+          >| View All</q-btn
+        >
+        <div class="q-pt-md responsive_autofit_grid">
+          <DashboardHomeListing
+            v-for="(listing, index) in listings"
+            :key="index"
+            :listing="listing"
+          />
+        </div>
+      </div>
+
+      <hr v-if="!listings.length" />
+      <div v-if="!listings.length" class="flag_section">
         <img src="/images/flag.png" alt="" />
         <div class="mainFlag_text">Post your first listing</div>
         <div class="flag_sub">Reach thousands of customers</div>
-        <q-btn color="primary" class="q-mt-lg post"> Post Listing</q-btn>
-      </div> -->
+        <q-btn
+          :to="{ name: 'createListing' }"
+          color="primary"
+          class="q-mt-lg post"
+        >
+          Post Listing</q-btn
+        >
+      </div>
+
+      <hr />
 
       <div id="chart" class="bg-white q-pa-md">
         <div class="top_business">
@@ -116,20 +144,6 @@
           :series="series"
         ></apexchart>
       </div>
-
-      <!-- <div class="recent_listing_head">
-        Recent Listings
-        <q-btn flat style="padding: 0" :to="{ name: 'listings' }"
-          >| View All</q-btn
-        >
-        <div class="responsive_autofit_grid">
-          <DashboardHomeListing
-            v-for="(listing, index) in arr"
-            :key="index"
-            :listing="listing"
-          />
-        </div>
-      </div> -->
     </div>
 
     <div class="right_card">
@@ -390,7 +404,7 @@
 <script>
 import VueApexCharts from "vue3-apexcharts";
 import { useMeta } from "quasar";
-import DashboardHomeListing from "../../components/listings/DashboardHomeListing.vue";
+import DashboardHomeListing from "../../components/listings/RecentListings.vue";
 // import Charts from "../../components/Charts.vue";
 import { ref, computed } from "vue";
 export default {
@@ -408,6 +422,7 @@ export default {
       image: null,
       myAds: "",
       myEngagements: "",
+      listings: [],
       myLeads: "",
       errors: {},
       countrycode: "+243",
@@ -460,6 +475,7 @@ export default {
     this.getMyEngagements();
     this.getMyLeads();
     this.getMyPageViews();
+    this.getListings();
     this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
   },
   setup() {
@@ -543,6 +559,28 @@ export default {
     toggleBus() {
       this.addphotoforleegolubusinessmodal = false;
       this.businessreg = true;
+    },
+
+    getListings() {
+      this.loading = true;
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
+        .then((response) => {
+          console.log("Success:", response);
+          this.listings = response.data.data;
+          this.loading = false;
+        })
+        .catch(({ response }) => {
+          this.errors = response.data.message;
+          this.loading = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
+          // console.log("Error:", response);
+        });
     },
 
     getMyads() {
@@ -714,6 +752,12 @@ export default {
   gap: 1.7rem;
   margin: 2.1rem 1.7rem 2rem;
 }
+
+hr {
+  // height: 1px;
+  background: rgba(176, 176, 176, 0.5);
+  margin: 2rem 0;
+}
 .main_card {
   display: grid;
   background: #ffffff;
@@ -752,7 +796,9 @@ export default {
   line-height: 22px;
   color: #000000;
 }
-
+.recent_listing_head {
+  margin: 0;
+}
 // .left_main {
 //   max-width: 70%;
 // }
@@ -777,6 +823,7 @@ export default {
   text-align: center;
   text-transform: capitalize;
   color: #ffffff;
+  margin-top: 2.5rem;
 }
 
 .tour::before {
@@ -846,6 +893,16 @@ export default {
   min-height: 0;
 }
 
+.responsive_autofit_grid {
+  display: grid;
+  // grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  // gap: 1rem;
+  // padding-bottom: 3rem;
+
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .started_btn img {
   width: 18px;
   height: 12px;
@@ -861,9 +918,10 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.4rem;
+  // margin-top: 2rem;
   // overflow: hidden;
-  padding-bottom: 2rem;
+  // padding-bottom: 2rem;
   // padding-left: 0.5rem;
   // overflow-x: scroll;
 }

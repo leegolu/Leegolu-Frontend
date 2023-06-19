@@ -1,20 +1,22 @@
 <template>
-  <div class="hold">
-    <div class="wrapp">
-      <img src="/images/success.png" alt="" />
+  <q-layout class="page_">
+    <div class="hold">
+      <div class="wrapp">
+        <img src="/images/success.png" alt="" />
 
-      <div class="q-mt-md mailtext">Success</div>
+        <div class="q-mt-md mailtext">Success</div>
 
-      <div class="maildesc q-mt-sm">
-        Your password has been changed successfully
-      </div>
+        <div class="maildesc q-mt-sm">
+          Your password has been changed successfully
+        </div>
 
-      <div class="change col">
-        <!-- <q-btn> RETURN TO DASHBOARD</q-btn> -->
-        <q-btn :to="{ name: 'login' }"> RETURN TO LOGIN</q-btn>
+        <div class="change col">
+          <!-- <q-btn> RETURN TO DASHBOARD</q-btn> -->
+          <q-btn :to="{ name: 'login' }"> RETURN TO LOGIN</q-btn>
+        </div>
       </div>
     </div>
-  </div>
+  </q-layout>
 </template>
 
 <script>

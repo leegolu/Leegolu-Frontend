@@ -45,19 +45,20 @@
         row-key="id"
         :grid="mode == 'grid'"
         :filter="filter"
+        class="my_table"
         :loading="loading"
         @request="onRequest"
       >
         <template v-slot:body-cell-name="props">
           <q-td :props="props">
             <!-- {{ props.row }} -->
-            <div class="name_row">
+            <div @click="toggleCus(props.row)" class="name_row">
               <q-avatar size="50px" class="shadow-10">
                 <img
                   :src="
                     props.row.avatar === null
                       ? `/images/usersvg.svg`
-                      : props.row.avatar
+                      : props.row.avatar.url
                   "
                   alt=""
                 />
@@ -69,12 +70,12 @@
                 <div class="name_down">
                   {{ props.row.mode }}
                 </div>
-                <small class="added text-left">
+                <!-- <small class="added text-left">
                   {{ props.row.phone }}
                 </small>
                 <div class="added">
                   {{ props.row.email }}
-                </div>
+                </div> -->
               </div>
             </div>
           </q-td>
@@ -150,7 +151,7 @@
     <div v-else class="empty">
       <img src="/images/empty.svg" alt="" />
 
-      <div class="empty_text">You currently have no favourites</div>
+      <div class="empty_text">You currently have no customers</div>
     </div>
     <q-dialog v-model="advertdialog" persistent>
       <q-card class="card">
@@ -161,9 +162,7 @@
             <div class="left_dialog">
               <img
                 :src="
-                  rowData.image_url
-                    ? rowData.image_url
-                    : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU'
+                  rowData.avatar ? rowData.avatar.url : '/images/usersvg.svg'
                 "
                 alt=""
               />
@@ -171,16 +170,18 @@
 
             <div class="det">
               <!-- {{ rowData }} -->
-              <div class="title name_top">{{ rowData.userName }}</div>
-              <div class="name_down">{{ rowData.kind }}</div>
+              <div class="title name_top">{{ rowData.name }}</div>
+              <div class="name_down">{{ rowData.mode }}</div>
 
               <div class="name_copy">
-                <a :href="`tel:${rowData.phone}`">{{ rowData.phone }}</a>
+                <a class="text-black" :href="`tel:${rowData.phone}`">{{
+                  rowData.phone
+                }}</a>
                 <span @click="copy"><i class="fa-solid fa-copy"></i></span>
               </div>
             </div>
           </div>
-          <div class="topDetails">
+          <div v-if="rowData.product" class="topDetails">
             <div class="lead_details">
               <div class="leads">
                 <img src="/images/listing1.png" alt="" />
@@ -193,7 +194,7 @@
                 </div>
               </div>
             </div>
-            <div class="lead_details">
+            <!-- <div class="lead_details">
               <div class="leads">
                 <img src="/images/listing3.png" alt="" />
 
@@ -228,15 +229,15 @@
                   <div class="day">2 days ago</div>
                 </div>
               </div>
-            </div>
+               </div> -->
           </div>
 
           <div class="boost">
-            <div class="minimize">
+            <div @click="advertdialog = false" class="minimize">
               Minimize
-              <i @click="advertdialog = false" class="fa-solid fa-arrow-up"></i>
+              <i class="fa-solid fa-arrow-up"></i>
             </div>
-            <q-btn> Call Now </q-btn>
+            <q-btn :href="`tel:${rowData.phone}`"> Call Now </q-btn>
           </div>
 
           <q-btn @click="advertdialog = false" class="close">
@@ -363,6 +364,11 @@ export default {
     setCategory(category) {
       this.selectedCategory = category;
     },
+    toggleCus(rowDats) {
+      // console.log(rowDats);
+      this.rowData = rowDats;
+      this.advertdialog = true;
+    },
     onRequest(props) {
       this.loadingCol = true;
       const url = `${this.$store.leegoluauth.vendorDetails.slug}/customers`;
@@ -370,7 +376,7 @@ export default {
       this.$api
         .get(url)
         .then(({ data }) => {
-          // console.log(data);
+          console.log(data);
           this.loadingCol = false;
           this.rows = data.data;
           this.count = data.count;
@@ -592,7 +598,8 @@ export default {
   text-transform: capitalize;
   color: #8e8e8e;
   position: relative;
-  margin-top: 1rem;
+  margin-top: 0.3rem;
+  // margin-top: 1rem;
 }
 
 .name_copy span {
@@ -768,5 +775,20 @@ p.advert {
   font-size: 20px;
   line-height: 27px;
   color: #000000;
+  text-transform: capitalize;
+}
+
+@media (max-width: 500px) {
+  .leads .title {
+    font-size: 14px;
+    line-height: 15px;
+  }
+  .leads .price {
+    font-size: 12px;
+  }
+  .leads img {
+    width: 58px;
+    height: 58px;
+  }
 }
 </style>

@@ -13,10 +13,35 @@
 
       <div class="sort_area">
         <div class="left">
-          <q-btn flat class="active"> All Listings </q-btn>
-          <q-btn flat class="regular"> Active </q-btn>
-          <q-btn flat class="regular"> Declined </q-btn>
-          <q-btn flat class="regular"> Drafts </q-btn>
+          <q-btn
+            flat
+            @click="setCategory('all')"
+            :class="selectedCategory === 'all' ? 'active' : 'regular'"
+          >
+            All Listings
+          </q-btn>
+          <q-btn
+            flat
+            @click="setCategory('active')"
+            :class="selectedCategory === 'active' ? 'active' : 'regular'"
+          >
+            Active
+          </q-btn>
+          <q-btn
+            flat
+            @click="setCategory('declined')"
+            :class="selectedCategory === 'declined' ? 'active' : 'regular'"
+          >
+            Declined
+          </q-btn>
+          <q-btn
+            flat
+            @click="setCategory('pending')"
+            :class="selectedCategory === 'pending' ? 'active' : 'regular'"
+          >
+            Pending
+          </q-btn>
+          <!-- <q-btn flat class="regular"> Drafts </q-btn> -->
           <q-btn flat class="regular boosted"> Boosted </q-btn>
         </div>
 
@@ -51,7 +76,7 @@
         </div>
       </div>
     </div>
-    <div v-if="listings.length > 0" class="listings">
+    <div v-if="sortedArray.length" class="listings">
       <div v-for="(listing, index) in sortedArray" :key="index">
         <Listings @refresh-event="getListings" :listing="listing" />
       </div>
@@ -60,7 +85,12 @@
     <div v-else class="empty">
       <img src="/images/empty.svg" alt="" />
 
-      <div class="empty_text">You currently have no listings</div>
+      <div v-if="selectedCategory === 'all'" class="empty_text">
+        You currently have no listings
+      </div>
+      <div v-else class="empty_text">
+        You currently have no {{ selectedCategory }} listings
+      </div>
     </div>
     <!-- <div class="empty" v-else>
       <img src="/images/empty.svg" alt="" />
@@ -87,6 +117,7 @@ export default {
       loading: true,
       sortDirection: "",
       sortDirectionSelected: "Sort by Date",
+      selectedCategory: "all",
     };
   },
   components: {
@@ -107,8 +138,18 @@ export default {
     },
   },
   computed: {
+    sortedListings() {
+      if (this.selectedCategory === "all") {
+        return this.listings;
+      } else {
+        return this.listings.filter(
+          (listing) => listing.status === this.selectedCategory
+        );
+      }
+    },
     sortedArray() {
-      return this.listings.slice().sort((a, b) => {
+      // let sorted = [...this.filteredProducts];
+      return this.sortedListings.slice().sort((a, b) => {
         const dateA = new Date(a.created_at);
         const dateB = new Date(b.created_at);
 
@@ -121,6 +162,9 @@ export default {
     },
   },
   methods: {
+    setCategory(category) {
+      this.selectedCategory = category;
+    },
     onItemClick(clickDir) {
       this.sortDirection = clickDir;
       // console.log("first");
@@ -131,7 +175,7 @@ export default {
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
         .then((response) => {
-          // console.log("Success:", response);
+          console.log("Success:", response);
           this.listings = response.data.data;
           this.loading = false;
         })

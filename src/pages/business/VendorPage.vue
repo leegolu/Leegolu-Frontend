@@ -16,25 +16,27 @@
           <div class="left_wrap mobile row items-center q-col-gutter-x-md">
             <div class="left_logo_area">
               <img :src="preview" alt="" />
+              <!-- <template v-else>
+                <div class="initials logoside">{{ builderData.initials }}</div>
+              </template> -->
             </div>
             <!-- {{ vendor }} -->
             <div class="left_details">
               <div class="left_details_title">
-                {{ this.$store.leegoluauth.pageBuilderData.business_name }}
+                {{ builderData.business_name }}
               </div>
               <div v-if="vendor.about" class="left_details_desc q-mt-sm">
-                {{ vendor.about.name }}
+                {{ builderData.business_tagline }}
               </div>
-              <!-- <div class="rating row items-center">
+              <div class="rating row q-mb-sm items-center">
                 <q-rating
                   v-model="ratingModel"
                   size="1em"
                   :max="5"
                   color="secondary"
-                  class="q-my-sm"
                 />
                 <span>240</span>
-              </div> -->
+              </div>
               <!-- <div class="rating row items-center"></div> -->
 
               <div class="location">
@@ -42,7 +44,7 @@
               </div>
 
               <div v-if="vendor.about" class="left_paragraph none_">
-                We are all about {{ vendor.about.name }}
+                We are all about {{ builderData.description }}
               </div>
             </div>
           </div>
@@ -57,7 +59,7 @@
               flat
             />
             <q-btn class="none_ vendor_btn" flat @click="phoneDialog = true">
-              <img src="/images/cal.svg" alt="" />
+              <img src="/images/call.svg" alt="" />
               <span class="q-ml-sm">Contact Business</span></q-btn
             >
           </div>
@@ -140,7 +142,7 @@
           <!-- <div class="segmentA q-pt-lg container">My Collections</div> -->
           <div
             v-if="!loading && vendor && products.length"
-            class="responsive_autofit_grid container"
+            class="responsive_autofit_grid"
           >
             <DashboardHomeListingVue
               v-for="(listing, index) in sortproducts"
@@ -243,7 +245,7 @@
           </div>
           <div
             v-if="grandselectedCollectionProducts.length"
-            class="responsive_autofit_grid container"
+            class="responsive_autofit_grid"
           >
             <DashboardHomeListingVue
               v-for="(listing, index) in sortedProducts"
@@ -341,7 +343,7 @@
           <div v-if="showCollections">
             <div
               v-if="collections.length"
-              class="responsive_autofit_grid q-pt-lg q-pb-xl container"
+              class="responsive_autofit_grid q-pt-lg q-pb-xl"
             >
               <div
                 @click="selectCollection(collection)"
@@ -425,8 +427,8 @@
           </div> -->
 
         <div class="call_ven q-mt-lg">
-          <a target="_blank" :href="`tel:${vendorPhone}`"
-            >Call {{ vendorPhone }}</a
+          <a target="_blank" :href="`tel:${vendor.phone}`"
+            >Call {{ vendor.phone }}</a
           >
           <q-btn @click="viewChat" :loading="loadingChatBtn" flat
             >Chat Seller
@@ -522,6 +524,7 @@ export default {
       conversationDetails: {},
       conversationMessages: [],
       collectionsArr: [],
+      builderData: {},
       allProductsArr: [],
       grandAllProductsArr: [],
       selectedCollectionId: null,
@@ -540,25 +543,25 @@ export default {
     ChatPageVue,
   },
   mounted() {
-    console.log(this.$store.leegoluauth.pageBuilderData);
-    this.colorSchemeStyles =
-      this.$store.leegoluauth.pageBuilderData.selectedcoScheme.variables;
-    this.segments = this.$store.leegoluauth.pageBuilderData.segments;
-    if (this.$store.leegoluauth.pageBuilderData.business_name) {
-      this.coverpreview =
-        "data:image/png;base64," +
-        this.$store.leegoluauth.pageBuilderData.coveruploads;
-      this.preview =
-        "data:image/png;base64," +
-        this.$store.leegoluauth.pageBuilderData.uploads;
-    } else {
-    }
+    // console.log(this.$store.leegoluauth.pageBuilderData);
+    // this.colorSchemeStyles =
+    //   this.$store.leegoluauth.pageBuilderData.selectedcoScheme.variables;
+    // this.segments = this.$store.leegoluauth.pageBuilderData.segments;
+    // if (this.$store.leegoluauth.pageBuilderData.business_name) {
+    //   this.coverpreview =
+    //     "data:image/png;base64," +
+    //     this.$store.leegoluauth.pageBuilderData.coveruploads;
+    //   this.preview =
+    //     "data:image/png;base64," +
+    //     this.$store.leegoluauth.pageBuilderData.uploads;
+    // } else {
+    // }
   },
 
   created() {
     this.getVendor();
     this.getCollections();
-    this.getVendorPhone();
+    // this.getVendorPhone();
     this.loadData();
   },
   computed: {
@@ -706,8 +709,26 @@ export default {
         .then((response) => {
           this.vendor = response.data.vendor;
           this.products = response.data.vendor.products;
+          //       this.colorSchemeStyles =
+          //   this.$store.leegoluauth.pageBuilderData.selectedcoScheme.variables;
+          // this.segments = this.$store.leegoluauth.pageBuilderData.segments;
+          // if (this.$store.leegoluauth.pageBuilderData.business_name) {
+          //   this.coverpreview =
+          //     "data:image/png;base64," +
+          //     this.$store.leegoluauth.pageBuilderData.coveruploads;
+          //   this.preview =
+          //     "data:image/png;base64," +
+          //     this.$store.leegoluauth.pageBuilderData.uploads;
+          // } else {
+          // }
+          this.builderData = response.data.pagebuilder;
+          this.colorSchemeStyles =
+            response.data.pagebuilder.selectedcoScheme.variables;
+          this.segments = response.data.pagebuilder.segments;
+          this.coverpreview = response.data.pagebuilder.cover_img.url;
+          this.preview = response.data.pagebuilder.logo.url;
           this.loading = false;
-          // console.log(response);
+          console.log(response);
         })
         .catch(({ response }) => {
           this.loading = false;
@@ -756,7 +777,8 @@ export default {
   // margin-top: 11rem;
   // background: rgba(217, 217, 217, 0.31);
   // border: 1px dashed var(--primary-color);
-  margin: 11rem auto 0rem;
+  margin: 6rem auto 0rem;
+  // margin: 8rem auto 0rem;
   // width: 95%;
 }
 
@@ -860,6 +882,29 @@ export default {
   color: var(--primary-color);
 }
 
+.initials {
+  width: 296px;
+  height: 257.55px;
+  // border-radius: 50%;
+  background-color: #0000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  font-family: "PT Serif";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
 .color_text {
   font-family: "Inter";
   font-style: normal;
@@ -928,6 +973,10 @@ export default {
   text-transform: capitalize;
 }
 
+.left_details {
+  position: relative;
+}
+
 .left_details_desc {
   font-family: "Inter";
   font-style: normal;
@@ -991,6 +1040,7 @@ export default {
   line-height: 12px;
   color: var(--color-one);
   margin-top: 0.3rem;
+  padding-bottom: 2rem;
   // color: #1f7bb5;
 }
 
@@ -1009,11 +1059,14 @@ export default {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
   color: var(--primary-color);
 }
 
 .left_wrap .left_paragraph {
-  padding-bottom: 1rem;
+  // padding-bottom: 1rem;
 }
 
 .layout {
@@ -1124,7 +1177,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0 0;
-  margin: 0.1rem 0 0;
+  margin: 0.1rem 0 1rem;
   flex-wrap: nowrap;
   padding-bottom: 0.6rem;
   // overflow-x: scroll;
@@ -1203,13 +1256,14 @@ export default {
 
 .mobile_categories {
   display: none;
-  width: 95%;
+  // width: 95%;
   margin: 0 auto;
 }
 
 .holder {
   background: #ffffff;
-  width: 95%;
+  // width: 95%;
+  padding: 0 1rem;
   margin: 0 auto;
 }
 
@@ -1220,8 +1274,11 @@ export default {
 }
 
 .holder .responsive_autofit_grid {
-  width: 95%;
-  margin: 0 auto;
+  // width: 95%;
+  // margin: 0 auto;
+  padding-bottom: 3rem;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .input_search {
@@ -1260,7 +1317,7 @@ export default {
 .input_search i {
   padding: 1rem;
   font-size: 1rem;
-  color: var(--primary-color) !important;
+  color: var(--color-one) !important;
 }
 .input_search i.mobile {
   display: none;
@@ -1445,6 +1502,11 @@ export default {
   border-bottom: 1px solid #1f7bb5;
 }
 
+@media (max-width: 1200px) {
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 @media (max-width: 1050px) {
   .left_logo_area .outline.q-btn {
     left: -2%;
@@ -1458,6 +1520,9 @@ export default {
   // .form img.previewimg.cover {
   //   width: 100%;
   // }
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
   .left_logo_area .outline.q-btn {
     right: -30%;
   }
@@ -1643,6 +1708,10 @@ export default {
     font-size: 15px;
   }
 
+  .location {
+    padding-bottom: 0rem;
+  }
+
   .desc_text .outline.q-btn span {
     color: #000;
   }
@@ -1665,7 +1734,7 @@ export default {
   }
   .desc_text {
     display: block;
-    margin-bottom: 2rem;
+    margin-bottom: 0rem;
     padding: 1.5rem 1rem 0.6rem;
   }
 
@@ -1811,7 +1880,8 @@ export default {
   .upload_logo_area {
     margin-top: -20%;
   }
-  .left_logo_area img {
+  .left_logo_area img,
+  .left_logo_area .logoside {
     width: 83px;
     height: 83px;
     // margin-left: 1.4rem;

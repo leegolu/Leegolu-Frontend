@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <section v-if="favourites.length > 0" class="products q-pt-sm container">
+    <section v-if="favourites.length > 0" class="products q-pt-sm">
       <!-- <div class="head_text">Favorite Listings</div> -->
       <div class="product_cards">
         <div

@@ -1,37 +1,39 @@
 <template>
-  <div class="hold">
-    <div class="wrapp">
-      <div class="row top items-center justify-between">
-        <img src="/images/logored.png" alt="" />
-        <q-btn class="reset" flat> Password Reset </q-btn>
-      </div>
-      <img src="/images/changepass.png" alt="" />
+  <q-layout class="page_">
+    <div class="hold">
+      <div class="wrapp">
+        <div class="row top items-center justify-between">
+          <img src="/images/logored.png" alt="" />
+          <q-btn class="reset" flat> Password Reset </q-btn>
+        </div>
+        <img src="/images/changepass.png" alt="" />
 
-      <div class="q-mt-md mailtext">Hello Chris,</div>
+        <div class="q-mt-md mailtext">Hello Chris,</div>
 
-      <div class="maildesc q-mt-sm">
-        We got a request from you to change your <br />
-        password. If this is you, please click the change <br />
-        password button below.
-      </div>
+        <div class="maildesc q-mt-sm">
+          We got a request from you to change your <br />
+          password. If this is you, please click the change <br />
+          password button below.
+        </div>
 
-      <div class="change">
-        <q-btn :to="{ name: 'change.password' }"> CHANGE PASSWORD </q-btn>
-      </div>
+        <div class="change">
+          <q-btn :to="{ name: 'change.password' }"> CHANGE PASSWORD </q-btn>
+        </div>
 
-      <div class="q-mt-lg no_email">
-        If you did not request this change, please contact us <br />
-        immediately at <q-btn flat> support@leegolu.com </q-btn>.
-      </div>
+        <div class="q-mt-lg no_email">
+          If you did not request this change, please contact us <br />
+          immediately at <q-btn flat> support@leegolu.com </q-btn>.
+        </div>
 
-      <div class="socials q-mt-lg">
-        <a href=""><i class="fa-brands fa-twitter"></i></a>
-        <a href=""><i class="fa-brands fa-facebook"></i></a>
-        <a href=""><i class="fa-brands fa-instagram"></i></a>
-        <a href=""><i class="fa-brands fa-linkedin"></i></a>
+        <div class="socials q-mt-lg">
+          <a href=""><i class="fa-brands fa-twitter"></i></a>
+          <a href=""><i class="fa-brands fa-facebook"></i></a>
+          <a href=""><i class="fa-brands fa-instagram"></i></a>
+          <a href=""><i class="fa-brands fa-linkedin"></i></a>
+        </div>
       </div>
     </div>
-  </div>
+  </q-layout>
 </template>
 
 <script>

@@ -14,35 +14,40 @@
           </q-btn>
         </div>
 
-        <div v-else class="div">
-          <q-btn-dropdown no-caps flat icon="fa-solid fa-user">
-            <div class="q-pa-md">
-              <div class="column items-center">
-                <q-avatar size="72px">
-                  <img src="/images/usersvg.svg" />
-                </q-avatar>
-                <div class="text-subtitle1 q-mt-md q-mb-xs">
-                  {{ this.$store.leegoluauth.userDetails.name }}
+        <div v-else class="div avaicons">
+          <q-btn class="" style="min-height: auto; padding: 3px" no-caps flat>
+            <img class="ava" src="/images/usericon.svg" /><q-icon
+              name="expand_more"
+            />
+            <q-menu class="headermenu">
+              <div class="q-pa-md">
+                <div class="column items-center">
+                  <q-avatar size="72px">
+                    <img src="/images/usersvg.svg" />
+                  </q-avatar>
+                  <div class="text-subtitle1 q-mt-md q-mb-xs">
+                    {{ this.$store.leegoluauth.userDetails.name }}
+                  </div>
+                  <q-btn
+                    style="white-space: nowrap"
+                    no-caps
+                    :to="{
+                      name: `${
+                        this.$store.leegoluauth.userDetails.role[0].name ===
+                        'business'
+                          ? 'business.dashboard'
+                          : 'regular.dashboard'
+                      }`,
+                    }"
+                    color="secondary"
+                    class="q-px-md"
+                  >
+                    Go to dashboard
+                  </q-btn>
                 </div>
-                <q-btn
-                  style="white-space: nowrap"
-                  no-caps
-                  :to="{
-                    name: `${
-                      this.$store.leegoluauth.userDetails.role[0].name ===
-                      'business'
-                        ? 'business.dashboard'
-                        : 'regular.dashboard'
-                    }`,
-                  }"
-                  color="secondary"
-                  class="q-px-md"
-                >
-                  Go to dashboard
-                </q-btn>
               </div>
-            </div>
-          </q-btn-dropdown>
+            </q-menu>
+          </q-btn>
           <!-- <q-btn flat icon="fa-solid fa-user" color="secondary">
             <q-menu>
               <q-list>
@@ -726,7 +731,7 @@ a {
   margin: 3rem auto 2rem;
 }
 .popular img {
-  width: 120px;
+  width: 100px;
   cursor: pointer;
 }
 
@@ -821,7 +826,7 @@ a {
 .category_items {
   display: flex;
   align-items: center;
-  overflow-x: scroll;
+  // overflow-x: scroll;
   height: 50px;
 }
 

@@ -184,6 +184,17 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/create",
+    component: () => import("layouts/CreateListing.vue"),
+    children: [
+      {
+        path: "/createListing",
+        component: () => import("pages/Dashboard/Adverts.vue"),
+        name: "createListing",
+      },
+    ],
+  },
   // {
   //   path: "/Dashboard",
   //   component: () => import("layouts/Regular.vue"),

@@ -52,8 +52,8 @@
               </q-btn>
             </div>
 
-            <div v-else class="div">
-              <q-btn-dropdown flat color="secondary" icon="fa-solid fa-user">
+            <div v-else class="div avaicons">
+              <!-- <q-btn-dropdown flat color="secondary" icon="fa-solid fa-user">
                 <div class="q-pa-md">
                   <div class="column items-center">
                     <q-avatar size="72px">
@@ -80,7 +80,44 @@
                     </q-btn>
                   </div>
                 </div>
-              </q-btn-dropdown>
+              </q-btn-dropdown> -->
+              <q-btn
+                class=""
+                style="min-height: auto; padding: 3px"
+                no-caps
+                flat
+              >
+                <img class="ava" src="/images/userblack.svg" />
+                <q-icon name="expand_more" class="text-black" />
+                <q-menu class="headermenu">
+                  <div class="q-pa-md">
+                    <div class="column items-center">
+                      <q-avatar size="72px">
+                        <img src="/images/usersvg.svg" />
+                      </q-avatar>
+                      <div class="text-subtitle1 q-mt-md q-mb-xs">
+                        {{ this.$store.leegoluauth.userDetails.name }}
+                      </div>
+                      <q-btn
+                        style="white-space: nowrap"
+                        no-caps
+                        :to="{
+                          name: `${
+                            this.$store.leegoluauth.userDetails.role[0].name ===
+                            'business'
+                              ? 'business.dashboard'
+                              : 'regular.dashboard'
+                          }`,
+                        }"
+                        color="secondary"
+                        class="q-px-md"
+                      >
+                        Go to dashboard
+                      </q-btn>
+                    </div>
+                  </div>
+                </q-menu>
+              </q-btn>
             </div>
             <!-- <div v-else class="div">
               <q-btn

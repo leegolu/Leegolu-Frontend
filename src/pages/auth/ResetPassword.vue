@@ -1,44 +1,46 @@
 <template>
-  <div class="login q-pt-xl">
-    <div class="login_wrapper">
-      <div class="right">
-        <div class="sign">
-          <div class="head q-mb-sm">Password Reset</div>
+  <q-layout class="page_">
+    <div class="login q-pt-xl">
+      <div class="login_wrapper">
+        <div class="right">
+          <div class="sign">
+            <div class="head q-mb-sm">Password Reset</div>
 
-          <div class="sub">
-            Please enter your registered email or phone number.
+            <div class="sub">
+              Please enter your registered email or phone number.
+            </div>
           </div>
+
+          <form id="form">
+            <div class="input-box active-grey">
+              <label class="input-label">Email Address</label>
+              <input
+                type="text"
+                class="input-1"
+                placeholder="johndoe@gmail.com"
+              />
+            </div>
+
+            <div
+              class="row q-mt-lg items-center justify-end no-wrap q-col-gutter-x-md"
+            >
+              <q-btn :to="{ name: 'login' }" type="button" color="" class="btn"
+                >Cancel</q-btn
+              >
+              <q-btn
+                :to="{ name: 'checkmail' }"
+                type="button"
+                color="secondary"
+                class="btn"
+                >Proceed</q-btn
+              >
+              <!-- <div class="clear"></div> -->
+            </div>
+          </form>
         </div>
-
-        <form id="form">
-          <div class="input-box active-grey">
-            <label class="input-label">Email Address</label>
-            <input
-              type="text"
-              class="input-1"
-              placeholder="johndoe@gmail.com"
-            />
-          </div>
-
-          <div
-            class="row q-mt-lg items-center justify-end no-wrap q-col-gutter-x-md"
-          >
-            <q-btn :to="{ name: 'login' }" type="button" color="" class="btn"
-              >Cancel</q-btn
-            >
-            <q-btn
-              :to="{ name: 'checkmail' }"
-              type="button"
-              color="secondary"
-              class="btn"
-              >Proceed</q-btn
-            >
-            <!-- <div class="clear"></div> -->
-          </div>
-        </form>
       </div>
     </div>
-  </div>
+  </q-layout>
 </template>
 
 <script>

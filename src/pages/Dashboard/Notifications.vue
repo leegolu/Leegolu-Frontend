@@ -34,6 +34,7 @@
         row-key="id"
         :grid="mode == 'grid'"
         :filter="filter"
+        class="my_table"
         :loading="loading"
         @request="onRequest"
       >

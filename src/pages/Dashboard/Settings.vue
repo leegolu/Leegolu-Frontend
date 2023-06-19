@@ -1,173 +1,177 @@
 <template>
-  <div class="container q-pb-xl">
-    <div class="settings_top q-my-xl">
-      <div class="left_settings">
-        <div class="img_side">
-          <img src="/images/listing1.png" alt="" />
-          <q-btn @click="dialogAvatar = true" flat>
-            <img class="small" src="/images/settingscamera.svg" alt="" />
+  <q-layout class="page_">
+    <div class="container q-pb-xl">
+      <div class="settings_top q-my-xl">
+        <div class="left_settings">
+          <div class="img_side">
+            <img src="/images/listing1.png" alt="" />
+            <q-btn @click="dialogAvatar = true" flat>
+              <img class="small" src="/images/settingscamera.svg" alt="" />
+            </q-btn>
+          </div>
+          <div class="">
+            <div class="set_name">Chris Aregbesola</div>
+
+            <div class="joined">Joined 12 June, 2023</div>
+          </div>
+        </div>
+
+        <div class="right_settings">
+          <q-btn> Manage Profile </q-btn>
+        </div>
+      </div>
+      <hr />
+      <div class="plans_sub">
+        <div class="topp row items-center justify-between">
+          <div style="gap: 0.4rem" class="topp_left row items-center no-wrap">
+            <img src="/images/freeplan.svg" alt="" />
+            <span>Plans & Subscriptions</span>
+          </div>
+
+          <div class="arrow">
+            <img src="/images/down.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="grid_">
+          <div class="grid__wrap">
+            <div class="grid_item grid_left">
+              <div class="grid_div">
+                <img src="/images/rockets.svg" alt="" />
+
+                <div class="main_textSet">Leegolu Regular</div>
+
+                <div class="para">
+                  Get to interact with thousands of people trading on the
+                  Leegolu market place.
+                </div>
+
+                <div class="active">
+                  <div class="icon">
+                    <img src="/images/lighting.svg" alt="" /> Active
+                  </div>
+                </div>
+                <div class="check">
+                  <q-checkbox v-model="val" />
+                </div>
+              </div>
+            </div>
+            <div class="grid_item grid_right">
+              <div class="grid_div2">
+                <img src="/images/shop.svg" alt="" />
+
+                <div class="main_textSet">Leegolu Business</div>
+
+                <div class="para">
+                  Leegolu Business provides you with the right tools to scale
+                  your business & make more sales online.
+                </div>
+
+                <div class="active">
+                  <q-btn>Upgrade from ₦1,000</q-btn>
+                </div>
+
+                <div class="check">
+                  <q-checkbox v-model="val2" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="plans_sub">
+        <div class="topp row items-center justify-between">
+          <div style="gap: 0.4rem" class="topp_left row items-center no-wrap">
+            <img src="/images/userr.svg" alt="" />
+            <span>Account Settings</span>
+          </div>
+
+          <div class="arrow">
+            <img src="/images/down.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="grid_">
+          <div class="grid__wrap">
+            <div class="grid_item grid_left">
+              <div class="grid_div">
+                <img src="/images/rockets.svg" alt="" />
+
+                <div class="main_textSet">Leegolu Regular</div>
+
+                <div class="para">
+                  Get to interact with thousands of people trading on the
+                  Leegolu market place.
+                </div>
+
+                <div class="active">
+                  <div class="icon">
+                    <img src="/images/lighting.svg" alt="" /> Active
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="grid_item grid_right">
+              <div class="grid_div2">
+                <img src="/images/shop.svg" alt="" />
+
+                <div class="main_textSet">Leegolu Business</div>
+
+                <div class="para">
+                  Leegolu Business provides you with the right tools to scale
+                  your business & make more sales online.
+                </div>
+
+                <div class="active">
+                  <q-btn>Upgrade from ₦1,000</q-btn>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <q-dialog v-model="dialogAvatar" persistent>
+      <q-card class="card avatar">
+        <div class="dialog_content">
+          <p class="advert text-center">Add Avatar</p>
+          <div class="dialog_top">
+            <div class="previewMain">
+              <div class="form">
+                <q-file
+                  type="file"
+                  v-model="avatar.avatar"
+                  accept=".jpg,.png,.svg,.jpeg"
+                  name="avatar"
+                  @update:model-value="setAvatar"
+                  class="previewinput"
+                  id="my-file"
+                />
+
+                <div class="previewDiv">
+                  <template v-if="previewAvatar">
+                    <img :src="previewAvatar" class="previewimg" />
+                    <img src="/images/upload.png" class="click" alt="" />
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="boost">
+            <q-btn :loading="loadingAvatar" @click="addAvatar"
+              >Add Avatar</q-btn
+            >
+          </div>
+
+          <q-btn @click="dialogAvatar = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
           </q-btn>
         </div>
-        <div class="">
-          <div class="set_name">Chris Aregbesola</div>
-
-          <div class="joined">Joined 12 June, 2023</div>
-        </div>
-      </div>
-
-      <div class="right_settings">
-        <q-btn> Manage Profile </q-btn>
-      </div>
-    </div>
-    <hr />
-    <div class="plans_sub">
-      <div class="topp row items-center justify-between">
-        <div style="gap: 0.4rem" class="topp_left row items-center no-wrap">
-          <img src="/images/freeplan.svg" alt="" />
-          <span>Plans & Subscriptions</span>
-        </div>
-
-        <div class="arrow">
-          <img src="/images/down.svg" alt="" />
-        </div>
-      </div>
-
-      <div class="grid_">
-        <div class="grid__wrap">
-          <div class="grid_item grid_left">
-            <div class="grid_div">
-              <img src="/images/rockets.svg" alt="" />
-
-              <div class="main_textSet">Leegolu Regular</div>
-
-              <div class="para">
-                Get to interact with thousands of people trading on the Leegolu
-                market place.
-              </div>
-
-              <div class="active">
-                <div class="icon">
-                  <img src="/images/lighting.svg" alt="" /> Active
-                </div>
-              </div>
-              <div class="check">
-                <q-checkbox v-model="val" />
-              </div>
-            </div>
-          </div>
-          <div class="grid_item grid_right">
-            <div class="grid_div2">
-              <img src="/images/shop.svg" alt="" />
-
-              <div class="main_textSet">Leegolu Business</div>
-
-              <div class="para">
-                Leegolu Business provides you with the right tools to scale your
-                business & make more sales online.
-              </div>
-
-              <div class="active">
-                <q-btn>Upgrade from ₦1,000</q-btn>
-              </div>
-
-              <div class="check">
-                <q-checkbox v-model="val2" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <hr />
-    <div class="plans_sub">
-      <div class="topp row items-center justify-between">
-        <div style="gap: 0.4rem" class="topp_left row items-center no-wrap">
-          <img src="/images/userr.svg" alt="" />
-          <span>Account Settings</span>
-        </div>
-
-        <div class="arrow">
-          <img src="/images/down.svg" alt="" />
-        </div>
-      </div>
-
-      <div class="grid_">
-        <div class="grid__wrap">
-          <div class="grid_item grid_left">
-            <div class="grid_div">
-              <img src="/images/rockets.svg" alt="" />
-
-              <div class="main_textSet">Leegolu Regular</div>
-
-              <div class="para">
-                Get to interact with thousands of people trading on the Leegolu
-                market place.
-              </div>
-
-              <div class="active">
-                <div class="icon">
-                  <img src="/images/lighting.svg" alt="" /> Active
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="grid_item grid_right">
-            <div class="grid_div2">
-              <img src="/images/shop.svg" alt="" />
-
-              <div class="main_textSet">Leegolu Business</div>
-
-              <div class="para">
-                Leegolu Business provides you with the right tools to scale your
-                business & make more sales online.
-              </div>
-
-              <div class="active">
-                <q-btn>Upgrade from ₦1,000</q-btn>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <q-dialog v-model="dialogAvatar" persistent>
-    <q-card class="card avatar">
-      <div class="dialog_content">
-        <p class="advert text-center">Add Avatar</p>
-        <div class="dialog_top">
-          <div class="previewMain">
-            <div class="form">
-              <q-file
-                type="file"
-                v-model="avatar.avatar"
-                accept=".jpg,.png,.svg,.jpeg"
-                name="avatar"
-                @update:model-value="setAvatar"
-                class="previewinput"
-                id="my-file"
-              />
-
-              <div class="previewDiv">
-                <template v-if="previewAvatar">
-                  <img :src="previewAvatar" class="previewimg" />
-                  <img src="/images/upload.png" class="click" alt="" />
-                </template>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="boost">
-          <q-btn :loading="loadingAvatar" @click="addAvatar">Add Avatar</q-btn>
-        </div>
-
-        <q-btn @click="dialogAvatar = false" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </q-btn>
-      </div>
-    </q-card>
-  </q-dialog>
+      </q-card>
+    </q-dialog>
+  </q-layout>
 </template>
 
 <script>
@@ -244,6 +248,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  max-width: 70%;
+  margin: 0 auto;
+}
 .settings_top {
   background: #ffffff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
@@ -271,7 +279,7 @@ export default {
 }
 hr {
   background: rgba(176, 176, 176, 0.5);
-  height: 1px;
+  // height: 1px;
   margin-top: 2rem;
 }
 .settings_top .img_side .q-btn {

@@ -1,28 +1,30 @@
 <template>
-  <div class="hold">
-    <div class="wrapp">
-      <img src="/images/emailimg.png" alt="" />
+  <q-layout class="page_">
+    <div class="hold">
+      <div class="wrapp">
+        <img src="/images/emailimg.png" alt="" />
 
-      <div class="q-mt-md mailtext">Check Mail</div>
+        <div class="q-mt-md mailtext">Check Mail</div>
 
-      <div class="maildesc q-mt-sm">
-        Please check the email address associated <br />
-        with your Leegolu account for further instructions <br />
-        on how to reset your password.
-      </div>
-      <q-btn
-        :to="{ name: 'reset.template' }"
-        type="button"
-        color="secondary"
-        class="btn q-ma-sm"
-        >View mail template</q-btn
-      >
+        <div class="maildesc q-mt-sm">
+          Please check the email address associated <br />
+          with your Leegolu account for further instructions <br />
+          on how to reset your password.
+        </div>
+        <q-btn
+          :to="{ name: 'reset.template' }"
+          type="button"
+          color="secondary"
+          class="btn q-ma-sm"
+          >View mail template</q-btn
+        >
 
-      <div class="q-mt-xl no_email">
-        Didn’t receive an email? <q-btn flat> Resend Email </q-btn>
+        <div class="q-mt-xl no_email">
+          Didn’t receive an email? <q-btn flat> Resend Email </q-btn>
+        </div>
       </div>
     </div>
-  </div>
+  </q-layout>
 </template>
 
 <script>

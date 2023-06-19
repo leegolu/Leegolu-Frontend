@@ -29,6 +29,7 @@
         row-key="id"
         :grid="mode == 'grid'"
         :filter="filter"
+        class="my_table"
         :loading="loading"
         @request="onRequest"
       >
@@ -259,7 +260,7 @@
                       <div class="price">₦{{ listing.price }}</div>
                     </div>
                   </div>
-                  <div class="q-pa-md">
+                  <div class="">
                     <q-checkbox
                       @click="addListing(listing)"
                       keep-color
@@ -1113,6 +1114,7 @@ p.count {
   font-weight: 600;
   font-size: 8px;
   line-height: 11px;
+  padding: 5px;
   color: #ee4e36;
 }
 .leads .remove i {

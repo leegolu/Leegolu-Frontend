@@ -85,6 +85,9 @@ th.text-center {
   text-align: center;
   color: #9a9a9a;
 }
+.sub_table th.text-right:last-of-type {
+  color: rgba(31, 123, 181, 0.4);
+}
 th.text-right {
   font-family: "Open Sans";
   font-style: normal;
@@ -94,10 +97,15 @@ th.text-right {
   text-align: right;
   color: #9a9a9a;
 }
+.page_ {
+  background: #c2e6e9;
+  padding: 2rem 0;
+}
 @media (min-width: 600px) {
   .create_ad {
     max-width: 882px !important;
     width: 882px !important;
+    margin: 0rem auto 2rem;
     // height: 1022px;
   }
   .finshAd {
@@ -105,6 +113,8 @@ th.text-right {
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
     border-radius: 14px;
     width: 882px !important;
+    margin: 0rem auto 2rem;
+
     max-width: 882px !important;
   }
 }
@@ -128,8 +138,8 @@ th.text-right {
 }
 
 .popular .splide__slide {
-  width: 162.62px !important;
-  height: 184px !important;
+  width: 132.62px !important;
+  height: 124px !important;
 }
 
 .splide__arrow {
@@ -142,6 +152,17 @@ th.text-right {
   display: block;
   color: white;
   fill: #fff;
+}
+
+.sub_table {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 14px;
+}
+
+.my_table {
+  background: #ffffff;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
 }
 .q-item.q-router-link--active svg path {
   fill: #fff;
@@ -307,6 +328,29 @@ th.text-right {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.q-card.q-dialog-plugin .q-btn {
+  text-transform: capitalize;
+  box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+}
+.q-card.q-dialog-plugin .q-btn:first-of-type {
+  background: #cccccc !important;
+  border-radius: 4px !important;
+}
+.q-card.q-dialog-plugin .q-btn:last-of-type {
+  background: #ee4e36 !important;
+  border-radius: 4px !important;
+}
+.q-card.q-dialog-plugin .q-btn::before {
+  border-bottom: 0;
+}
+
+.avaicons .ava {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
 }
 
 @media (max-width: 500px) {

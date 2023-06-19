@@ -161,7 +161,7 @@ export default {
 // }
 
 .listing_s_hold {
-  margin: 2rem 0;
+  // margin: 2rem 0;
 }
 .listing_ {
   background: #ffffff;
@@ -215,8 +215,12 @@ export default {
 }
 .responsive_autofit_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  // grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  // gap: 1rem;
+  // padding-bottom: 3rem;
+
   gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .listing_ .left {
@@ -643,6 +647,7 @@ p.advert {
   }
   .listing_s_hold {
     max-width: 100%;
+    margin: 1rem 0;
   }
 
   .listing_ {

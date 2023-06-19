@@ -1,38 +1,40 @@
 <template>
-  <div class="login q-pt-xl">
-    <div class="login_wrapper">
-      <div class="right">
-        <div class="sign">
-          <div class="head q-mb-sm">Change Password</div>
+  <q-layout class="page_">
+    <div class="login q-pt-xl">
+      <div class="login_wrapper">
+        <div class="right">
+          <div class="sign">
+            <div class="head q-mb-sm">Change Password</div>
 
-          <div class="sub">Supply a new password for your account</div>
-        </div>
-
-        <form id="form">
-          <div class="input-box active-grey">
-            <label class="input-label">Password</label>
-            <input type="text" class="input-1" placeholder="*******" />
+            <div class="sub">Supply a new password for your account</div>
           </div>
 
-          <div class="password">
+          <form id="form">
             <div class="input-box active-grey">
-              <label class="input-label">Confirm Password</label>
+              <label class="input-label">Password</label>
               <input type="text" class="input-1" placeholder="*******" />
             </div>
-          </div>
 
-          <q-btn
-            :to="{ name: 'success' }"
-            type="button"
-            color="secondary"
-            class="btn"
-            >Save</q-btn
-          >
-          <div class="clear"></div>
-        </form>
+            <div class="password">
+              <div class="input-box active-grey">
+                <label class="input-label">Confirm Password</label>
+                <input type="text" class="input-1" placeholder="*******" />
+              </div>
+            </div>
+
+            <q-btn
+              :to="{ name: 'success' }"
+              type="button"
+              color="secondary"
+              class="btn"
+              >Save</q-btn
+            >
+            <div class="clear"></div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
+  </q-layout>
 </template>
 
 <script>

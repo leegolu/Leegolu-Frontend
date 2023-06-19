@@ -375,8 +375,10 @@ export default {
 
     viewPhone() {
       this.loadingBtn = true;
+      let product = this.$router.currentRoute.value.params.slug;
+
       this.$api
-        .get(`${this.product.vendor.slug}/view-phone`)
+        .get(`${this.product.vendor.slug}/${product}/view-phone`)
         .then((response) => {
           this.loadingBtn = false;
           this.phoneDialog = true;

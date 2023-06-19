@@ -53,7 +53,7 @@
               color="primary"
             >
               <img src="/images/headernotif.svg" alt="" />
-              <q-badge floating color="red" rounded>0</q-badge>
+              <!-- <q-badge floating color="red" rounded>0</q-badge> -->
             </q-btn>
             <q-btn
               :to="{ name: 'notifications' }"
@@ -63,14 +63,22 @@
               flat
             >
               <img src="/images/headericon.svg" alt="" />
-              <q-badge floating color="red" rounded>{{
-                notifications.length
-              }}</q-badge>
+              <q-badge
+                v-if="notifications.length"
+                floating
+                color="red"
+                rounded
+                >{{ notifications.length }}</q-badge
+              >
             </q-btn>
           </div>
 
           <div style="gap: 0.7rem" class="le flex no-wrap items-center">
-            <q-btn @click="modal1 = true" text-color="primary" class="mybtn">
+            <q-btn
+              :to="{ name: 'createListing' }"
+              text-color="primary"
+              class="mybtn"
+            >
               Create Listing <i class="fa-solid q-ml-md fa-plus"></i
             ></q-btn>
             <q-btn class="" style="min-height: auto; padding: 3px" no-caps flat>
@@ -88,7 +96,7 @@
                       style="white-space: nowrap"
                       no-caps
                       :to="{
-                        name: `settingf`,
+                        name: `settings`,
                       }"
                       color="secondary"
                       class="q-px-md"
@@ -649,36 +657,32 @@
       </q-card>
     </q-dialog>
 
-    <q-footer class="layout_footer" elevated>
+    <q-footer class="layout_footer">
       <div class="footer_holder">
-        <q-btn :to="{ name: 'business.dashboard' }" flat>
+        <q-item :to="{ name: 'business.dashboard' }" flat>
           <div style="gap: 0.2rem" class="column justify-center items-center">
-            <img src="/images/over.svg" alt="" />
-
+            <OverviewVue />
             <div class="footer_tag">Overview</div>
           </div>
-        </q-btn>
-        <q-btn :to="{ name: 'listings' }" flat>
+        </q-item>
+        <q-item :to="{ name: 'listings' }" flat>
           <div style="gap: 0.2rem" class="column justify-center items-center">
-            <img src="/images/icon3.svg" alt="" />
-
+            <ListingsIcon />
             <div class="footer_tag">Listings</div>
           </div>
-        </q-btn>
-        <q-btn flat @click="modal1 = true">
+        </q-item>
+        <q-item flat :to="{ name: 'createListing' }">
           <div style="gap: 0.2rem" class="column justify-center items-center">
-            <img src="/images/add.svg" alt="" />
-
+            <PlusIcon />
             <div class="footer_tag">New Listing</div>
           </div>
-        </q-btn>
-        <q-btn :to="{ name: 'messages' }" flat>
+        </q-item>
+        <q-item :to="{ name: 'messages' }" flat>
           <div style="gap: 0.2rem" class="column justify-center items-center">
-            <img src="/images/messages.svg" alt="" />
-
+            <MessIcons />
             <div class="footer_tag">Messages</div>
           </div>
-        </q-btn>
+        </q-item>
         <q-btn flat>
           <div style="gap: 0.2rem" class="column justify-center items-center">
             <div class="more">
@@ -696,11 +700,7 @@
                 clickable
                 v-close-popup
               >
-                <img
-                  style="width: 25px; height: 25px"
-                  src="/images/collections.svg"
-                  alt=""
-                />
+                <Collicons style="width: 20px; height: 20px" />
                 <q-item-section>Collections</q-item-section>
               </q-item>
               <q-separator />
@@ -711,11 +711,7 @@
                 clickable
                 v-close-popup
               >
-                <img
-                  style="width: 25px; height: 25px"
-                  src="/images/fav.svg"
-                  alt=""
-                />
+                <FavouriteIcon style="width: 20px; height: 20px" />
                 <q-item-section>Favorites</q-item-section>
               </q-item>
               <q-separator />
@@ -727,11 +723,7 @@
                 clickable
                 v-close-popup
               >
-                <img
-                  style="width: 25px; height: 25px"
-                  src="/images/shopicon.svg"
-                  alt=""
-                />
+                <ManageIcon style="width: 20px; height: 20px" />
                 <q-item-section>Manage Shop</q-item-section>
               </q-item>
               <q-separator />
@@ -743,11 +735,7 @@
                 clickable
                 v-close-popup
               >
-                <img
-                  style="width: 25px; height: 25px"
-                  src="/images/notif.svg"
-                  alt=""
-                />
+                <BellIcons style="width: 20px; height: 20px" />
                 <q-item-section>Notifications</q-item-section>
               </q-item>
               <q-separator />
@@ -759,11 +747,7 @@
                 clickable
                 v-close-popup
               >
-                <img
-                  style="width: 25px; height: 25px"
-                  src="/images/customers.svg"
-                  alt=""
-                />
+                <CusIcons style="width: 20px; height: 20px" />
                 <q-item-section>Customers</q-item-section>
               </q-item>
             </q-list>
@@ -790,6 +774,7 @@ import ListingsIcon from "src/components/icons/MylistingsIcon.vue";
 import MessIcons from "src/components/icons/MessIcons.vue";
 import ManageIcon from "src/components/icons/ManageIcon.vue";
 import FavouriteIcon from "src/components/icons/FavIcons.vue";
+import PlusIcon from "src/components/icons/PlusIcon.vue";
 export default {
   name: "MyLayout",
   data() {
@@ -929,6 +914,7 @@ export default {
     FavouriteIcon,
     ManageIcon,
     BellIcons,
+    PlusIcon,
   },
   created() {
     this.getCategory();
@@ -1592,7 +1578,7 @@ p.more {
 .form img.previewimg {
   width: 158px;
   height: 158px;
-  border: 5px solid rgba(53, 113, 150, 0.26);
+  // border: 5px solid rgba(53, 113, 150, 0.26);
   border-radius: 21px;
 }
 .form img.click {
@@ -1885,7 +1871,7 @@ p.advert {
   .form img.previewimg {
     width: 128px;
     height: 138px;
-    border: 3px solid rgba(53, 113, 150, 0.26);
+    // border: 3px solid rgba(53, 113, 150, 0.26);
   }
   .form img.click {
     width: 50px;

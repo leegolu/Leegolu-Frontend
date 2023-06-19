@@ -331,6 +331,9 @@ export default {
           this.data.message = "";
           this.$emit("convo", this.conversationDetails);
           this.$emit("refresh-message", this.conversationDetails);
+          if (this.conversationMessages.length) {
+            this.scrollToBottom();
+          }
         })
         .catch(({ response }) => {
           console.log(response);

@@ -1,75 +1,81 @@
 <template>
-  <div class="login q-pt-xl">
-    <div class="login_wrapper">
-      <div class="right">
-        <div class="sign">
-          <div class="head q-mb-sm">Login</div>
+  <q-layout class="page_">
+    <div class="login q-pt-xl">
+      <div class="login_wrapper">
+        <div class="right">
+          <div class="sign">
+            <div class="head q-mb-sm">Login</div>
 
-          <div class="sub">
-            Don’t have an account?
-            <router-link
-              :to="{ name: 'register' }"
-              class="text-black text-weight-bold"
-              >Sign Up</router-link
-            >
-          </div>
-        </div>
-
-        <!-- {{ errors }} -->
-
-        <form @submit.prevent="login" id="form">
-          <div class="input-box active-grey">
-            <label class="input-label">Email Address</label>
-            <input
-              type="text"
-              class="input-1"
-              required
-              name="email"
-              v-model="data.email"
-              placeholder="johndoe@gmail.com"
-            />
-            <small v-if="errors.email" class="text-red text-weight-bold">
-              {{ errors.email[0] }}
-            </small>
+            <div class="sub">
+              Don’t have an account?
+              <router-link
+                :to="{ name: 'register' }"
+                class="text-black text-weight-bold"
+                >Sign Up</router-link
+              >
+            </div>
           </div>
 
-          <div class="password">
+          <!-- {{ errors }} -->
+
+          <form @submit.prevent="login" id="form">
             <div class="input-box active-grey">
-              <label class="input-label">Password</label>
+              <label class="input-label">Email Address</label>
               <input
-                v-model="data.password"
-                type="password"
-                name="password"
-                required
+                type="text"
                 class="input-1"
-                placeholder="*******"
+                required
+                name="email"
+                v-model="data.email"
+                placeholder="johndoe@gmail.com"
               />
-              <small v-if="errors.password" class="text-red text-weight-bold">
-                {{ errors.password[0] }}
+              <small v-if="errors.email" class="text-red text-weight-bold">
+                {{ errors.email[0] }}
               </small>
             </div>
+
+            <div class="password">
+              <div class="input-box active-grey">
+                <label class="input-label">Password</label>
+                <input
+                  v-model="data.password"
+                  type="password"
+                  name="password"
+                  required
+                  class="input-1"
+                  placeholder="*******"
+                />
+                <small v-if="errors.password" class="text-red text-weight-bold">
+                  {{ errors.password[0] }}
+                </small>
+              </div>
+              <q-btn
+                flat
+                :to="{ name: 'reset.password' }"
+                class="text-weight-bold"
+                >Forgot your password?</q-btn
+              >
+            </div>
+
             <q-btn
-              flat
-              :to="{ name: 'reset.password' }"
-              class="text-weight-bold"
-              >Forgot your password?</q-btn
+              :loading="loading"
+              type="submit"
+              color="secondary"
+              class="btn"
+              >Proceed</q-btn
             >
-          </div>
+            <div class="clear"></div>
 
-          <q-btn :loading="loading" type="submit" color="secondary" class="btn"
-            >Proceed</q-btn
-          >
-          <div class="clear"></div>
-
-          <div class="goggle_auth">
-            <q-btn>
-              <img src="/images/googleauth.png" alt="" />
-            </q-btn>
-          </div>
-        </form>
+            <div class="goggle_auth">
+              <q-btn>
+                <img src="/images/googleauth.png" alt="" />
+              </q-btn>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
+  </q-layout>
 </template>
 
 <script>

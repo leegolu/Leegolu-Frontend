@@ -152,12 +152,12 @@
                 <!-- {{ vendor.address }} -->
                 {{ vendor.area }}
               </div>
-              <!-- {{ data.abouttext }} -->
+              <!-- {{ data.description }} -->
               <div class="left_paragraph">
                 <span class="none_"
                   >{{
-                    data.abouttext !== ""
-                      ? data.abouttext
+                    data.description !== ""
+                      ? data.description
                       : "Add a brief summary of what your business does."
                   }}
                 </span>
@@ -239,8 +239,8 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            {{ data.abouttext !== "" ? data.abouttext : `It’s how we’ve always
-            described our bars. What’s inside. <br />
+            {{ data.description !== "" ? data.description : `It’s how we’ve
+            always described our bars. What’s inside. <br />
             What isn’t. We think it’s everything you need...` }}
 
             <!-- <q-btn
@@ -355,8 +355,8 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            {{ data.abouttext !== "" ? data.abouttext : `It’s how we’ve always
-            described our bars. What’s inside. <br />
+            {{ data.description !== "" ? data.description : `It’s how we’ve
+            always described our bars. What’s inside. <br />
             What isn’t. We think it’s everything you need...` }}
             <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
@@ -461,8 +461,8 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            {{ data.abouttext !== "" ? data.abouttext : `It’s how we’ve always
-            described our bars. What’s inside. <br />
+            {{ data.description !== "" ? data.description : `It’s how we’ve
+            always described our bars. What’s inside. <br />
             What isn’t. We think it’s everything you need...` }}
             <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
@@ -588,7 +588,7 @@
         <div class="q-mt-lg textarea">
           <label for="">About your business</label>
           <q-input
-            v-model="data.abouttext"
+            v-model="data.description"
             filled
             class="texta"
             style="color: black"
@@ -868,12 +868,12 @@ import DashboardHomeListingVue from "src/components/listings/DashboardHomeListin
 export default {
   data() {
     return {
-      abouttext: "",
+      description: "",
       data: {
         colorScheme: "default",
         pageLayout: "default",
         segments: "Segment B",
-        abouttext: "",
+        description: "",
       },
       value: false,
       drawer: false,
@@ -917,7 +917,6 @@ export default {
       colorSchemes: [
         {
           name: "default",
-          img: "",
           variables: {
             "--primary-color": "#000000",
             "--secondary-color": "#EE4E36",
@@ -957,14 +956,13 @@ export default {
             "--color-one": "#33CC99",
             "--color-two": "#93E6CA",
             "--color-three": "#CCCCCC",
-            "--color-four": "#334499",
+            "--color-four": "rgb(51, 204, 153,.2)",
             // Add more CSS variables for the color scheme
           },
           colors: ["#000", "#1C9E73", "#33CC99", "#93E6CA", "#CCCCCC"],
         },
         {
           name: "Purple",
-          img: "",
           variables: {
             "--primary-color": "#000",
             "--secondary-color": "#461FB5",
@@ -985,7 +983,6 @@ export default {
         },
         {
           name: "Yellow",
-          img: "",
           variables: {
             "--primary-color": "#000",
             "--secondary-color": "#CB9200",
@@ -1005,7 +1002,6 @@ export default {
         },
         {
           name: "Blue",
-          img: "",
           variables: {
             "--primary-color": "#000",
             "--secondary-color": "#002C83",
@@ -1025,7 +1021,6 @@ export default {
         },
         {
           name: "Red",
-          img: "",
           variables: {
             "--primary-color": "#000",
             "--secondary-color": "#920000",
@@ -1154,8 +1149,12 @@ export default {
       // Logic to extract initials from the person's name
       // Replace this with your own implementation
       const name = this.data.business_name;
+      // const nameParts = name.split(" ");
+      // let initials = "";
+
       const nameParts = name.split(" ");
-      let initials = "";
+      const initials = nameParts.map((part) => part.charAt(0)).join("");
+      return initials;
 
       // if (nameParts.length > 0) {
       //   initials += nameParts[0][0].toUpperCase();
@@ -1164,15 +1163,16 @@ export default {
       //     initials += nameParts[nameParts.length - 1][0].toUpperCase();
       //   }
       // }
-      if (nameParts.length > 0) {
-        initials += nameParts[0].substring(0, 3).toUpperCase();
 
-        if (nameParts.length > 1) {
-          initials += nameParts[nameParts.length - 1][0].toUpperCase();
-        }
-      }
+      // if (nameParts.length > 0) {
+      //   initials += nameParts[0].substring(0, 3).toUpperCase();
 
-      return initials;
+      //   if (nameParts.length > 1) {
+      //     initials += nameParts[nameParts.length - 1][0].toUpperCase();
+      //   }
+      // }
+
+      // return initials;
     },
     colorSchemeStyles() {
       const selectedScheme = this.colorSchemes.find(
@@ -1325,7 +1325,8 @@ export default {
       // console.log(datar);
       // const reader1 = new FileReader();
       // const reader2 = new FileReader();
-      if (this.data.uploads && this.data.coveruploads) {
+      // if (this.data.uploads && this.data.coveruploads) {
+      if (this.data.coveruploads) {
         // this.loading = true;
 
         // reader1.onload = () => {
@@ -1355,19 +1356,82 @@ export default {
         const formData = new FormData();
         formData.append("coverimg", this.data.coveruploads);
         formData.append("logo", this.data.uploads);
-        formData.append(
-          "selectedcoScheme",
-          JSON.stringify(this.data.selectedcoScheme)
-        );
-        formData.append("METHOD", "PUT");
+        // formData.append(
+        //   "selectedcoScheme",
+        //   JSON.stringify(this.data.selectedcoScheme)
+        // );
+        // formData.append("METHOD", "PUT");
         formData.append("business_name", this.data.business_name);
-        formData.append("abouttext", this.data.abouttext);
+        formData.append("description", this.data.description);
         formData.append("business_tagline", this.data.business_tagline);
         formData.append("colorScheme", this.data.colorScheme);
         formData.append("pageLayout", this.data.pageLayout);
         formData.append("segments", this.data.segments);
-        formData.append("colorScheme", this.data.colorScheme);
-
+        formData.append("initials", this.initials);
+        formData.append(
+          "selectedcoScheme[name]",
+          this.data.selectedcoScheme.name
+        );
+        // formData.append(
+        //   "selectedcoScheme[colors]",
+        //   this.data.selectedcoScheme.colors
+        // );
+        formData.append(
+          "selectedcoScheme[colors][]",
+          this.data.selectedcoScheme.colors[0]
+        );
+        formData.append(
+          "selectedcoScheme[colors][]",
+          this.data.selectedcoScheme.colors[1]
+        );
+        formData.append(
+          "selectedcoScheme[colors][]",
+          this.data.selectedcoScheme.colors[2]
+        );
+        formData.append(
+          "selectedcoScheme[colors][]",
+          this.data.selectedcoScheme.colors[3]
+        );
+        formData.append(
+          "selectedcoScheme[colors][]",
+          this.data.selectedcoScheme.colors[4]
+        );
+        formData.append(
+          "selectedcoScheme[variables][--primary-color]",
+          this.data.selectedcoScheme.variables["--primary-color"]
+        );
+        formData.append(
+          "selectedcoScheme[variables][--secondary-color]",
+          this.data.selectedcoScheme.variables["--secondary-color"]
+        );
+        formData.append(
+          "selectedcoScheme[variables][--color-one]",
+          this.data.selectedcoScheme.variables["--color-one"]
+        );
+        formData.append(
+          "selectedcoScheme[variables][--color-two]",
+          this.data.selectedcoScheme.variables["--color-two"]
+        );
+        formData.append(
+          "selectedcoScheme[variables][--color-three]",
+          this.data.selectedcoScheme.variables["--color-three"]
+        );
+        formData.append(
+          "selectedcoScheme[variables][--color-four]",
+          this.data.selectedcoScheme.variables["--color-four"]
+        );
+        // formData.append("name", this.data.selectedcoScheme.name);
+        // formData.append(
+        //   "--primary-color",
+        //   this.data.selectedcoScheme["--primary-color"]
+        // );
+        // formData.append(
+        //   "selectedcoScheme[variables]",
+        //   this.data.selectedcoScheme.variables
+        // );
+        // formData.append("colorScheme[name]", this.data.name)
+        // formData.append("colorScheme", this.data.colorScheme);
+        // console.log(this.data.selectedcoScheme);
         // for (var key in persistBuilder) {
         //   formData.append(key, persistBuilder[key]);
         // if (key === "selectedcoScheme") {
@@ -1378,7 +1442,7 @@ export default {
           message: "Your changes are taking effect",
         });
         this.$api
-          .put(
+          .post(
             `${this.$store.leegoluauth.vendorDetails.slug}/builder/update`,
             formData,
             {
@@ -1394,6 +1458,10 @@ export default {
               message: response.data.message,
               color: "green",
               position: "bottom",
+            });
+            this.$router.replace({
+              name: "vendor.page",
+              params: { slug: this.$store.leegoluauth.vendor.slug },
             });
           })
           .catch(({ response }) => {
@@ -1517,6 +1585,7 @@ export default {
   width: 95%;
   height: 59px;
   max-width: 100%;
+  // color: rgb(51, 204, 153,.2);
 }
 
 .logo {
@@ -1600,11 +1669,12 @@ export default {
   font-family: "PT Serif";
   font-style: normal;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 21px;
   display: flex;
   align-items: center;
   text-align: center;
+  text-transform: uppercase;
   color: #ffffff;
 }
 
@@ -1649,6 +1719,10 @@ export default {
   height: 39px;
   text-transform: capitalize;
   border-radius: 5px;
+}
+
+.preview {
+  background: #1f7bb5;
 }
 
 @media (min-width: 980px) {
@@ -1902,7 +1976,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0 0;
-  margin: 0.1rem 0 0;
+  margin: 0.1rem 0 1rem;
   flex-wrap: nowrap;
   padding-bottom: 0.6rem;
   // overflow-x: scroll;
@@ -1998,10 +2072,11 @@ export default {
 }
 
 .holder .responsive_autofit_grid {
-  width: 95%;
-  margin: 0 auto;
+  // width: 95%;
+  // margin: 0 auto;
   padding-bottom: 3rem;
-  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .input_search {
@@ -2041,6 +2116,7 @@ export default {
 .input_search i {
   padding: 1rem;
   font-size: 1rem;
+  color: var(--color-one);
 }
 .colorscheme .scheme {
   margin-bottom: 1rem;
@@ -2053,6 +2129,7 @@ export default {
   background: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
   border-radius: 9px;
+  position: relative;
   // height: 522px;
 }
 
@@ -2131,6 +2208,9 @@ export default {
 .close {
   font-size: 2rem;
   min-height: 0;
+  position: absolute;
+  top: 2%;
+  right: 3%;
 }
 .close i {
   color: var(--color-two);
@@ -2217,6 +2297,11 @@ export default {
   border-bottom: 1px solid #1f7bb5;
 }
 
+@media (max-width: 1200px) {
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 @media (max-width: 1050px) {
   .left_logo_area .outline.q-btn {
     left: -2%;

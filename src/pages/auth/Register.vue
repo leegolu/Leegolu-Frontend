@@ -1,78 +1,79 @@
 <template>
-  <div class="login q-pt-xl">
-    <div class="login_hold">
-      <div class="login_wrapper">
-        <div class="left side">
-          <div class="left_wrap">
-            <div class="img">
-              <img src="/images/leee.png" alt="" />
-            </div>
-            <div class="middle">
-              <div
-                v-if="data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'"
-                class="main"
-              >
-                Do more with <br />
-                <span> Leegolu Business</span>
+  <q-layout class="page_">
+    <div class="login q-pt-xl">
+      <div class="login_hold">
+        <div class="login_wrapper">
+          <div class="left side">
+            <div class="left_wrap">
+              <div class="img">
+                <img src="/images/leee.png" alt="" />
               </div>
-              <div v-else class="main">
-                Join the newest <br />
-                online market
-              </div>
+              <div class="middle">
+                <div
+                  v-if="data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'"
+                  class="main"
+                >
+                  Do more with <br />
+                  <span> Leegolu Business</span>
+                </div>
+                <div v-else class="main">
+                  Join the newest <br />
+                  online market
+                </div>
 
-              <div class="desc">
-                Thousands of users within Africa are <br />
-                experiencing the new to buy & <br />
-                sell online.
+                <div class="desc">
+                  Thousands of users within Africa are <br />
+                  experiencing the new to buy & <br />
+                  sell online.
+                </div>
+                <div class="side_img_wrap text-center">
+                  <img
+                    :src="
+                      data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'
+                        ? '/images/shop.svg'
+                        : '/images/rockets.svg'
+                    "
+                    class="side_img"
+                    alt=""
+                  />
+                </div>
               </div>
-              <div class="side_img_wrap text-center">
-                <img
-                  :src="
-                    data.role === 'c6f3cebc-2928-4d24-bdc9-41a383fee65c'
-                      ? '/images/shop.svg'
-                      : '/images/rockets.svg'
-                  "
-                  class="side_img"
-                  alt=""
-                />
-              </div>
-            </div>
-            <!-- <div class="foot">HTML 5 ANIMATION</div> -->
-            <div></div>
-          </div>
-        </div>
-
-        <div class="right">
-          <div class="sign">
-            <div class="head q-mb-sm">Sign up</div>
-
-            <div class="sub">
-              Have an account?
-              <router-link
-                :to="{ name: 'login' }"
-                class="text-black text-weight-bold"
-                >Login
-              </router-link>
+              <!-- <div class="foot">HTML 5 ANIMATION</div> -->
+              <div></div>
             </div>
           </div>
 
-          <form @submit.prevent="register">
-            <!-- {{ data.role }} -->
-            <div class="checks">
-              <div
-                v-for="role in roles"
-                :key="role.id"
-                :class="role.id === data.role ? 'check' : 'notactive'"
-              >
-                <q-radio
-                  v-model="data.role"
-                  :val="role.id"
-                  :label="`Leegolu ${role.name}`"
-                />
-              </div>
+          <div class="right">
+            <div class="sign">
+              <div class="head q-mb-sm">Sign up</div>
 
-              <!-- {{ roles }} -->
-              <!-- <div
+              <div class="sub">
+                Have an account?
+                <router-link
+                  :to="{ name: 'login' }"
+                  class="text-black text-weight-bold"
+                  >Login
+                </router-link>
+              </div>
+            </div>
+
+            <form @submit.prevent="register">
+              <!-- {{ data.role }} -->
+              <div class="checks">
+                <div
+                  v-for="role in roles"
+                  :key="role.id"
+                  :class="role.id === data.role ? 'check' : 'notactive'"
+                >
+                  <q-radio
+                    v-model="data.role"
+                    :val="role.id"
+                    :label="`Leegolu ${role.name}`"
+                  />
+                </div>
+
+                <!-- {{ roles }} -->
+                <!-- <div
               :class="data.bus === 'Leegolu Business' ? 'check' : 'notactive'"
             >
               <q-radio
@@ -81,427 +82,430 @@
                 label="Leegolu Business"
               />
             </div> -->
-            </div>
-            <div class="input-box active-grey">
-              <label class="input-label">Username</label>
-              <input
-                v-model="data.name"
-                type="text"
-                required
-                name="name"
-                class="input-1"
-                placeholder="John Doe"
-              />
-              <small v-if="errors.name" class="text-red text-weight-bold">
-                {{ errors.name[0] }}
-              </small>
-            </div>
-            <div class="input-box active-grey">
-              <label class="input-label">Email Address</label>
-              <input
-                type="email"
-                required
-                name="email"
-                v-model="data.email"
-                class="input-1"
-                placeholder="johndoe@gmail.com"
-              />
-              <small v-if="errors.email" class="text-red text-weight-bold">
-                {{ errors.email[0] }}
-              </small>
-            </div>
-            <div class="input-box active-grey">
-              <label class="input-label">Phone Number</label>
-
-              <div class="div">
-                <div class="row no-wrap phone items-center">
-                  <select required v-model="countrycode" name="" id="">
-                    <option value="+243">+243</option>
-                    <option value="+243">+243</option>
-                    <option value="+243">+243</option>
-                  </select>
-                  <input
-                    type="text"
-                    v-model="data.phone"
-                    class="input-1"
-                    name="phone"
-                    placeholder="07060870483"
-                  />
-                </div>
-                <small v-if="errors.phone" class="text-red text-weight-bold">
-                  {{ errors.phone[0] }}
+              </div>
+              <div class="input-box active-grey">
+                <label class="input-label">Username</label>
+                <input
+                  v-model="data.name"
+                  type="text"
+                  required
+                  name="name"
+                  class="input-1"
+                  placeholder="John Doe"
+                />
+                <small v-if="errors.name" class="text-red text-weight-bold">
+                  {{ errors.name[0] }}
                 </small>
               </div>
-            </div>
+              <div class="input-box active-grey">
+                <label class="input-label">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  name="email"
+                  v-model="data.email"
+                  class="input-1"
+                  placeholder="johndoe@gmail.com"
+                />
+                <small v-if="errors.email" class="text-red text-weight-bold">
+                  {{ errors.email[0] }}
+                </small>
+              </div>
+              <div class="input-box active-grey">
+                <label class="input-label">Phone Number</label>
 
-            <div class="input-box active-grey">
-              <label class="input-label">Password</label>
-              <input
-                v-model="data.password"
-                type="password"
-                required
-                name="password"
-                class="input-1"
-                placeholder="*******"
-              />
-              <small v-if="errors.password" class="text-red text-weight-bold">
-                {{ errors.password[0] }}
-              </small>
-            </div>
+                <div class="div">
+                  <div class="row no-wrap phone items-center">
+                    <select required v-model="countrycode" name="" id="">
+                      <option value="+243">+243</option>
+                      <option value="+243">+243</option>
+                      <option value="+243">+243</option>
+                    </select>
+                    <input
+                      type="text"
+                      v-model="data.phone"
+                      class="input-1"
+                      name="phone"
+                      placeholder="07060870483"
+                    />
+                  </div>
+                  <small v-if="errors.phone" class="text-red text-weight-bold">
+                    {{ errors.phone[0] }}
+                  </small>
+                </div>
+              </div>
 
-            <!-- {{ errors }} -->
+              <div class="input-box active-grey">
+                <label class="input-label">Password</label>
+                <input
+                  v-model="data.password"
+                  type="password"
+                  required
+                  name="password"
+                  class="input-1"
+                  placeholder="*******"
+                />
+                <small v-if="errors.password" class="text-red text-weight-bold">
+                  {{ errors.password[0] }}
+                </small>
+              </div>
 
-            <q-btn
-              :loading="loading"
-              type="submit"
-              color="secondary"
-              class="btn"
-              >Proceed</q-btn
-            >
-            <div class="clear"></div>
+              <!-- {{ errors }} -->
 
-            <div class="goggle_auth">
-              <q-btn>
-                <img src="/images/googleauth.png" alt="" />
-              </q-btn>
-            </div>
-          </form>
+              <q-btn
+                :loading="loading"
+                type="submit"
+                color="secondary"
+                class="btn"
+                >Proceed</q-btn
+              >
+              <div class="clear"></div>
+
+              <div class="goggle_auth">
+                <q-btn>
+                  <img src="/images/googleauth.png" alt="" />
+                </q-btn>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <q-dialog v-model="welcometoleegoluregularmodal">
-    <q-card style="width: 100%; max-width: 800px">
-      <div class="modal">
-        <div class="modal_wrap">
-          <div class="left">
-            <div class="modal_main">Hello Chris,</div>
-            <div class="modal_main_text">Welcome to Leegolu.</div>
-            <div class="modal_sub_text">
-              Your account gives you full access to all basic features available
-              on the Leegolu marketplace for free.
-            </div>
-
-            <ul>
-              <li>
-                <i class="fa-solid fa-check"></i> Access to direct seller
-                contact
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i> Ability to sell as a private
-                seller
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i> Access to insights & analytics
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i> Access to Leegolu video ads
-              </li>
-            </ul>
-          </div>
-
-          <div class="right">
-            <img src="/images/rocket.png" alt="" />
-          </div>
-        </div>
-
-        <div class="row q-pb-lg items-center justify-between">
-          <q-btn
-            @click="addphotoforleegoluregularmodal = true"
-            color="primary"
-            class="q-px-xl proceed"
-          >
-            Proceed
-          </q-btn>
-          <q-btn class="q-px-sm skip"> Skip </q-btn>
-        </div>
-
-        <div @click="welcometoleegoluregularmodal = false" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </div>
-      </div>
-    </q-card>
-  </q-dialog>
-  <q-dialog v-model="welcometoleegolubusinessmodal">
-    <q-card style="width: 100%; max-width: 800px">
-      <div class="modal">
-        <div class="modal_wrap">
-          <div class="left">
-            <div class="modal_main">Hello Chris,</div>
-            <div class="modal_main_text">Welcome to Leegolu Business.</div>
-            <div class="modal_sub_text">
-              Your account gives you full access to all basic features available
-              on the Leegolu marketplace for free.
-            </div>
-
-            <ul>
-              <li>
-                <i class="fa-solid fa-check"></i> Access to direct seller
-                contact
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i> Ability to sell as a private
-                seller
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i> Access to insights & analytics
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i> Access to Leegolu video ads
-              </li>
-              <li><i class="fa-solid fa-check"></i> A branded shop</li>
-            </ul>
-          </div>
-
-          <div class="right">
-            <img src="/images/welcometobusiness.svg" alt="" />
-          </div>
-        </div>
-
-        <div class="row q-pb-lg items-center justify-between">
-          <q-btn
-            @click="addphotoforleegolubusinessmodal = true"
-            color="primary"
-            class="q-px-xl proceed"
-          >
-            Proceed
-          </q-btn>
-          <q-btn class="q-px-sm skip"> Skip </q-btn>
-        </div>
-
-        <div @click="welcometoleegolubusinessmodal = false" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </div>
-      </div>
-    </q-card>
-  </q-dialog>
-  <q-dialog v-model="addphotoforleegoluregularmodal">
-    <q-card style="width: 100%; max-width: 800px">
-      <div class="modal two">
-        <div class="modal_wrap">
-          <div class="left">
-            <div class="modal_main">Add your photo</div>
-            <div class="modal_sub_text">
-              Add a picture of yourself or select a
-              <span class="text-primary">preferred emoji</span>. Other users
-              will associate this with your account.
-            </div>
-
-            <div class="previewMain">
-              <form>
-                <div class="form">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    @change="previewImage"
-                    class="previewinput"
-                    id="my-file"
-                  />
-
-                  <div class="previewDiv">
-                    <template v-if="preview">
-                      <img :src="preview" class="previewimg" />
-                      <img src="/images/click.png" class="click" alt="" />
-                    </template>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div class="right">
-            <img src="/images/businessimg.svg" alt="" />
-          </div>
-        </div>
-
-        <div class="row q-pb-lg items-center justify-between">
-          <q-btn
-            :to="{
-              name: `regular.dashboard`,
-            }"
-            color="primary"
-            class="q-px-xl proceed"
-          >
-            Proceed
-          </q-btn>
-          <q-btn
-            :to="{
-              name: `regular.dashboard`,
-            }"
-            class="q-px-sm skip"
-          >
-            Skip
-          </q-btn>
-        </div>
-
-        <div @click="addphotoforleegoluregularmodal = false" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </div>
-      </div>
-    </q-card>
-  </q-dialog>
-  <q-dialog v-model="addphotoforleegolubusinessmodal">
-    <q-card style="width: 100%; max-width: 800px">
-      <div class="modal two">
-        <div class="modal_wrap">
-          <div class="left">
-            <div class="modal_main">Add your photo</div>
-            <div class="modal_sub_text">
-              Add a picture of yourself or select a
-              <span class="text-primary">preferred emoji</span>. Other users
-              will associate this with your account.
-            </div>
-
-            <div class="previewMain">
-              <form>
-                <div class="form">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    @change="previewImage"
-                    class="previewinput"
-                    id="my-file"
-                  />
-
-                  <div class="previewDiv">
-                    <template v-if="preview">
-                      <img :src="preview" class="previewimg" />
-                      <img src="/images/click.png" class="click" alt="" />
-                    </template>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div class="right">
-            <img src="/images/businessimg.svg" alt="" />
-          </div>
-        </div>
-
-        <div class="row q-pb-lg items-center justify-between">
-          <q-btn
-            @click="businessreg = true"
-            color="primary"
-            class="q-px-xl proceed"
-          >
-            Proceed
-          </q-btn>
-          <q-btn
-            :to="{
-              name: `business.dashboard`,
-            }"
-            class="q-px-sm skip"
-          >
-            Skip
-          </q-btn>
-        </div>
-
-        <div @click="addphotoforleegolubusinessmodal = false" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </div>
-      </div>
-    </q-card>
-  </q-dialog>
-  <q-dialog v-model="businessreg">
-    <q-card style="width: 100%; max-width: 800px">
-      <div class="modal two">
-        <div class="modal_wrap">
-          <div class="left">
-            <div class="modal_main">Leegolu Business</div>
-            <div class="modal_sub_text">
-              Please supply your business details below.
-            </div>
-
-            <form id="form">
-              <div class="input-box active-grey">
-                <label class="input-label">Business Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  v-model="vendordetails.name"
-                  class="input-1"
-                  placeholder="Red Dress Co."
-                />
+    <q-dialog v-model="welcometoleegoluregularmodal">
+      <q-card style="width: 100%; max-width: 800px">
+        <div class="modal">
+          <div class="modal_wrap">
+            <div class="left">
+              <div class="modal_main">Hello Chris,</div>
+              <div class="modal_main_text">Welcome to Leegolu.</div>
+              <div class="modal_sub_text">
+                Your account gives you full access to all basic features
+                available on the Leegolu marketplace for free.
               </div>
-              <div class="input-box active-grey">
-                <label class="input-label">About Business</label>
-                <!-- <input
+
+              <ul>
+                <li>
+                  <i class="fa-solid fa-check"></i> Access to direct seller
+                  contact
+                </li>
+                <li>
+                  <i class="fa-solid fa-check"></i> Ability to sell as a private
+                  seller
+                </li>
+                <li>
+                  <i class="fa-solid fa-check"></i> Access to insights &
+                  analytics
+                </li>
+                <li>
+                  <i class="fa-solid fa-check"></i> Access to Leegolu video ads
+                </li>
+              </ul>
+            </div>
+
+            <div class="right">
+              <img src="/images/rocket.png" alt="" />
+            </div>
+          </div>
+
+          <div class="row q-pb-lg items-center justify-between">
+            <q-btn
+              @click="addphotoforleegoluregularmodal = true"
+              color="primary"
+              class="q-px-xl proceed"
+            >
+              Proceed
+            </q-btn>
+            <q-btn class="q-px-sm skip"> Skip </q-btn>
+          </div>
+
+          <div @click="welcometoleegoluregularmodal = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+        </div>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="welcometoleegolubusinessmodal">
+      <q-card style="width: 100%; max-width: 800px">
+        <div class="modal">
+          <div class="modal_wrap">
+            <div class="left">
+              <div class="modal_main">Hello Chris,</div>
+              <div class="modal_main_text">Welcome to Leegolu Business.</div>
+              <div class="modal_sub_text">
+                Your account gives you full access to all basic features
+                available on the Leegolu marketplace for free.
+              </div>
+
+              <ul>
+                <li>
+                  <i class="fa-solid fa-check"></i> Access to direct seller
+                  contact
+                </li>
+                <li>
+                  <i class="fa-solid fa-check"></i> Ability to sell as a private
+                  seller
+                </li>
+                <li>
+                  <i class="fa-solid fa-check"></i> Access to insights &
+                  analytics
+                </li>
+                <li>
+                  <i class="fa-solid fa-check"></i> Access to Leegolu video ads
+                </li>
+                <li><i class="fa-solid fa-check"></i> A branded shop</li>
+              </ul>
+            </div>
+
+            <div class="right">
+              <img src="/images/welcometobusiness.svg" alt="" />
+            </div>
+          </div>
+
+          <div class="row q-pb-lg items-center justify-between">
+            <q-btn
+              @click="addphotoforleegolubusinessmodal = true"
+              color="primary"
+              class="q-px-xl proceed"
+            >
+              Proceed
+            </q-btn>
+            <q-btn class="q-px-sm skip"> Skip </q-btn>
+          </div>
+
+          <div @click="welcometoleegolubusinessmodal = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+        </div>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="addphotoforleegoluregularmodal">
+      <q-card style="width: 100%; max-width: 800px">
+        <div class="modal two">
+          <div class="modal_wrap">
+            <div class="left">
+              <div class="modal_main">Add your photo</div>
+              <div class="modal_sub_text">
+                Add a picture of yourself or select a
+                <span class="text-primary">preferred emoji</span>. Other users
+                will associate this with your account.
+              </div>
+
+              <div class="previewMain">
+                <form>
+                  <div class="form">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      @change="previewImage"
+                      class="previewinput"
+                      id="my-file"
+                    />
+
+                    <div class="previewDiv">
+                      <template v-if="preview">
+                        <img :src="preview" class="previewimg" />
+                        <img src="/images/click.png" class="click" alt="" />
+                      </template>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="right">
+              <img src="/images/businessimg.svg" alt="" />
+            </div>
+          </div>
+
+          <div class="row q-pb-lg items-center justify-between">
+            <q-btn
+              :to="{
+                name: `regular.dashboard`,
+              }"
+              color="primary"
+              class="q-px-xl proceed"
+            >
+              Proceed
+            </q-btn>
+            <q-btn
+              :to="{
+                name: `regular.dashboard`,
+              }"
+              class="q-px-sm skip"
+            >
+              Skip
+            </q-btn>
+          </div>
+
+          <div @click="addphotoforleegoluregularmodal = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+        </div>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="addphotoforleegolubusinessmodal">
+      <q-card style="width: 100%; max-width: 800px">
+        <div class="modal two">
+          <div class="modal_wrap">
+            <div class="left">
+              <div class="modal_main">Add your photo</div>
+              <div class="modal_sub_text">
+                Add a picture of yourself or select a
+                <span class="text-primary">preferred emoji</span>. Other users
+                will associate this with your account.
+              </div>
+
+              <div class="previewMain">
+                <form>
+                  <div class="form">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      @change="previewImage"
+                      class="previewinput"
+                      id="my-file"
+                    />
+
+                    <div class="previewDiv">
+                      <template v-if="preview">
+                        <img :src="preview" class="previewimg" />
+                        <img src="/images/click.png" class="click" alt="" />
+                      </template>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="right">
+              <img src="/images/businessimg.svg" alt="" />
+            </div>
+          </div>
+
+          <div class="row q-pb-lg items-center justify-between">
+            <q-btn
+              @click="businessreg = true"
+              color="primary"
+              class="q-px-xl proceed"
+            >
+              Proceed
+            </q-btn>
+            <q-btn
+              :to="{
+                name: `business.dashboard`,
+              }"
+              class="q-px-sm skip"
+            >
+              Skip
+            </q-btn>
+          </div>
+
+          <div @click="addphotoforleegolubusinessmodal = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+        </div>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="businessreg">
+      <q-card style="width: 100%; max-width: 800px">
+        <div class="modal two">
+          <div class="modal_wrap">
+            <div class="left">
+              <div class="modal_main">Leegolu Business</div>
+              <div class="modal_sub_text">
+                Please supply your business details below.
+              </div>
+
+              <form id="form">
+                <div class="input-box active-grey">
+                  <label class="input-label">Business Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    v-model="vendordetails.name"
+                    class="input-1"
+                    placeholder="Red Dress Co."
+                  />
+                </div>
+                <div class="input-box active-grey">
+                  <label class="input-label">About Business</label>
+                  <!-- <input
                   type="text"
                   class="input-1"
                   v-model="vendordetails.business_type"
                   placeholder="Fashion Apparel"
                 /> -->
-                <select v-model="vendordetails.business_type" class="reg">
-                  <option
-                    v-for="businessType in businessTypes"
-                    :key="businessType.id"
-                    :value="businessType.id"
-                  >
-                    {{ businessType.name }}
-                  </option>
-                </select>
-              </div>
-              <div class="wraps">
-                <div class="input-box active-grey">
-                  <label class="input-label">State</label>
-                  <select
-                    v-model="vendordetails.state"
-                    class="reg"
-                    @change="getAreas(vendordetails.state)"
-                  >
+                  <select v-model="vendordetails.business_type" class="reg">
                     <option
-                      v-for="state in states"
-                      :key="state.id"
-                      :value="state.id"
+                      v-for="businessType in businessTypes"
+                      :key="businessType.id"
+                      :value="businessType.id"
                     >
-                      {{ state.name }}
+                      {{ businessType.name }}
                     </option>
                   </select>
                 </div>
-                <div class="input-box active-grey">
-                  <label class="input-label">Area</label>
-                  <select v-model="vendordetails.area" class="reg" name="">
-                    <option
-                      v-for="area in areas"
-                      :key="area.id"
-                      :value="area.id"
+                <div class="wraps">
+                  <div class="input-box active-grey">
+                    <label class="input-label">State</label>
+                    <select
+                      v-model="vendordetails.state"
+                      class="reg"
+                      @change="getAreas(vendordetails.state)"
                     >
-                      {{ area.name }}
-                    </option>
-                  </select>
+                      <option
+                        v-for="state in states"
+                        :key="state.id"
+                        :value="state.id"
+                      >
+                        {{ state.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="input-box active-grey">
+                    <label class="input-label">Area</label>
+                    <select v-model="vendordetails.area" class="reg" name="">
+                      <option
+                        v-for="area in areas"
+                        :key="area.id"
+                        :value="area.id"
+                      >
+                        {{ area.name }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <!-- {{ vendordetails }} -->
-              <div class="input-box active-grey">
-                <label class="input-label">Full Address</label>
-                <input
-                  v-model="vendordetails.address"
-                  type="text"
-                  class="input-1"
-                  placeholder="13 Pious Adolf Crescent, Trans-Elemo, Laffia"
-                />
-              </div>
+                <!-- {{ vendordetails }} -->
+                <div class="input-box active-grey">
+                  <label class="input-label">Full Address</label>
+                  <input
+                    v-model="vendordetails.address"
+                    type="text"
+                    class="input-1"
+                    placeholder="13 Pious Adolf Crescent, Trans-Elemo, Laffia"
+                  />
+                </div>
 
-              <q-btn @click="finish" type="button" color="primary" class="btn"
-                >Finish</q-btn
-              >
-              <div class="clear"></div>
-            </form>
+                <q-btn @click="finish" type="button" color="primary" class="btn"
+                  >Finish</q-btn
+                >
+                <div class="clear"></div>
+              </form>
+            </div>
+
+            <div class="right">
+              <img src="/images/businessreg.svg" alt="" />
+            </div>
           </div>
 
-          <div class="right">
-            <img src="/images/businessreg.svg" alt="" />
+          <div @click="businessreg = false" class="close">
+            <i class="fa-solid fa-xmark"></i>
           </div>
         </div>
-
-        <div @click="businessreg = false" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </div>
-      </div>
-    </q-card>
-  </q-dialog>
+      </q-card>
+    </q-dialog>
+  </q-layout>
 </template>
 
 <script>
@@ -714,7 +718,7 @@ $btn-primary-boxshadow-color: 0 1px 1px 0 rgba(66, 133, 244, 0.45),
   0 1px 3px 1px rgba(66, 133, 244, 0.3);
 $btn-primary-text-color: #fff;
 .login {
-  background: aliceblue;
+  // background: aliceblue;
   padding: 2rem 2rem 3rem;
   display: flex;
   justify-content: center;
@@ -844,7 +848,7 @@ select:focus {
   // flex-direction: column;
   // justify-content: space-between;
   width: 376px;
-  height: 100%;
+  height: 96%;
   padding: 1rem 1.5rem;
 }
 

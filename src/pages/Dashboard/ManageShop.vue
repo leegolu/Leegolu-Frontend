@@ -155,7 +155,10 @@
         </div>
         <div class="stat">
           <div class="row items-center">
-            <div class="main">{{ vendor.products.length }}</div>
+            <div v-if="vendor.products.length" class="main">
+              {{ vendor.products.length }}
+            </div>
+            <div v-else class="main">0</div>
             <div class="sub">
               LISTINGS <br />
               CREATED
@@ -191,6 +194,7 @@
         :columns="columns"
         row-key="id"
         :grid="mode == 'grid'"
+        class="sub_table"
         :filter="filter"
         :loading="loading"
         @request="onRequest"
@@ -200,24 +204,28 @@
             <!-- {{ props.row }} -->
             <div class="name_row">
               <div class="name">
-                <div class="name_top">
-                  {{ props.row.userName }}
-                </div>
+                <div class="name_top">Leegolu {{ props.row.plan }}</div>
               </div>
             </div>
           </q-td>
         </template>
-        <template v-slot:body-cell-addedOn="props">
+        <template v-slot:body-cell-Date="props">
           <q-td :props="props">
             <div class="added">
-              {{ props.row.addedOn }}
+              {{
+                new Date(props.row.start_date).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              }}
             </div>
           </q-td>
         </template>
         <template v-slot:body-cell-value="props">
-          <q-td :props="props">
+          <q-td class="value" :props="props">
             <div class="added">
-              {{ props.row.addedOn }}
+              {{ props.row.price }}
             </div>
           </q-td>
         </template>
@@ -345,7 +353,8 @@ export default {
         .then((response) => {
           this.loading = false;
           this.vendor = response.data.vendor;
-          // console.log(response);
+          console.log(response);
+          this.rows = response.data.vendor.subscriptions;
         })
         .catch(({ response }) => {
           this.loading = false;
@@ -408,7 +417,8 @@ export default {
 
 .btns {
   gap: 0.4rem;
-  justify-content: center;
+  margin-top: 0.3rem;
+  // justify-content: center;
 }
 
 .top img {
@@ -659,6 +669,9 @@ export default {
   color: #000000;
 }
 
+.stat .row {
+  gap: 0.4rem;
+}
 @media (max-width: 800px) {
   .main_area_top {
     flex-wrap: wrap;

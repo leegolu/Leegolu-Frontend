@@ -29,6 +29,7 @@
         :grid="mode == 'grid'"
         :filter="filter"
         :loading="loading"
+        class="my_table"
         @request="onRequest"
       >
         <template v-slot:body-cell-user="props">
