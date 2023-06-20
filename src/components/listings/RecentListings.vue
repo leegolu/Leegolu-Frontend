@@ -648,7 +648,12 @@ p.advert {
   }
   .listing_s_hold {
     max-width: 100%;
-    margin: 1rem 0;
+    // margin: 1rem 0;
+  }
+
+  .view {
+    margin-top: 1rem;
+    height: 45px;
   }
 
   .listing_ {

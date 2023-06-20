@@ -2519,10 +2519,13 @@ export default {
     height: 45px;
     font-size: 15px;
   }
-  .holder .responsive_autofit_grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
+  // .holder .responsive_autofit_grid {
+  //   grid-template-columns: repeat(1, 1fr);
+  // }
 
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
   .listing_s_hold {
     margin: 0.5rem 0;
   }
@@ -2737,6 +2740,10 @@ export default {
   }
   .right_nav .q-ml-xl {
     gap: 0rem !important;
+  }
+
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 
   .desc_text {

@@ -1001,7 +1001,7 @@ select:focus {
     max-width: 95vw !important;
   }
   .main_card .left {
-    max-width: 78% !important;
+    max-width: 38% !important;
   }
   .main_card .right img {
     width: 100% !important;
@@ -1021,12 +1021,21 @@ select:focus {
     font-size: 12px !important;
   }
 }
-@media (max-width: 450px) {
+@media (max-width: 500px) {
   .small_card .small_card_sub {
     font-size: 9px !important;
   }
   .small_card .small_card_main_text {
     font-size: 12px !important;
+  }
+
+  .main_card .right img {
+    right: -15% !important;
+    top: -12% !important;
+  }
+
+  .main_card .right img {
+    height: 130px !important;
   }
 
   .empty_text {
@@ -1050,13 +1059,21 @@ select:focus {
   //   max-width: 340px !important;
   // }
 }
+@media (max-width: 390px) {
+  .main_card .left {
+    max-width: 28% !important;
+  }
+  .main_card .right img {
+    right: -15% !important;
+  }
+}
 @media (max-width: 375px) {
   // .small_cards .small_card {
   //   width: 105px !important;
   // }
 
   .left_main {
-    width: 95vw;
+    width: 93vw;
     margin: 0 auto;
   }
 
@@ -1078,10 +1095,10 @@ select:focus {
   //   width: 90px !important;
   // }
 
-  .left_main {
-    width: 88vw;
-    margin: 0 auto;
-  }
+  // .left_main {
+  //   width: 88vw;
+  //   margin: 0 auto;
+  // }
   .small_card .small_card_sub {
     font-size: 7px !important;
   }

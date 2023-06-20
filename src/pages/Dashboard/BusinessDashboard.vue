@@ -87,7 +87,7 @@
         <q-btn flat style="padding: 0" :to="{ name: 'listings' }"
           >| View All</q-btn
         >
-        <div class="q-pt-md responsive_autofit_grid">
+        <div class="responsive_autofit_grid">
           <DashboardHomeListing
             v-for="(listing, index) in listings"
             :key="index"
@@ -796,9 +796,7 @@ hr {
   line-height: 22px;
   color: #000000;
 }
-.recent_listing_head {
-  margin: 0;
-}
+
 // .left_main {
 //   max-width: 70%;
 // }
@@ -810,6 +808,7 @@ hr {
   display: flex;
   justify-content: flex-end;
   height: 100%;
+  width: 100%;
   position: relative;
 }
 
@@ -835,7 +834,7 @@ hr {
   position: absolute;
   top: 0;
   bottom: 0;
-  right: -5%;
+  right: -20%;
 }
 
 .right_card_top,
@@ -898,7 +897,7 @@ hr {
   // grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   // gap: 1rem;
   // padding-bottom: 3rem;
-
+  margin-top: 1rem;
   gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -1276,6 +1275,11 @@ hr {
   .small_card_bus {
     width: 321px;
   }
+  .responsive_autofit_grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
 }
 @media (max-width: 1000px) {
   .main {
@@ -1310,6 +1314,22 @@ hr {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
+@media (max-width: 700px) {
+  .main_card .right img {
+    top: -7%;
+    right: -28%;
+  }
+}
+@media (max-width: 660px) {
+  .main_card .right img {
+    right: -25%;
+  }
+}
+@media (max-width: 620px) {
+  .main_card .right img {
+    right: -20%;
+  }
+}
 @media (max-width: 600px) {
   .main_card {
     max-width: 100%;
@@ -1325,14 +1345,23 @@ hr {
     padding: 1.5rem;
   }
 
+  .responsive_autofit_grid {
+    margin-top: 0.6rem;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  hr {
+    margin: 0.7rem 0;
+  }
+
   .main_card .right {
     width: 100%;
     position: relative;
   }
 
-  .main_card .right img {
-    padding-left: 2rem;
-  }
+  // .main_card .right img {
+  //   padding-left: 2rem;
+  // }
 
   .main {
     margin: 1.3rem 0rem 2rem;
@@ -1384,6 +1413,11 @@ hr {
 
   .small_card {
     height: 155px;
+  }
+}
+@media (max-width: 359px) {
+  .responsive_autofit_grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 }
 </style>

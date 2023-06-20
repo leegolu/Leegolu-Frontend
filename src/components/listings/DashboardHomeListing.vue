@@ -1,6 +1,6 @@
 <template>
   <!-- @click="gotoProduct" -->
-  <div class="listing_s_hold">
+  <div @click="gotoProduct" class="listing_s_hold">
     <div class="listing_">
       <div class="left">
         <div class="img">
@@ -146,10 +146,15 @@ export default {
       // console.log("clicked");
     },
     gotoProduct() {
-      this.$router.replace({
-        name: "product.detail",
-        params: { slug: this.listing.slug },
-      });
+      // console.log(this.$route.name);
+      if (this.$route.name === "vendor.page") {
+        this.$router.replace({
+          name: "product.detail",
+          params: { slug: this.listing.slug },
+        });
+      } else {
+        return;
+      }
     },
   },
 };
@@ -647,7 +652,7 @@ p.advert {
   }
   .listing_s_hold {
     max-width: 100%;
-    margin: 1rem 0;
+    // margin: 1rem 0;
   }
 
   .listing_ {

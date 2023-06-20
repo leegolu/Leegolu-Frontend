@@ -1037,6 +1037,7 @@ input:focus {
   width: 100px;
   height: 100px;
   border-radius: 5px;
+  object-fit: contain;
   border: 1px solid rgba(53, 113, 150, 0.26);
 }
 // modals

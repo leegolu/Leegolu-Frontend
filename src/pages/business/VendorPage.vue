@@ -129,15 +129,14 @@
       <div class="holder">
         <div class="">
           <div class="desc_text q-pt-lg container">
-            It’s how we’ve always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...
-            <q-btn
+            {{ builderData.description }}
+            <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
               class="text-weight-bold"
             >
               Read more
-            </q-btn>
+            </q-btn> -->
           </div>
           <!-- <div class="segmentA q-pt-lg container">My Collections</div> -->
           <div
@@ -233,15 +232,14 @@
       <div class="holder">
         <div class="">
           <div class="desc_text q-pt-lg container">
-            It’s how we’ve always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...
-            <q-btn
+            {{ builderData.description }}
+            <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
               class="text-weight-bold"
             >
               Read more
-            </q-btn>
+            </q-btn> -->
           </div>
           <div
             v-if="grandselectedCollectionProducts.length"
@@ -328,15 +326,14 @@
       <div class="holder">
         <div class="">
           <div class="desc_text q-pt-lg container">
-            It’s how we’ve always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...
-            <q-btn
+            {{ builderData.description }}
+            <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
               class="text-weight-bold"
             >
               Read more
-            </q-btn>
+            </q-btn> -->
           </div>
 
           <!-- {{ collections.length }} -->
@@ -1707,6 +1704,10 @@ export default {
     height: 45px;
     font-size: 15px;
   }
+  .holder .responsive_autofit_grid {
+    margin-top: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
 
   .location {
     padding-bottom: 0rem;
@@ -1911,12 +1912,15 @@ export default {
     width: 25px;
     height: 25px;
   }
+  .holder .responsive_autofit_grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
   .right_nav .q-ml-xl {
     gap: 0rem !important;
   }
 
   .desc_text {
-    padding: 2rem 1rem 0;
+    padding: 1.5rem 1rem 0;
   }
 }
 @media (max-width: 340px) {

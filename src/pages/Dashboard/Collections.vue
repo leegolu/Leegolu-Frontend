@@ -1,4 +1,5 @@
 <template>
+  <!-- style checkbox -->
   <div class="loader" v-if="loadingCol">
     <div>
       <q-spinner-comment color="primary" size="5em" />
@@ -200,7 +201,7 @@
                       </q-btn>
                     </div>
                   </div>
-                  <div class="q-pa-md">
+                  <div class="col_check">
                     <q-checkbox
                       keep-color
                       @click="handleProductChange(listing)"
@@ -260,7 +261,7 @@
                       <div class="price">₦{{ listing.price }}</div>
                     </div>
                   </div>
-                  <div class="">
+                  <div class="col_check">
                     <q-checkbox
                       @click="addListing(listing)"
                       keep-color
@@ -1330,13 +1331,23 @@ input {
   letter-spacing: -0.01em;
   color: #000000;
 }
-
+@media (max-width: 1025px) {
+  .topDetails {
+    padding: 0.5rem;
+    height: 150px;
+    padding: 0 1rem 1rem;
+    overflow-y: scroll;
+  }
+}
 @media (max-width: 500px) {
   .topDetails {
     padding: 0.5rem;
     height: 200px;
     padding: 0 1rem 1rem;
     overflow-y: scroll;
+  }
+  .dialog_content .left_dialog .title {
+    font-size: 20px;
   }
 }
 </style>
