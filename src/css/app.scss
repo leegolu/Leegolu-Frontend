@@ -228,6 +228,27 @@ th.text-right {
 
 hr {
   border-style: unset;
+  height: 0.5px;
+}
+
+p {
+  margin-bottom: 5px;
+}
+
+.style .q-table .added .q-toggle__inner--truthy .q-toggle__thumb {
+  left: 0.75em;
+}
+.style .q-table .added .q-toggle__thumb {
+  top: 0.31em;
+  left: 0.25em;
+  width: 0.35em;
+  height: 0.35em;
+}
+.style .q-table .added .q-toggle__track {
+  height: 0.35em;
+  border-radius: 0.175em;
+  opacity: 0.38;
+  background: #d9d9d9;
 }
 
 .responsive_autofit_grid {
@@ -272,7 +293,19 @@ hr {
 .product_cards .product .owners {
   position: absolute;
   bottom: 1%;
+  width: 95%;
+}
+
+.ratingBanner {
   width: 90%;
+  margin: 0 auto;
+}
+
+.ratingBanner .q-field__label {
+  font-size: 12px;
+}
+.ratingBanner .q-field__control {
+  height: 50px;
 }
 
 .modal .q-field {
@@ -361,6 +394,13 @@ hr {
   border-bottom: 0;
 }
 
+.input-box .q-editor {
+  // border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid #9d9d9d !important;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
 .avaicons .ava {
   width: 25px;
   height: 25px;
@@ -371,6 +411,20 @@ hr {
   .head_text {
     font-size: 20px;
   }
+  .avaicons .ava {
+    width: 20px;
+    height: 20px;
+  }
+
+  .popular .splide__slide {
+    width: 100.62px !important;
+    height: 104px !important;
+  }
+  .popular img {
+    width: 80px;
+    cursor: pointer;
+  }
+
   .product_cards .product {
     max-width: 100%;
   }

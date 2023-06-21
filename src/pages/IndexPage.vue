@@ -215,7 +215,7 @@
         <div @click="goto(product)">
           <img :src="product.uploads[0].url" alt="" />
           <div class="location">
-            <p>{{ product.area }}</p>
+            <p>{{ product.area.name }}, {{ product.state.name }}</p>
           </div>
           <div class="name">
             <p>{{ product.name }}</p>
@@ -248,9 +248,9 @@
             </p>
             <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
               <q-rating
-                v-model="ratingModel"
+                v-model="product.rating"
                 size="1.5em"
-                :max="4"
+                :max="5"
                 color="black"
               />
               <span>{{ product.ratings_count }}</span>
@@ -640,7 +640,7 @@ export default defineComponent({
         .get(`listings/all`)
         .then((response) => {
           this.listings = response.data.data;
-          // console.log(response);
+          console.log(response);
         })
         .catch((e) => {
           this.loading = false;

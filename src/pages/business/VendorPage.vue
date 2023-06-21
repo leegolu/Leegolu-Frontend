@@ -5,8 +5,18 @@
     </div>
   </div>
   <div v-if="!loading" class="main_content" :style="colorSchemeStyles">
-    <div
+    <!-- <div
       :style="`background: url(${coverpreview}); background-repeat: no-repeat; background-size:cover`"
+      class="editor_hero"
+    ></div> -->
+    <div
+      v-if="builderData.cover_img"
+      :style="`background: url(${coverpreview}); background-repeat: no-repeat; background-size:cover`"
+      class="editor_hero"
+    ></div>
+    <div
+      v-else
+      :style="`background-repeat: no-repeat; background-size:cover`"
       class="editor_hero"
     ></div>
 
@@ -15,10 +25,11 @@
         <div class="left">
           <div class="left_wrap mobile row items-center q-col-gutter-x-md">
             <div class="left_logo_area">
-              <img :src="preview" alt="" />
-              <!-- <template v-else>
+              <!-- {{ preview }} -->
+              <img v-if="builderData.logo" :src="builderData.logo.url" alt="" />
+              <template v-else>
                 <div class="initials logoside">{{ builderData.initials }}</div>
-              </template> -->
+              </template>
             </div>
             <!-- {{ vendor }} -->
             <div class="left_details">
@@ -33,9 +44,9 @@
                   v-model="ratingModel"
                   size="1em"
                   :max="5"
-                  color="secondary"
+                  color="black"
                 />
-                <span>240</span>
+                <span class="rate">240</span>
               </div>
               <!-- <div class="rating row items-center"></div> -->
 
@@ -64,11 +75,14 @@
             >
           </div>
 
-          <div class="row none_desktop q-gutter-md no-wrap items-center">
+          <div
+            style="gap: 0.5rem"
+            class="row none_desktop no-wrap items-center"
+          >
             <q-btn class="none_desktop" icon="fa-solid fa-heart" label="" />
             <q-btn
               class="none_desktop"
-              icon="fa-solid fa-phone-volume"
+              icon="fa-solid fa-phone"
               label=""
               @click="phoneDialog = true"
             />
@@ -990,6 +1004,15 @@ export default {
   }
 }
 
+.rating .rate {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 10px;
+  color: #000000;
+}
+
 .segmentA {
   font-family: "Montserrat";
   font-style: normal;
@@ -1136,6 +1159,17 @@ export default {
   background: #ffffff;
   left: -5%;
   z-index: 5;
+}
+
+.left_logo_area .logoside {
+  width: 147.72px;
+  height: 147.72px;
+  // border: 6px solid var(--color-two);
+  border: 1px solid white;
+  border-radius: 10px;
+  margin-bottom: 0.8rem;
+  background: #000000;
+  border-radius: 10px;
 }
 
 .outline.q-btn {
@@ -1705,10 +1739,15 @@ export default {
     font-size: 15px;
   }
   .holder .responsive_autofit_grid {
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
-
+  .rating .rate {
+    font-size: 8px;
+  }
+  .left_logo_area {
+    margin-bottom: 0.3rem;
+  }
   .location {
     padding-bottom: 0rem;
   }
@@ -1770,6 +1809,7 @@ export default {
   .left_details_title {
     font-size: 15px;
     line-height: 4px;
+    margin-top: 0.1rem;
   }
 
   .right .q-btn {
@@ -1886,7 +1926,7 @@ export default {
     width: 83px;
     height: 83px;
     // margin-left: 1.4rem;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.3rem;
   }
 
   .left_wrap.mobile {

@@ -15,15 +15,53 @@
             {{ productData.vendor.business_name }}
             <!-- <span> | 7 Months</span> -->
           </p>
+
           <div class="ratings_area">
             <span class="rating_main_text">4.0</span>
             <q-rating
               v-model="ratingModel"
-              size="1.5em"
-              :max="4"
+              size="1em"
+              :max="5"
               color="secondary"
             />
-            <span class="ratings_subtext"> (2345) </span>
+            <span class="ratings_subtext">
+              (2345)
+              <q-btn push flat class="addRating" icon="add">
+                <q-popup-proxy>
+                  <q-banner
+                    class="ratingBanner"
+                    style="width: 90%; margin: 0 auto"
+                  >
+                    <!-- <template v-slot:avatar>
+                  <q-icon name="signal_wifi_off" color="primary" />
+                </template> -->
+                    <div class="q-mb-xs">Add Rating</div>
+                    <q-rating
+                      v-model="rating"
+                      size="1.4em"
+                      :max="5"
+                      color="primary"
+                    />
+                    <q-input
+                      style="font-size: 10px"
+                      v-model="text"
+                      label="Add review"
+                    />
+
+                    <q-btn
+                      color="white"
+                      @click="rate"
+                      no-caps
+                      :loading="loading"
+                      class="bg-primary q-mt-md"
+                      flat
+                    >
+                      Submit
+                    </q-btn>
+                  </q-banner>
+                </q-popup-proxy>
+              </q-btn>
+            </span>
           </div>
         </div>
       </div>
@@ -112,11 +150,14 @@ export default {
   setup() {
     return {
       ratingModel: ref(4),
+      rating: ref(0),
     };
   },
   data() {
     return {
-      product: {},
+      // product: {},
+      loading: false,
+      text: "",
     };
   },
 
@@ -126,6 +167,38 @@ export default {
     closeModal() {
       // console.log("first clicked");
       this.$emit("closeModalRatings");
+    },
+
+    rate() {
+      console.log(this.productData);
+      this.loading = true;
+      this.$api
+        .post(`${this.productData.data.id}/rating`, {
+          rating: this.rating,
+        })
+        .then((response) => {
+          this.loading = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+          });
+          console.log(response);
+          this.rating = 0;
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to rate product",
+              color: "green",
+            });
+          }
+
+          this.errors = error.errors || {};
+        });
     },
   },
 };
@@ -212,6 +285,16 @@ p.owner_title span {
   line-height: 12px;
   text-transform: capitalize;
   color: #9d9d9d;
+  position: relative;
+}
+.owner .ratings_area .ratings_subtext .addRating {
+  position: absolute;
+  min-height: auto;
+  padding: 0;
+  top: -75%;
+  font-size: 8px;
+  background: #1f7bb5;
+  color: #fff;
 }
 
 hr {

@@ -1,23 +1,21 @@
 <template>
-  <div v-if="show">
-    <div style="gap: 1rem" class="head row items-center no-wrap">
+  <div v-if="show" class="hold">
+    <div style="gap: 1rem" class="head row no-wrap">
       <div class="left">
-        <img class="main_img" src="/images/shop.svg" alt="" />
-        <img class="play" src="/images/play.svg" alt="" />
+        <img class="main_img" src="/images/listing1.png" alt="" />
+        <!-- <img class="play" src="/images/play.svg" alt="" /> -->
       </div>
       <div class="details">
-        <div class="why_title">You have an order in progress</div>
-        <div class="why_desc">A delivery agent will contact you shortly</div>
+        <div class="why_title">Boosted</div>
+        <div class="why_desc">This listing is currently being promoted.</div>
 
         <div class="q-mt-lg">
-          <q-btn class="visit" flat
-            >View your dashboard <img src="/images/bluearrow.svg" alt=""
-          /></q-btn>
+          <div class="visit">Princess Cut Peplum Sleeve... ....</div>
         </div>
       </div>
 
-      <q-btn @click="show = false" flat class="menu_bar_btn" color="primary">
-        <img src="/images/close.svg" alt="" />
+      <q-btn @click="show = false" flat class="menu_bar_btn">
+        <img src="/images/closeblack.svg" alt="" />
       </q-btn>
     </div>
   </div>
@@ -34,15 +32,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.hold {
+  width: 95%;
+  margin: 1rem auto 0;
+}
 .head {
-  background: #e3fff0;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2),
-    inset 0px -1px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 14px;
-  width: fit-content;
-  padding: 1rem 7rem 1rem 0.5rem;
+  padding: 0.5rem;
   position: relative;
-  height: 105px;
+  height: 147px;
+  background: #ffffff;
+  box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
 }
 
 .left {
@@ -53,13 +53,11 @@ export default {
 
 .left .main_img {
   border-radius: 12px;
+  height: 100%;
 }
 
-.left .play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.details {
+  padding-top: 0.5rem;
 }
 .why_title {
   font-family: "Open Sans";
@@ -76,20 +74,23 @@ export default {
   font-size: 12px;
   line-height: 16px;
   color: #000000;
+  max-width: 90%;
+  // margin: 0 auto;
 }
 
 img {
-  width: 59px;
-  height: 59px;
+  width: 83.19px;
+  height: 100%;
+  object-fit: cover;
 }
 
 .menu_bar_btn {
   position: absolute;
-  right: 2%;
-  top: 2%;
+  right: -3%;
+  top: -3%;
 }
 
-.menu_bar_btn .q-btn img {
+.menu_bar_btn img {
   width: 13px;
   height: 12px;
 }
@@ -108,12 +109,12 @@ img {
   height: 3.34px;
 }
 
-@media (max-width: 500px) {
-  .why_title {
-    font-size: 14px;
-  }
-  .why_desc {
-    font-size: 12px;
-  }
-}
+// @media (max-width: 500px) {
+//   .why_title {
+//     font-size: 14px;
+//   }
+//   .why_desc {
+//     font-size: 12px;
+//   }
+// }
 </style>

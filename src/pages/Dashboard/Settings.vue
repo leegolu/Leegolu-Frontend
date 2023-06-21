@@ -28,7 +28,7 @@
             <span>Plans & Subscriptions</span>
           </div>
 
-          <div class="arrow">
+          <div class="arrow row">
             <img src="/images/down.svg" alt="" />
           </div>
         </div>
@@ -87,48 +87,114 @@
             <span>Account Settings</span>
           </div>
 
-          <div class="arrow">
+          <div class="arrow row">
             <img src="/images/down.svg" alt="" />
           </div>
         </div>
 
-        <div class="grid_">
-          <div class="grid__wrap">
-            <div class="grid_item grid_left">
-              <div class="grid_div">
-                <img src="/images/rockets.svg" alt="" />
-
-                <div class="main_textSet">Leegolu Regular</div>
-
-                <div class="para">
-                  Get to interact with thousands of people trading on the
-                  Leegolu market place.
-                </div>
-
-                <div class="active">
-                  <div class="icon">
-                    <img src="/images/lighting.svg" alt="" /> Active
+        <div class="style">
+          <q-table
+            :rows="rows"
+            :hide-header="mode === 'grid'"
+            :columns="columns"
+            row-key="id"
+            :grid="mode == 'grid'"
+            class="sub_table"
+            :filter="filter"
+            :loading="loading"
+            @request="onRequest"
+          >
+            <template v-slot:body-cell-account="props">
+              <q-td :props="props">
+                <!-- {{ props.row }} -->
+                <div class="name_row">
+                  <div class="name">
+                    <div class="name_top">{{ props.row.name }}</div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="grid_item grid_right">
-              <div class="grid_div2">
-                <img src="/images/shop.svg" alt="" />
-
-                <div class="main_textSet">Leegolu Business</div>
-
-                <div class="para">
-                  Leegolu Business provides you with the right tools to scale
-                  your business & make more sales online.
+              </q-td>
+            </template>
+            <template v-slot:body-cell-password="props">
+              <q-td :props="props">
+                <div class="added">
+                  {{ props.row.number_account }}
                 </div>
-
-                <div class="active">
-                  <q-btn>Upgrade from ₦1,000</q-btn>
+              </q-td>
+            </template>
+            <template v-slot:body-cell-value="props">
+              <q-td class="value" :props="props">
+                <div class="added">
+                  <q-btn flat>
+                    <img src="/images/editicon.svg" alt="" />
+                  </q-btn>
                 </div>
+              </q-td>
+            </template>
+
+            <template v-slot:no-data="{ message }">
+              <div class="full-width row flex-center text-negative q-gutter-sm">
+                <span> {{ message }} </span>
               </div>
-            </div>
+            </template>
+          </q-table>
+        </div>
+      </div>
+      <hr />
+      <div class="plans_sub">
+        <div class="topp row items-center justify-between">
+          <div style="gap: 0.4rem" class="topp_left row items-center no-wrap">
+            <img src="/images/userr.svg" alt="" />
+            <span>Privacy Settings</span>
           </div>
+
+          <div class="arrow row">
+            <img src="/images/down.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="style">
+          <q-table
+            :rows="rowsPrivacy"
+            :hide-header="mode === 'grid'"
+            :columns="columnsPrivacy"
+            row-key="id"
+            :grid="mode == 'grid'"
+            class="sub_table"
+            :filter="filter"
+            :loading="loading"
+            @request="onRequestPrivacy"
+          >
+            <template v-slot:body-cell-privacy="props">
+              <q-td :props="props">
+                <!-- {{ props.row }} -->
+                <div class="name_row">
+                  <div class="name">
+                    <div class="name_top">{{ props.row.name }}</div>
+                  </div>
+                </div>
+              </q-td>
+            </template>
+            <template v-slot:body-cell-password="props">
+              <q-td :props="props">
+                <div class="added">
+                  {{ props.row.number_account }}
+                </div>
+              </q-td>
+            </template>
+            <template v-slot:body-cell-value="props">
+              <q-td class="value" :props="props">
+                <div class="added">
+                  <q-toggle v-model="value" />
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:no-data="{ message }">
+              <div class="full-width row flex-center text-negative q-gutter-sm">
+                <span> {{ message }} </span>
+              </div>
+            </template>
+          </q-table>
         </div>
       </div>
     </div>
@@ -175,9 +241,108 @@
 </template>
 
 <script>
+import { ref } from "vue";
+const columns = [
+  {
+    name: "account",
+    required: true,
+    label: "Account Detail",
+    align: "left",
+    field: (row) => row.name,
+    sortable: true,
+  },
+  {
+    name: "password",
+    required: true,
+    label: "",
+    align: "center",
+    field: (row) => row.name,
+    sortable: true,
+  },
+  {
+    name: "value",
+    required: true,
+    label: "Action",
+    align: "right",
+    field: (row) => row.name,
+    sortable: true,
+  },
+];
+
+const rows = [
+  {
+    name: "Phone Number",
+    number_account: "08060970483",
+    addedOn: "2 Days ago",
+  },
+  {
+    name: "Password",
+    number_account: "**********",
+    addedOn: "2 Days ago",
+  },
+  {
+    name: "Email",
+    number_account: "chris.gbesola@yahoo.com",
+    actions: "2 Days ago",
+  },
+];
+
+const columnsPrivacy = [
+  {
+    name: "privacy",
+    required: true,
+    label: "Privacy",
+    align: "left",
+    field: (row) => row.name,
+    sortable: true,
+  },
+  {
+    name: "password",
+    required: true,
+    label: "",
+    align: "center",
+    field: (row) => row.name,
+    sortable: true,
+  },
+  {
+    name: "value",
+    required: true,
+    label: "Action",
+    align: "right",
+    field: (row) => row.name,
+    sortable: true,
+  },
+];
+
+const rowsPrivacy = [
+  {
+    name: "Allow Chat",
+    number_account: "Yes",
+    actions: "2 Days ago",
+  },
+  {
+    name: "Allow phone view",
+    number_account: "Yes",
+    actions: "2 Days ago",
+  },
+  {
+    name: "Allow email view",
+    number_account: "No",
+    actions: "2 Days ago",
+  },
+];
 export default {
   data() {
     return {
+      columns,
+      rows,
+      rowsPrivacy,
+      columnsPrivacy,
+      filter: "",
+      curl: "",
+      separator: "",
+      mode: "list",
+      value: true,
       val: true,
       val2: false,
       dialogAvatar: false,
@@ -187,7 +352,20 @@ export default {
     };
   },
 
+  mounted() {
+    this.onRequest({
+      pagination: this.pagination,
+      filter: undefined,
+    });
+    this.onRequestPrivacy({
+      pagination: this.pagination,
+      filter: undefined,
+    });
+  },
+
   methods: {
+    onRequest(props) {},
+    onRequestPrivacy(props) {},
     setAvatar(props) {
       // console.log(props);
       var reader = new FileReader();
@@ -251,6 +429,10 @@ export default {
 .container {
   max-width: 70%;
   margin: 0 auto;
+}
+
+.style {
+  margin-top: 1rem;
 }
 .settings_top {
   background: #ffffff;
@@ -688,6 +870,11 @@ p.advert {
   .settings_top .img_side .q-btn img {
     width: 12.94px;
     height: 12.94px;
+  }
+
+  .container {
+    max-width: 90%;
+    // margin: 0 auto;
   }
 }
 </style>

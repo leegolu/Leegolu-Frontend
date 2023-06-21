@@ -1,31 +1,32 @@
 <template>
-  <div v-if="show">
+  <div v-if="show" class="hold">
     <div style="gap: 1rem" class="head row items-center no-wrap">
       <div class="left">
         <img src="/images/shop.svg" alt="" />
         <img v-if="play" class="play" src="/images/play.svg" alt="" />
       </div>
       <div class="details">
-        <div class="why_title">You have an order in progress</div>
-        <div class="why_desc">A delivery agent will contact you shortly</div>
+        <div class="why_title">{{ title }}</div>
+        <div class="why_desc">{{ desc }}</div>
 
         <div class="q-mt-lg">
           <q-btn class="visit" flat
-            >View your dashboard <img src="/images/bluearrow.svg" alt=""
+            >{{ !play ? "View your dashboard" : "Take a tour" }}
+            <img src="/images/bluearrow.svg" alt=""
           /></q-btn>
         </div>
       </div>
 
-      <q-btn @click="show = false" flat class="menu_bar_btn" color="primary">
-        <img src="/images/close.svg" alt="" />
-      </q-btn>
+      <q-btn @click="show = false" flat class="menu_bar_btn"
+        ><img src="/images/close.svg" alt=""
+      /></q-btn>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["play"],
+  props: ["play", "title", "desc"],
   data() {
     return {
       show: true,
@@ -35,26 +36,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.hold {
+  width: 95%;
+  margin: 1rem auto 0;
+}
 .head {
-  background: #e3fff0;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2),
-    inset 0px -1px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
   width: fit-content;
-  padding: 1rem 7rem 1rem 0.5rem;
+  padding: 0.5rem;
   position: relative;
-  height: 105px;
+  height: 147px;
 }
 
 .left {
   background: linear-gradient(180deg, #0f476a 0%, #1f7bb5 100%);
   border-radius: 12px;
   position: relative;
+  height: 100%;
 }
 
 .left .play {
   position: absolute;
   top: 50%;
+  width: 39.54px;
+  height: 39.62px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -73,20 +80,21 @@ export default {
   font-size: 12px;
   line-height: 16px;
   color: #000000;
+  max-width: 65%;
 }
 
 img {
-  width: 59px;
-  height: 59px;
+  width: 162px;
+  height: 100%;
 }
 
 .menu_bar_btn {
   position: absolute;
-  right: 2%;
-  top: 2%;
+  right: -2%;
+  top: -2%;
 }
 
-.menu_bar_btn .q-btn img {
+.menu_bar_btn img {
   width: 13px;
   height: 12px;
 }
@@ -97,8 +105,10 @@ img {
   font-weight: 700;
   font-size: 12px;
   line-height: 16px;
-
+  text-transform: capitalize;
   color: #1f7bb5;
+  padding: 0;
+  min-height: auto;
 }
 .visit img {
   width: 6.67px;
@@ -107,10 +117,21 @@ img {
 
 @media (max-width: 500px) {
   .why_title {
-    font-size: 14px;
+    font-size: 15px;
   }
   .why_desc {
-    font-size: 12px;
+    font-size: 11px;
+    max-width: 85%;
+  }
+
+  img {
+    width: 122px;
+    height: 100%;
+  }
+
+  .left .play {
+    width: 29.54px;
+    height: 29.62px;
   }
 }
 </style>

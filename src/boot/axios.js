@@ -80,6 +80,7 @@ export default boot(({ router, store, app }) => {
           message: "You need to log in to view this page",
           color: "red",
         });
+        store.leegoluauth.previousRoute = router.currentRoute.value.fullPath;
         // helpers.notify("You need to log in to view this page", "error");
         return router.replace({ name: "login" });
       } else if (e.message === "Network Error") {

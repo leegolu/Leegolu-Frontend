@@ -1,4 +1,17 @@
 <template>
+  <!-- <Tour
+    title="Hello Chris,"
+    desc="Your business account is set and ready for use. "
+    :play="false"
+  />
+  <Tour
+    title="Take a video tour"
+    desc="We’ve added more features to your dashboard. Let’s show you around."
+    :play="true"
+  />
+
+  <boosted-vue /> -->
+
   <div class="loader" v-if="loading">
     <div>
       <q-spinner-comment color="primary" size="5em" />
@@ -104,6 +117,8 @@
 import { useMeta } from "quasar";
 
 import Listings from "src/components/listings/Listings.vue";
+import Tour from "src/components/Tour.vue";
+import BoostedVue from "src/components/Boosted.vue";
 export default {
   setup() {
     useMeta({
@@ -122,6 +137,8 @@ export default {
   },
   components: {
     Listings,
+    BoostedVue,
+    Tour,
   },
 
   created() {

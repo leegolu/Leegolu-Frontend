@@ -8,89 +8,179 @@
     <div class="top">
       <span class="title">
         <!-- <i class="fa-solid q-mr-sm fa-message"></i> -->
-        My Favorites | {{ favourites.length }}
+        My Favorites | {{ favourites.products.length }}
       </span>
 
       <div class="sort_area">
         <div class="left">
-          <q-btn flat class="active">Listings </q-btn>
-          <q-btn flat class="regular"> Shop</q-btn>
+          <q-btn
+            flat
+            @click="setShow('favorites-listings')"
+            :class="show === 'favorites-listings' ? 'active' : 'regular'"
+            >Listings
+          </q-btn>
+          <q-btn
+            flat
+            @click="setShow('favorites-shops')"
+            :class="show !== 'favorites-listings' ? 'active' : 'regular'"
+          >
+            Shop</q-btn
+          >
         </div>
       </div>
     </div>
 
-    <section v-if="favourites.length > 0" class="products q-pt-sm">
-      <!-- <div class="head_text">Favorite Listings</div> -->
-      <div class="product_cards">
-        <div
-          v-for="(product, index) in favourites"
-          :key="index"
-          class="product"
-        >
-          <div @click="goto(product)">
-            <img :src="product.uploads[0].url" alt="" />
-            <div class="location">
-              <p>{{ product.area }}</p>
-            </div>
-            <div class="name">
-              <p>{{ product.name }}</p>
-            </div>
-            <div class="price">
-              <p>₦{{ product.price.toLocaleString() }}</p>
-            </div>
-            <div class="desc">
-              <p>{{ product.description }}</p>
-              <p v-if="product.details">
-                <span
-                  v-for="(entry, index) in Object.entries(product.details)"
-                  :key="index"
-                >
-                  <span v-if="entry[1] !== null"
-                    >{{ entry[0] }}: {{ entry[1] + ", " }}</span
+    <div v-if="show === 'favorites-listings'">
+      <section v-if="favourites.products.length > 0" class="products q-pt-sm">
+        <!-- <div class="head_text">Favorite Listings</div> -->
+        <div class="product_cards">
+          <div
+            v-for="(product, index) in favourites.products"
+            :key="index"
+            class="product"
+          >
+            <div @click="goto(product)">
+              <img :src="product.uploads[0].url" alt="" />
+              <div class="location">
+                <p>{{ product.area.name }}</p>
+              </div>
+              <div class="name">
+                <p>{{ product.name }}</p>
+              </div>
+              <div class="price">
+                <p>₦{{ product.price.toLocaleString() }}</p>
+              </div>
+              <div class="desc">
+                <p>{{ product.description }}</p>
+                <p v-if="product.details">
+                  <span
+                    v-for="(entry, index) in Object.entries(product.details)"
+                    :key="index"
                   >
-                </span>
-              </p>
-              <!-- <p> {{ Object.entries(product.details).toString() }}
+                    <span v-if="entry[1] !== null"
+                      >{{ entry[0] }}: {{ entry[1] + ", " }}</span
+                    >
+                  </span>
+                </p>
+                <!-- <p> {{ Object.entries(product.details).toString() }}
               {{ Object.entries(product.details)[0] }}</p> -->
+              </div>
+              <div class="kinds">
+                <p class="kind">{{ product.condition }}</p>
+                <!-- <p v-if="product.make !== ''" class="make">{{ product.make }}</p> -->
+              </div>
+              <div class="owners">
+                <p class="owner">
+                  <i class="fa-solid q-mr-xs fa-gift"></i
+                  >{{ product.vendor_name }}
+                </p>
+                <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
+                  <q-rating
+                    v-model="ratingModel"
+                    size="1.5em"
+                    :max="4"
+                    color="black"
+                  />
+                  <span>{{ product.ratings_count }}</span>
+                </p>
+              </div>
             </div>
-            <div class="kinds">
-              <p class="kind">{{ product.condition }}</p>
-              <!-- <p v-if="product.make !== ''" class="make">{{ product.make }}</p> -->
+            <div class="love">
+              <q-btn flat @click="removeFav(product.slug)">
+                <i
+                  :class="
+                    product.like
+                      ? 'fa-solid text-red fa-heart'
+                      : 'fa-regular fa-heart'
+                  "
+                ></i
+              ></q-btn>
             </div>
-            <div class="owners">
-              <p class="owner">
-                <i class="fa-solid q-mr-xs fa-gift"></i
-                >{{ product.vendor_name }}
-              </p>
-              <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
-                <q-rating
-                  v-model="ratingModel"
-                  size="1.5em"
-                  :max="4"
-                  color="black"
-                />
-                <span>{{ product.ratings_count }}</span>
-              </p>
-            </div>
-          </div>
-          <div class="love">
-            <q-btn flat @click="removeFav(product.slug)">
-              <i
-                :class="
-                  product.like
-                    ? 'fa-solid text-red fa-heart'
-                    : 'fa-regular fa-heart'
-                "
-              ></i
-            ></q-btn>
           </div>
         </div>
-      </div>
-    </section>
-    <div v-else class="empty">
-      <img src="/images/empty.svg" alt="" />
+      </section>
+      <div v-else class="empty">
+        <img src="/images/empty.svg" alt="" />
 
-      <div class="empty_text">You currently have no favourites</div>
+        <div class="empty_text">
+          You currently have not added any product to your favourites
+        </div>
+      </div>
+    </div>
+
+    <div v-if="'favorites-shops'">
+      <section v-if="favourites.shops.length > 0" class="products q-pt-sm">
+        <!-- <div class="head_text">Favorite Listings</div> -->
+        <div class="product_cards">
+          <div
+            v-for="(product, index) in favourites.shops"
+            :key="index"
+            class="product"
+          >
+            <div @click="goto(product)">
+              <img :src="product.uploads[0].url" alt="" />
+              <div class="location">
+                <p>{{ product.area.name }}</p>
+              </div>
+              <div class="name">
+                <p>{{ product.name }}</p>
+              </div>
+              <div class="price">
+                <p>₦{{ product.price.toLocaleString() }}</p>
+              </div>
+              <div class="desc">
+                <p>{{ product.description }}</p>
+                <p v-if="product.details">
+                  <span
+                    v-for="(entry, index) in Object.entries(product.details)"
+                    :key="index"
+                  >
+                    <span v-if="entry[1] !== null"
+                      >{{ entry[0] }}: {{ entry[1] + ", " }}</span
+                    >
+                  </span>
+                </p>
+              </div>
+              <div class="kinds">
+                <p class="kind">{{ product.condition }}</p>
+              </div>
+              <div class="owners">
+                <p class="owner">
+                  <i class="fa-solid q-mr-xs fa-gift"></i
+                  >{{ product.vendor_name }}
+                </p>
+                <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
+                  <q-rating
+                    v-model="ratingModel"
+                    size="1.5em"
+                    :max="4"
+                    color="black"
+                  />
+                  <span>{{ product.ratings_count }}</span>
+                </p>
+              </div>
+            </div>
+            <div class="love">
+              <q-btn flat @click="removeFav(product.slug)">
+                <i
+                  :class="
+                    product.like
+                      ? 'fa-solid text-red fa-heart'
+                      : 'fa-regular fa-heart'
+                  "
+                ></i
+              ></q-btn>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div v-else class="empty">
+        <img src="/images/empty.svg" alt="" />
+
+        <div class="empty_text">
+          You currently have not added any shop to your favourites
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -112,6 +202,7 @@ export default {
   data() {
     return {
       loading: true,
+      show: "favorites-listings",
       products: [
         {
           product_image: "/images/car.png",
@@ -192,6 +283,10 @@ export default {
   },
 
   methods: {
+    setShow(show) {
+      console.log(show);
+      this.show = show;
+    },
     onItemClick() {},
     goto(product) {
       this.$router.replace({
@@ -232,7 +327,7 @@ export default {
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/favorites`)
         .then((response) => {
           // console.log("Success:", response);
-          this.favourites = response.data.data;
+          this.favourites = response.data;
           this.loading = false;
         })
         .catch(({ response }) => {

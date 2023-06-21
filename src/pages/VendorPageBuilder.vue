@@ -117,7 +117,7 @@
             class="left_wrap mobile row no-wrap items-center q-col-gutter-x-md"
           >
             <div @click="uploadModal = true" class="left_logo_area">
-              <img v-if="preview !== ''" :src="preview" alt="" />
+              <img v-if="showlogovalue" :src="preview" alt="" />
               <template v-else>
                 <div class="initials logoside">{{ initials }}</div>
               </template>
@@ -144,7 +144,7 @@
                   color="secondary"
                   class="q-my-sm"
                 />
-                <span>240</span>
+                <span class="rate">240</span>
               </div> -->
 
               <div class="location">
@@ -185,7 +185,7 @@
             />
             <q-btn
               class="none_desktop"
-              icon="fa-solid fa-phone-volume"
+              icon="fa-solid fa-phone"
               label=""
               flat
             />
@@ -238,10 +238,14 @@
 
       <div class="holder">
         <div class="desc_text">
-          <div class="">
-            {{ data.description !== "" ? data.description : `It’s how we’ve
-            always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...` }}
+          <div class="des_">
+            {{
+              data.description !== ""
+                ? data.description
+                : `It’s how we’ve
+            always described our bars. What’s inside.
+            What isn’t. We think it’s everything you need...`
+            }}
 
             <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
@@ -355,9 +359,13 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            {{ data.description !== "" ? data.description : `It’s how we’ve
-            always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...` }}
+            {{
+              data.description !== ""
+                ? data.description
+                : `It’s how we’ve
+            always described our bars. What’s inside.
+            What isn’t. We think it’s everything you need...`
+            }}
             <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
@@ -461,9 +469,13 @@
       <div class="holder">
         <div class="desc_text">
           <div class="">
-            {{ data.description !== "" ? data.description : `It’s how we’ve
-            always described our bars. What’s inside. <br />
-            What isn’t. We think it’s everything you need...` }}
+            {{
+              data.description !== ""
+                ? data.description
+                : `It’s how we’ve
+            always described our bars. What’s inside.
+            What isn’t. We think it’s everything you need...`
+            }}
             <!-- <q-btn
               style="min-height: 0; padding: 0; text-transform: capitalize"
               flat
@@ -617,10 +629,9 @@
         </div>
         <div class="row q-mt-sm items-center justify-between">
           <div class="previewMain">
-            <div class="form">
+            <div v-if="showlogovalue" class="form">
               <q-file
                 type="file"
-                v-if="!showlogovalue"
                 v-model="data.uploads"
                 accept=".jpg,.png,.svg,.jpeg"
                 name="uploads"
@@ -629,14 +640,12 @@
               />
 
               <div class="previewDiv">
-                <template v-if="preview">
-                  <img :src="preview" class="previewimg" />
-                  <img src="/images/upload.png" class="click" alt="" />
-                </template>
-                <template v-else>
-                  <div class="initials">{{ initials }}</div>
-                </template>
+                <img :src="preview" class="previewimg" />
+                <img src="/images/upload.png" class="click" alt="" />
               </div>
+            </div>
+            <div v-else class="form">
+              <div class="initials">{{ initials }}</div>
             </div>
           </div>
         </div>
@@ -711,9 +720,10 @@
         <div
           v-for="segment in segments"
           :key="segment.name"
+          @click="checkSegment(segment)"
           :class="
             segment.name === data.segments
-              ? 'row q-mt-lg active_segment no-wrap items-center justify-between'
+              ? 'row q-mt-lg modal_segs active_segment no-wrap items-center justify-between'
               : 'row q-mt-lg no-wrap items-center justify-between'
           "
         >
@@ -751,7 +761,7 @@
         </div>
         <div class="layouts">
           <div
-            @click="check(pageLayout)"
+            @click="checkLayout(pageLayout)"
             v-for="(pageLayout, index) in pageLayouts"
             :key="index"
             class="layout"
@@ -798,6 +808,7 @@
         <div
           v-for="(scheme, index) in sortedschemes"
           :key="index"
+          @click="checkScheme(scheme)"
           class="q-mt-sm scheme items-center justify-between"
         >
           <div class="color">
@@ -871,9 +882,11 @@ export default {
       description: "",
       data: {
         colorScheme: "default",
-        pageLayout: "default",
+        pageLayout: "Default",
         segments: "Segment B",
         description: "",
+        uploads: null,
+        coveruploads: null,
       },
       value: false,
       drawer: false,
@@ -1105,10 +1118,9 @@ export default {
     },
     showlogovalue: {
       handler() {
-        if (!this.showlogovalue === true) {
-          this.preview = "";
-        } else {
+        if (this.showlogovalue === true) {
           this.preview = "/images/sqrpreview.png";
+        } else {
         }
       },
       immediate: true,
@@ -1256,10 +1268,17 @@ export default {
   },
 
   methods: {
-    check(arg) {
+    checkLayout(arg) {
       // console.log(this.data.pageLayout);
       // console.log(this.data);
       this.data.pageLayout = arg.name;
+      // console.log(arg);
+    },
+    checkScheme(arg) {
+      this.data.colorScheme = arg.name;
+    },
+    checkSegment(arg) {
+      this.data.segments = arg.name;
     },
     previewImage(event) {
       var input = event.target;
@@ -1326,161 +1345,144 @@ export default {
       // const reader1 = new FileReader();
       // const reader2 = new FileReader();
       // if (this.data.uploads && this.data.coveruploads) {
-      if (this.data.coveruploads) {
-        // this.loading = true;
+      // if (this.data.coveruploads) {
+      // this.loading = true;
 
-        // reader1.onload = () => {
-        //   const base64Data = reader1.result.split(",")[1];
-        //   this.data.uploads = base64Data;
-        // };
-        // reader2.onload = () => {
-        //   const base64Data2 = reader2.result.split(",")[1];
-        //   this.data.coveruploads = base64Data2;
-        // };
+      // reader1.onload = () => {
+      //   const base64Data = reader1.result.split(",")[1];
+      //   this.data.uploads = base64Data;
+      // };
+      // reader2.onload = () => {
+      //   const base64Data2 = reader2.result.split(",")[1];
+      //   this.data.coveruploads = base64Data2;
+      // };
 
-        // reader1.readAsDataURL(this.data.uploads);
-        // reader2.readAsDataURL(this.data.coveruploads);
+      // reader1.readAsDataURL(this.data.uploads);
+      // reader2.readAsDataURL(this.data.coveruploads);
 
-        // setTimeout(() => {
-        //   this.loading = false;
-        //   this.$store.leegoluauth.pageBuilderData = this.data;
-        //   // this.coverUploaded =
-        //   // this.readFileData();
+      // setTimeout(() => {
+      //   this.loading = false;
+      //   this.$store.leegoluauth.pageBuilderData = this.data;
+      //   // this.coverUploaded =
+      //   // this.readFileData();
 
-        //   this.$router.replace({
-        //     name: "vendor.page",
-        //     params: { slug: this.$store.leegoluauth.vendor.slug },
-        //   });
-        // }, 2000);istores/builder/update
-        // let persistBuilder = this.data;
-        const formData = new FormData();
-        formData.append("coverimg", this.data.coveruploads);
-        formData.append("logo", this.data.uploads);
-        // formData.append(
-        //   "selectedcoScheme",
-        //   JSON.stringify(this.data.selectedcoScheme)
-        // );
-        // formData.append("METHOD", "PUT");
-        formData.append("business_name", this.data.business_name);
-        formData.append("description", this.data.description);
-        formData.append("business_tagline", this.data.business_tagline);
-        formData.append("colorScheme", this.data.colorScheme);
-        formData.append("pageLayout", this.data.pageLayout);
-        formData.append("segments", this.data.segments);
-        formData.append("initials", this.initials);
-        formData.append(
-          "selectedcoScheme[name]",
-          this.data.selectedcoScheme.name
-        );
-        // formData.append(
-        //   "selectedcoScheme[colors]",
-        //   this.data.selectedcoScheme.colors
-        // );
-        formData.append(
-          "selectedcoScheme[colors][]",
-          this.data.selectedcoScheme.colors[0]
-        );
-        formData.append(
-          "selectedcoScheme[colors][]",
-          this.data.selectedcoScheme.colors[1]
-        );
-        formData.append(
-          "selectedcoScheme[colors][]",
-          this.data.selectedcoScheme.colors[2]
-        );
-        formData.append(
-          "selectedcoScheme[colors][]",
-          this.data.selectedcoScheme.colors[3]
-        );
-        formData.append(
-          "selectedcoScheme[colors][]",
-          this.data.selectedcoScheme.colors[4]
-        );
-        formData.append(
-          "selectedcoScheme[variables][--primary-color]",
-          this.data.selectedcoScheme.variables["--primary-color"]
-        );
-        formData.append(
-          "selectedcoScheme[variables][--secondary-color]",
-          this.data.selectedcoScheme.variables["--secondary-color"]
-        );
-        formData.append(
-          "selectedcoScheme[variables][--color-one]",
-          this.data.selectedcoScheme.variables["--color-one"]
-        );
-        formData.append(
-          "selectedcoScheme[variables][--color-two]",
-          this.data.selectedcoScheme.variables["--color-two"]
-        );
-        formData.append(
-          "selectedcoScheme[variables][--color-three]",
-          this.data.selectedcoScheme.variables["--color-three"]
-        );
-        formData.append(
-          "selectedcoScheme[variables][--color-four]",
-          this.data.selectedcoScheme.variables["--color-four"]
-        );
-        // formData.append("name", this.data.selectedcoScheme.name);
-        // formData.append(
-        //   "--primary-color",
-        //   this.data.selectedcoScheme["--primary-color"]
-        // );
-        // formData.append(
-        //   "selectedcoScheme[variables]",
-        //   this.data.selectedcoScheme.variables
-        // );
-        // formData.append("colorScheme[name]", this.data.name)
-        // formData.append("colorScheme", this.data.colorScheme);
-        // console.log(this.data.selectedcoScheme);
-        // for (var key in persistBuilder) {
-        //   formData.append(key, persistBuilder[key]);
-        // if (key === "selectedcoScheme") {
-        //   formData.append(key, JSON.stringify(persistBuilder[key]));
-        // }
-        // }
-        this.$q.loading.show({
-          message: "Your changes are taking effect",
-        });
-        this.$api
-          .post(
-            `${this.$store.leegoluauth.vendorDetails.slug}/builder/update`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          )
-          .then((response) => {
-            console.log("Success:", response);
-            this.$q.loading.hide();
-            this.$q.notify({
-              message: response.data.message,
-              color: "green",
-              position: "bottom",
-            });
-            this.$router.replace({
-              name: "vendor.page",
-              params: { slug: this.$store.leegoluauth.vendor.slug },
-            });
-          })
-          .catch(({ response }) => {
-            // console.log(response);
-            this.errors = response.data.message;
-            this.$q.loading.hide();
-            this.$q.notify({
-              message: response.data.message,
-              color: "red",
-              position: "bottom",
-              actions: [{ icon: "close", color: "white" }],
-            });
+      //   this.$router.replace({
+      //     name: "vendor.page",
+      //     params: { slug: this.$store.leegoluauth.vendor.slug },
+      //   });
+      // }, 2000);istores/builder/update
+      // let persistBuilder = this.data;
+      const formData = new FormData();
+      formData.append("coverimg", this.data.coveruploads);
+      formData.append("logo", this.data.uploads);
+      // formData.append(
+      //   "selectedcoScheme",
+      //   JSON.stringify(this.data.selectedcoScheme)
+      // );
+      // formData.append("METHOD", "PUT");
+      formData.append("business_name", this.data.business_name);
+      formData.append("description", this.data.description);
+      formData.append("business_tagline", this.data.business_tagline);
+      formData.append("colorScheme", this.data.colorScheme);
+      formData.append("pageLayout", this.data.pageLayout);
+      formData.append("segments", this.data.segments);
+      formData.append("initials", this.initials);
+      formData.append(
+        "selectedcoScheme[name]",
+        this.data.selectedcoScheme.name
+      );
+      // formData.append(
+      //   "selectedcoScheme[colors]",
+      //   this.data.selectedcoScheme.colors
+      // );
+      formData.append(
+        "selectedcoScheme[colors][]",
+        this.data.selectedcoScheme.colors[0]
+      );
+      formData.append(
+        "selectedcoScheme[colors][]",
+        this.data.selectedcoScheme.colors[1]
+      );
+      formData.append(
+        "selectedcoScheme[colors][]",
+        this.data.selectedcoScheme.colors[2]
+      );
+      formData.append(
+        "selectedcoScheme[colors][]",
+        this.data.selectedcoScheme.colors[3]
+      );
+      formData.append(
+        "selectedcoScheme[colors][]",
+        this.data.selectedcoScheme.colors[4]
+      );
+      formData.append(
+        "selectedcoScheme[variables][--primary-color]",
+        this.data.selectedcoScheme.variables["--primary-color"]
+      );
+      formData.append(
+        "selectedcoScheme[variables][--secondary-color]",
+        this.data.selectedcoScheme.variables["--secondary-color"]
+      );
+      formData.append(
+        "selectedcoScheme[variables][--color-one]",
+        this.data.selectedcoScheme.variables["--color-one"]
+      );
+      formData.append(
+        "selectedcoScheme[variables][--color-two]",
+        this.data.selectedcoScheme.variables["--color-two"]
+      );
+      formData.append(
+        "selectedcoScheme[variables][--color-three]",
+        this.data.selectedcoScheme.variables["--color-three"]
+      );
+      formData.append(
+        "selectedcoScheme[variables][--color-four]",
+        this.data.selectedcoScheme.variables["--color-four"]
+      );
+
+      this.$q.loading.show({
+        message: "Your changes are taking effect",
+      });
+      this.$api
+        .post(
+          `${this.$store.leegoluauth.vendorDetails.slug}/builder/update`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Success:", response);
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+            position: "bottom",
           });
-      } else {
-        this.$q.notify({
-          message: "Please upload a cover photo and a logo",
-          color: "red",
+          this.$router.replace({
+            name: "vendor.page",
+            params: { slug: this.$store.leegoluauth.vendor.slug },
+          });
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.errors = response.data.message;
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: response.data.message,
+            color: "red",
+            position: "bottom",
+            actions: [{ icon: "close", color: "white" }],
+          });
         });
-      }
+      // } else {
+      //   this.$q.notify({
+      //     message: "Please upload a cover photo and a logo",
+      //     color: "red",
+      //   });
+      // }
 
       // console.log(this.data);
     },
@@ -1642,6 +1644,15 @@ export default {
   align-items: center;
 }
 
+.rating .rate {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 8px;
+  line-height: 10px;
+  color: #000000;
+}
+
 .nav_btn_icon {
   font-family: "Inter";
   font-style: normal;
@@ -1657,9 +1668,9 @@ export default {
 
 .initials {
   width: 296px;
-  height: 257.55px;
+  height: 256px;
   // border-radius: 50%;
-  background-color: #0000;
+  background-color: rgb(0, 0, 0);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1672,6 +1683,7 @@ export default {
   font-size: 20px;
   line-height: 21px;
   display: flex;
+  border-radius: 10px;
   align-items: center;
   text-align: center;
   text-transform: uppercase;
@@ -1792,10 +1804,13 @@ export default {
 .desc_text {
   padding: 0 1.5rem;
 }
+.desc_text .des_ {
+  width: 90%;
+}
 
 .active_segment {
   background: #ffffff;
-  border: 3px solid #1f7bb5;
+  border: 3px solid #1f7bb5 !important;
   border-radius: 17px !important;
   padding: 1rem;
 }
@@ -1868,10 +1883,12 @@ export default {
 }
 
 .none_desktop.q-btn {
-  color: white;
+  color: var(--color-one) !important;
   text-transform: capitalize;
   text-align: center;
-  background: var(--secondary-color);
+  background: white;
+  // background: var(--secondary-color);
+  // background: var(--color-one) !important;
 }
 
 .layout_text {
@@ -2116,8 +2133,9 @@ export default {
 .input_search i {
   padding: 1rem;
   font-size: 1rem;
-  color: var(--color-one);
+  color: var(--color-one) !important;
 }
+
 .colorscheme .scheme {
   margin-bottom: 1rem;
 }
@@ -2234,7 +2252,7 @@ export default {
   background: url("/images/sqrpreview.png") no-repeat center;
   background-position: center;
   background-size: cover;
-  height: 256.55px;
+  height: 256px;
 }
 .previewDiv::before {
   position: absolute;
@@ -2330,9 +2348,9 @@ export default {
     margin: 0 1rem;
   }
 
-  .right_nav .q-ml-xl {
-    margin-left: 0.3rem !important;
-  }
+  // .right_nav .q-ml-xl {
+  //   margin-left: 0.3rem !important;
+  // }
   .preview {
     margin: 0 0.5rem;
     font-family: "Inter";
@@ -2519,6 +2537,15 @@ export default {
     height: 45px;
     font-size: 15px;
   }
+  .rating .rate {
+    font-size: 8px;
+  }
+  .det .img img {
+    width: 60px;
+  }
+  .modal .category {
+    font-size: 13px;
+  }
   // .holder .responsive_autofit_grid {
   //   grid-template-columns: repeat(1, 1fr);
   // }
@@ -2655,20 +2682,19 @@ export default {
     width: 100%;
   }
 
-  .span img {
-    width: 30px !important;
-    height: 30px !important;
-    width: 22.69px !important;
-    height: 22.69px !important;
-  }
   .right_nav .q-ml-xl {
     margin: 0;
-    gap: 0.3rem !important;
+    gap: 0rem !important;
   }
   .preview {
     margin: 0 0.1rem;
     width: 74.67px;
     height: 28.07px;
+  }
+
+  .desktop_icon {
+    width: 30px;
+    height: 30px;
   }
 
   .span .q-btn {
@@ -2705,7 +2731,11 @@ export default {
     width: 83px;
     height: 83px;
     // margin-left: 1.4rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .left_logo_area {
+    margin-bottom: 0.3rem;
   }
 
   .left_logo_area .logoside {
@@ -2726,6 +2756,24 @@ export default {
   .desktop_icon img {
     width: 22.69px;
     height: 22.69px;
+  }
+
+  .span img,
+  .desktop_icon img {
+    width: 16.69px;
+    height: 16.69px;
+  }
+
+  .q-drawer .span img {
+    width: 25px;
+    height: 25px;
+  }
+  .colorscheme .scheme {
+    margin-bottom: 0.5rem;
+  }
+
+  .modal_segs {
+    margin-top: 13px;
   }
 }
 

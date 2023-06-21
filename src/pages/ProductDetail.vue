@@ -18,13 +18,16 @@
             v-for="(image, index) in product.data.uploads"
             :key="index"
             :name="index"
+            @click="popupImg(image)"
             :img-src="image.url"
           />
         </q-carousel>
       </div>
 
       <div class="right">
-        <div class="location">{{ product.data.area }}</div>
+        <div class="location">
+          {{ product.data.area.name }}, {{ product.data.state.name }}
+        </div>
         <div class="title q-mb-xs">{{ product.data.name }}</div>
         <div class="price">₦{{ product.data.price.toLocaleString() }}</div>
 
@@ -63,8 +66,8 @@
               <span class="rating_main_text">4.0</span>
               <q-rating
                 v-model="ratingModel"
-                size="1.5em"
-                :max="4"
+                size="1em"
+                :max="5"
                 color="secondary"
               />
               <span class="ratings_subtext"> (2345) </span>
@@ -77,20 +80,22 @@
             flat
             class="bg-secondary"
             color="white"
+            style="border-radius: 5px"
             @click="viewPhone"
-            icon="fa-solid fa-phone-volume"
-            label="Show Contact"
             :loading="loadingBtn"
-          />
+            ><img src="/images/cal.svg" class="q-mr-sm" alt="" />Show
+            Contact</q-btn
+          >
           <q-btn
             flat
             @click="viewChat"
+            style="border-radius: 5px"
             color="white"
             class="bg-primary"
-            icon="fa-solid fa-message"
-            label="Chat Seller"
             :loading="loadingChatBtn"
-          />
+            ><img src="/images/chat.svg" class="q-mr-sm" alt="" />Chat
+            Seller</q-btn
+          >
         </div>
         <hr class="q-mt-xl q-mb-md" />
 
@@ -246,15 +251,15 @@
             />
           </div>
           <div class="vendorname">{{ product.vendor.business_name }}</div>
-          <!-- <div class="ratings_area">
+          <div class="ratings_area">
             <span class="rating_main_text">4.0</span>
             <q-rating
               v-model="ratingModel"
-              size="1.5em"
-              :max="4"
+              size="1em"
+              :max="5"
               color="secondary"
             />
-          </div> -->
+          </div>
 
           <div class="call_ven q-mt-lg">
             <a target="_blank" :href="`tel:${phone_number}`"
@@ -282,6 +287,19 @@
         @closeModalRatings="closeRatings"
       />
     </q-dialog>
+
+    <q-dialog v-model="popImageDialog">
+      <q-card class="showModalImg">
+        <!-- hello there -->
+        <q-img spinner-color="primary" :src="popImg">
+          <template v-slot:error>
+            <div class="absolute-full flex flex-center bg-negative text-white">
+              Cannot load image
+            </div>
+          </template>
+        </q-img>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -297,8 +315,10 @@ export default {
       product: ref({}),
       slide: ref(1),
       productDetails: [],
+      popImg: ref(""),
       hoursago: "",
       loading: ref(true),
+      popImageDialog: ref(false),
       loadingBtn: ref(false),
       loadingChatBtn: ref(false),
       conversationDetails: {},
@@ -334,6 +354,11 @@ export default {
   },
 
   methods: {
+    popupImg(img) {
+      console.log(img);
+      this.popImageDialog = true;
+      this.popImg = img.url;
+    },
     close() {
       this.chat = false;
       // console.log("first");
@@ -464,7 +489,8 @@ p {
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  text-transform: capitalize;
+  text-transform: uppercase;
+  // text-transform: capitalize;
 }
 .product_detail_wrap .title {
   font-weight: 600;
@@ -486,6 +512,19 @@ p {
   line-height: 15px;
   text-transform: capitalize;
   color: #9d9d9d;
+}
+
+.showModalImg {
+  min-width: 100%;
+  overflow: hidden;
+  // height: 100%;
+}
+
+@media (min-width: 500px) {
+  .showModalImg {
+    min-width: 500px;
+    // height: 100%;
+  }
 }
 
 p.desc {
@@ -569,6 +608,10 @@ hr {
   text-align: center;
   text-transform: capitalize;
   color: #ffffff;
+}
+.btns .q-btn img {
+  width: 16.67px;
+  height: 16.67px;
 }
 
 p.guide {
@@ -745,6 +788,17 @@ ul li {
     grid-template-columns: 1fr;
     gap: 14rem;
   }
+  .right {
+    padding: 1rem 1rem 1rem;
+  }
+
+  .posted {
+    margin-top: 0px;
+  }
+
+  p.desc {
+    margin-bottom: 0.8rem;
+  }
 }
 @media (max-width: 500px) {
   .info_item {
@@ -763,13 +817,17 @@ ul li {
   }
 
   .product_detail_wrap .location {
-    font-size: 12px;
+    font-size: 10px;
   }
   .product_detail_wrap .title {
     font-size: 20px;
+    margin-bottom: 0.3rem;
+    line-height: 25px;
   }
   .product_detail_wrap .price {
     font-size: 28px;
+    line-height: 25px;
+    margin-bottom: 0.4rem;
   }
 
   .posted small {

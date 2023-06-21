@@ -1,6 +1,6 @@
 <template>
   <q-layout class="page_">
-    <div class="page_">
+    <div class="">
       <q-card v-if="modal1" class="create_ad container">
         <div class="dialog_top">
           <img src="/images/flag.png" alt="" />
@@ -44,6 +44,9 @@
             class="uploaded_thumbs"
           >
             <img :src="image.url" alt="" />
+            <q-btn @click="removeImage(index)" flat>
+              <i class="fa-solid fa-xmark"></i>
+            </q-btn>
           </div>
         </div>
         <div v-if="edit" class="images">
@@ -53,6 +56,9 @@
             class="uploaded_thumbs"
           >
             <img :src="image.url" alt="" />
+            <q-btn @click="removeImage(index)" flat>
+              <i class="fa-solid fa-xmark"></i>
+            </q-btn>
           </div>
         </div>
 
@@ -137,13 +143,34 @@
 
           <div class="input-box active-grey">
             <label class="input-label">Advert Description </label>
-            <textarea
+            <!-- <textarea
               v-model="data.description"
               name=""
               id=""
               cols="30"
               rows="10"
-            ></textarea>
+            ></textarea> -->
+            <!-- :definitions="{
+                save: {
+                  tip: 'Save your work',
+                  icon: 'save',
+                  label: 'Save',
+                  handler: saveWork,
+                },
+                upload: {
+                  tip: 'Upload to cloud',
+                  icon: 'cloud_upload',
+                  label: 'Upload',
+                  handler: uploadIt,
+                },
+              }" -->
+            <q-editor v-model="data.description" min-height="5rem" />
+            <!-- <q-editor
+              v-model="data.description"
+              :definitions="{
+                bold: { label: 'Bold', icon: null, tip: 'My bold tooltip' },
+              }"
+            /> -->
           </div>
 
           <div class="wraps">
@@ -158,7 +185,11 @@
             <div class="price">
               <div class="input-box active-grey">
                 <label class="input-label">Price</label>
-                <input v-model="data.price" type="number" class="input-1" />
+                <input
+                  @blur="formatPrice"
+                  v-model="data.price"
+                  class="input-1"
+                />
               </div>
               <div>
                 <q-checkbox
@@ -237,7 +268,7 @@
               </div>
             </div> -->
 
-        <div class="q-py-lg advert q-gutter-sm">
+        <!-- <div class="q-py-lg advert q-gutter-sm">
           <label class="adDet">Advert Details</label>
           <q-editor
             v-model="editor"
@@ -260,7 +291,7 @@
               ['upload', 'save'],
             ]"
           />
-        </div>
+        </div> -->
 
         <div class="row no-wrap items-center justify-between">
           <q-btn
@@ -278,7 +309,8 @@
             :loading="loading"
             type="button"
             color="primary"
-            class="btn"
+            class="btn q-mr-md"
+            no-caps
             >Edit Listing</q-btn
           >
           <q-btn @click="prev" type="button" outline class="btn prev"
@@ -384,24 +416,31 @@
             </q-btn>
           </div>
         </q-card>
-        <!-- <q-card-section>
-          <div class="text-h6">Success</div>
-        </q-card-section>
+      </q-dialog>
+      <q-dialog v-model="successeditModal">
+        <q-card>
+          <q-card-section>
+            <div class="text successful">
+              <img src="/images/congrats.svg" alt="" />
+            </div>
+          </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          You have successfully created a listing
-        </q-card-section>
+          <q-card-section class="q-pt-none">
+            You have successfully edited your listing
+          </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn
-            :to="{ name: 'listings' }"
-            flat
-            class="bg-primary text-white"
-            label="View Listings"
-            color="primary"
-            v-close-popup
-          />
-        </q-card-actions> -->
+          <q-card-actions align="right">
+            <q-btn
+              :to="{ name: 'listings' }"
+              flat
+              class="bg-primary text-white"
+              label="Go Back"
+              no-caps
+              color="primary"
+              v-close-popup
+            />
+          </q-card-actions>
+        </q-card>
       </q-dialog>
     </div>
   </q-layout>
@@ -444,9 +483,10 @@ export default {
       editData: {},
       loading: false,
       dialogAvatar: false,
-      data: { negotiable: true },
+      data: { negotiable: true, description: "" },
       data2: {},
       createdProduct: {},
+      successeditModal: false,
     };
   },
   setup() {
@@ -458,10 +498,7 @@ export default {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
     return {
-      editor: ref(
-        "After you define a new button," +
-          " you have to make sure to put it in the toolbar too!"
-      ),
+      editor: ref(""),
 
       saveWork() {
         $q.notify({
@@ -498,6 +535,19 @@ export default {
   },
 
   methods: {
+    formatPrice() {
+      // this.data.price = this.data.price.toLocaleString();
+      // console.log("hello");
+      // console.log(typeof this.data.price);
+      const numericValue = parseFloat(this.data.price.replace(/,/g, ""));
+
+      if (!isNaN(numericValue)) {
+        const formattedValue = numericValue.toLocaleString(undefined, {
+          useGrouping: true,
+        });
+        this.data.price = formattedValue;
+      }
+    },
     setAvatar(props) {
       console.log(props);
       // var reader = new FileReader();
@@ -562,16 +612,43 @@ export default {
       this.$api
         .get(`product/${this.$router.currentRoute.value.query.listing}`)
         .then((response) => {
+          this.edit = true;
+
           console.log(response);
           console.log(response.data.data.name);
+          this.getUploadRequirements(response.data.data.subcategory.id);
+          this.getSubCategory(response.data.data.category.slug);
+          this.getAreas(response.data.data.area.state_id);
+          this.showarea = true;
+          this.showsubCat = true;
           this.editData = response.data.data;
           this.data.name = response.data.data.name;
           this.data.brand = response.data.data.brand;
           this.data.description = response.data.data.description;
           this.data.price = response.data.data.price;
           this.data.condition = response.data.data.condition;
-          this.edit = true;
+          this.data.area = response.data.data.area.id;
+          this.data2.category = response.data.data.category.slug;
+          this.data2.location = response.data.data.area.state_id;
+          this.data.subcategory = response.data.data.subcategory.id;
+          this.data.gender = response.data.data.details.gender;
+          this.data.brand = response.data.data.details.brand;
+          this.data.jewelry_brand = response.data.data.details.jewelry_brand;
+          this.data.jewelry_type = response.data.data.details.jewelry_type;
+          this.data.main_material = response.data.data.details.main_material;
+          this.data.main_stone = response.data.data.details.main_stone;
+          this.data.model = response.data.data.details.model;
+          this.data.pc_type = response.data.data.details.pc_type;
+          this.data.processor = response.data.data.details.processor;
+
           // this.data.name = response.data.name
+          // for (const key in response.data.data.details) {
+          //   if (this.data.hasOwnProperty(key)) {
+          //     this.data[key] = response.data.data.details[key];
+          //   }
+          // }
+
+          // console.log(this.data);
         })
         .catch((e) => {
           this.loading = false;
@@ -590,7 +667,7 @@ export default {
     setFile(props) {
       console.log(props);
       this.uploadedImagesToSend = props;
-      this.edit = false;
+      // this.edit = false;
       props.forEach((element) => {
         var reader = new FileReader();
         // reader.onload = (e) => {
@@ -605,6 +682,14 @@ export default {
           reader.readAsDataURL(element);
         }
       });
+    },
+
+    removeImage(index) {
+      if (this.edit) {
+        this.editData.uploads.splice(index, 1);
+      } else {
+        this.uploadedImages.splice(index, 1);
+      }
     },
 
     prev() {
@@ -671,23 +756,12 @@ export default {
           this.errors = error.errors || {};
         });
     },
-    // getUploadRequirements(id) {
-    //   this.$api
-    //     .get(`${"61a8ee18-7277-46fc-81c0-41ee7147a1c5"}/requirement`)
-    //     .then((response) => {
-    //       console.log(response);
-    //       this.requirements = response.data.data[0].dropdowns;
-    //     })
-    //     .catch((e) => {
-    //       this.loading = false;
-    //       this.errors = error.errors || {};
-    //     });
-    // },
+
     getUploadRequirements(id) {
       this.$api
         .get(`${id}/requirement`)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           this.requirements = response.data.data[0].dropdowns;
         })
         .catch((e) => {
@@ -790,10 +864,10 @@ export default {
       // formData.append("METHOD", 'PUT')
       if (this.uploadedImages.length) {
         formData.append("uploads[]", imageFiles[0]);
-        formData.append("uploads[]", imageFiles[1]);
-        formData.append("uploads[]", imageFiles[2]);
-        formData.append("uploads[]", imageFiles[3]);
-        formData.append("uploads[]", imageFiles[4]);
+        formData.append("uploads[]", imageFiles[1] ? imageFiles[1] : null);
+        formData.append("uploads[]", imageFiles[2] ? imageFiles[2] : null);
+        formData.append("uploads[]", imageFiles[3] ? imageFiles[3] : null);
+        formData.append("uploads[]", imageFiles[4] ? imageFiles[4] : null);
       }
 
       for (var key in createproductObject) {
@@ -803,7 +877,7 @@ export default {
       this.loading = true;
       this.$api
         .put(
-          `product/${this.$router.currentRoute.value.query.listing}`,
+          `${this.$router.currentRoute.value.query.listing}/product/edit`,
           formData,
           {
             headers: {
@@ -815,6 +889,8 @@ export default {
           console.log("Success:", response);
           // this.createdProduct = response.data.product;
           this.loading = false;
+          this.modal2 = false;
+          this.successeditModal = true;
           this.$q.notify({
             message: response.data.message,
             color: "green",
@@ -940,6 +1016,20 @@ export default {
 
 input:focus {
   outline: none;
+}
+
+.uploaded_thumbs {
+  position: relative;
+}
+.uploaded_thumbs .q-btn {
+  position: absolute;
+  top: 1%;
+  right: 1%;
+  background: #ee4e36;
+  color: white;
+  padding: 3px 5px;
+  font-size: 10px;
+  min-height: auto;
 }
 
 .search-btn {
@@ -1504,9 +1594,9 @@ p.advert {
     margin: 2rem auto;
     min-width: 95% !important;
   }
-  .create_ad {
-    margin: 2rem auto;
-  }
+  // .create_ad {
+  //   margin: 2rem auto;
+  // }
 }
 @media (max-width: 500px) {
   .dialog_content .middle.advert {
@@ -1606,8 +1696,8 @@ p.advert {
     width: 50px;
   }
 
-  .row {
-    gap: 1rem;
-  }
+  // .row {
+  //   gap: 1rem;
+  // }
 }
 </style>

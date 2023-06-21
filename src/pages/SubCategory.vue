@@ -92,7 +92,7 @@
             <div @click="goto(product)">
               <img :src="product.uploads[0].url" alt="" />
               <div class="location">
-                <p>{{ product.area }}</p>
+                <p>{{ product.area.name }}, {{ product.state.name }}</p>
               </div>
               <div class="name">
                 <p>{{ product.name }}</p>
