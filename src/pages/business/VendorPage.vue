@@ -23,7 +23,7 @@
     <div class="upload_logo_area">
       <div class="upload_wrap container row justify-between items-center">
         <div class="left">
-          <div class="left_wrap mobile row items-center q-col-gutter-x-md">
+          <div class="left_wrap mobile row q-col-gutter-x-md">
             <div class="left_logo_area">
               <!-- {{ preview }} -->
               <img v-if="builderData.logo" :src="builderData.logo.url" alt="" />
@@ -64,13 +64,20 @@
         <div class="right">
           <div class="vendor_btns">
             <q-btn
-              class="none_ vendor_btn"
+              :class="
+                vendor.like ? 'none_ like vendor_btn' : 'none_ vendor_btn'
+              "
               icon="fa-solid fa-heart"
               label="Like"
               flat
+              @click="vendor.like === false ? addtoFav() : removeFav()"
             />
-            <q-btn class="none_ vendor_btn" flat @click="phoneDialog = true">
-              <img src="/images/call.svg" alt="" />
+            <q-btn
+              class="none_ vendor_btn"
+              icon="fa-solid fa-phone"
+              flat
+              @click="phoneDialog = true"
+            >
               <span class="q-ml-sm">Contact Business</span></q-btn
             >
           </div>
@@ -79,7 +86,13 @@
             style="gap: 0.5rem"
             class="row none_desktop no-wrap items-center"
           >
-            <q-btn class="none_desktop" icon="fa-solid fa-heart" label="" />
+            <q-btn
+              class="none_desktop"
+              :class="vendor.like ? 'none_desktop like' : 'none_desktop'"
+              @click="vendor.like === false ? addtoFav() : removeFav()"
+              icon="fa-solid fa-heart"
+              label=""
+            />
             <q-btn
               class="none_desktop"
               icon="fa-solid fa-phone"
@@ -554,6 +567,7 @@ export default {
     ChatPageVue,
   },
   mounted() {
+    // console.log(this.$router.currentRoute.value.params.slug);
     // console.log(this.$store.leegoluauth.pageBuilderData);
     // this.colorSchemeStyles =
     //   this.$store.leegoluauth.pageBuilderData.selectedcoScheme.variables;
@@ -629,6 +643,44 @@ export default {
     },
   },
   methods: {
+    addtoFav() {
+      let vendor = this.$router.currentRoute.value.params.slug;
+      // console.log(slug);
+      this.$api
+        .post(`vendor/${vendor}/like`)
+        .then((response) => {
+          this.getVendor();
+          this.$q.notify({
+            message: "Vendor added to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+
+          this.errors = error.errors || {};
+        });
+    },
+    removeFav() {
+      let vendor = this.$router.currentRoute.value.params.slug;
+      // console.log(slug);
+      this.$api
+        .delete(`vendor/${vendor}/like`)
+        .then((response) => {
+          this.getVendor();
+          this.$q.notify({
+            message: "Vendor removed from favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+
+          this.errors = error.errors || {};
+        });
+    },
     close() {
       this.chat = false;
       // console.log("first");
@@ -679,13 +731,19 @@ export default {
       }
     },
     loadCollections() {
+      let vendor = this.$router.currentRoute.value.params.slug;
       return this.$api
-        .get(`collection/${this.$store.leegoluauth.vendorDetails.slug}/all`)
+        .get(
+          `collection/${
+            this.$store.leegoluauth.vendorDetails.slug || vendor
+          }/all`
+        )
         .then((response) => response.data.data);
     },
     loadAllProducts() {
+      let vendor = this.$router.currentRoute.value.params.slug;
       return this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
+        .get(`vendor/${this.$store.leegoluauth.vendor.slug || vendor}`)
         .then((response) => response.data.vendor.products);
     },
     combineProducts() {
@@ -718,6 +776,8 @@ export default {
       this.$api
         .get(`vendor/${vendor}`)
         .then((response) => {
+          // console.log(response);
+
           this.vendor = response.data.vendor;
           this.products = response.data.vendor.products;
           //       this.colorSchemeStyles =
@@ -739,7 +799,6 @@ export default {
           this.coverpreview = response.data.pagebuilder.cover_img.url;
           this.preview = response.data.pagebuilder.logo.url;
           this.loading = false;
-          console.log(response);
         })
         .catch(({ response }) => {
           this.loading = false;
@@ -747,8 +806,13 @@ export default {
     },
 
     getCollections() {
+      let vendor = this.$router.currentRoute.value.params.slug;
       this.$api
-        .get(`collection/${this.$store.leegoluauth.vendorDetails.slug}/all`)
+        .get(
+          `collection/${
+            this.$store.leegoluauth.vendorDetails.slug || vendor
+          }/all`
+        )
         .then(({ data }) => {
           // console.log(data);
           this.collections = data.data;
@@ -986,6 +1050,8 @@ export default {
 
 .left_details {
   position: relative;
+  padding-top: 0.7rem;
+  width: 100%;
 }
 
 .left_details_desc {
@@ -1073,6 +1139,20 @@ export default {
   color: var(--primary-color);
 }
 
+.upload_wrap .left {
+  flex: 2;
+}
+
+.upload_wrap .right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rating {
+  margin-bottom: 1.5rem;
+}
+
 .left_paragraph {
   font-family: "Inter";
   font-style: normal;
@@ -1081,7 +1161,7 @@ export default {
   line-height: 15px;
   position: absolute;
   width: 100%;
-  bottom: 0;
+  bottom: 14%;
   color: var(--primary-color);
 }
 
@@ -1095,6 +1175,11 @@ export default {
 
 .none_desktop {
   display: none;
+}
+
+.q-btn.none_.like,
+.q-btn.none_desktop.like {
+  color: #ee4e36 !important;
 }
 
 .none_desktop.q-btn {
@@ -1294,7 +1379,7 @@ export default {
 .holder {
   background: #ffffff;
   // width: 95%;
-  padding: 0 1rem;
+  // padding: 0 1rem;
   margin: 0 auto;
 }
 
@@ -1305,8 +1390,8 @@ export default {
 }
 
 .holder .responsive_autofit_grid {
-  // width: 95%;
-  // margin: 0 auto;
+  width: 90%;
+  margin: 0 auto;
   padding-bottom: 3rem;
   gap: 1rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1459,6 +1544,7 @@ export default {
   background: unset;
   width: unset;
   padding: unset;
+  flex-wrap: nowrap;
 }
 
 // .left_wrap .left_details {
@@ -1535,6 +1621,8 @@ export default {
 
 @media (max-width: 1200px) {
   .holder .responsive_autofit_grid {
+    margin-top: 0;
+    padding-top: 0;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -1543,8 +1631,12 @@ export default {
     left: -2%;
   }
 
+  .upload_wrap .left {
+    flex: 1.5;
+  }
+
   .segment_wrap {
-    margin: 6rem auto 0rem;
+    margin: 5rem auto 0rem;
   }
 }
 @media (max-width: 950px) {
@@ -1552,6 +1644,7 @@ export default {
   //   width: 100%;
   // }
   .holder .responsive_autofit_grid {
+    width: 95%;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
   .left_logo_area .outline.q-btn {
@@ -1563,6 +1656,10 @@ export default {
     align-items: center;
     gap: 1rem;
     margin: 0 1rem;
+  }
+
+  .editor_hero {
+    height: 25vh;
   }
 
   .right_nav .q-ml-xl {
@@ -1577,6 +1674,10 @@ export default {
     line-height: 12px;
     text-align: center;
     width: 85px;
+  }
+
+  .segment_wrap {
+    margin: 0rem auto 0rem;
   }
 
   .left_paragraph .outline.q-btn img {
@@ -1618,7 +1719,7 @@ export default {
   }
 
   .segment_wrap {
-    margin-top: 7.5rem;
+    // margin-top: 7.5rem;
     background: transparent;
     border: none;
     width: 100%;
@@ -1637,7 +1738,16 @@ export default {
 
   .upload_logo_area {
     height: auto;
-    padding-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    margin-top: -13%;
+  }
+
+  .location {
+    padding-bottom: 0;
+  }
+
+  .left_details {
+    padding: 0;
   }
 
   .desc_text {
@@ -1722,6 +1832,7 @@ export default {
   .upload_logo_area {
     height: auto;
     padding-bottom: 0.5rem;
+    margin-top: -22%;
   }
 
   .fit .span {
@@ -1739,7 +1850,8 @@ export default {
     font-size: 15px;
   }
   .holder .responsive_autofit_grid {
-    margin-top: 1.2rem;
+    margin-top: 0rem;
+    padding-top: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
   .rating .rate {
@@ -1824,7 +1936,8 @@ export default {
   .left_details_desc {
     font-size: 10px;
     line-height: 13px;
-    margin-top: 10px;
+    margin-top: 8px;
+    margin-bottom: 2px;
   }
   .outline.q-btn,
   .outline.q-btn span {
@@ -1919,7 +2032,7 @@ export default {
     color: #000;
   }
   .upload_logo_area {
-    margin-top: -20%;
+    margin-top: -16%;
   }
   .left_logo_area img,
   .left_logo_area .logoside {
@@ -1943,6 +2056,11 @@ export default {
   }
 }
 
+@media (max-width: 420px) {
+  .upload_logo_area {
+    margin-top: -20%;
+  }
+}
 @media (max-width: 360px) {
   .span img {
     width: 15.69px !important;
@@ -1960,7 +2078,7 @@ export default {
   }
 
   .desc_text {
-    padding: 1.5rem 1rem 0;
+    padding: 1rem 1rem 0;
   }
 }
 @media (max-width: 340px) {

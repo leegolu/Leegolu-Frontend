@@ -17,7 +17,8 @@
         <div class="left"></div>
         <div class="right">
           <q-btn @click="dialogCreate = true" class="regular">
-            New Collection <i class="fa-solid q-ml-sm fa-plus"></i
+            <span> New <span class="dontshow q-ml-xs"> Collection</span></span>
+            <i class="fa-solid q-ml-sm fa-plus"></i
           ></q-btn>
         </div>
       </div>
@@ -802,6 +803,10 @@ export default {
   color: #000000;
 }
 
+.form img.previewimg {
+  border: none;
+}
+
 .sort_area {
   // background: #f5f5f5;
   border-top: 1px solid #d9d9d9;
@@ -1348,6 +1353,15 @@ input {
   }
   .dialog_content .left_dialog .title {
     font-size: 20px;
+  }
+
+  .dontshow {
+    display: none;
+  }
+
+  .sort_area .right .q-btn {
+    width: auto;
+    height: 34px;
   }
 }
 </style>
