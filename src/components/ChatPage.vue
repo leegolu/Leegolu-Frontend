@@ -194,6 +194,11 @@ export default {
   mounted() {
     if (this.conversationMessages.length) {
       this.scrollToBottom();
+      const myDiv = this.$refs.myDiv;
+      myDiv.scrollTop = myDiv.scrollHeight;
+      let lastChildDiv = myDiv.lastElementChild;
+      console.log(lastChildDiv);
+      lastChildDiv.scrollIntoView({ behavior: "smooth", block: "end" });
     }
 
     // console.log(this.conversationDetails.id);
@@ -330,7 +335,7 @@ export default {
           });
           this.data.message = "";
           this.$emit("convo", this.conversationDetails);
-          this.$emit("refresh-message", this.conversationDetails);
+          // this.$emit("refresh-message", this.conversationDetails);
           if (this.conversationMessages.length) {
             this.scrollToBottom();
           }
@@ -547,7 +552,8 @@ p.advert {
   justify-content: space-between;
   align-items: flex-end;
   gap: 0.3rem;
-  width: 80%;
+  // width: 80%;
+  width: fit-content;
   text-align: left;
 }
 

@@ -7,7 +7,7 @@
     </div>
     <div class="title">{{ plan.name }}</div>
     <div class="amount">
-      {{ plan.price }}
+      ₦{{ plan.price }}
       <br />
       <div class="small">Per month</div>
     </div>
@@ -45,7 +45,7 @@
             </div>
           </div>
           <div class="title">{{ plan.name }}</div>
-          <div class="amount">{{ plan.price }}</div>
+          <div class="amount">₦{{ plan.price }}</div>
 
           <div v-if="errors.name" class="input-box active-grey">
             <label class="input-label">Business Name</label>
@@ -114,8 +114,12 @@ export default {
             // console.log(response.data);
             // console.log(response.data.vendor);
             this.$store.leegoluauth.vendorDetails = response.data.vendor;
+            this.$store.leegoluauth.vendor = response.data.vendor;
             this.$helper.notify(response.data.message, "success");
-            this.$router.replace({ name: "business.dashboard" });
+            this.$router.replace({
+              name: "business.dashboard",
+              query: { videotour: "yes" },
+            });
             this.loading = false;
           })
           .catch(({ response }) => {
@@ -133,8 +137,12 @@ export default {
           .then((response) => {
             // console.log(response);
             this.$store.leegoluauth.vendorDetails = response.data.vendor;
+            this.$store.leegoluauth.vendor = response.data.vendor;
             this.$helper.notify(response.data.message, "success");
-            this.$router.replace({ name: "business.dashboard" });
+            this.$router.replace({
+              name: "business.dashboard",
+              query: { videotour: "yes" },
+            });
             this.loading = false;
           })
           .catch(({ response }) => {
@@ -182,6 +190,7 @@ export default {
 
 .card {
   position: relative;
+  padding: 1rem;
 }
 
 .card:nth-child(1) img:last-of-type {
@@ -313,6 +322,7 @@ export default {
   background: #ffffff;
   box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
   border-radius: 4px;
+  padding: 1rem;
   position: relative;
 }
 
@@ -349,13 +359,13 @@ export default {
 }
 
 .dialog_content .boost {
-  padding: 1rem;
+  padding: 1rem 0;
 }
 
 .dialog_content .close {
   position: absolute;
   top: 1%;
-  right: 2%;
+  right: 1%;
   color: #979797;
   font-size: 1rem;
 }
@@ -390,6 +400,7 @@ textarea {
   select,
   textarea {
     width: 100%;
+    // margin: 0 auto !important;
   }
   .input-label {
     color: $color;
@@ -402,6 +413,8 @@ textarea {
 }
 .input-box {
   position: relative;
+  // display: grid;
+  // place-items: center;
   margin: 25px;
   .input-label {
     position: absolute;
@@ -467,5 +480,12 @@ textarea {
   line-height: 100%;
   letter-spacing: -0.01em;
   color: #000000;
+}
+
+@media (max-width: 500px) {
+  .dialog_card {
+    min-width: 100%;
+    width: 100%;
+  }
 }
 </style>

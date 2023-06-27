@@ -20,7 +20,7 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 60vh;
+  height: 40vh;
   justify-content: center;
   gap: 1rem;
 }
@@ -40,11 +40,11 @@ input::placeholder {
   color: #9a9a9a;
 }
 
-.main_text {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+// .main_text {
+//   white-space: nowrap;
+//   text-overflow: ellipsis;
+//   overflow: hidden;
+// }
 
 $color: #80868b;
 $active-color: #1a73e8;
@@ -395,17 +395,44 @@ select:focus {
   padding: 0rem 3rem 0;
   position: relative;
 }
+.dash_modal .modal {
+  padding: 2rem 2.5rem 0;
+  // padding: 2.5rem 2.5rem 0;
+  max-height: 507px;
+}
+.dash_modal .modal.two {
+  padding: 0rem 2.5rem 0;
+}
+.dash_modal .modal.three {
+  height: 100%;
+  padding: 2.5rem 2.5rem 1.2rem;
+}
+
+.dash_modal .modal.three .modal_sub_text {
+  margin: 0.3rem 0 1.5rem;
+}
 
 .dash_modal .q-dialog__backdrop {
+  // background: rgba(194, 230, 233, 0.9);
   background: rgba(0, 43, 96, 0.9);
 }
 .modal_wrap {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  // grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   align-items: center;
-  margin-bottom: 1rem;
+  // margin-bottom: 1rem;
 }
+
+// .modal_wrap {
+//   gap: 0rem;
+//   padding: 2rem 0;
+//   grid-template-columns: 1fr;
+// }
+// .modal .right img {
+//   display: none;
+// }
 
 .modal .right {
   padding-top: 0;
@@ -415,17 +442,18 @@ select:focus {
 .modal_main {
   font-family: "Open Sans";
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
-  line-height: 44px;
+  line-height: 34px;
+  // line-height: 44px;
   color: #000000;
-  padding-top: 1rem;
+  // padding-top: 1rem;
 }
 
 .modal_main_text {
   font-family: "Open Sans";
   font-style: normal;
-  font-weight: 600;
+  // font-weight: 600;
   font-size: 24px;
   line-height: 33px;
   white-space: nowrap;
@@ -435,28 +463,35 @@ select:focus {
 .modal_sub_text {
   font-family: "Open Sans";
   font-style: normal;
-  font-weight: 400;
+  // font-weight: 400;
   font-size: 16px;
   line-height: 22px;
-  margin: 1.5rem 0;
+  margin: 1rem 0 1.5rem;
   color: #000000;
 }
 .modal.two .modal_sub_text {
-  margin: 0.1rem 0;
+  margin: 0.6rem 0;
 }
 
 .modal ul li {
   font-family: "Open Sans";
   font-style: normal;
-  font-weight: 600;
+  // font-weight: 600;
   font-size: 15px;
   line-height: 20px;
   color: #000000;
-  margin: 0.6rem 0;
+  display: flex;
+  align-items: center;
+  margin: 0.8rem 0;
 }
 .modal ul li i {
   color: green;
   font-size: 1.2rem;
+}
+.modal ul li img {
+  width: 18px;
+  height: 19.165px;
+  margin-right: 0.5rem;
 }
 
 .modal .skip {
@@ -516,6 +551,7 @@ select:focus {
 }
 .form img.previewimg {
   width: 184px;
+  object-fit: cover;
   height: 184px;
   border: 5px solid rgba(53, 113, 150, 0.26);
   border-radius: 104.5px;
@@ -664,7 +700,9 @@ select:focus {
   line-height: 11px;
   color: #9d9d9d;
 }
-
+.goggle_auth img {
+  height: auto !important;
+}
 .layout_footer .more {
   border: 1px solid #000000;
   border-radius: 50%;
@@ -696,7 +734,9 @@ select:focus {
   // width: 30px;
   // height: 30px;
 }
-
+.tour {
+  font-weight: 500;
+}
 .goggle_auth {
   padding-bottom: 1.5rem;
 }
@@ -778,20 +818,18 @@ select:focus {
     display: none;
   }
 
-  .modal .right img {
-    display: none;
-  }
-
   .modal_main {
     font-size: 25px;
     line-height: 1.32;
   }
   .modal {
     padding: 0rem 1rem 0;
+    // height: 100%;
   }
 
   .modal_sub_text {
     font-size: 14px;
+    margin: 0.5rem 0 1rem;
   }
 
   .modal_sub_text .q-btn {
@@ -802,12 +840,6 @@ select:focus {
     right: 4%;
   }
 
-  .modal_wrap {
-    gap: 0rem;
-    padding: 2rem 0;
-    grid-template-columns: 1fr;
-  }
-
   .btn {
     margin-top: 0;
   }
@@ -816,14 +848,54 @@ select:focus {
     padding-top: 1rem;
   }
 }
-@media (max-width: 700px) {
+@media (max-width: 764px) {
+}
+@media (max-width: 764px) {
   .modal .skip {
     width: auto;
   }
-  .modal .proceed {
-    width: auto;
+  .dash_modal .modal {
+    padding: 1rem 1.3rem 0;
+    max-height: 100%;
+  }
+  .modal ul {
+    margin: 0.5rem 0 2rem;
+  }
+  // .modal .proceed {
+  //   width: auto;
+  // }
+  .right img {
+    width: 80px;
+    height: 80px;
   }
 
+  .modal_wrap {
+    gap: 0;
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .modal.two .modal_wrap .left {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .dash_modal .modal.three .left {
+    width: 100%;
+  }
+  .dash_modal .modal.three .left .btn {
+    width: 100%;
+  }
+
+  .dash_modal .modal.three {
+    padding: 1rem 2.5rem 1.2rem;
+  }
+
+  .modal.two .modal_wrap .left .previewMain {
+    margin: 0 auto;
+  }
+  .modal.two .modal_wrap {
+    justify-content: center;
+    align-items: center;
+  }
   .sort_area {
     gap: 0.5rem !important;
   }
@@ -845,6 +917,9 @@ select:focus {
 
   .sort_area .right {
     padding-top: 0rem !important;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .sort_area .left {
@@ -933,6 +1008,7 @@ select:focus {
   .logo img {
     width: 125px !important;
     height: 31px !important;
+    object-fit: contain;
   }
 
   .header_icons .le .q-btn.avatar img {
@@ -944,7 +1020,7 @@ select:focus {
     grid-template-columns: 1fr 1fr 1fr !important;
     gap: 1.4rem 0.7rem !important;
     // gap: 2rem 0.7rem !important;
-    padding-bottom: 1.5rem !important;
+    // padding-bottom: 1.5rem !important;
     // padding-bottom: 2rem !important;
     grid-template-areas:
       "long long long"
@@ -1028,6 +1104,23 @@ select:focus {
   .small_card .small_card_main_text {
     font-size: 12px !important;
   }
+  .dash_modal .modal .row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .dash_modal .modal.two {
+    padding: 0.5rem 1rem 0;
+  }
+  .dash_modal .modal.three {
+    padding: 0rem 1rem 1.2rem;
+  }
+  .dash_modal .modal .row .q-btn {
+    width: 100%;
+  }
+
+  .modal ul li {
+    margin: 0.5rem 0;
+  }
 
   .main_card .right img {
     right: -15% !important;
@@ -1047,6 +1140,10 @@ select:focus {
 
   .main {
     overflow: hidden;
+  }
+
+  .small_cards {
+    padding-bottom: 0.8rem !important;
   }
 
   .left_main,

@@ -2,17 +2,15 @@
   <div v-if="show" class="hold">
     <div style="gap: 1rem" class="head row items-center no-wrap">
       <div class="left">
-        <img src="/images/shop.svg" alt="" />
-        <img v-if="play" class="play" src="/images/play.svg" alt="" />
+        <img src="/images/success.png" alt="" />
       </div>
       <div class="details">
         <div class="why_title">{{ title }}</div>
         <div class="why_desc">{{ desc }}</div>
 
         <div class="q-mt-lg">
-          <q-btn class="visit" flat
-            >{{ !play ? "View your dashboard" : "Take a tour" }}
-            <img src="/images/bluearrow.svg" alt=""
+          <q-btn @click="handleShow" class="visit" flat
+            >{{ "Return" }} <img src="/images/bluearrow.svg" alt=""
           /></q-btn>
         </div>
       </div>
@@ -54,23 +52,23 @@ export default {
   max-width: 445px;
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1);
 }
 .head {
   background: #ffffff;
   box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
-  width: fit-content;
+  width: 100%;
   padding: 0.5rem;
   position: relative;
   height: 147px;
 }
 
 .left {
-  background: linear-gradient(180deg, #0f476a 0%, #1f7bb5 100%);
+  // background: linear-gradient(180deg, #0f476a 0%, #1f7bb5 100%);
   border-radius: 12px;
   position: relative;
-  height: 100%;
+  // height: 100%;
 }
 
 .left .play {
@@ -100,8 +98,8 @@ export default {
 }
 
 img {
-  width: 162px;
-  height: 100%;
+  width: 72px;
+  height: 72px;
 }
 
 .menu_bar_btn {
@@ -168,13 +166,15 @@ img {
   }
 
   img {
-    width: 102px;
-    height: 100%;
+    width: 42px;
+    height: 40px;
+    object-fit: contain;
   }
 
-  .left .play {
-    width: 29.54px;
-    height: 29.62px;
+  .left {
+    border-radius: 12px;
+    position: relative;
+    // height: 100%;
   }
 }
 </style>

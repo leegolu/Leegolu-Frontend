@@ -43,7 +43,12 @@
         </div>
         <div class="section q-pt-lg">
           <div class="section_main_text">Condition</div>
-          <q-option-group :options="optionsG" type="radio" v-model="group" />
+          <q-option-group
+            color="secondary"
+            :options="optionsG"
+            type="radio"
+            v-model="group"
+          />
         </div>
         <!--<div class="section q-pt-lg">
           <div class="section_main_text">Rating</div>
@@ -101,6 +106,7 @@
             <q-option-group
               :options="priceOptions"
               type="radio"
+              color="secondary"
               v-model="pricegroup"
             />
           </div>
@@ -122,6 +128,7 @@
             unelevated
             label="Filter"
             color="secondary"
+            no-caps
             icon="chevron_left"
             @click="drawer = !drawer"
           />
@@ -173,14 +180,16 @@
               </div>
               <div class="owners">
                 <p class="owner">
-                  <i class="fa-solid q-mr-xs fa-gift"></i
-                  >{{ product.vendor_name }}
+                  <img src="/images/shopp.svg" alt="" />{{
+                    product.vendor_name
+                  }}
                 </p>
                 <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                   <q-rating
-                    v-model="ratingModel"
+                    v-model="product.rating"
                     size="1.5em"
                     :max="4"
+                    disable
                     color="black"
                   />
                   <span>{{ product.ratings_count }}</span>
@@ -192,8 +201,8 @@
                 flat
                 @click="
                   product.like === false
-                    ? addtoFav(product.slug)
-                    : removeFav(product.slug)
+                    ? addtoFav(product)
+                    : removeFav(product)
                 "
               >
                 <i
@@ -269,6 +278,7 @@
               <q-option-group
                 :options="optionsG"
                 type="radio"
+                color="secondary"
                 v-model="group"
               />
             </div>
@@ -279,6 +289,7 @@
                 <q-option-group
                   :options="priceOptions"
                   type="radio"
+                  color="secondary"
                   v-model="pricegroup"
                 />
               </div>
@@ -397,7 +408,7 @@ export default defineComponent({
       if (this.selectedLocation.trim() !== "") {
         const location = this.selectedLocation.trim().toLowerCase();
         filtered = filtered.filter((product) =>
-          product.area.toLowerCase().includes(location)
+          product.area.name.toLowerCase().includes(location)
         );
       }
       this.drawer = false;
@@ -541,11 +552,20 @@ export default defineComponent({
           this.errors = error.errors || {};
         });
     },
-    addtoFav(slug) {
+    addtoFav(item) {
+      // console.log(slug);
+      item.like = !item.like;
+      console.log(item);
       this.$api
-        .post(`${slug}/like`)
+        .post(`${item.slug}/like`)
         .then((response) => {
-          this.getCategoryProducts();
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.sortedProducts.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.sortedProducts[updatedItemIndex].like = item.like;
+          }
           this.$q.notify({
             message: "Product added to favourites",
             color: "green",
@@ -553,6 +573,7 @@ export default defineComponent({
           // console.log(response);
         })
         .catch(({ response }) => {
+          this.loading = false;
           if (response.status === 401) {
             this.$store.leegoluauth.previousRoute =
               this.$router.currentRoute.value.fullPath;
@@ -564,17 +585,24 @@ export default defineComponent({
           }
           // this.$q.notify({
           //   message: "An error occured",
-          //   color: "green",
+          //   color: "red",
           // });
-          this.loading = false;
           this.errors = error.errors || {};
         });
     },
-    removeFav(slug) {
+
+    removeFav(item) {
+      item.like = !item.like;
       this.$api
-        .delete(`${slug}/like`)
+        .delete(`${item.slug}/like`)
         .then((response) => {
-          this.getCategoryProducts();
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.sortedProducts.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.sortedProducts[updatedItemIndex].like = item.like;
+          }
           this.$q.notify({
             message: "Product removed to favourites",
             color: "green",
@@ -582,7 +610,6 @@ export default defineComponent({
           // console.log(response);
         })
         .catch(({ response }) => {
-          this.loading = false;
           if (response.status === 401) {
             this.$store.leegoluauth.previousRoute =
               this.$router.currentRoute.value.fullPath;
@@ -592,6 +619,7 @@ export default defineComponent({
               color: "green",
             });
           }
+          this.loading = false;
           this.$q.notify({
             message: "An error occured",
             color: "red",
@@ -887,7 +915,7 @@ p {
 
 @media (min-width: 1300px) {
   .product_cards {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 

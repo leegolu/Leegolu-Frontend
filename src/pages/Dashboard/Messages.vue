@@ -286,13 +286,13 @@ export default {
 
     getConversations(id) {
       this.thisId = id.id;
-      console.log(id);
-      this.$q.loading.show();
+      // console.log(id);
+      // this.$q.loading.show();
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/${id}/messages`)
         .then((response) => {
-          this.$q.loading.hide();
-          console.log(response);
+          // this.$q.loading.hide();
+          // console.log(response);
           this.conversationMessages = response.data.messages;
           this.conversationDetails = id;
           this.productData = response.data.product;
@@ -301,7 +301,7 @@ export default {
         })
         .catch(({ response }) => {
           this.loadingBtn = false;
-          this.$q.loading.hide();
+          // this.$q.loading.hide();
 
           this.errors = error.errors || {};
         });

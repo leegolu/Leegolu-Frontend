@@ -237,7 +237,7 @@ export default {
       this.$api
         .get(url)
         .then(({ data }) => {
-          // console.log(data);
+          console.log(data);
           this.loadingCol = false;
           this.rows = data.data;
           // this.count = data.count;

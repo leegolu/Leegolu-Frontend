@@ -17,6 +17,18 @@
           <div class="form">
             <q-file
               type="file"
+              v-if="edit"
+              v-model="EditfilesImages"
+              accept=".jpg,.png,.svg,.jpeg"
+              name="uploads"
+              @update:model-value="setEditFile"
+              class="previewinput"
+              multiple
+              @rejected="EditonRejected"
+            />
+            <q-file
+              type="file"
+              v-else
               v-model="filesImages"
               accept=".jpg,.png,.svg,.jpeg"
               name="uploads"
@@ -24,7 +36,6 @@
               class="previewinput"
               max-files="5"
               multiple
-              append
               @rejected="onRejected"
             />
 
@@ -36,6 +47,9 @@
             </div>
           </div>
         </div>
+        <div v-if="deleteImg">
+          <q-spinner-ball color="primary" size="2em" />
+        </div>
 
         <div v-if="uploadedImages.length" class="images">
           <div
@@ -44,7 +58,7 @@
             class="uploaded_thumbs"
           >
             <img :src="image.url" alt="" />
-            <q-btn @click="removeImage(index)" flat>
+            <q-btn @click="removeImageUp(index)" flat>
               <i class="fa-solid fa-xmark"></i>
             </q-btn>
           </div>
@@ -59,6 +73,9 @@
             <q-btn @click="removeImage(index)" flat>
               <i class="fa-solid fa-xmark"></i>
             </q-btn>
+            <!-- <q-btn :loading="deleteImg" @click="removeImage(index)" flat>
+              <i class="fa-solid fa-xmark"></i>
+            </q-btn> -->
           </div>
         </div>
 
@@ -67,24 +84,22 @@
         <!-- <div class="form"></div> -->
         <form id="form">
           <!-- <div class="q-mt-sm" v-if="loading">Loading</div> -->
-          <div class="wraps">
-            <div class="input-box active-grey">
-              <label class="input-label">Category</label>
-              <select
-                v-model="data2.category"
-                @change="getSubCategory(data2.category)"
-                name=""
-                id=""
+          <div class="input-box active-grey">
+            <label class="input-label">Category</label>
+            <select
+              v-model="data2.category"
+              @change="getSubCategory(data2.category)"
+              name=""
+              id=""
+            >
+              <option
+                v-for="category in categories"
+                :key="category.id"
+                :value="category.slug"
               >
-                <option
-                  v-for="category in categories"
-                  :key="category.id"
-                  :value="category.slug"
-                >
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
+                {{ category.name }}
+              </option>
+            </select>
             <div v-if="showsubCat" class="input-box active-grey">
               <!-- <q-btn flat style="min-height: unset"> Reset </q-btn> -->
               <label class="input-label q-pa-xs">Select Sub Category </label>
@@ -189,6 +204,7 @@
                   @blur="formatPrice"
                   v-model="data.price"
                   class="input-1"
+                  type="text"
                 />
               </div>
               <div>
@@ -259,6 +275,9 @@
         <div class="input-box active-grey">
           <label class="input-label">Model</label>
           <input v-model="data.model" type="text" class="input-1" />
+          <small v-if="errors.model" class="text-red text-weight-bold">
+            {{ errors.model[0] }}
+          </small>
         </div>
 
         <!-- <div class="price">
@@ -472,13 +491,13 @@ export default {
       requirements: [],
       uploadedImagesImage: null,
       uploadedImagesToSend: [],
+      deleteImg: false,
       showsubCat: false,
       loadingAvatar: false,
       avatar: {},
       areas: [],
       edit: false,
       errors: {},
-      uploadedImages: [],
       uploadedImages: [],
       editData: {},
       loading: false,
@@ -489,6 +508,7 @@ export default {
       successeditModal: false,
     };
   },
+
   setup() {
     const $q = useQuasar();
 
@@ -520,6 +540,7 @@ export default {
       leftDrawerOpen,
       search,
       filesImages: ref(null),
+      EditfilesImages: ref(null),
       notifications: ref([]),
       toggleLeftDrawer,
     };
@@ -536,9 +557,6 @@ export default {
 
   methods: {
     formatPrice() {
-      // this.data.price = this.data.price.toLocaleString();
-      // console.log("hello");
-      // console.log(typeof this.data.price);
       const numericValue = parseFloat(this.data.price.replace(/,/g, ""));
 
       if (!isNaN(numericValue)) {
@@ -548,53 +566,9 @@ export default {
         this.data.price = formattedValue;
       }
     },
-    setAvatar(props) {
-      console.log(props);
-      // var reader = new FileReader();
-      // reader.onload = (e) => {
-      //   this.previewAvatar = e.target.result;
-      // };
-      // reader.readAsDataURL(props);
-    },
 
-    selectDuration(duration) {
-      this.selectedAdsDuration = duration;
-    },
-
-    addAvatar() {
-      const formData = new FormData();
-      formData.append("avatar", this.avatar.avatar);
-
-      this.loadingAvatar = true;
-      this.$api
-        .post(`upload-avatar`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          // console.log("Success:", response);
-          this.loadingAvatar = false;
-          this.dialogAvatar = false;
-          this.avatar = {};
-          this.getVendor();
-          this.$q.notify({
-            message: response.data.message,
-            color: "green",
-            position: "bottom",
-          });
-        })
-        .catch(({ response }) => {
-          // console.log(response);
-          this.errors = response.data.message;
-          this.loadingAvatar = false;
-          this.$q.notify({
-            message: response.data.message,
-            color: "red",
-            position: "bottom",
-            actions: [{ icon: "close", color: "white" }],
-          });
-        });
+    selectDuration(arg) {
+      this.selectedAdsDuration = arg;
     },
 
     getVendor() {
@@ -609,13 +583,13 @@ export default {
         });
     },
     getListing() {
+      // console.log(this.$router.currentRoute.value.query);
       this.$api
         .get(`product/${this.$router.currentRoute.value.query.listing}`)
         .then((response) => {
           this.edit = true;
-
-          console.log(response);
-          console.log(response.data.data.name);
+          // console.log(response);
+          // console.log(response.data.data.name);
           this.getUploadRequirements(response.data.data.subcategory.id);
           this.getSubCategory(response.data.data.category.slug);
           this.getAreas(response.data.data.area.state_id);
@@ -640,15 +614,6 @@ export default {
           this.data.model = response.data.data.details.model;
           this.data.pc_type = response.data.data.details.pc_type;
           this.data.processor = response.data.data.details.processor;
-
-          // this.data.name = response.data.name
-          // for (const key in response.data.data.details) {
-          //   if (this.data.hasOwnProperty(key)) {
-          //     this.data[key] = response.data.data.details[key];
-          //   }
-          // }
-
-          // console.log(this.data);
         })
         .catch((e) => {
           this.loading = false;
@@ -660,20 +625,20 @@ export default {
       this.$q.notify({
         type: "negative",
         message: `Your upload size should be less than 10mb and you should not upload more than 5 images`,
-        // message: `${this.filesImages} file(s) did not pass validation constraints`,
+      });
+    },
+    EditonRejected() {
+      this.$q.notify({
+        type: "negative",
+        message: `you did something wrong`,
       });
     },
 
     setFile(props) {
-      console.log(props);
       this.uploadedImagesToSend = props;
-      // this.edit = false;
       props.forEach((element) => {
         var reader = new FileReader();
-        // reader.onload = (e) => {
-        //   this.uploadedImagesImage = e.target.result;
-        // };
-        // reader.readAsDataURL(element);
+
         reader.onload = () => {
           this.uploadedImages.push({ url: reader.result });
         };
@@ -683,13 +648,68 @@ export default {
         }
       });
     },
-
-    removeImage(index) {
-      if (this.edit) {
-        this.editData.uploads.splice(index, 1);
+    setEditFile(props) {
+      console.log(props);
+      if (this.editData.uploads.length + props.length > 5) {
+        const maxLength = 5;
+        // Calculate the total length of both arrays
+        const totalLength = this.editData.uploads.length + props.length;
+        // Determine the maximum number of elements that can be added
+        const maxElementsToAdd = Math.abs(totalLength - maxLength);
+        // console.log(Math.abs(maxElementsToAdd));
+        // Add elements to the arrays while maintaining the maximum length limit
+        if (maxElementsToAdd > 0) {
+          // Example: Adding elements to array1
+          props.splice(0, maxElementsToAdd);
+          props.forEach((element) => {
+            var reader = new FileReader();
+            reader.onload = () => {
+              this.uploadedImages.push({ url: reader.result });
+            };
+            if (element) {
+              reader.readAsDataURL(element);
+            }
+          });
+          this.$q.notify({
+            message:
+              "You cannot upload more than five images, try deleting those you have uploaded before.",
+            color: "red-5",
+            textColor: "white",
+            icon: "warning",
+          });
+        }
       } else {
-        this.uploadedImages.splice(index, 1);
+        props.forEach((element) => {
+          var reader = new FileReader();
+          reader.onload = () => {
+            this.uploadedImages.push({ url: reader.result });
+          };
+          if (element) {
+            reader.readAsDataURL(element);
+          }
+        });
       }
+    },
+
+    removeImageUp(index) {
+      this.uploadedImages.splice(index, 1);
+    },
+    removeImage(index) {
+      this.deleteImg = true;
+      this.$api
+        .delete(
+          `${this.$router.currentRoute.value.query.id}/media/remove?index=${index}`
+        )
+        .then((response) => {
+          console.log(response);
+          // this.editData.uploads.splice(index, 1);
+          this.editData = response.data.product;
+          this.deleteImg = false;
+        })
+        .catch(({ response }) => {
+          this.deleteImg = false;
+          this.errors = error.errors || {};
+        });
     },
 
     prev() {
@@ -712,10 +732,8 @@ export default {
     },
 
     getSubCategory(category) {
-      console.log(category);
       this.loading = true;
       this.showsubCat = true;
-      console.log(category);
       this.$api
         .get(`${category}/sub`)
         .then((response) => {
@@ -783,13 +801,16 @@ export default {
       let createproductObject = data;
       // console.log(this.postFormData);
       let imageFiles = this.filesImages;
-      console.log(imageFiles[0]);
+      // console.log(imageFiles[0]);
       const formData = new FormData();
-      formData.append("uploads[]", imageFiles[0]);
-      formData.append("uploads[]", imageFiles[1]);
-      formData.append("uploads[]", imageFiles[2]);
-      formData.append("uploads[]", imageFiles[3]);
-      formData.append("uploads[]", imageFiles[4]);
+      imageFiles.forEach((image) => {
+        formData.append("uploads[]", image);
+      });
+      // formData.append("uploads[]", imageFiles[0]);
+      // formData.append("uploads[]", imageFiles[1] ? imageFiles[1] : null);
+      // formData.append("uploads[]", imageFiles[2] ? imageFiles[2] : null);
+      // formData.append("uploads[]", imageFiles[3] ? imageFiles[3] : null);
+      // formData.append("uploads[]", imageFiles[4] ? imageFiles[4] : null);
       // console.log();
       // formData.append("uploads", this.data.uploads[0]);
       // formData.append("uploads[]", this.data.uploads);
@@ -797,19 +818,10 @@ export default {
       // formData.append("uploads[]", this.data.uploads);
       // formData.append("uploads", this.data.uploads);
       for (var key in createproductObject) {
-        // console.log(key);
-
-        // console.log(createproductObject[key]);
         formData.append(key, createproductObject[key]);
       }
-      // for (var key in imageFiles) {
-      //   console.log(key);
 
-      //   // console.log(createproductObject[key]);
-      //   formData.append("uploads[]", imageFiles[key]);
-      // }
-
-      console.log(formData);
+      // console.log(formData);
       this.loading = true;
       this.$api
         .post(
@@ -858,16 +870,19 @@ export default {
       };
       let createproductObject = data;
       // console.log(this.postFormData);
-      let imageFiles = this.filesImages;
+      let imageFiles = this.EditfilesImages;
       // console.log(imageFiles[0]);
       const formData = new FormData();
       // formData.append("METHOD", 'PUT')
       if (this.uploadedImages.length) {
-        formData.append("uploads[]", imageFiles[0]);
-        formData.append("uploads[]", imageFiles[1] ? imageFiles[1] : null);
-        formData.append("uploads[]", imageFiles[2] ? imageFiles[2] : null);
-        formData.append("uploads[]", imageFiles[3] ? imageFiles[3] : null);
-        formData.append("uploads[]", imageFiles[4] ? imageFiles[4] : null);
+        imageFiles.forEach((image) => {
+          formData.append("uploads[]", image);
+        });
+        // formData.append("uploads[]", imageFiles[0]);
+        // formData.append("uploads[]", imageFiles[1] ? imageFiles[1] : null);
+        // formData.append("uploads[]", imageFiles[2] ? imageFiles[2] : null);
+        // formData.append("uploads[]", imageFiles[3] ? imageFiles[3] : null);
+        // formData.append("uploads[]", imageFiles[4] ? imageFiles[4] : null);
       }
 
       for (var key in createproductObject) {
@@ -876,8 +891,8 @@ export default {
       // console.log(formData);
       this.loading = true;
       this.$api
-        .put(
-          `${this.$router.currentRoute.value.query.listing}/product/edit`,
+        .post(
+          `${this.$router.currentRoute.value.query.id}/product/edit`,
           formData,
           {
             headers: {
@@ -1490,6 +1505,7 @@ p.advert {
   height: 172px;
   border: 3px solid rgba(176, 176, 176, 0.5);
   border-radius: 3px;
+  object-fit: cover;
 }
 
 .dialog_content .middle.advert {

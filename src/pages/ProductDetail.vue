@@ -271,13 +271,13 @@
         </div>
       </q-card>
     </q-dialog>
+    <!-- @refresh-message="getConversations" -->
     <q-dialog v-model="chat">
       <ChatPageVue
         :conversationDetails="conversationDetails"
         :conversationMessages="conversationMessages"
         :productData="productData"
         @convo="getConversations"
-        @refresh-message="getConversations"
         @closeModal="close"
       />
     </q-dialog>
@@ -321,8 +321,8 @@ export default {
       popImageDialog: ref(false),
       loadingBtn: ref(false),
       loadingChatBtn: ref(false),
-      conversationDetails: {},
-      conversationMessages: [],
+      conversationDetails: ref({}),
+      conversationMessages: ref([]),
       productData: ref({}),
       ratingsView: ref(false),
       chat: ref(false),
@@ -437,7 +437,7 @@ export default {
           // console.log(response);
           this.conversationDetails = response.data.conversation.id;
           this.productData = response.data.product;
-          this.chat = true;
+          this.getConversations(response.data.conversation.id);
         })
         .catch(({ response }) => {
           // console.log(response);
@@ -448,17 +448,21 @@ export default {
     },
 
     getConversations(id) {
-      this.$q.loading.show();
+      // console.log("emited");
+      // this.$q.loading.show();
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/${id}/messages`)
         .then((response) => {
-          this.$q.loading.hide();
-          console.log(response);
+          // this.$q.loading.hide();
+          // console.log(response);
           this.conversationMessages = response.data.messages;
+
+          console.log(this.conversationMessages);
+          this.chat = true;
         })
         .catch(({ response }) => {
           this.loadingBtn = false;
-          this.$q.loading.hide();
+          // this.$q.loading.hide();
 
           this.errors = error.errors || {};
         });

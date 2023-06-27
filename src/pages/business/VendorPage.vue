@@ -68,7 +68,7 @@
                 vendor.like ? 'none_ like vendor_btn' : 'none_ vendor_btn'
               "
               icon="fa-solid fa-heart"
-              label="Like"
+              :label="vendor.like ? 'Liked' : 'Like'"
               flat
               @click="vendor.like === false ? addtoFav() : removeFav()"
             />
@@ -432,9 +432,7 @@
         <div class="seller_img q-mb-md">
           <img
             :src="
-              vendor.avatar !== null
-                ? `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU`
-                : vendor.avatar
+              vendor.avatar !== null ? `/images/usersvg.svg` : vendor.avatar
             "
             alt=""
           />
@@ -743,7 +741,7 @@ export default {
     loadAllProducts() {
       let vendor = this.$router.currentRoute.value.params.slug;
       return this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendor.slug || vendor}`)
+        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug || vendor}`)
         .then((response) => response.data.vendor.products);
     },
     combineProducts() {
@@ -776,7 +774,7 @@ export default {
       this.$api
         .get(`vendor/${vendor}`)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
 
           this.vendor = response.data.vendor;
           this.products = response.data.vendor.products;
@@ -853,6 +851,7 @@ export default {
   // background: rgba(217, 217, 217, 0.31);
   // border: 1px dashed var(--primary-color);
   margin: 6rem auto 0rem;
+  background: white;
   // margin: 8rem auto 0rem;
   // width: 95%;
 }
@@ -1250,7 +1249,8 @@ export default {
   width: 147.72px;
   height: 147.72px;
   // border: 6px solid var(--color-two);
-  border: 1px solid white;
+  // border: 1px solid white;
+  border: 6px solid var(--color-two);
   border-radius: 10px;
   margin-bottom: 0.8rem;
   background: #000000;
@@ -1392,6 +1392,7 @@ export default {
 .holder .responsive_autofit_grid {
   width: 90%;
   margin: 0 auto;
+  max-width: 1440px;
   padding-bottom: 3rem;
   gap: 1rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1720,7 +1721,7 @@ export default {
 
   .segment_wrap {
     // margin-top: 7.5rem;
-    background: transparent;
+    background: white;
     border: none;
     width: 100%;
     padding-bottom: 2rem;
@@ -1852,7 +1853,7 @@ export default {
   .holder .responsive_autofit_grid {
     margin-top: 0rem;
     padding-top: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
   .rating .rate {
     font-size: 8px;
@@ -2070,9 +2071,10 @@ export default {
     width: 25px;
     height: 25px;
   }
-  .holder .responsive_autofit_grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
+  // .holder .responsive_autofit_grid {
+  //   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  //   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  // }
   .right_nav .q-ml-xl {
     gap: 0rem !important;
   }

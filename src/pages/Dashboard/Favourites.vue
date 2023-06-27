@@ -86,7 +86,7 @@
               </div>
             </div>
             <div class="love">
-              <q-btn flat @click="removeFav(product.slug)">
+              <q-btn flat @click="removeFav(product)">
                 <i
                   :class="
                     product.like
@@ -99,15 +99,15 @@
           </div>
         </div>
       </section>
-      <div v-else class="empty">
+      <!-- <div v-else class="empty">
         <img src="/images/empty.svg" alt="" />
 
         <div class="empty_text">
           You currently have not added any product to your favourites
         </div>
-      </div>
+      </div> -->
     </div>
-
+    <!-- {{ favourites.shops.length > 0 }} -->
     <div v-if="'favorites-shops'">
       <section v-if="favourites.shops.length > 0" class="products q-pt-sm">
         <!-- <div class="head_text">Favorite Listings</div> -->
@@ -146,12 +146,13 @@
               </div>
               <div class="owners">
                 <p class="owner">
-                  <i class="fa-solid q-mr-xs fa-gift"></i
-                  >{{ product.vendor_name }}
+                  <img src="/images/shopp.svg" alt="" />{{
+                    product.vendor_name
+                  }}
                 </p>
                 <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                   <q-rating
-                    v-model="ratingModel"
+                    v-model="product.rating"
                     size="1.5em"
                     :max="4"
                     color="black"
@@ -161,7 +162,7 @@
               </div>
             </div>
             <div class="love">
-              <q-btn flat @click="removeFav(product.slug)">
+              <q-btn flat @click="removeFav(product)">
                 <i
                   :class="
                     product.like
@@ -284,7 +285,7 @@ export default {
 
   methods: {
     setShow(show) {
-      console.log(show);
+      // console.log(show);
       this.show = show;
     },
     onItemClick() {},
@@ -295,18 +296,25 @@ export default {
       });
     },
 
-    removeFav(slug) {
+    removeFav(item) {
+      item.like = !item.like;
       this.$api
-        .delete(`${slug}/like`)
+        .delete(`${item.slug}/like`)
         .then((response) => {
-          this.getFavourites();
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.favourites.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.favourites[updatedItemIndex].like = item.like;
+          }
           this.$q.notify({
             message: "Product removed to favourites",
             color: "green",
           });
           // console.log(response);
         })
-        .catch((e) => {
+        .catch(({ response }) => {
           this.loading = false;
           this.$q.notify({
             message: "An error occured",

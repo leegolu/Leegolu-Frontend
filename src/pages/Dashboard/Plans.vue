@@ -1,26 +1,28 @@
 <template>
-  <div class="wrapper">
-    <div class="main_title">Leegolu Business Plans</div>
-    <div class="sub_title">Choose a plan that fits your need</div>
+  <q-layout class="page_">
+    <div class="wrapper">
+      <div class="main_title">Leegolu Business Plans</div>
+      <div class="sub_title">Choose a plan that fits your need</div>
 
-    <div class="load">
-      <div v-if="loading" class="row justify-center">
-        <q-card>
-          <q-skeleton width="200px" height="100px" />
-        </q-card>
+      <div class="load">
+        <div v-if="loading" class="row justify-center">
+          <q-card>
+            <q-skeleton width="200px" height="100px" />
+          </q-card>
+        </div>
+      </div>
+      <div class="card_wrap">
+        <div v-if="!loading" class="div">
+          <PlanCardVue
+            v-for="(plan, index) in businessPlans"
+            :key="index"
+            :plan="plan"
+            :loadingsign="loading"
+          />
+        </div>
       </div>
     </div>
-    <div class="card_wrap">
-      <div v-if="!loading" class="div">
-        <PlanCardVue
-          v-for="(plan, index) in businessPlans"
-          :key="index"
-          :plan="plan"
-          :loadingsign="loading"
-        />
-      </div>
-    </div>
-  </div>
+  </q-layout>
 </template>
 
 <script>
@@ -106,9 +108,9 @@ export default {
   methods: {
     getPlans() {
       this.$api
-        .get("business-plans")
+        .get("shop/plans")
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           this.loading = false;
           this.businessPlans = response.data.data;
           // this.vendordetails.state = response.data.data[0].id;
@@ -147,11 +149,13 @@ export default {
   margin-bottom: 2rem;
 }
 
-.card_wrap {
+.card_wrap .div {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
   align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .card {
@@ -198,8 +202,10 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
   border-radius: 14px;
-  min-width: 300px;
-  min-height: 351px;
+  min-width: 100%;
+  // min-width: 300px;
+  min-height: 321px;
+  // min-height: 351px;
   padding: 1rem;
 }
 

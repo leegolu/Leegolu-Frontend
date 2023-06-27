@@ -7,10 +7,20 @@
         </q-btn>
 
         <q-space />
+
         <div
           style="width: 100%; gap: 1.5rem"
           class="header_icons justify-end row items-center no-wrap"
         >
+          <q-btn
+            :to="{ name: 'business.dashboard' }"
+            flat
+            no-caps
+            text-color="primary"
+            no-wrap
+            style="padding: 5px"
+            icon="fa-solid fa-house"
+          />
           <div style="gap: 0.7rem" class="le flex no-wrap items-center">
             <q-btn class="" style="min-height: auto; padding: 3px" no-caps flat>
               <img class="ava" src="/images/usersvg.svg" />

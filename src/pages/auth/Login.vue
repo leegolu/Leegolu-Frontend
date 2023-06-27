@@ -1,5 +1,10 @@
 <template>
   <q-layout class="page_">
+    <q-header class="bg-white non_header q-py-sm q-px-sm">
+      <q-btn to="/" flat no-caps no-wrap class="q-ml-xs logo">
+        <img src="/images/logored.png" alt="" />
+      </q-btn>
+    </q-header>
     <div class="login q-pt-xl">
       <div class="login_wrapper">
         <div class="right">

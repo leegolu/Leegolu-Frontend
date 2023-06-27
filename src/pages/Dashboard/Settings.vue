@@ -52,7 +52,7 @@
                   </div>
                 </div>
                 <div class="check">
-                  <q-checkbox v-model="val" />
+                  <q-checkbox disable v-model="val" />
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@
                 </div>
 
                 <div class="check">
-                  <q-checkbox v-model="val2" />
+                  <q-checkbox disable v-model="val2" />
                 </div>
               </div>
             </div>
@@ -176,15 +176,48 @@
             </template>
             <template v-slot:body-cell-password="props">
               <q-td :props="props">
-                <div class="added">
+                <!-- <div class="added">
                   {{ props.row.number_account }}
+                </div> -->
+                <div v-if="props.row.name === 'Allow Chat'" class="added">
+                  {{ privacyData.allow_chat_view ? "Yes" : "No" }}
+                </div>
+                <div v-if="props.row.name === 'Allow phone view'" class="added">
+                  {{ privacyData.allow_phone_view ? "Yes" : "No" }}
+                </div>
+                <div v-if="props.row.name === 'Allow email view'" class="added">
+                  {{ privacyData.allow_email_view ? "Yes" : "No" }}
                 </div>
               </q-td>
             </template>
             <template v-slot:body-cell-value="props">
               <q-td class="value" :props="props">
-                <div class="added">
-                  <q-toggle v-model="value" />
+                <div v-if="props.row.name === 'Allow Chat'" class="added">
+                  <q-toggle v-model="privacyData.allow_chat_view" />
+                  <q-spinner
+                    v-if="load"
+                    color="primary"
+                    size="2em"
+                    :thickness="2"
+                  />
+                </div>
+                <div v-if="props.row.name === 'Allow phone view'" class="added">
+                  <q-toggle v-model="privacyData.allow_phone_view" />
+                  <q-spinner
+                    v-if="load2"
+                    color="primary"
+                    size="2em"
+                    :thickness="2"
+                  />
+                </div>
+                <div v-if="props.row.name === 'Allow email view'" class="added">
+                  <q-toggle v-model="privacyData.allow_email_view" />
+                  <q-spinner
+                    v-if="load1"
+                    color="primary"
+                    size="2em"
+                    :thickness="2"
+                  />
                 </div>
               </q-td>
             </template>
@@ -241,7 +274,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+// import { ref } from "vue";
 const columns = [
   {
     name: "account",
@@ -342,12 +375,17 @@ export default {
       curl: "",
       separator: "",
       mode: "list",
+      privacyData: {},
       value: true,
-      val: true,
+      val: false,
+      loading: false,
       val2: false,
       dialogAvatar: false,
       loadingAvatar: false,
       avatar: {},
+      load: false,
+      load1: false,
+      load2: false,
       previewAvatar: "/images/sqrpreview.png",
     };
   },
@@ -361,10 +399,166 @@ export default {
       pagination: this.pagination,
       filter: undefined,
     });
+
+    // console.log(
+    //   console.log(this.$store.leegoluauth.vendorDetails.hasActiveSubscription)
+    // );
+    if (this.$store.leegoluauth.vendorDetails.hasActiveSubscription) {
+      // console.log(this.$store.leegoluauth.vendorDetails.hasActiveSubscription);
+      this.val = false;
+      this.val2 = true;
+
+      // console.log(this.val);
+    } else {
+      // console.log(this.$store.leegoluauth.vendorDetails.hasActiveSubscription);
+      this.val2 = true;
+      this.val = false;
+    }
+  },
+
+  watch: {
+    "privacyData.allow_chat_view": function (newVal) {
+      // Perform actions when 'allow_chat' property is changed
+      console.log(`'allow_chat' changed to ${newVal}`);
+      newVal = newVal ? 1 : 0;
+      if (newVal) {
+        this.load = true;
+        this.$api
+          .post(
+            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
+            {
+              chat: newVal,
+            }
+          )
+          .then((response) => {
+            this.load = false;
+            // console.log(response);
+            this.privacyData = response.data.data;
+          })
+          .catch(({ response }) => {
+            this.load = false;
+            this.errors = error.errors || {};
+          });
+      } else {
+        this.$api
+          .post(
+            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
+            {
+              chat: newVal,
+            }
+          )
+          .then((response) => {
+            this.load = false;
+            this.privacyData = response.data.data;
+          })
+          .catch(({ response }) => {
+            this.load = false;
+            this.errors = error.errors || {};
+          });
+      }
+    },
+    "privacyData.allow_email_view": function (newVal) {
+      // Perform actions when 'allow_call' property is changed
+      console.log(`'allow_emal' changed to ${newVal}`);
+      newVal = newVal ? 1 : 0;
+      if (newVal) {
+        this.load1 = true;
+        this.$api
+          .post(
+            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
+            {
+              email: newVal,
+            }
+          )
+          .then((response) => {
+            this.load1 = false;
+            this.privacyData = response.data.data;
+          })
+          .catch(({ response }) => {
+            this.load1 = false;
+
+            this.errors = error.errors || {};
+          });
+      } else {
+        this.$api
+          .post(
+            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
+            {
+              email: newVal,
+            }
+          )
+          .then((response) => {
+            this.privacyData = response.data.data;
+            this.load1 = false;
+          })
+          .catch(({ response }) => {
+            this.load1 = false;
+
+            this.errors = error.errors || {};
+          });
+      }
+    },
+    "privacyData.allow_phone_view": function (newVal) {
+      // Perform actions when 'allow_call' property is changed
+      console.log(`'allow_call' changed to ${newVal}`);
+      newVal = newVal ? 1 : 0;
+      if (newVal) {
+        this.load2 = true;
+        // console.log(newVal);
+        this.$api
+          .post(
+            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
+            {
+              phone: newVal,
+            }
+          )
+          .then((response) => {
+            this.privacyData = response.data.data;
+            // console.log(response);
+            this.load2 = false;
+          })
+          .catch(({ response }) => {
+            this.load2 = false;
+
+            this.errors = error.errors || {};
+          });
+      } else {
+        // console.log(newVal);
+        this.$api
+          .post(
+            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
+            {
+              phone: newVal,
+            }
+          )
+          .then((response) => {
+            this.privacyData = response.data.data;
+            this.load2 = false;
+            console.log(response);
+          })
+          .catch(({ response }) => {
+            this.load2 = false;
+
+            this.errors = error.errors || {};
+          });
+      }
+    },
   },
 
   methods: {
-    onRequest(props) {},
+    onRequest(props) {
+      this.$api
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`)
+        .then((response) => {
+          this.loading = false;
+          this.privacyData = response.data.data;
+          console.log(response);
+          // this.rows = response.data.vendor.subscriptions;
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+        });
+    },
     onRequestPrivacy(props) {},
     setAvatar(props) {
       // console.log(props);
@@ -417,7 +611,7 @@ export default {
           console.log(response);
         })
         .catch((e) => {
-          this.loading = false;
+          // this.loading = false;
           this.errors = error.errors || {};
         });
     },
@@ -547,7 +741,8 @@ hr {
   line-height: 14px;
   text-align: center;
   max-width: 50%;
-  margin: 0.2rem auto 0.4rem;
+  // margin: 0.2rem auto 0.4rem;
+  margin: 0rem auto 2rem;
 }
 
 .grid__wrap {
@@ -819,6 +1014,11 @@ p.advert {
   }
 }
 
+@media (max-width: 1025px) {
+  .container {
+    max-width: 85%;
+  }
+}
 @media (max-width: 1000px) {
   .para {
     max-width: 80%;

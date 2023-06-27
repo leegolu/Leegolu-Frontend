@@ -55,7 +55,9 @@
             Pending
           </q-btn>
           <!-- <q-btn flat class="regular"> Drafts </q-btn> -->
-          <q-btn flat class="regular boosted"> Boosted </q-btn>
+          <q-btn @click="setCategory('boosted')" flat class="regular boosted">
+            Boosted
+          </q-btn>
         </div>
 
         <div class="right">
@@ -158,6 +160,10 @@ export default {
     sortedListings() {
       if (this.selectedCategory === "all") {
         return this.listings;
+      } else if (this.selectedCategory === "boosted") {
+        return this.listings.filter(
+          (listing) => listing.boosted === this.selectedCategory
+        );
       } else {
         return this.listings.filter(
           (listing) => listing.status === this.selectedCategory

@@ -56,9 +56,9 @@ img {
   margin-bottom: 1rem;
 }
 
-.q-drawer {
-  filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
-}
+// .q-drawer {
+//   filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
+// }
 
 .sort_area .right .q-btn__content {
   justify-content: space-between !important
@@ -139,7 +139,18 @@ th.text-right {
 
 .popular .splide__slide {
   width: 132.62px !important;
-  height: 124px !important;
+  height: 184px !important;
+}
+
+.popular .splide__list {
+  gap: 2rem;
+}
+.apexcharts-menu-item {
+  padding: 6px 7px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap !important;
+  color: black !important;
 }
 
 .splide__arrow {
@@ -167,6 +178,15 @@ th.text-right {
 .q-item.q-router-link--active svg path {
   fill: #fff;
   color: white;
+}
+
+.product .owner {
+  display: flex;
+  align-items: center;
+}
+.product .owner img {
+  width: 17px;
+  height: 16px !important;
 }
 
 .check .q-checkbox__bg {
@@ -258,8 +278,8 @@ p {
 }
 
 .category_items .q-item {
-  padding: 0 10px;
-  // white-space: nowrap;
+  // padding: 0 5px;
+  white-space: nowrap;
 }
 
 .carou {
@@ -297,8 +317,9 @@ p {
 }
 
 .ratingBanner {
-  width: 90%;
+  width: 90% !important;
   margin: 0 auto;
+  // height: 20vh;
 }
 
 .ratingBanner .q-field__label {
@@ -366,6 +387,29 @@ p {
   max-width: 340px;
 }
 
+.sub_header_wrap .subb {
+  max-width: 150px;
+}
+.sub_header_wrap .q-field--standard .q-field__control:before {
+  display: none;
+}
+
+.sub_header_wrap .all .q-btn-dropdown--simple * + .q-btn-dropdown__arrow {
+  margin-left: 0px;
+}
+.sub_header_wrap .allCat .q-field__label {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
+  text-transform: capitalize;
+  color: #000000 !important;
+}
+.sub_header_wrap .allCat .q-field__marginal {
+  margin-left: -22%;
+}
+
 .each_category .q-item {
   min-height: auto;
   padding: 8px 0;
@@ -406,7 +450,23 @@ p {
   height: 25px;
   object-fit: contain;
 }
+.avaicons .q-btn .q-icon {
+  font-size: 1.2rem;
+}
 
+.splide__pagination {
+  bottom: -1.5em !important;
+}
+
+.splide__pagination__page.is-active {
+  background: #ee4e36 !important;
+}
+
+@media (min-width: 870px) {
+  .non_header {
+    display: none;
+  }
+}
 @media (max-width: 500px) {
   .head_text {
     font-size: 20px;
@@ -415,10 +475,15 @@ p {
     width: 20px;
     height: 20px;
   }
+  .avaicons .q-btn .q-icon {
+    font-size: 0.8rem;
+    font-weight: 300;
+    margin-top: 0.3rem;
+  }
 
   .popular .splide__slide {
-    width: 100.62px !important;
-    height: 104px !important;
+    width: 130.62px !important;
+    height: 134px !important;
   }
   .popular img {
     width: 80px;
@@ -441,10 +506,13 @@ p {
   .product_detail_wrap .q-carousel {
     height: 250px;
   }
+  .popular .splide__list {
+    gap: 0rem;
+  }
 
   .recent_listing_head {
     font-size: 16px;
-    margin-top: 0.9rem;
+    margin-top: 0.1rem;
   }
 
   .recent_listing_head span {

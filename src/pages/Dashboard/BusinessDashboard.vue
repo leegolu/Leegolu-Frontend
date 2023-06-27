@@ -1,4 +1,11 @@
 <template>
+  <div v-if="showTour" class="tourrr">
+    <TourVue
+      title="Take a video tour"
+      desc="We’ve added more features to your dashboard. Let’s show you around."
+      :play="true"
+    />
+  </div>
   <div class="main">
     <div class="left_main">
       <div class="main_card">
@@ -31,7 +38,7 @@
           <img src="/images/list.png" alt="" />
           <div class="small_card_main_text">My Adverts</div>
           <div class="small_card_sub">Adverts you created yourself.</div>
-          <div v-if="myAds === ''" class="count">{{ myAds }}</div>
+          <div v-if="myAds === ''" class="count">0</div>
           <div class="count">{{ myAds }}</div>
         </div>
         <div class="small_card">
@@ -45,7 +52,7 @@
           <img src="/images/layer.png" alt="" />
           <div class="small_card_main_text">Leads</div>
           <div class="small_card_sub">Customers that reached out.</div>
-          <div v-if="myLeads === ''" class="count">{{ myLeads }}</div>
+          <div v-if="myLeads === ''" class="count">0</div>
           <div v-else class="count">{{ myLeads }}</div>
         </div>
         <div class="small_card_bus">
@@ -80,7 +87,7 @@
         </div>
       </div>
 
-      <hr />
+      <hr v-if="listings.length" />
 
       <div v-if="listings.length" class="recent_listing_head q-mb-lg">
         Recent Listings
@@ -123,18 +130,19 @@
               <div class="logo_main_desc">Business Metrics</div>
             </div>
           </div>
-
-          <div class="business_seive">
-            <q-btn color="white" class="bg-primary" flat> Page Visits </q-btn>
-          </div>
-          <!-- <div class="business_seive">
+          <div style="gap: 0.5rem" class="row items-center">
+            <div class="business_seive">
+              <q-btn color="white" class="bg-primary" flat> Page Visits </q-btn>
+            </div>
+            <!-- <div class="business_seive">
             <q-btn flat> Callback Requests </q-btn>
           </div> -->
-          <div class="business_seive">
-            <q-btn flat> Message Requests </q-btn>
-          </div>
-          <div class="business_seive">
-            <q-btn flat> Phone Views </q-btn>
+            <div class="business_seive">
+              <q-btn flat> Message Requests </q-btn>
+            </div>
+            <div class="business_seive">
+              <q-btn flat> Phone Views </q-btn>
+            </div>
           </div>
         </div>
         <apexchart
@@ -158,7 +166,7 @@
         </div>
 
         <div class="started_btn">
-          <q-btn label="Get Started">
+          <q-btn label="Read Story">
             <img class="q-pl-sm" src="/images/arr.svg" alt="" />
           </q-btn>
         </div>
@@ -205,23 +213,25 @@
               Your account gives you full access to all basic features available
               on the Leegolu marketplace for free.
             </div>
-
+            <!-- <i class="fa-solid fa-check"></i> -->
             <ul>
               <li>
-                <i class="fa-solid fa-check"></i> Access to direct seller
-                contact
+                <img src="/images/tick.svg" alt="" />
+                Access to direct seller contact
               </li>
               <li>
-                <i class="fa-solid fa-check"></i> Ability to sell as a private
-                seller
+                <img src="/images/tick.svg" alt="" /> Ability to sell as a
+                private seller
               </li>
               <li>
-                <i class="fa-solid fa-check"></i> Access to insights & analytics
+                <img src="/images/tick.svg" alt="" />Access to insights &
+                analytics
               </li>
               <li>
-                <i class="fa-solid fa-check"></i> Access to Leegolu video ads
+                <img src="/images/tick.svg" alt="" /> Access to Leegolu video
+                ads
               </li>
-              <li><i class="fa-solid fa-check"></i> A branded shop</li>
+              <li><img src="/images/tick.svg" alt="" /> A branded shop</li>
             </ul>
           </div>
 
@@ -237,9 +247,9 @@
           <q-btn @click="toggleModal" class="q-px-sm skip"> Skip </q-btn>
         </div>
 
-        <div @click="welcometoleegolubusinessmodal = false" class="close">
+        <!-- <div @click="welcometoleegolubusinessmodal = false" class="close">
           <i class="fa-solid fa-xmark"></i>
-        </div>
+        </div> -->
       </div>
     </q-card>
   </q-dialog>
@@ -303,7 +313,7 @@
   </q-dialog>
   <q-dialog class="dash_modal" v-model="businessreg">
     <q-card style="width: 100%; max-width: 800px">
-      <div class="modal two">
+      <div class="modal three">
         <div class="modal_wrap">
           <div class="left">
             <div class="modal_main">Leegolu Business</div>
@@ -319,7 +329,7 @@
                   name="name"
                   v-model="vendordetails.name"
                   class="input-1"
-                  placeholder="Red Dress Co."
+                  placeholder="Enter your business name"
                 />
               </div>
               <div class="input-box active-grey">
@@ -407,10 +417,12 @@ import { useMeta } from "quasar";
 import DashboardHomeListing from "../../components/listings/RecentListings.vue";
 // import Charts from "../../components/Charts.vue";
 import { ref, computed } from "vue";
+import TourVue from "src/components/Tour.vue";
 export default {
   components: {
     apexchart: VueApexCharts,
     DashboardHomeListing,
+    TourVue,
   },
   data() {
     return {
@@ -438,6 +450,7 @@ export default {
       loading: false,
       states: [],
       areas: [],
+      showTour: false,
       addphotoforleegolubusinessmodal: false,
 
       chartOptions: {
@@ -492,9 +505,12 @@ export default {
       progressLabel2: computed(() => (progress2.value * 100).toFixed(2) + "%"),
     };
   },
-  // mounted() {
-  //   this.welcometoleegolubusinessmodal = true;
-  // },
+  mounted() {
+    if (this.$router.currentRoute.value.query.videotour === "yes") {
+      this.showTour = true;
+    }
+    // console.log(this.$router.currentRoute.value);
+  },
   methods: {
     previewImage(event) {
       var input = event.target;
@@ -779,6 +795,7 @@ hr {
   font-weight: 700;
   font-size: 32px;
   line-height: 44px;
+  white-space: nowrap;
   color: #000000;
 }
 
@@ -797,6 +814,12 @@ hr {
   color: #000000;
 }
 
+.tourrr {
+  position: absolute;
+  z-index: 1000;
+  left: 10%;
+}
+
 // .left_main {
 //   max-width: 70%;
 // }
@@ -809,6 +832,7 @@ hr {
   justify-content: flex-end;
   height: 100%;
   width: 100%;
+  overflow: hidden;
   position: relative;
 }
 
@@ -823,6 +847,7 @@ hr {
   text-transform: capitalize;
   color: #ffffff;
   margin-top: 2.5rem;
+  padding: 0 1.4rem;
 }
 
 .tour::before {
@@ -878,6 +903,11 @@ hr {
   display: flex;
   justify-content: flex-end;
 }
+.dash_modal .q-card {
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.15);
+}
 
 .started_btn .q-btn {
   font-family: "Open Sans";
@@ -903,7 +933,7 @@ hr {
 }
 
 .started_btn img {
-  width: 18px;
+  width: 14px;
   height: 12px;
 }
 
@@ -916,7 +946,7 @@ hr {
   // display: flex;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
+  gap: 1.5rem 1rem;
   margin-top: 1.4rem;
   // margin-top: 2rem;
   // overflow: hidden;
@@ -1005,11 +1035,12 @@ hr {
   display: flex;
   justify-content: space-between;
   // width: 314px;
-  align-items: center;
+  flex-direction: column;
+  // align-items: center;
   flex: 2;
   gap: 1rem;
   height: 165px;
-  padding: 1rem;
+  padding: 1.5rem 1rem 1rem;
 }
 
 .small_card_bus .di .type {
@@ -1018,7 +1049,7 @@ hr {
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-
+  white-space: nowrap;
   color: #ffffff;
 }
 
@@ -1263,6 +1294,14 @@ hr {
   .small_card {
     width: 100%;
   }
+
+  .main_card .right img {
+    width: 310px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -13%;
+  }
 }
 @media (max-width: 1200px) {
   .small_card {
@@ -1281,6 +1320,32 @@ hr {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
+@media (max-width: 1200px) {
+  .main_text {
+    font-size: 30px;
+  }
+  .sub {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .tour {
+    font-size: 13px;
+    padding: 0 1rem;
+  }
+}
+@media (max-width: 1100px) {
+  .main_text {
+    font-size: 25px;
+  }
+  .sub {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .tour {
+    font-size: 13px;
+    padding: 0 1rem;
+  }
+}
 @media (max-width: 1000px) {
   .main {
     grid-template-columns: 1fr;
@@ -1297,6 +1362,8 @@ hr {
 
   .small_card_bus {
     width: auto;
+    flex-direction: row;
+    padding: 1rem;
   }
 
   .small_cards {
@@ -1313,11 +1380,15 @@ hr {
   .small_cards {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
+
+  hr {
+    margin: 2rem 0 1.5rem;
+  }
 }
 @media (max-width: 700px) {
   .main_card .right img {
     top: -7%;
-    right: -28%;
+    right: -23%;
   }
 }
 @media (max-width: 660px) {
@@ -1344,10 +1415,14 @@ hr {
   .main_card {
     padding: 1.5rem;
   }
-
+  .tourrr {
+    left: -9%;
+    top: 1.2%;
+    z-index: 10000;
+  }
   .responsive_autofit_grid {
     margin-top: 0.6rem;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
   hr {
@@ -1377,7 +1452,9 @@ hr {
   .small_card,
   .small_card_bus {
     width: 90%;
+    flex-direction: row;
     margin: 0 auto;
+    padding: 1rem;
   }
 
   .sub {
@@ -1415,9 +1492,9 @@ hr {
     height: 155px;
   }
 }
-@media (max-width: 359px) {
-  .responsive_autofit_grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
-}
+// @media (max-width: 359px) {
+//   .responsive_autofit_grid {
+//     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+//   }
+// }
 </style>

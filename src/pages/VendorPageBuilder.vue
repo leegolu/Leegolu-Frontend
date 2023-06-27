@@ -674,7 +674,7 @@
         </div>
         <div class="row q-mt-sm items-center justify-between">
           <div class="previewMain">
-            <div class="form">
+            <div v-if="covervalue" class="form">
               <q-file
                 type="file"
                 v-model="data.coveruploads"
@@ -685,11 +685,12 @@
               />
 
               <div class="previewDiv">
-                <template v-if="coverpreview">
-                  <img :src="coverpreview" class="previewimg cover" />
-                  <img src="/images/upload.png" class="click" alt="" />
-                </template>
+                <img :src="coverpreview" class="previewimg cover" />
+                <img src="/images/upload.png" class="click" alt="" />
               </div>
+            </div>
+            <div v-else class="form">
+              <div class="initialsCover">{{ initials }}</div>
             </div>
           </div>
         </div>
@@ -698,7 +699,7 @@
             <div class="business_name">Branding</div>
             <div class="company">Show Cover Image</div>
           </div>
-          <q-toggle v-model="value" />
+          <q-toggle v-model="covervalue" />
         </div>
 
         <div class="submit">
@@ -893,6 +894,7 @@ export default {
       tagvalue: false,
       namevalue: false,
       enableEdit: true,
+      covervalue: false,
       enableTagEdit: true,
       logoUploaded: "",
       coverUploaded: "",
@@ -1120,6 +1122,15 @@ export default {
       handler() {
         if (this.showlogovalue === true) {
           this.preview = "/images/sqrpreview.png";
+        } else {
+        }
+      },
+      immediate: true,
+    },
+    covervalue: {
+      handler() {
+        if (this.covervalue === true) {
+          // this.preview = "/images/sqrpreview.png";
         } else {
         }
       },
@@ -1463,7 +1474,7 @@ export default {
           });
           this.$router.replace({
             name: "vendor.page",
-            params: { slug: this.$store.leegoluauth.vendor.slug },
+            params: { slug: this.$store.leegoluauth.vendorDetails.slug },
           });
         })
         .catch(({ response }) => {
@@ -1510,7 +1521,7 @@ export default {
     },
     loadAllProducts() {
       return this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
+        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => response.data.vendor.products);
     },
     combineProducts() {
@@ -1525,7 +1536,7 @@ export default {
     getVendor() {
       this.loading = true;
       this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
+        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
           this.vendor = response.data.vendor;
           this.products = response.data.vendor.products;
@@ -1664,6 +1675,13 @@ export default {
 
 .nav_btn_icon span {
   white-space: nowrap;
+}
+
+.initialsCover {
+  width: 296px;
+  height: 256px;
+  // border-radius: 50%;
+  background-color: var(--color-one);
 }
 
 .initials {
@@ -2078,8 +2096,8 @@ export default {
 
 .holder {
   background: #ffffff;
-  width: 95%;
-  margin: 0 auto;
+  // width: 95%;
+  // margin: 0 auto;
 }
 
 @media (min-width: 980px) {
@@ -2092,7 +2110,7 @@ export default {
   // width: 95%;
   // margin: 0 auto;
   padding-bottom: 3rem;
-  gap: 1rem;
+  gap: 2rem 1rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
@@ -2220,6 +2238,10 @@ export default {
   color: white;
 }
 
+.manage_seg .q-btn {
+  margin-right: 1.5rem;
+}
+
 .submit .submitBTN .q-btn__content {
   justify-content: center;
 }
@@ -2315,7 +2337,7 @@ export default {
   border-bottom: 1px solid #1f7bb5;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1250px) {
   .holder .responsive_autofit_grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -2329,7 +2351,7 @@ export default {
     margin: 6rem auto 0rem;
   }
 }
-@media (max-width: 950px) {
+@media (max-width: 970px) {
   // .form img.previewimg.cover {
   //   width: 100%;
   // }
@@ -2532,7 +2554,7 @@ export default {
     display: none;
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 950px) {
   .submit .submitBTN {
     height: 45px;
     font-size: 15px;
@@ -2551,7 +2573,8 @@ export default {
   // }
 
   .holder .responsive_autofit_grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    // grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
   .listing_s_hold {
     margin: 0.5rem 0;
@@ -2724,7 +2747,8 @@ export default {
     color: #000;
   }
   .upload_logo_area {
-    margin-top: -20%;
+    margin-top: -8%;
+    // margin-top: -20%;
   }
   .left_logo_area img,
   .left_logo_area .logoside {
@@ -2745,9 +2769,9 @@ export default {
     border-radius: 10px;
   }
 
-  .left_wrap.mobile {
-    padding-left: 1rem;
-  }
+  // .left_wrap.mobile {
+  //   padding-left: 1rem;
+  // }
 
   .left_details {
     padding: 0;
@@ -2777,6 +2801,24 @@ export default {
   }
 }
 
+@media (max-width: 800px) {
+  .upload_logo_area {
+    margin-top: -10%;
+    // margin-top: -20%;
+  }
+}
+@media (max-width: 500px) {
+  .upload_logo_area {
+    // margin-top: -15%;
+    margin-top: -18%;
+  }
+}
+@media (max-width: 400px) {
+  .upload_logo_area {
+    // margin-top: -15%;
+    margin-top: -20%;
+  }
+}
 @media (max-width: 360px) {
   .span img {
     width: 15.69px !important;
@@ -2790,9 +2832,9 @@ export default {
     gap: 0rem !important;
   }
 
-  .holder .responsive_autofit_grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
+  // .holder .responsive_autofit_grid {
+  //   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  // }
 
   .desc_text {
     padding: 2rem 1rem 0;

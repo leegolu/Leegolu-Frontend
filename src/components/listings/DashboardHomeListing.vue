@@ -590,6 +590,15 @@ p.advert {
   color: #000000;
 }
 
+@media (min-width: 1280px) {
+  .listing_s_hold {
+    max-width: 100%;
+  }
+
+  .img {
+    max-width: 100%;
+  }
+}
 @media (max-width: 1150px) {
   .listing_ {
     grid-template-columns: 1.5fr 1fr 1.5fr;

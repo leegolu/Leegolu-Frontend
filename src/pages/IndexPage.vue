@@ -8,10 +8,10 @@
       <div class="right">
         <div v-if="this.$store.leegoluauth.token === ''" class="div">
           <router-link to="/login"> Sign In </router-link>
-          <router-link :to="{ name: 'register' }"> Join Now </router-link>
-          <q-btn :to="{ name: 'register' }" color="secondary">
-            Start Selling
-          </q-btn>
+          <router-link class="" :to="{ name: 'register' }">
+            Join Now
+          </router-link>
+          <q-btn :to="{ name: 'register' }" color="secondary"> Sell </q-btn>
         </div>
 
         <div v-else class="div avaicons">
@@ -94,7 +94,7 @@
   <main class="home">
     <div class="wrapper">
       <div class="main_text">Find it. Buy it.</div>
-      <p>Seek and ye shall find, Buy it and it shall be delivered unto you</p>
+      <p>Unlock Possibilities, Connect Locally</p>
       <div class="input_area">
         <form @submit.prevent="search">
           <input
@@ -128,7 +128,9 @@
                 v-close-popup
               >
                 <q-item-section>
-                  <q-item-label>{{ item.name }}</q-item-label>
+                  <q-item-label class="text-black">{{
+                    item.name
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -145,6 +147,16 @@
           >
             {{ item.name }}
           </q-item>
+          <q-item class="item"> Cars </q-item>
+          <q-item class="item"> Mobile Phones </q-item>
+          <q-item class="item"> Skin Care </q-item>
+          <q-item class="item"> Skin Care </q-item>
+          <q-item class="item"> Skin Care </q-item>
+          <q-item class="item"> Skin Care </q-item>
+          <q-item class="item"> Skin Care </q-item>
+          <q-item class="item"> Skin Care </q-item>
+          <q-item class="item"> Skin Care </q-item>
+          <q-item class="item"> Skin Care </q-item>
         </div>
       </div>
     </div>
@@ -152,15 +164,84 @@
 
   <section class="container q-pt-md">
     <div class="process">
-      <div class="img">
-        <img src="/images/search.png" alt="" />
+      <div style="gap: 1rem" class="img row items-center no-wrap">
+        <img src="/images/search1.svg" alt="" />
+        <div class="process_details">
+          <div>Search an item</div>
+          <div>
+            Look up anything that interests you, such as phones, laptops, or
+            clothing.
+          </div>
+        </div>
       </div>
-      <div class="img">
-        <img src="/images/contact.png" alt="" />
+      <div style="gap: 1rem" class="img row items-center no-wrap">
+        <img src="/images/conta.svg" alt="" />
+        <div class="process_details">
+          <div>Contact Seller</div>
+          <div>
+            Speak with the seller to discuss prices. Do not pay until you meet
+            in-person.
+          </div>
+        </div>
       </div>
-      <div class="img">
-        <img src="/images/arrange.png" alt="" />
+      <div style="gap: 1rem" class="img row items-center no-wrap">
+        <img src="/images/arrange.svg" alt="" />
+        <div class="process_details">
+          <div>Arrange pick-up</div>
+          <div>
+            Arrange to meet with the seller to pay for & pickup your item.
+          </div>
+        </div>
       </div>
+    </div>
+    <div class="process_splide">
+      <Splide
+        :options="{
+          perPage: 1,
+          rewind: true,
+          autoplay: true,
+          gap: 10,
+          arrows: false,
+          navigations: false,
+        }"
+        aria-label="My Favorite Images"
+      >
+        <SplideSlide>
+          <div style="gap: 1rem" class="img row items-center no-wrap">
+            <img src="/images/search1.svg" alt="" />
+            <div class="process_details">
+              <div>Search an item</div>
+              <div>
+                Look up anything that interests you, such as phones, laptops, or
+                clothing.
+              </div>
+            </div>
+          </div>
+        </SplideSlide>
+        <SplideSlide>
+          <div style="gap: 1rem" class="img row items-center no-wrap">
+            <img src="/images/conta.svg" alt="" />
+            <div class="process_details">
+              <div>Contact Seller</div>
+              <div>
+                Speak with the seller to discuss prices. Do not pay until you
+                meet in-person.
+              </div>
+            </div>
+          </div>
+        </SplideSlide>
+        <SplideSlide>
+          <div style="gap: 1rem" class="img row items-center no-wrap">
+            <img src="/images/arrange.svg" alt="" />
+            <div class="process_details">
+              <div>Arrange pick-up</div>
+              <div>
+                Arrange to meet with the seller to pay for & pickup your item.
+              </div>
+            </div>
+          </div>
+        </SplideSlide>
+      </Splide>
     </div>
   </section>
 
@@ -177,7 +258,9 @@
         perPage: 6,
         rewind: true,
         autoplay: true,
+        gap: 10,
         arrows: false,
+        navigations: false,
         breakpoints: {
           640: {
             perPage: 2,
@@ -199,12 +282,41 @@
         <div @click="gotoCategory(category)">
           <div v-if="category.name === 'Fashion'" class="category">
             <img src="/images/shirt.png" alt="Sample 1" />
+            <div class="name_">
+              {{ category.name }}
+            </div>
           </div>
           <div v-if="category.name === 'Electronics'" class="category">
             <img src="/images/washingmachine.png" alt="Sample 1" />
+            <div class="name_">
+              {{ category.name }}
+            </div>
           </div>
         </div>
       </SplideSlide>
+      <SplideSlide>
+        <div>
+          <div class="category">
+            <img src="/images/utensils.png" alt="Sample 1" />
+            <div class="name_">Utensils</div>
+          </div>
+        </div>
+      </SplideSlide>
+      <!-- <SplideSlide>
+        <div class="category">
+          <img src="/images/phone.png" alt="Sample 1" />
+        </div>
+      </SplideSlide> -->
+      <!-- <SplideSlide>
+        <div class="category">
+          <img src="/images/sneakers.png" alt="Sample 1" />
+        </div>
+      </SplideSlide>
+      <SplideSlide>
+        <div class="category">
+          <img src="/images/tv.png" alt="Sample 1" />
+        </div>
+      </SplideSlide> -->
     </Splide>
   </section>
 
@@ -244,13 +356,15 @@
           </div>
           <div class="owners">
             <p class="owner">
-              <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.vendor_name }}
+              <img src="/images/shopp.svg" alt="" />
+              {{ product.vendor_name }}
             </p>
             <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
               <q-rating
                 v-model="product.rating"
                 size="1.5em"
                 :max="5"
+                disable
                 color="black"
               />
               <span>{{ product.ratings_count }}</span>
@@ -261,9 +375,7 @@
           <q-btn
             flat
             @click="
-              product.like === false
-                ? addtoFav(product.slug)
-                : removeFav(product.slug)
+              product.like === false ? addtoFav(product) : removeFav(product)
             "
           >
             <i
@@ -352,11 +464,13 @@
 import FooterVue from "src/components/Footer.vue";
 import { defineComponent, ref } from "vue";
 import { Splide, SplideSlide } from "@splidejs/vue-splide";
+// ManageIconVue
 // Default theme
 import "@splidejs/vue-splide/css";
 // or only core styles
 import "@splidejs/vue-splide/css/core";
 import { colors } from "quasar";
+import ManageIconVue from "src/components/icons/ManageIcon.vue";
 export default defineComponent({
   name: "IndexPage",
   setup() {
@@ -368,6 +482,7 @@ export default defineComponent({
     FooterVue,
     Splide,
     SplideSlide,
+    ManageIconVue,
   },
   data() {
     return {
@@ -575,12 +690,20 @@ export default defineComponent({
       });
     },
 
-    addtoFav(slug) {
+    addtoFav(item) {
       // console.log(slug);
+      item.like = !item.like;
+      console.log(item);
       this.$api
-        .post(`${slug}/like`)
+        .post(`${item.slug}/like`)
         .then((response) => {
-          this.getFeaturedlistngs();
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.listings.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.listings[updatedItemIndex].like = item.like;
+          }
           this.$q.notify({
             message: "Product added to favourites",
             color: "green",
@@ -606,11 +729,18 @@ export default defineComponent({
         });
     },
 
-    removeFav(slug) {
+    removeFav(item) {
+      item.like = !item.like;
       this.$api
-        .delete(`${slug}/like`)
+        .delete(`${item.slug}/like`)
         .then((response) => {
-          this.getFeaturedlistngs();
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.listings.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.listings[updatedItemIndex].like = item.like;
+          }
           this.$q.notify({
             message: "Product removed to favourites",
             color: "green",
@@ -652,7 +782,7 @@ export default defineComponent({
         .get(`categories`)
         .then((response) => {
           this.categorys = response.data.data;
-          // console.log(response);
+          console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -682,7 +812,7 @@ p {
 }
 a {
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 19px;
   color: #ffffff;
 }
@@ -690,12 +820,12 @@ a {
 .right > div {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .right .q-btn {
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 400;
+  font-size: 14px;
   line-height: 17px;
   text-transform: uppercase;
   border-radius: 6px;
@@ -712,7 +842,26 @@ a {
   justify-content: center;
   position: relative;
   align-items: center;
+  overflow: hidden;
   background: linear-gradient(180deg, #1a3f55 0%, #357196 84.27%);
+}
+
+.img img {
+  width: 105px;
+  height: 111px;
+}
+
+.process_details div:nth-child(1) {
+  color: #357196;
+  font-size: 26px;
+  line-height: 1.1;
+  white-space: nowrap;
+  font-family: Inter;
+}
+.process_details div:nth-child(2) {
+  color: #357196;
+  font-size: 13px;
+  font-family: Inter;
 }
 
 .btn {
@@ -725,13 +874,14 @@ a {
 }
 .input_area form input {
   width: 100%;
+  padding: 0 2rem;
 }
 
 .popular {
   margin: 3rem auto 2rem;
 }
 .popular img {
-  width: 100px;
+  width: 130px;
   cursor: pointer;
 }
 
@@ -750,6 +900,22 @@ a {
   margin-left: 0.7rem;
 }
 
+.category {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.name_ {
+  color: #64737c;
+  text-align: center;
+  font-size: 14px;
+  font-family: Inter;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
 .wrapper {
   text-align: center;
   width: 55%;
@@ -764,10 +930,14 @@ a {
 
 .wrapper p {
   font-weight: 500;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 18px;
   margin-bottom: 0.8rem;
   color: #ffffff;
+}
+
+.input_area {
+  margin-top: 1.5rem;
 }
 
 .wrapper input {
@@ -775,7 +945,7 @@ a {
   font-weight: 400;
   font-size: 20px;
   line-height: 24px;
-  color: #9a9a9a;
+  color: #000;
   background: white;
   border-radius: 10px 0 0 10px;
   height: 59.63px;
@@ -785,6 +955,8 @@ a {
 
 .wrapper input::placeholder {
   font-family: "Montserrat", sans-serif;
+  color: #9a9a9a;
+  font-size: 20px;
 }
 .wrapper button {
   height: 59.63px;
@@ -804,14 +976,21 @@ a {
   position: absolute;
   bottom: 1%;
   z-index: 100;
+  width: 90%;
   left: 50%;
   transform: translateX(-50%);
 }
 .sub_header_wrap {
   display: flex;
   gap: 1rem;
+  // overflow-x: scroll;
+  // width: 90%;
   align-items: center;
   justify-content: center;
+}
+
+.sub_header_wrap > div .q-btn {
+  padding: 0;
 }
 .sub_header_wrap .all {
   font-family: "Montserrat";
@@ -826,13 +1005,19 @@ a {
 .category_items {
   display: flex;
   align-items: center;
-  // overflow-x: scroll;
+  overflow-x: scroll;
   height: 50px;
+  width: 70%;
+  cursor: pointer;
+  scrollbar-width: none;
 }
 
 .category_items::-webkit-scrollbar {
   display: none;
 }
+// .category_items::-webkit-scrollbar {
+//   display: none;
+// }
 .category_items .item {
   font-family: "Montserrat";
   font-style: normal;
@@ -850,10 +1035,7 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   padding-top: 1rem;
-}
-
-.process img {
-  width: 90%;
+  padding-bottom: 2rem;
 }
 
 /* prodcut card */
@@ -958,6 +1140,15 @@ a {
   color: #000000;
 }
 
+.product .owner {
+  display: flex;
+  align-items: center;
+}
+.product .owner img {
+  width: 17px;
+  height: 16px;
+}
+
 .product img {
   height: 150px;
   /* height: 206px; */
@@ -1008,6 +1199,16 @@ a {
   }
 }
 
+@media (min-width: 1100px) {
+  .category_items {
+    width: 95%;
+  }
+}
+@media (min-width: 500px) {
+  .process_splide {
+    display: none;
+  }
+}
 @media (max-width: 1100px) {
   .product_cards {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1031,6 +1232,24 @@ a {
   }
 }
 @media (max-width: 500px) {
+  .process {
+    display: none;
+  }
+
+  .process_splide {
+    padding-bottom: 2rem;
+  }
+  .img img {
+    width: 80px;
+    height: 87px;
+  }
+  .process_details div:nth-child(1) {
+    font-size: 20px;
+  }
+  .process_details div:nth-child(2) {
+    font-size: 11px;
+    width: 90%;
+  }
   .wrapper input {
     font-size: 15px;
     height: 45.63px;
@@ -1038,12 +1257,19 @@ a {
     border: none;
   }
 
+  .popular {
+    margin: 3rem auto 5rem;
+  }
+  .popular img {
+    width: 110px;
+  }
+
   .wrapper button {
     height: 45.63px;
   }
 
   .logo {
-    width: 100px;
+    width: 130px;
     height: 39px;
     object-fit: contain;
   }
@@ -1063,6 +1289,10 @@ a {
   .nav {
     padding: 0.7rem 0.6rem;
   }
+
+  // .right .q-btn {
+  //   display: none;
+  // }
 
   .join_area .join {
     grid-template-columns: 1fr;
@@ -1092,6 +1322,8 @@ a {
   .wrapper p {
     width: 90%;
     margin: 0 auto 1rem;
+    font-size: 18px;
+    line-height: 23px;
   }
 
   .sub_header_wrap .all {
@@ -1099,6 +1331,18 @@ a {
   }
   .category_items .item {
     font-size: 13px;
+  }
+
+  .sub_header_wrap {
+    gap: 0rem;
+    margin-left: 0.5rem;
+  }
+  .input_area form input {
+    font-size: 15px;
+    padding: 0 1.3rem;
+  }
+  .wrapper input::placeholder {
+    font-size: 14px;
   }
 }
 </style>

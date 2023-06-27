@@ -83,8 +83,12 @@
     </div>
   </div>
   <div v-if="!loading" class="wrapper">
-    <div class="top"><img src="/images/shopicon.svg" alt="" /> Manage Shop</div>
-
+    <div class="top">
+      <div class="top_hold">
+        <img src="/images/shopicon.svg" alt="" /> Manage Shop
+      </div>
+    </div>
+    <!-- <hr /> -->
     <div class="main_area">
       <div class="main_area_top act">
         <div class="main_area_left act">
@@ -101,7 +105,7 @@
               }}</span>
             </div>
             <div class="btns row items-center">
-              <q-btn
+              <!-- <q-btn
                 icon-right="fa-solid fa-eye"
                 flat
                 label="View"
@@ -109,20 +113,13 @@
                   name: 'vendor.page',
                   params: { slug: `${vendor.slug}` },
                 }"
-              />
-              <q-btn
-                @click="copy"
-                class="q-ml-md"
-                icon-right="fa-solid fa-copy"
-                flat
-                label="Copy"
-              />
-              <q-btn
-                icon-right="fa-solid fa-share"
-                class="q-ml-md"
-                flat
-                label="Share"
-              />
+              /> -->
+              <q-btn @click="copy" flat label="Copy">
+                <img src="/images/copy.svg" alt=""
+              /></q-btn>
+              <q-btn flat label="Share"
+                ><img src="/images/share1.svg" alt=""
+              /></q-btn>
             </div>
           </div>
         </div>
@@ -168,7 +165,7 @@
         <div class="stat">
           <div class="row items-center">
             <div class="main">{{ vendor.views }}</div>
-            <div class="sub">Views <br /></div>
+            <div class="sub">PAGE <br />VIEWS</div>
           </div>
         </div>
         <!-- <div class="stat">
@@ -307,7 +304,7 @@ export default {
       editstate: false,
       createstate: null,
       filter: "",
-      vendor: {},
+      vendor: { products: [] },
       curl: "",
       separator: "",
       mode: "list",
@@ -349,7 +346,7 @@ export default {
     },
     getVendor() {
       this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendor.slug}`)
+        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
           this.loading = false;
           this.vendor = response.data.vendor;
@@ -400,7 +397,7 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   max-width: 900px;
-  padding: 3rem;
+  padding: 1.5rem 0;
 }
 .top {
   font-family: "Open Sans";
@@ -410,8 +407,12 @@ export default {
   line-height: 22px;
   color: #000000;
   border-bottom: 1px solid #b0b0b0;
-  padding: 0rem 0 1rem;
+  padding: 0rem 2rem 1rem;
+}
+
+.top_hold {
   display: flex;
+  gap: 0.3rem;
   align-items: center;
 }
 
@@ -426,6 +427,12 @@ export default {
   height: 19.12px;
 }
 
+.main_area,
+.sub_img,
+.style {
+  padding: 0 2rem;
+}
+
 .main_area_top {
   border-bottom: 1px solid rgba(176, 176, 176, 0.5);
 }
@@ -436,7 +443,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem 0 1rem;
+  padding: 3.5rem 0 1rem;
   flex-wrap: wrap;
   // max-width: 600px;
 }
@@ -483,6 +490,17 @@ export default {
   text-transform: capitalize;
   padding: 6px;
   color: #1f7bb5;
+  width: 47px;
+  height: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btns .q-btn img {
+  width: 7px;
+  height: 7px;
+  margin-left: 0.3rem;
 }
 .sub_img {
   font-family: "Open Sans";
@@ -524,7 +542,7 @@ export default {
   gap: 1rem;
 }
 .main_area_top .main_area_left.act {
-  gap: 3rem;
+  gap: 1.5rem;
 }
 .imgs_wrap {
   position: relative;
@@ -682,9 +700,12 @@ export default {
   .btns {
     justify-content: center;
   }
+  .stats {
+    justify-content: center;
+  }
 
   .wrapper {
-    padding: 2rem;
+    padding: 2rem 0;
   }
 
   // .details .sub_text {
@@ -702,9 +723,17 @@ export default {
   }
 
   .main_area_top .main_area_left {
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     justify-content: center;
     text-align: center;
+  }
+  .style {
+    padding: 0 1rem;
+  }
+  .imgs_wrap.active img:last-of-type {
+    width: 86px;
+    height: 73px;
+    position: relative;
   }
 
   .main_area_top .main_area_left.act {

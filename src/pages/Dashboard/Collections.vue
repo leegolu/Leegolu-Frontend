@@ -7,13 +7,25 @@
   </div>
   <div v-if="!loadingCol" class="wrapp">
     <div class="top">
-      <span class="title">
-        <img src="/images/collections.svg" alt="" />
-        <!-- <i class="fa-solid q-mr-sm fa-list"></i> -->
-        Collections | {{ count }}
-      </span>
+      <div class="row sort_area items-center justify-between">
+        <span class="title">
+          <img src="/images/collections.svg" alt="" />
+          <!-- <i class="fa-solid q-mr-sm fa-list"></i> -->
+          Collections | {{ count }}
+        </span>
 
-      <div class="sort_area">
+        <div class="">
+          <div class="right">
+            <q-btn @click="dialogCreate = true" class="regular">
+              <!-- <span class="dontshow q-ml-xs"> Collection</span> -->
+              <span> New </span>
+              <i class="fa-solid q-ml-sm fa-plus"></i
+            ></q-btn>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="sort_area">
         <div class="left"></div>
         <div class="right">
           <q-btn @click="dialogCreate = true" class="regular">
@@ -21,7 +33,7 @@
             <i class="fa-solid q-ml-sm fa-plus"></i
           ></q-btn>
         </div>
-      </div>
+      </div> -->
     </div>
     <div v-if="rows.length > 0" class="style q-py-md">
       <q-table
@@ -812,7 +824,7 @@ export default {
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   display: flex;
-  justify-content: flex-end;
+  // justify-content: flex-end;
   padding: 1rem 0;
   margin: 0.8rem 0;
 }
@@ -856,7 +868,7 @@ export default {
   line-height: 17px;
   text-transform: capitalize;
   background: #1f7bb5;
-  width: 166px;
+  // width: 166px;
   height: 36px;
   border-radius: 6px;
   color: #ffffff;
@@ -879,7 +891,7 @@ export default {
 }
 
 .sort_area .right .q-btn {
-  width: 215px;
+  // width: 215px;
   height: 34px;
 }
 .sort_area .right .q-btn::before {

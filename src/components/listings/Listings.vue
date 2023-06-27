@@ -171,18 +171,33 @@
 
           <div class="middle advert">
             <div class="items">
-              <q-btn> 3 Days </q-btn>
+              <q-btn
+                :class="selectedAdsDuration === '3 days' ? 'active' : ''"
+                @click="selectDuration('3 days')"
+              >
+                3 Days
+              </q-btn>
             </div>
             <div class="items">
-              <q-btn> 7 Days </q-btn>
+              <q-btn
+                :class="selectedAdsDuration === '7 days' ? 'active' : ''"
+                @click="selectDuration('7 days')"
+              >
+                7 Days
+              </q-btn>
             </div>
             <div class="items">
-              <q-btn> 30 Days </q-btn>
+              <q-btn
+                :class="selectedAdsDuration === '30 days' ? 'active' : ''"
+                @click="selectDuration('30 days')"
+              >
+                30 Days
+              </q-btn>
             </div>
           </div>
 
           <div class="boost advert">
-            <q-btn>
+            <q-btn @click="boostPlan" :loading="boostBtn">
               Boost Advert for
               <span class="q-ml-sm text-weight-bold"> ₦2,000 </span>
             </q-btn>
@@ -203,6 +218,8 @@ export default {
     return {
       dialog: false,
       advertdialog: false,
+      boostBtn: false,
+      selectedAdsDuration: "3 days",
     };
   },
   props: ["listing"],
@@ -211,13 +228,28 @@ export default {
       this.dialog = false;
       this.advertdialog = true;
     },
+    selectDuration(arg) {
+      this.selectedAdsDuration = arg;
+    },
+    boostPlan() {
+      this.boostBtn = true;
+      this.$api
+        .post(`${this.listing.id}/product/boost`)
+        .then(({ data }) => {
+          console.log(data);
+          this.boostBtn = false;
+        })
+        .catch(({ response }) => {
+          this.boostBtn = false;
+        });
+    },
     onItemClick(action, selectedlisting) {
       // console.log(action);
       // console.log(selectedlisting);
       if (action === "edit") {
         this.$router.replace({
           name: "createListing",
-          query: { listing: this.listing.slug },
+          query: { listing: this.listing.slug, id: this.listing.id },
         });
       } else {
         // console.log("delete");
@@ -295,6 +327,7 @@ export default {
 .img img {
   width: 116px;
   height: 116px;
+  object-fit: cover;
 }
 .tag {
   font-family: "Open Sans";
@@ -521,6 +554,10 @@ p {
   gap: 0rem;
   margin-bottom: 1.5rem;
 }
+.dialog_content .middle.advert .q-btn.active {
+  background: #1f7bb5;
+  color: #fff;
+}
 .dialog_content .dialog_top img {
   border: 3px solid rgba(176, 176, 176, 0.5);
   border-radius: 3px;
@@ -532,6 +569,7 @@ p {
   height: 172px;
   border: 3px solid rgba(176, 176, 176, 0.5);
   border-radius: 3px;
+  object-fit: cover;
 }
 
 .dialog_content .middle {
@@ -671,6 +709,7 @@ p.advert {
   font-weight: 600;
   font-size: 20px;
   line-height: 27px;
+  margin-bottom: 10px;
   color: #000000;
 }
 

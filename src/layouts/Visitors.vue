@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf" class="bg-accent">
     <q-header class="header q-pt-xs" height-hint="58">
-      <q-toolbar class="q-pb-sm">
+      <q-toolbar class="q-py-sm">
         <!-- <q-btn
           flat
           dense
@@ -30,7 +30,7 @@
                 class="search_inp"
               />
               <q-btn
-                text-color="primary"
+                text-color="black"
                 class="search-btn"
                 icon="search"
                 type="submit"
@@ -87,8 +87,10 @@
                 no-caps
                 flat
               >
-                <img class="ava" src="/images/userblack.svg" />
-                <q-icon name="expand_more" class="text-black" />
+                <div class="row no-wrap">
+                  <img class="ava" src="/images/userblack.svg" />
+                  <q-icon name="expand_more" class="text-black" />
+                </div>
                 <q-menu class="headermenu">
                   <div class="q-pa-md">
                     <div class="column items-center">
@@ -140,7 +142,7 @@
       </q-toolbar>
       <div class="sub_header">
         <div class="sub_header_wrap">
-          <div class="">
+          <div class="subb">
             <q-btn-dropdown
               class="all"
               flat
@@ -162,6 +164,23 @@
                 </q-item>
               </q-list>
             </q-btn-dropdown>
+            <q-select
+              v-model="model"
+              use-input
+              input-debounce="0"
+              label="All Categories"
+              class="allCat"
+              :options="options"
+              behavior="dialog"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <div class="category_items">
@@ -174,6 +193,18 @@
             >
               {{ item.name }}
             </q-item>
+
+            <q-item class="item"> Cars </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item"> Mobile Phones </q-item>
+            <q-item class="item">Skin Care </q-item>
           </div>
         </div>
       </div>
@@ -200,6 +231,8 @@ export default {
       price: true,
       air: false,
       searchinp: "",
+      options: [],
+      model: "",
       modal3: false,
     };
   },
@@ -233,6 +266,7 @@ export default {
         .get(`categories`)
         .then((response) => {
           this.categorys = response.data.data;
+          this.options = response.data.data;
           // console.log(response);
         })
         .catch((e) => {
@@ -341,7 +375,12 @@ a {
   width: 432px;
   margin-left: 3rem;
   height: 41.84px;
+  padding: 0 0.5rem;
   margin-right: 0.5rem;
+}
+
+.bar .q-btn {
+  color: #000;
 }
 
 .bar input {
@@ -382,7 +421,8 @@ input:focus {
 }
 
 // sub header
-.sub_header_wrap .all {
+.sub_header_wrap .all,
+.allCat {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 700;
@@ -395,8 +435,14 @@ input:focus {
 .category_items {
   display: flex;
   align-items: center;
-  // overflow-x: scroll;
+  overflow-x: scroll;
   height: 50px;
+  cursor: pointer;
+  scrollbar-width: none;
+}
+
+.category_items::-webkit-scrollbar {
+  display: none;
 }
 .category_items .item {
   font-family: "Montserrat";
@@ -417,6 +463,7 @@ input:focus {
   display: flex;
   gap: 1rem;
   align-items: center;
+  padding: 0 1.5rem;
   justify-content: center;
 }
 
@@ -425,6 +472,16 @@ input:focus {
   font-weight: 700 !important;
 }
 
+@media (min-width: 500px) {
+  .allCat {
+    display: none;
+  }
+}
+@media (max-width: 500px) {
+  .sub_header_wrap .all {
+    display: none;
+  }
+}
 @media (max-width: 1000px) {
   .bar {
     width: 50% !important;
@@ -449,6 +506,7 @@ input:focus {
   .bar {
     width: 100%;
   }
+
   .bar .input_wrap {
     display: none;
   }
@@ -456,8 +514,12 @@ input:focus {
     width: 160px;
   }
 
-  .category_items {
-    display: none;
+  // .category_items {
+  //   display: none;
+  // }
+  .sub_header_wrap {
+    padding: 0 1rem;
+    gap: 0;
   }
 
   a {
@@ -476,6 +538,10 @@ input:focus {
   }
   .nav {
     padding: 0.7rem 0.6rem;
+  }
+
+  .right .q-btn span.q-btn__content {
+    flex-wrap: nowrap;
   }
 }
 </style>

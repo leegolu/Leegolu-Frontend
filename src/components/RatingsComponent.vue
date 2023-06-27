@@ -1,13 +1,15 @@
 <template>
+  <div v-if="showSuccess" class="holde">
+    <SuccessVue
+      :title="`${message}`"
+      :desc="`Your ${message} was successful.`"
+    />
+  </div>
   <q-card class="ratings_vendor">
     <div class="ratings_section">
       <div class="owner">
         <div class="owner_left">
-          <img
-            src="
-             https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU"
-            alt=""
-          />
+          <img src="/images/usersvg.svg" alt="" />
         </div>
         <div class="owner_right">
           <p class="owner_title">
@@ -27,26 +29,40 @@
             <span class="ratings_subtext">
               (2345)
               <q-btn push flat class="addRating" icon="add">
-                <q-popup-proxy>
-                  <q-banner
-                    class="ratingBanner"
-                    style="width: 90%; margin: 0 auto"
-                  >
-                    <!-- <template v-slot:avatar>
-                  <q-icon name="signal_wifi_off" color="primary" />
-                </template> -->
-                    <div class="q-mb-xs">Add Rating</div>
-                    <q-rating
-                      v-model="rating"
-                      size="1.4em"
-                      :max="5"
-                      color="primary"
-                    />
-                    <q-input
-                      style="font-size: 10px"
-                      v-model="text"
-                      label="Add review"
-                    />
+                <q-popup-proxy v-model="popup">
+                  <q-banner class="ratingBanner">
+                    <div class="ratings_secs">
+                      <div class="ratings_btns">
+                        <q-btn
+                          @click="selectRatingorReview('add ratings')"
+                          :class="selectedOne === 'add ratings' ? 'active' : ''"
+                        >
+                          Add Ratings
+                        </q-btn>
+                        <q-btn
+                          :class="selectedOne !== 'add ratings' ? 'active' : ''"
+                          @click="selectRatingorReview('review')"
+                        >
+                          Add Reviews
+                        </q-btn>
+                      </div>
+                    </div>
+                    <!-- <div class="q-mb-xs">Add Rating</div> -->
+                    <div class="q-mt-md" v-if="selectedOne === 'add ratings'">
+                      <q-rating
+                        v-model="rating"
+                        size="2.3em"
+                        :max="5"
+                        color="primary"
+                      />
+                    </div>
+                    <div v-else>
+                      <q-input
+                        style="font-size: 10px"
+                        v-model="text"
+                        label="Add review"
+                      />
+                    </div>
 
                     <q-btn
                       color="white"
@@ -68,20 +84,69 @@
 
       <div class="ratings_secs">
         <div class="ratings_btns">
-          <q-btn class="active"> Most Relevant </q-btn>
-          <q-btn> Highest </q-btn>
-          <q-btn> Lowest </q-btn>
-          <q-btn> Recent </q-btn>
+          <div class="ratings_btnn">
+            <q-btn class="active"> Most Relevant </q-btn>
+            <q-btn> Highest </q-btn>
+            <q-btn> Lowest </q-btn>
+            <q-btn> Recent </q-btn>
+          </div>
+          <q-btn push flat class="addBtn">
+            <span>Add<i class="fa-solid q-ml-xs fa-add"></i></span>
+            <q-popup-proxy v-model="popup">
+              <q-banner class="ratingBanner">
+                <div class="ratings_secs">
+                  <div class="ratings_btns">
+                    <q-btn
+                      @click="selectRatingorReview('add ratings')"
+                      :class="selectedOne === 'add ratings' ? 'active' : ''"
+                    >
+                      Add Ratings
+                    </q-btn>
+                    <q-btn
+                      :class="selectedOne !== 'add ratings' ? 'active' : ''"
+                      @click="selectRatingorReview('review')"
+                    >
+                      Add Reviews
+                    </q-btn>
+                  </div>
+                </div>
+                <!-- <div class="q-mb-xs">Add Rating</div> -->
+                <div class="q-mt-md" v-if="selectedOne === 'add ratings'">
+                  <q-rating
+                    v-model="rating"
+                    size="2.3em"
+                    :max="5"
+                    color="primary"
+                  />
+                </div>
+                <div v-else>
+                  <q-input
+                    style="font-size: 10px"
+                    v-model="text"
+                    label="Add review"
+                  />
+                </div>
+
+                <q-btn
+                  color="white"
+                  @click="rate"
+                  no-caps
+                  :loading="loading"
+                  class="bg-primary q-mt-md"
+                  flat
+                >
+                  Submit
+                </q-btn>
+              </q-banner>
+            </q-popup-proxy>
+          </q-btn>
         </div>
       </div>
 
       <div class="ratings_main">
         <div class="ratings_card">
           <div class="ratings_card_left">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU"
-              alt=""
-            />
+            <img src="/images/usersvg.svg" alt="" />
           </div>
 
           <div class="ratings_card_right">
@@ -108,10 +173,7 @@
         </div>
         <div class="ratings_card">
           <div class="ratings_card_left">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTglXGZjjb4pIhLFesgiwB416bLsr2WPuguUNFkaPUSei78Og-iIiINQFvBdopWxNY2yhk&usqp=CAU"
-              alt=""
-            />
+            <img src="/images/usersvg.svg" alt="" />
           </div>
 
           <div class="ratings_card_right">
@@ -145,60 +207,99 @@
 
 <script>
 import { ref } from "vue";
-
+import SuccessVue from "./Success.vue";
 export default {
   setup() {
     return {
       ratingModel: ref(4),
       rating: ref(0),
+      selectedOne: ref("add ratings"),
     };
   },
   data() {
     return {
       // product: {},
       loading: false,
+      popup: false,
       text: "",
+      showSuccess: false,
+      message: "",
     };
+  },
+
+  components: {
+    SuccessVue,
   },
 
   props: ["productData"],
 
   methods: {
+    selectRatingorReview(arg) {
+      this.selectedOne = arg;
+    },
     closeModal() {
       // console.log("first clicked");
       this.$emit("closeModalRatings");
     },
 
     rate() {
-      console.log(this.productData);
+      // console.log(this.productData);
+
       this.loading = true;
-      this.$api
-        .post(`${this.productData.data.id}/rating`, {
-          rating: this.rating,
-        })
-        .then((response) => {
-          this.loading = false;
-          this.$q.notify({
-            message: response.data.message,
-            color: "green",
-          });
-          console.log(response);
-          this.rating = 0;
-        })
-        .catch(({ response }) => {
-          this.loading = false;
-          if (response.status === 401) {
-            this.$store.leegoluauth.previousRoute =
-              this.$router.currentRoute.value.fullPath;
-            this.$router.replace({ name: "login" });
+
+      if (this.selectedOne === "add ratings") {
+        this.$api
+          .post(`${this.productData.data.id}/rating`, {
+            rating: this.rating,
+          })
+          .then((response) => {
+            this.loading = false;
             this.$q.notify({
-              message: "You need to login to rate product",
+              message: response.data.message,
               color: "green",
             });
-          }
+            console.log(response);
+            this.message = "Your ratings was successful";
+            this.showSuccess = true;
+            this.popup = false;
+            this.rating = 0;
+          })
+          .catch(({ response }) => {
+            this.loading = false;
+            this.$q.notify({
+              message: response.data.message,
+              color: "green",
+            });
+            this.errors = error.errors || {};
+          });
+      } else {
+        this.$api
+          .post(`${this.productData.data.slug}/review/create`, {
+            review: this.text,
+          })
+          .then((response) => {
+            this.loading = false;
+            this.$q.notify({
+              message: response.data.message,
+              color: "green",
+            });
+            console.log(response);
+            this.message = "Your review was successful";
+            this.showSuccess = true;
+            this.popup = false;
 
-          this.errors = error.errors || {};
-        });
+            // this.rating = 0;
+            this.text = "";
+          })
+          .catch(({ response }) => {
+            this.loading = false;
+            this.$q.notify({
+              message: response.data.message,
+              color: "green",
+            });
+            this.errors = error.errors || {};
+          });
+      }
     },
   },
 };
@@ -213,6 +314,11 @@ p {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem 0.5rem;
+}
+
+.holde {
+  position: absolute;
+  top: 2%;
 }
 
 .ratings_vendor {
@@ -297,6 +403,15 @@ p.owner_title span {
   color: #fff;
 }
 
+.addRatingbiger {
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+  background: #1f7bb5;
+  color: #fff;
+  padding: 5px;
+}
+
 hr {
   background: #b0b0b0;
 }
@@ -308,10 +423,39 @@ hr {
   padding: 0.5rem;
   /* margin: 0rem 0 1rem; */
   padding: 0.5rem 1.2rem 0.5rem;
+  justify-content: space-between;
   border: 1px solid #dfdfdf;
 }
 .ratings_btns::-webkit-scrollbar {
   display: none;
+}
+
+.ratings_btns .addBtn {
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  padding: 5px;
+  border: 1px solid #1f7bb5;
+}
+
+.ratings_btns .addBtn span.row {
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+.ratings_btnn {
+  display: flex;
+  align-items: center;
+  overflow-x: scroll;
+}
+.ratings_btnn::-webkit-scrollbar {
+  display: none;
+}
+
+.ratingBanner .ratings_btns {
+  padding: 0.5rem 0.3rem 0.5rem;
+  border: none;
+  padding-bottom: 0.8rem;
+  /* border-bottom: 1px solid #dfdfdf; */
 }
 
 .ratings_btns .q-btn {
@@ -340,6 +484,24 @@ hr {
   line-height: 12px;
   color: #000000;
   padding: 0.7rem 0rem 0.2rem;
+}
+
+.bg-primary {
+  margin: 1rem auto 0.5rem;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  width: 90%;
+  height: 30px;
+  text-transform: capitalize;
+  border-radius: 5px;
+  background: #1f7bb5;
 }
 
 .ratings_persons_name {

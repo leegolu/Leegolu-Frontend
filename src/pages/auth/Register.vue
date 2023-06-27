@@ -1,5 +1,10 @@
 <template>
   <q-layout class="page_">
+    <q-header class="bg-white non_header q-py-sm q-px-sm">
+      <q-btn to="/" flat no-caps no-wrap class="q-ml-xs logo">
+        <img src="/images/logored.png" alt="" />
+      </q-btn>
+    </q-header>
     <div class="login q-pt-xl">
       <div class="login_hold">
         <div class="login_wrapper">
@@ -65,11 +70,10 @@
                   :key="role.id"
                   :class="role.id === data.role ? 'check' : 'notactive'"
                 >
-                  <q-radio
-                    v-model="data.role"
-                    :val="role.id"
-                    :label="`Leegolu ${role.name}`"
-                  />
+                  <q-radio v-model="data.role" :val="role.id"
+                    ><span class="leg">Leegolu</span>
+                    <span class="choice">{{ role.name }}</span></q-radio
+                  >
                 </div>
 
                 <!-- {{ roles }} -->
@@ -1184,18 +1188,22 @@ select:focus {
   background: transparent;
   opacity: 0;
 }
-
+.choice {
+  margin-left: 0.3rem;
+  text-transform: capitalize;
+}
 @media (max-width: 1000px) {
   .login_wrapper,
   .login_hold {
-    width: 100%;
+    width: fit-content;
+    // width: 100%;
   }
 
-  .right {
-    padding: 3rem 1rem 1rem 2rem;
-  }
+  // .right {
+  //   padding: 3rem 1rem 1rem 1rem;
+  // }
 }
-@media (max-width: 820px) {
+@media (max-width: 870px) {
   .login_wrapper {
     grid-template-columns: 1fr;
     max-width: 500px;
@@ -1217,7 +1225,7 @@ select:focus {
   }
 
   .right {
-    padding: 1.5rem 1rem 1rem 2rem;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
   }
 
   .modal_main {
@@ -1255,6 +1263,12 @@ select:focus {
   }
   .modal .proceed {
     width: auto;
+  }
+  .leg {
+    display: none;
+  }
+  .choice {
+    text-transform: capitalize;
   }
 
   .modal_main_text {
