@@ -1,10 +1,13 @@
 <template>
   <div class="listings_hold">
+    <div v-if="boosted" class="boosted">
+      <BoostedVue :product="product" />
+    </div>
     <div class="listing">
       <div class="left">
         <div class="img">
           <img :src="listing.uploads[0].url" alt="" />
-          <!-- <p v-if="listing.boosted" class="tag">Boosted</p> -->
+          <p v-if="listing.boosted" class="tag">Boosted</p>
         </div>
 
         <div class="left_right">
@@ -13,11 +16,13 @@
           <div class="price">₦{{ listing.price.toLocaleString() }}</div>
           <div class="div">
             <div
-              :class="
-                listing.status === 'declined' ? 'declined status' : 'status'
-              "
+              :class="{
+                'declined status': listing.status === 'declined',
+                'pending status': listing.status === 'pending',
+                'active status': listing.status === 'active',
+              }"
             >
-              {{ listing.condition }}
+              {{ listing.status }}
             </div>
 
             <div class="q-pt-md date">
@@ -160,25 +165,30 @@
                 {{ listing.name }}
               </div>
               <div class="price">
-                {{ listing.price }}
+                {{ listing.price.toLocaleString() }}
               </div>
             </div>
           </div>
           <div class="row ad justify-between items-center">
-            <p>Boost this advert for 3 Days</p>
-            <p class="text-weight-bold">₦2,000</p>
+            <p>Boost this advert for {{ selectedAdsDuration }}</p>
+            <p class="text-weight-bold">
+              ₦{{ selectedAdAmt.toLocaleString() }}
+            </p>
           </div>
 
           <div class="middle advert">
-            <div class="items">
+            <div class="items bty">
               <q-btn
-                :class="selectedAdsDuration === '3 days' ? 'active' : ''"
-                @click="selectDuration('3 days')"
+                v-for="(plan, index) in plans"
+                :key="index"
+                :class="selectedAdsDuration === plan.name ? 'active' : ''"
+                @click="selectDuration(plan, plan.id)"
               >
-                3 Days
+                {{ plan.name }}
               </q-btn>
             </div>
-            <div class="items">
+            <!-- {{ plans }} -->
+            <!-- <div class="items">
               <q-btn
                 :class="selectedAdsDuration === '7 days' ? 'active' : ''"
                 @click="selectDuration('7 days')"
@@ -193,13 +203,15 @@
               >
                 30 Days
               </q-btn>
-            </div>
+            </div> -->
           </div>
 
           <div class="boost advert">
             <q-btn @click="boostPlan" :loading="boostBtn">
               Boost Advert for
-              <span class="q-ml-sm text-weight-bold"> ₦2,000 </span>
+              <span class="q-ml-sm text-weight-bold">
+                ₦{{ selectedAdAmt.toLocaleString() }}
+              </span>
             </q-btn>
           </div>
 
@@ -213,31 +225,55 @@
 </template>
 
 <script>
+import BoostedVue from "../Boosted.vue";
 export default {
   data() {
     return {
       dialog: false,
       advertdialog: false,
       boostBtn: false,
-      selectedAdsDuration: "3 days",
+      selectedAdsDuration: "1 day",
+      selectedAd: "",
+      selectedAdAmt: "1000",
+      boosted: false,
+      product: {},
     };
   },
-  props: ["listing"],
+  emits: ["refreshevent"],
+  components: {
+    BoostedVue,
+  },
+  props: ["listing", "plans"],
+
   methods: {
     handleAds() {
       this.dialog = false;
       this.advertdialog = true;
     },
-    selectDuration(arg) {
-      this.selectedAdsDuration = arg;
+    selectDuration(arg, selected) {
+      console.log(arg, selected);
+      this.selectedAdsDuration = arg.name;
+      this.selectedAd = selected;
+      this.selectedAdAmt = arg.price;
     },
+
     boostPlan() {
       this.boostBtn = true;
       this.$api
-        .post(`${this.listing.id}/product/boost`)
+        .post(`${this.listing.id}/product/boost`, {
+          plan: this.selectedAd,
+        })
         .then(({ data }) => {
           console.log(data);
+          this.$q.notify({
+            color: "green",
+            message: data.message,
+            position: "top-left",
+          });
           this.boostBtn = false;
+          this.advertdialog = false;
+          this.product = data.product;
+          this.boosted = true;
         })
         .catch(({ response }) => {
           this.boostBtn = false;
@@ -275,7 +311,7 @@ export default {
               .delete(`${this.listing.slug}/delete`)
               .then(({ data }) => {
                 this.loading = false;
-                this.$emit("refresh-event");
+                this.$emit("refreshevent");
               })
               .catch(({ response }) => {
                 // console.log(response);
@@ -299,6 +335,7 @@ export default {
   background: rgba(233, 233, 233, 0.44);
   // border-top: 1px solid rgba(176, 176, 176, 0.5);
   // padding: 1rem;
+  position: relative;
 }
 .listing {
   display: grid;
@@ -318,7 +355,15 @@ export default {
   grid-template-columns: 1fr 2fr;
   // grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 1rem;
+  min-width: 300px;
   align-items: center;
+}
+
+.boosted {
+  position: absolute;
+  z-index: 1000;
+  top: -110%;
+  left: -11%;
 }
 .img {
   position: relative;
@@ -328,6 +373,12 @@ export default {
   width: 116px;
   height: 116px;
   object-fit: cover;
+}
+
+.items.bty {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 .tag {
   font-family: "Open Sans";
@@ -390,6 +441,12 @@ export default {
 
 .left_right .status.declined {
   background: #ee4e36;
+}
+.left_right .status.pending {
+  background: #f1a640;
+}
+.left_right .status.active {
+  background: #00a01a;
 }
 .left_right .date {
   font-family: "Open Sans";
@@ -739,6 +796,10 @@ p.advert {
 @media (max-width: 500px) {
   .dialog_content ul li {
     font-size: 12px;
+  }
+
+  .listing .left {
+    min-width: 100%;
   }
   .listing {
     display: grid;

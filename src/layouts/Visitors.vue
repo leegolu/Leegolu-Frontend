@@ -165,11 +165,12 @@
               </q-list>
             </q-btn-dropdown>
             <q-select
-              v-model="model"
               use-input
-              input-debounce="0"
+              input-debounce=""
+              v-model="model"
               label="All Categories"
               class="allCat"
+              @filter="filterFn"
               :options="options"
               behavior="dialog"
             >
@@ -181,6 +182,13 @@
                 </q-item>
               </template>
             </q-select>
+            <!-- <q-select
+              v-model="model"
+              class="allCat"
+              :options="options"
+              label="All Categories"
+              behavior="dialog"
+            /> -->
           </div>
 
           <div class="category_items">
@@ -219,6 +227,7 @@
 <script>
 import { ref } from "vue";
 import { fabYoutube } from "@quasar/extras/fontawesome-v6";
+// const stringOptions = [];
 export default {
   name: "MyLayout",
   data() {
@@ -231,10 +240,20 @@ export default {
       price: true,
       air: false,
       searchinp: "",
-      options: [],
       model: "",
       modal3: false,
     };
+  },
+  watch: {
+    model: function (newVal) {
+      console.log(newVal);
+      if (this.model !== "") {
+        this.$router.replace({
+          name: "category-page",
+          params: { slug: newVal.slug },
+        });
+      }
+    },
   },
   setup() {
     const leftDrawerOpen = ref(false);
@@ -242,11 +261,35 @@ export default {
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
+    const options = ref([]);
+    const stringOptions = ref([]);
     return {
       fabYoutube,
       leftDrawerOpen,
       search,
+      options,
+      stringOptions,
       toggleLeftDrawer,
+      filterFn(val, update) {
+        console.log(val);
+        if (val === "") {
+          update(() => {
+            // console.log(options);
+            // console.log(stringOptions);
+            options.value = stringOptions.value;
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+          });
+          return;
+        }
+
+        update(() => {
+          const needle = val.toLowerCase();
+          options.value = stringOptions.value.filter(
+            (v) => v.name.toLowerCase().indexOf(needle) > -1
+          );
+        });
+      },
     };
   },
 
@@ -266,8 +309,12 @@ export default {
         .get(`categories`)
         .then((response) => {
           this.categorys = response.data.data;
-          this.options = response.data.data;
-          // console.log(response);
+          this.stringOptions = response.data.data.map((obj) => ({
+            ...obj,
+            label: obj.name,
+            value: obj.slug,
+          }));
+          console.log(response);
         })
         .catch((e) => {
           this.loading = false;

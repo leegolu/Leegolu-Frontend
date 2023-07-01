@@ -93,7 +93,11 @@
     </div>
     <div v-if="sortedArray.length" class="listings">
       <div v-for="(listing, index) in sortedArray" :key="index">
-        <Listings @refresh-event="getListings" :listing="listing" />
+        <Listings
+          @refreshevent="getListings"
+          :plans="plans"
+          :listing="listing"
+        />
       </div>
     </div>
 
@@ -131,6 +135,7 @@ export default {
     return {
       value: false,
       listings: [],
+      plans: [],
       loading: true,
       sortDirection: "",
       sortDirectionSelected: "Sort by Date",
@@ -145,6 +150,7 @@ export default {
 
   created() {
     this.getListings();
+    this.getPlans();
   },
   watch: {
     sortDirection: {
@@ -161,9 +167,7 @@ export default {
       if (this.selectedCategory === "all") {
         return this.listings;
       } else if (this.selectedCategory === "boosted") {
-        return this.listings.filter(
-          (listing) => listing.boosted === this.selectedCategory
-        );
+        return this.listings.filter((listing) => listing.boosted === true);
       } else {
         return this.listings.filter(
           (listing) => listing.status === this.selectedCategory
@@ -191,6 +195,19 @@ export default {
     onItemClick(clickDir) {
       this.sortDirection = clickDir;
       // console.log("first");
+    },
+
+    getPlans() {
+      this.$api
+        .get(`boost/plans`)
+        .then((response) => {
+          console.log(response);
+          this.plans = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
     },
 
     getListings() {

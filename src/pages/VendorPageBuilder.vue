@@ -43,12 +43,18 @@
         </div>
         <div style="gap: 0.6rem" class="q-ml-xl row items-center no-wrap">
           <div class="span">
-            <q-btn flat round class="desktop_icon" size="10px">
+            <q-btn
+              @click="toggleView('desktop')"
+              flat
+              round
+              class="desktop_icon"
+              size="10px"
+            >
               <img src="/images/desktop.svg" alt="" />
             </q-btn>
           </div>
-          <div class="span">
-            <q-btn flat round size="10px">
+          <div class="span mobile">
+            <q-btn @click="toggleView('mobile')" flat round size="10px">
               <img src="/images/mobile.svg" alt="" />
             </q-btn>
           </div>
@@ -690,7 +696,7 @@
               </div>
             </div>
             <div v-else class="form">
-              <div class="initialsCover">{{ initials }}</div>
+              <div class="initialsCover"></div>
             </div>
           </div>
         </div>
@@ -1171,7 +1177,9 @@ export default {
     initials() {
       // Logic to extract initials from the person's name
       // Replace this with your own implementation
-      const name = this.data.business_name;
+      const name = this.data.business_name
+        ? this.data.business_name
+        : "Hello there";
       // const nameParts = name.split(" ");
       // let initials = "";
 
@@ -1279,6 +1287,70 @@ export default {
   },
 
   methods: {
+    // toggleView(view) {
+    //   console.log(view);
+    //   if (view === "mobile") {
+    //     window.innerWidth = 450;
+    //   } else {
+    //     window.innerWidth = window.screen.width;
+    //   }
+    // },
+    // toggleView(view) {
+    //   if (view === "mobile") {
+    //     const mobileWindow = window.open("", "_blank", `width=450,height=800`);
+    //     mobileWindow.resizeTo(450, window.outerHeight);
+    //   } else {
+    //     // window.location.reload();
+    //   }
+    // },
+    // toggleView(view) {
+    //   // if (view === "mobile") {
+    //   //   const mobileWindow = window.open("", "_blank", `width=450,height=800`);
+    //   //   mobileWindow.document.write(`
+    //   //     <html>
+    //   //       <head>
+    //   //         <title>Mobile View</title>
+    //   //       </head>
+    //   //       <body>
+    //   //         ${document.documentElement.innerHTML}
+    //   //       </body>
+    //   //     </html>
+    //   //   `);
+    //   //   mobileWindow.document.close();
+    //   // } else {
+    //   //   window.location.reload();
+    //   // }
+    //   if (view === "mobile") {
+    //     // console.log(window.location.href);
+    //     const mobileWindow = window.open(
+    //       `${window.location.href}/business/page-builder`,
+    //       "_blank",
+    //       `width=450,height=800`
+    //     );
+    //     mobileWindow.document.open();
+    //     mobileWindow.document.write(document.documentElement.outerHTML);
+    //     mobileWindow.document.close();
+    //   } else {
+    //     window.location.reload();
+    //   }
+    // },
+    toggleView(view) {
+      if (view === "mobile") {
+        window.addEventListener("beforeunload", this.openMobileView);
+        window.open(window.location.href, "_blank", `width=450,height=800`);
+      } else {
+        // window.location.reload();
+        // if (this.mobileWindow) {
+        //   this.mobileWindow.close();
+        // }
+      }
+    },
+    openMobileView() {
+      const mobileWindow = window.open("", "_blank", `width=450,height=800`);
+      mobileWindow.document.write(document.documentElement.outerHTML);
+      mobileWindow.document.close();
+      window.removeEventListener("beforeunload", this.openMobileView);
+    },
     checkLayout(arg) {
       // console.log(this.data.pageLayout);
       // console.log(this.data);
@@ -1631,6 +1703,10 @@ export default {
   margin-left: 0.4rem;
 }
 
+.mobile {
+  max-width: 450px;
+}
+
 .editor_hero .q-btn {
   position: absolute;
   top: 5%;
@@ -1890,6 +1966,7 @@ export default {
 
 .left_wrap .left_paragraph {
   padding-bottom: 1rem;
+  white-space: nowrap;
 }
 
 .layout {
@@ -2351,7 +2428,7 @@ export default {
     margin: 6rem auto 0rem;
   }
 }
-@media (max-width: 970px) {
+@media (max-width: 971px) {
   // .form img.previewimg.cover {
   //   width: 100%;
   // }
@@ -2554,10 +2631,15 @@ export default {
     display: none;
   }
 }
-@media (max-width: 950px) {
+@media (max-width: 980px) {
   .submit .submitBTN {
     height: 45px;
     font-size: 15px;
+  }
+
+  .holder {
+    width: 95%;
+    margin: 0 auto;
   }
   .rating .rate {
     font-size: 8px;
@@ -2811,6 +2893,16 @@ export default {
   .upload_logo_area {
     // margin-top: -15%;
     margin-top: -18%;
+  }
+  .preview {
+    margin: 0 0.5rem;
+  }
+  .manage_seg .q-btn {
+    margin-right: 0rem;
+  }
+
+  .span.mobile {
+    display: none;
   }
 }
 @media (max-width: 400px) {

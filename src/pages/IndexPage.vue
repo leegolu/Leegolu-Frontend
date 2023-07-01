@@ -249,7 +249,7 @@
     <div class="head_text">
       Popular Categories
       <router-link :to="{ name: 'category-page', params: { slug: 'fashion' } }"
-        ><span class="line"> | Veiw All </span></router-link
+        ><span class="line"> | View All </span></router-link
       >
     </div>
 
@@ -1032,7 +1032,7 @@ a {
 
 .process {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   padding-top: 1rem;
   padding-bottom: 2rem;

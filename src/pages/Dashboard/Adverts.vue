@@ -359,28 +359,30 @@
             </div>
           </div>
           <div class="row ad justify-between items-center">
-            <p>Boost this advert for 3 Days</p>
-            <p class="text-weight-bold">₦2,000</p>
+            <p>Boost this advert for {{ selectedAdsDuration }}</p>
+            <p class="text-weight-bold">₦{{ selectedAdAmt }}</p>
           </div>
 
           <div class="middle advert">
-            <div class="items">
+            <!-- <div class="items">
               <q-btn
                 :class="selectedAdsDuration === 'Free' ? 'active' : ''"
                 @click="selectDuration('Free')"
               >
                 Free
               </q-btn>
-            </div>
-            <div class="items">
+            </div> -->
+            <div class="items btr">
               <q-btn
-                :class="selectedAdsDuration === '3 days' ? 'active' : ''"
-                @click="selectDuration('3 days')"
+                v-for="(plan, index) in plans"
+                :key="index"
+                :class="selectedAdsDuration === plan.name ? 'active' : ''"
+                @click="selectDuration(plan, plan.id)"
               >
-                3 Days
+                {{ plan.name }}
               </q-btn>
             </div>
-            <div class="items">
+            <!-- <div class="items">
               <q-btn
                 :class="selectedAdsDuration === '7 days' ? 'active' : ''"
                 @click="selectDuration('7 days')"
@@ -395,7 +397,7 @@
               >
                 30 Days
               </q-btn>
-            </div>
+            </div> -->
           </div>
 
           <div class="row items-center justify-between">
@@ -404,6 +406,7 @@
               @click="handleBoost"
               type="button"
               outline
+              :loading="boostBtn"
               color="primary"
               class="btn post"
               >Post Ad</q-btn
@@ -482,9 +485,11 @@ export default {
       modal3: false,
       price: true,
       air: false,
+      boostBtn: false,
       modal3: false,
       categories: [],
-      selectedAdsDuration: "3 days",
+      selectedAdsDuration: "1 day",
+      selectedAdAmt: "1000",
       subcategories: [],
       states: [],
       showarea: false,
@@ -496,6 +501,8 @@ export default {
       loadingAvatar: false,
       avatar: {},
       areas: [],
+      plans: [],
+      selectedAd: "",
       edit: false,
       errors: {},
       uploadedImages: [],
@@ -549,6 +556,7 @@ export default {
   created() {
     this.getCategory();
     this.getStates();
+    this.getPlans();
     if (this.$router.currentRoute.value.query.listing) {
       this.getListing();
     }
@@ -567,15 +575,17 @@ export default {
       }
     },
 
-    selectDuration(arg) {
-      this.selectedAdsDuration = arg;
+    selectDuration(arg, plan) {
+      this.selectedAdsDuration = arg.name;
+      this.selectedAdAmt = arg.price;
+      this.selectedAd = plan;
     },
 
     getVendor() {
       this.$api
         .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -779,8 +789,20 @@ export default {
       this.$api
         .get(`${id}/requirement`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.requirements = response.data.data[0].dropdowns;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getPlans() {
+      this.$api
+        .get(`boost/plans`)
+        .then((response) => {
+          console.log(response);
+          this.plans = response.data.data;
         })
         .catch((e) => {
           this.loading = false;
@@ -789,14 +811,28 @@ export default {
     },
 
     handleBoost() {
-      this.modal3 = false;
-      this.successModal = true;
+      this.boostBtn = true;
+      this.$api
+        .post(`${this.createdProduct.id}/product/boost`, {
+          plan: this.selectedAd,
+        })
+        .then(({ data }) => {
+          console.log(data);
+          this.boostBtn = false;
+          this.modal3 = false;
+          this.successModal = true;
+        })
+        .catch(({ response }) => {
+          this.boostBtn = false;
+        });
     },
 
     finish() {
       this.data.negotiable = this.data.negotiable ? 1 : 0;
+      const cleanedString = this.data.price.replace(/,/g, "");
       let data = {
         ...this.data,
+        price: cleanedString,
       };
       let createproductObject = data;
       // console.log(this.postFormData);
@@ -1107,6 +1143,11 @@ input:focus {
   text-align: center;
   color: #ffffff;
   margin-top: 0.7rem;
+}
+.items.btr {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .successful .congrats {

@@ -2,7 +2,7 @@
   <div v-if="show" class="hold">
     <div style="gap: 1rem" class="head row no-wrap">
       <div class="left">
-        <img class="main_img" src="/images/listing1.png" alt="" />
+        <img class="main_img" :src="product.uploads[0].url" alt="" />
         <!-- <img class="play" src="/images/play.svg" alt="" /> -->
       </div>
       <div class="details">
@@ -10,7 +10,7 @@
         <div class="why_desc">This listing is currently being promoted.</div>
 
         <div class="q-mt-lg">
-          <div class="visit">Princess Cut Peplum Sleeve... ....</div>
+          <div class="visit">{{ product.name }}....</div>
         </div>
       </div>
 
@@ -28,6 +28,8 @@ export default {
       show: true,
     };
   },
+
+  props: ["product"],
 };
 </script>
 
@@ -109,12 +111,16 @@ img {
   height: 3.34px;
 }
 
-// @media (max-width: 500px) {
-//   .why_title {
-//     font-size: 14px;
-//   }
-//   .why_desc {
-//     font-size: 12px;
-//   }
-// }
+@media (max-width: 900px) {
+  .boosted {
+    top: -60%;
+    left: -5%;
+  }
+}
+@media (max-width: 500px) {
+  .boosted {
+    top: -20%;
+    left: -6%;
+  }
+}
 </style>

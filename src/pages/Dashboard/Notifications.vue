@@ -56,7 +56,7 @@
                   {{ props.row.message }}
                 </div>
                 <div class="name_down">
-                  {{ props.row.product_name }}
+                  {{ props.row.item }}
                 </div>
               </div>
             </div>

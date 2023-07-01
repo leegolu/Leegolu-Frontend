@@ -28,6 +28,7 @@
         row-key="id"
         :grid="mode == 'grid'"
         :filter="filter"
+        v-model:pagination="pagination"
         :loading="loading"
         class="my_table"
         @request="onRequest"
@@ -242,8 +243,14 @@ export default {
       loading: false,
       loadingCol: true,
       editLoad: false,
-      create_title: false,
       thisId: "",
+      pagination: {
+        sortBy: "id",
+        descending: false,
+        page: 1,
+        rowsPerPage: 5,
+        rowsNumber: 100,
+      },
       loaders: {
         delete: false,
         category: false,
@@ -272,7 +279,7 @@ export default {
       this.$api
         .get(url)
         .then(({ data }) => {
-          // console.log(data);
+          console.log(data);
           this.loadingCol = false;
           this.rows = data.conversations;
           // this.count = data.count;

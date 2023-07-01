@@ -407,7 +407,13 @@ p {
   color: #000000 !important;
 }
 .sub_header_wrap .allCat .q-field__marginal {
-  margin-left: -22%;
+  margin-left: -35%;
+}
+
+.sub_header_wrap
+  .q-field--standard.q-field--highlighted
+  .q-field__control:after {
+  display: none;
 }
 
 .each_category .q-item {
