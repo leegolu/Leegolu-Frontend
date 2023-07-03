@@ -705,7 +705,7 @@ export default {
   }
 
   .wrapper {
-    padding: 2rem 0;
+    padding: 1rem 0;
   }
 
   // .details .sub_text {
@@ -743,6 +743,15 @@ export default {
   .link {
     font-size: 12px;
     margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .main_area_top .main_area_left.act {
+    flex-direction: column;
+  }
+  .main_area_top.act {
+    padding: 2.5rem 0 1rem;
   }
 }
 </style>

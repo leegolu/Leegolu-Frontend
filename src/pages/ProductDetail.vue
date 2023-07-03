@@ -63,14 +63,16 @@
               <!-- <span> | 7 Months</span> -->
             </p>
             <div @click="ratingsView = true" class="ratings_area">
-              <span class="rating_main_text">4.0</span>
+              <span class="rating_main_text">{{ product.data.rating }}.0</span>
               <q-rating
-                v-model="ratingModel"
+                v-model="product.data.rating"
                 size="1em"
                 :max="5"
                 color="secondary"
               />
-              <span class="ratings_subtext"> (2345) </span>
+              <span class="ratings_subtext"
+                >({{ product.reviews.length }})
+              </span>
             </div>
           </div>
         </div>
@@ -254,7 +256,7 @@
           <div class="ratings_area">
             <span class="rating_main_text">4.0</span>
             <q-rating
-              v-model="ratingModel"
+              v-model="product.data.rating"
               size="1em"
               :max="5"
               color="secondary"
@@ -286,6 +288,11 @@
         :productData="product"
         @closeModalRatings="closeRatings"
       />
+      <!-- <RatingsComponentVue
+        :productData="product"
+        @closeModalRatings="closeRatings"
+        @getP="getProduct"
+      /> -->
     </q-dialog>
 
     <q-dialog v-model="popImageDialog">

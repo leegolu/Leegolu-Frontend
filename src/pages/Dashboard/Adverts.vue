@@ -153,6 +153,10 @@
             <div class="input-box active-grey">
               <label class="input-label">Brand</label>
               <input v-model="data.brand" type="text" class="input-1" />
+
+              <small v-if="errors.brand" class="text-weight-bold text-red">
+                {{ errors.brand[0] }}
+              </small>
             </div>
           </div>
 
@@ -312,7 +316,7 @@
           />
         </div> -->
 
-        <div class="row no-wrap items-center justify-between">
+        <div class="row btnns no-wrap items-center justify-between">
           <q-btn
             v-if="!edit"
             @click="finish"
@@ -401,7 +405,9 @@
           </div>
 
           <div class="row items-center justify-between">
-            <q-btn type="button" color="info" class="prev btn">Prev</q-btn>
+            <q-btn @click="skip" type="button" color="info" class="prev btn"
+              >Skip</q-btn
+            >
             <q-btn
               @click="handleBoost"
               type="button"
@@ -573,6 +579,11 @@ export default {
         });
         this.data.price = formattedValue;
       }
+    },
+
+    skip() {
+      this.modal3 = false;
+      this.successModal = true;
     },
 
     selectDuration(arg, plan) {
@@ -1735,7 +1746,21 @@ p.advert {
   .q-btn.prev {
     height: 40px;
     font-size: 12px;
-    width: auto;
+    // width: auto;
+  }
+
+  .btnns {
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+  .btnns .q-btn {
+    width: 100%;
+  }
+  .btnns .q-btn:first-of-type {
+    margin-top: 2rem;
+  }
+  .btnns .q-btn:last-of-type {
+    margin-top: 0.5rem;
   }
 
   .create_ad .text {

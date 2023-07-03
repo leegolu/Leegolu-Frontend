@@ -340,9 +340,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapp {
-  margin: 2rem 1.5rem;
-}
+// .wrapp {
+//   margin: 2rem 1.5rem;
+// }
 
 .title {
   font-family: "Open Sans";
@@ -351,6 +351,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   color: #000000;
+  margin: 1.5rem 1.5rem;
 }
 
 .sort_area {
@@ -359,8 +360,12 @@ export default {
   border-bottom: 1px solid #d9d9d9;
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 1rem 1.7rem;
   margin: 0.8rem 0;
+}
+
+.style {
+  margin: 2rem 1.5rem;
 }
 
 .sort_area .left {
@@ -622,5 +627,11 @@ p.advert {
   font-size: 20px;
   line-height: 27px;
   color: #000000;
+}
+
+@media (max-width: 500px) {
+  .title {
+    margin: 1.4rem 1.5rem;
+  }
 }
 </style>

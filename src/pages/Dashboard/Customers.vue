@@ -118,11 +118,11 @@
               /></q-btn>
               <q-btn-dropdown class="modify" label="Modify">
                 <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
+                  <!-- <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
                       <q-item-label>Edit</q-item-label>
                     </q-item-section>
-                  </q-item>
+                  </q-item> -->
 
                   <!-- <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
@@ -433,9 +433,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapp {
-  margin: 2rem 1.5rem;
-}
+// .wrapp {
+//   margin: 2rem 1.5rem;
+// }
 
 .title {
   font-family: "Open Sans";
@@ -444,6 +444,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   color: #000000;
+  margin: 1.5rem 1.5rem;
 }
 
 .modify {
@@ -465,14 +466,20 @@ export default {
   border-bottom: 1px solid #d9d9d9;
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0;
-  margin: 0.8rem 0;
+  // padding: 1rem 0;
+  margin: 1.5rem 0rem;
+  padding: 1rem 1.5rem;
+  // margin: 0.8rem 0;
 }
 
 .sort_area .left {
   display: flex;
   align-items: center;
   gap: 2rem;
+}
+
+.style {
+  margin: 2rem 1.5rem;
 }
 
 .sort_area .right .sort_by_date {

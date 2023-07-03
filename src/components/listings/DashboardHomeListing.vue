@@ -31,13 +31,14 @@
             <div class="left_dialog">
               <img :src="listing.img" alt="" />
             </div>
+            {{ listing }}
 
             <div class="det">
               <div class="title">
                 {{ listing.name }}
               </div>
               <div class="price">
-                {{ listing.price }}
+                {{ listing.price.toLocaleString() }}
               </div>
             </div>
           </div>
@@ -72,7 +73,7 @@
           </div>
 
           <div class="boost">
-            <q-btn @click="advertdialog = true"> Boost Advert </q-btn>
+            <q-btn @click="handleAds"> Boost Advert </q-btn>
           </div>
 
           <q-btn @click="dialog = false" class="close">
@@ -95,31 +96,42 @@
                 {{ listing.title }}
               </div>
               <div class="price">
-                {{ listing.price }}
+                {{ listing.price.toLocaleString() }}
               </div>
             </div>
           </div>
           <div class="row ad justify-between items-center">
-            <p>Boost this advert for 3 Days</p>
-            <p class="text-weight-bold">₦2,000</p>
+            <p>Boost this advert for {{ selectedAdsDuration }}</p>
+            <p class="text-weight-bold">
+              ₦{{ selectedAdAmt.toLocaleString() }}
+            </p>
           </div>
 
           <div class="middle advert">
-            <div class="items">
-              <q-btn> 3 Days </q-btn>
+            <div class="items bty">
+              <q-btn
+                v-for="(plan, index) in plans"
+                :key="index"
+                :class="selectedAdsDuration === plan.name ? 'active' : ''"
+                @click="selectDuration(plan, plan.id)"
+              >
+                {{ plan.name }}
+              </q-btn>
             </div>
-            <div class="items">
+            <!-- <div class="items">
               <q-btn> 7 Days </q-btn>
             </div>
             <div class="items">
               <q-btn> 30 Days </q-btn>
-            </div>
+            </div> -->
           </div>
 
           <div class="boost advert">
-            <q-btn>
+            <q-btn :loading="boostBtn">
               Boost Advert for
-              <span class="q-ml-sm text-weight-bold"> ₦2,000 </span>
+              <span class="q-ml-sm text-weight-bold">
+                ₦{{ selectedAdAmt.toLocaleString() }}
+              </span>
             </q-btn>
           </div>
 
@@ -138,10 +150,47 @@ export default {
     return {
       dialog: false,
       advertdialog: false,
+      boostBtn: false,
+      selectedAdsDuration: "1 day",
+      selectedAd: "",
+      selectedAdAmt: "1000",
     };
   },
-  props: ["listing"],
+  props: ["listing", "plans"],
   methods: {
+    handleAds() {
+      this.dialog = false;
+      this.advertdialog = true;
+    },
+    selectDuration(arg, selected) {
+      console.log(arg, selected);
+      this.selectedAdsDuration = arg.name;
+      this.selectedAd = selected;
+      this.selectedAdAmt = arg.price;
+    },
+
+    boostPlan() {
+      this.boostBtn = true;
+      this.$api
+        .post(`${this.listing.id}/product/boost`, {
+          plan: this.selectedAd,
+        })
+        .then(({ data }) => {
+          console.log(data);
+          this.$q.notify({
+            color: "green",
+            message: data.message,
+            position: "top-left",
+          });
+          this.boostBtn = false;
+          this.advertdialog = false;
+          this.product = data.product;
+          this.boosted = true;
+        })
+        .catch(({ response }) => {
+          this.boostBtn = false;
+        });
+    },
     onItemClick() {
       // console.log("clicked");
     },
@@ -272,6 +321,11 @@ export default {
 
 .view {
   margin-top: 0.5rem;
+}
+.items.bty {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .view .q-btn {

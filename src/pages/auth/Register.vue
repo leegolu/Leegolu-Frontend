@@ -570,9 +570,10 @@ export default {
 
     register() {
       this.loading = true;
+      const modifiedNumber = this.data.phone.slice(1);
       let data = {
         ...this.data,
-        phone: this.countrycode + this.data.phone,
+        phone: this.countrycode + modifiedNumber,
       };
       this.$api
         .post("register", data)

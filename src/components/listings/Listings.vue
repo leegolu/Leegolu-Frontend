@@ -292,8 +292,7 @@ export default {
         this.$q
           .dialog({
             title: "Remove Listing",
-            message:
-              "Please confirm you want to remove this listing from this collection. You can always re-include a removed listing.",
+            message: "Please confirm you want to remove this listing.",
             ok: {
               push: true,
               label: "Delete",

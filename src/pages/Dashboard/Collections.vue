@@ -35,7 +35,8 @@
         </div>
       </div> -->
     </div>
-    <div v-if="rows.length > 0" class="style q-py-md">
+    <!-- {{ rows.length }} -->
+    <div v-if="rows.length" class="style q-py-md">
       <q-table
         :rows="rows"
         :hide-header="mode === 'grid'"
@@ -52,7 +53,7 @@
             <!-- {{ props.row }} -->
             <div class="name_row">
               <div class="img">
-                <img :src="props.row.avatar.url" />
+                <img :src="props.row.avatar.url.url" />
                 <!-- <img :src="props.row.image_url" /> -->
               </div>
 
@@ -136,7 +137,7 @@
                 label="Modify"
               >
                 <q-list>
-                  <q-item
+                  <!-- <q-item
                     clickable
                     v-close-popup
                     @click="onItemClick('edit', props.row)"
@@ -144,7 +145,7 @@
                     <q-item-section>
                       <q-item-label>Edit</q-item-label>
                     </q-item-section>
-                  </q-item>
+                  </q-item> -->
 
                   <!-- <q-item clickable v-close-popup @click="onItemClick()">
                     <q-item-section>
@@ -208,7 +209,9 @@
 
                     <div class="lead_detail">
                       <div class="title">{{ listing.name }}</div>
-                      <div class="price">₦{{ listing.price }}</div>
+                      <div class="price">
+                        ₦{{ listing.price.toLocaleString() }}
+                      </div>
                       <q-btn @click="close(listing)" class="remove" flat>
                         <i class="fa-solid fa-xmark"></i> Remove
                       </q-btn>
@@ -486,7 +489,7 @@ export default {
       this.$api
         .get(url)
         .then(({ data }) => {
-          // console.log(data);
+          console.log(data);
           this.loadingCol = false;
           this.rows = data.data;
           this.count = data.count;
@@ -537,7 +540,8 @@ export default {
           this.$api
             .post(`collection/${this.collectionData.slug}/${listing.id}/remove`)
             .then(({ data }) => {
-              this.dialog = false;
+              // this.dialog = false;
+              this.getListings();
               this.refreshcollections();
               // console.log(data);
               this.$q.notify({
@@ -652,6 +656,7 @@ export default {
           // console.log("Success:", response);
           this.dialogAdd = false;
           this.loading = false;
+          this.checkedListings = [];
           this.refreshcollections();
           this.$q.notify({
             message: response.data.message,
@@ -681,15 +686,40 @@ export default {
       } else {
         // console.log("delete");
         this.loading = true;
-        this.$api
-          .delete(`collection/${collection.slug}/delete`)
-          .then(({ data }) => {
-            this.loading = false;
-            this.refreshcollections();
+        this.$q
+          .dialog({
+            title: "Remove Collection",
+            message:
+              "Please confirm you want to remove this Collection from this",
+            ok: {
+              push: true,
+              label: "Delete",
+              color: "negative",
+            },
+            cancel: {
+              push: true,
+              color: "grey",
+            },
+            persistent: true,
           })
-          .catch(({ response }) => {
-            // console.log(response);
-            this.loading = false;
+          .onOk(() => {
+            this.loading = true;
+            this.$api
+              .delete(`collection/${collection.slug}/delete`)
+              .then(({ data }) => {
+                this.loading = false;
+                this.refreshcollections();
+              })
+              .catch(({ response }) => {
+                // console.log(response);
+                this.loading = false;
+              });
+          })
+          .onCancel(() => {
+            // console.log('>>>> Cancel')
+          })
+          .onDismiss(() => {
+            // console.log('I am triggered on both OK and Cancel')
           });
       }
     },
@@ -722,7 +752,7 @@ export default {
           }
         )
         .then((response) => {
-          // console.log("Success:", response);
+          console.log("Success:", response);
           this.collections = response.data.data;
           this.refreshcollections();
           this.loading = false;
@@ -767,9 +797,11 @@ export default {
         this.$api
           .get(this.curl)
           .then(({ data }) => {
+            console.log(data);
             this.loading = false;
             this.rows = data.data;
-            if (this.collectionData) {
+            // console.log(this.collectionData);
+            if (this.collectionData.id) {
               let updateDataa = [...data.data];
               let updateData = updateDataa.find(
                 (data) => data.id === this.collectionData.id
@@ -798,9 +830,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapp {
-  margin: 2rem 1.5rem;
-}
+// .wrapp {
+//   margin: 2rem 1.5rem;
+// }
 .overlapping {
   border: 2px solid white;
   position: absolute;
@@ -813,6 +845,10 @@ export default {
   font-size: 16px;
   line-height: 22px;
   color: #000000;
+  // margin: 1.5rem 1.5rem;
+}
+.style {
+  margin: 2rem 1.5rem;
 }
 
 .form img.previewimg {
@@ -825,8 +861,10 @@ export default {
   border-bottom: 1px solid #d9d9d9;
   display: flex;
   // justify-content: flex-end;
-  padding: 1rem 0;
-  margin: 0.8rem 0;
+  // padding: 1rem 0;
+  // margin: 0.8rem 0;
+  margin: 1.5rem 0rem;
+  padding: 1rem 1.5rem;
 }
 
 .sort_area .left {
@@ -1374,6 +1412,10 @@ input {
   .sort_area .right .q-btn {
     width: auto;
     height: 34px;
+  }
+  .input-box {
+    width: 90%;
+    margin: 25px auto 0 !important;
   }
 }
 </style>

@@ -237,9 +237,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapp {
-  margin: 2rem 1.5rem;
-}
+// .wrapp {
+//   margin: 2rem 1.5rem;
+// }
 
 .title {
   font-family: "Open Sans";
@@ -248,6 +248,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   color: #000000;
+  margin: 1.5rem 1.5rem;
 }
 
 .sort_area {
@@ -256,7 +257,7 @@ export default {
   border-bottom: 1px solid #d9d9d9;
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 1rem 1.7rem;
   margin: 0.8rem 0;
 }
 
@@ -290,6 +291,7 @@ export default {
   color: #ffffff;
   background: #1f7bb5;
   border-radius: 17px;
+  white-space: nowrap;
 }
 .sort_area .regular {
   font-family: "Open Sans";
@@ -299,10 +301,15 @@ export default {
   line-height: 19px;
   text-align: center;
   color: #666666;
+  white-space: nowrap;
 }
 
 .sort_area .regular::before {
   box-shadow: none;
+}
+
+.listings {
+  margin: 2rem 1.5rem;
 }
 
 .sort_area .regular.boosted {

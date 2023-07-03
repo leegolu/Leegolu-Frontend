@@ -31,7 +31,7 @@
     </div>
 
     <div v-if="show === 'favorites-listings'">
-      <section v-if="favourites.products.length > 0" class="products q-pt-sm">
+      <section v-if="favourites.products.length" class="products q-pt-sm">
         <!-- <div class="head_text">Favorite Listings</div> -->
         <div class="product_cards">
           <div
@@ -99,16 +99,16 @@
           </div>
         </div>
       </section>
-      <!-- <div v-else class="empty">
+      <div v-else class="empty">
         <img src="/images/empty.svg" alt="" />
 
         <div class="empty_text">
           You currently have not added any product to your favourites
         </div>
-      </div> -->
+      </div>
     </div>
     <!-- {{ favourites.shops.length > 0 }} -->
-    <div v-if="'favorites-shops'">
+    <div v-if="show === 'favorites-shops'">
       <section v-if="favourites.shops.length > 0" class="products q-pt-sm">
         <!-- <div class="head_text">Favorite Listings</div> -->
         <div class="product_cards">
@@ -204,68 +204,6 @@ export default {
     return {
       loading: true,
       show: "favorites-listings",
-      products: [
-        {
-          product_image: "/images/car.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/sneakers.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "",
-        },
-        {
-          product_image: "/images/tv.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Used",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/computer.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "New",
-          make: "",
-        },
-        {
-          product_image: "/images/ac.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-      ],
       errors: [],
       image: ref(null),
       favourites: [],
@@ -356,9 +294,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapp {
-  margin: 2rem 1.5rem;
-}
+// .wrapp {
+//   margin: 2rem 1.5rem;
+// }
 
 .title {
   font-family: "Open Sans";
@@ -367,6 +305,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   color: #000000;
+  margin: 1.5rem 1.5rem;
 }
 
 .sort_area {
@@ -375,8 +314,11 @@ export default {
   border-bottom: 1px solid #d9d9d9;
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 1rem 1.5rem;
   margin: 0.8rem 0;
+}
+.products {
+  margin: 2rem 1.5rem;
 }
 
 .sort_area .left {
@@ -553,6 +495,12 @@ export default {
 @media (min-width: 1300px) {
   .product_cards {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .title {
+    margin: 1.4rem 1.5rem;
   }
 }
 </style>

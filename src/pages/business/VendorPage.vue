@@ -731,17 +731,13 @@ export default {
     loadCollections() {
       let vendor = this.$router.currentRoute.value.params.slug;
       return this.$api
-        .get(
-          `collection/${
-            this.$store.leegoluauth.vendorDetails.slug || vendor
-          }/all`
-        )
+        .get(`collection/${vendor}/all`)
         .then((response) => response.data.data);
     },
     loadAllProducts() {
       let vendor = this.$router.currentRoute.value.params.slug;
       return this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug || vendor}`)
+        .get(`vendor/${vendor}`)
         .then((response) => response.data.vendor.products);
     },
     combineProducts() {
@@ -806,11 +802,7 @@ export default {
     getCollections() {
       let vendor = this.$router.currentRoute.value.params.slug;
       this.$api
-        .get(
-          `collection/${
-            this.$store.leegoluauth.vendorDetails.slug || vendor
-          }/all`
-        )
+        .get(`collection/${vendor}/all`)
         .then(({ data }) => {
           // console.log(data);
           this.collections = data.data;
@@ -2044,7 +2036,8 @@ export default {
   }
 
   .left_wrap.mobile {
-    padding-left: 1rem;
+    padding-left: 0.5rem;
+    // padding-left: 1rem;
   }
 
   .left_details {

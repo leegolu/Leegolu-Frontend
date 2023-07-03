@@ -1,9 +1,6 @@
 <template>
   <div v-if="showSuccess" class="holde">
-    <SuccessVue
-      :title="`${message}`"
-      :desc="`Your ${message} was successful.`"
-    />
+    <SuccessVue :title="`${message}`" :desc="`Your ${message}.`" />
   </div>
   <q-card class="ratings_vendor">
     <div class="ratings_section">
@@ -19,16 +16,18 @@
           </p>
 
           <div class="ratings_area">
-            <span class="rating_main_text">4.0</span>
+            <span class="rating_main_text"
+              >{{ productData.data.rating }}.0</span
+            >
             <q-rating
-              v-model="ratingModel"
+              v-model="productData.data.rating"
               size="1em"
               :max="5"
               color="secondary"
             />
             <span class="ratings_subtext">
-              (2345)
-              <q-btn push flat class="addRating" icon="add">
+              ({{ productData.reviews.length }})
+              <!-- <q-btn push flat class="addRating" icon="add">
                 <q-popup-proxy v-model="popup">
                   <q-banner class="ratingBanner">
                     <div class="ratings_secs">
@@ -47,7 +46,7 @@
                         </q-btn>
                       </div>
                     </div>
-                    <!-- <div class="q-mb-xs">Add Rating</div> -->
+                    <div class="q-mb-xs">Add Rating</div>
                     <div class="q-mt-md" v-if="selectedOne === 'add ratings'">
                       <q-rating
                         v-model="rating"
@@ -76,7 +75,7 @@
                     </q-btn>
                   </q-banner>
                 </q-popup-proxy>
-              </q-btn>
+              </q-btn> -->
             </span>
           </div>
         </div>
@@ -85,10 +84,12 @@
       <div class="ratings_secs">
         <div class="ratings_btns">
           <div class="ratings_btnn">
-            <q-btn class="active"> Most Relevant </q-btn>
-            <q-btn> Highest </q-btn>
+            <q-btn v-if="productData.reviews.length" class="active">
+              Most Relevant
+            </q-btn>
+            <!-- <q-btn> Highest </q-btn>
             <q-btn> Lowest </q-btn>
-            <q-btn> Recent </q-btn>
+            <q-btn> Recent </q-btn> -->
           </div>
           <q-btn push flat class="addBtn">
             <span>Add<i class="fa-solid q-ml-xs fa-add"></i></span>
@@ -143,8 +144,43 @@
         </div>
       </div>
 
-      <div class="ratings_main">
-        <div class="ratings_card">
+      <div v-if="productData.reviews.length" class="ratings_main">
+        <div
+          v-for="(review, index) in productData.reviews"
+          :key="index"
+          class="ratings_card"
+        >
+          <div class="ratings_card_left">
+            <img src="/images/usersvg.svg" alt="" />
+          </div>
+
+          <div class="ratings_card_right">
+            <div class="ratings_persons_name">{{ review.author }}</div>
+            <div
+              style="gap: 0.5rem"
+              class="ratings_stars row items-end no-wrap"
+            >
+              <q-rating
+                v-model="productData.data.rating"
+                size="1em"
+                :max="4"
+                color="secondary"
+              />
+              <span>{{
+                new Date(review.created_at).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }}</span>
+            </div>
+
+            <div class="ratings_desc">
+              {{ review.review }}
+            </div>
+          </div>
+        </div>
+        <!-- <div class="ratings_card">
           <div class="ratings_card_left">
             <img src="/images/usersvg.svg" alt="" />
           </div>
@@ -170,34 +206,7 @@
               soon.
             </div>
           </div>
-        </div>
-        <div class="ratings_card">
-          <div class="ratings_card_left">
-            <img src="/images/usersvg.svg" alt="" />
-          </div>
-
-          <div class="ratings_card_right">
-            <div class="ratings_persons_name">Michael Nnamani</div>
-            <div
-              style="gap: 0.5rem"
-              class="ratings_stars row items-end no-wrap"
-            >
-              <q-rating
-                v-model="ratingModel"
-                size="1em"
-                :max="4"
-                color="secondary"
-              />
-              <span>1 Week ago</span>
-            </div>
-
-            <div class="ratings_desc">
-              I ordered two shirts and I love the fact that they were made with
-              quality materials and fit me perfectly. Definitely ordering more
-              soon.
-            </div>
-          </div>
-        </div>
+        </div> -->
 
         <q-btn class="close" @click="closeModal" flat icon="close" />
       </div>
@@ -216,6 +225,7 @@ export default {
       selectedOne: ref("add ratings"),
     };
   },
+  emits: ["closeModalRatings"],
   data() {
     return {
       // product: {},
@@ -259,10 +269,14 @@ export default {
               color: "green",
             });
             console.log(response);
+
+            this.rating = 0;
+            this.$emit("closeModalRatings");
+            // this.$emit("getP");
+
             this.message = "Your ratings was successful";
             this.showSuccess = true;
             this.popup = false;
-            this.rating = 0;
           })
           .catch(({ response }) => {
             this.loading = false;
@@ -284,12 +298,21 @@ export default {
               color: "green",
             });
             console.log(response);
+
+            this.text = "";
+            // this.$emit("closeModalRatings");
+            // this.$emit("getP");
+            const newReview = {
+              id: response.data.data.id,
+              created_at: response.data.data.created_at,
+              review: response.data.data.review,
+              author: response.data.data.author,
+              authorization: response.data.data.authorization,
+            };
+            this.productData.reviews.push(newReview);
             this.message = "Your review was successful";
             this.showSuccess = true;
             this.popup = false;
-
-            // this.rating = 0;
-            this.text = "";
           })
           .catch(({ response }) => {
             this.loading = false;
@@ -323,6 +346,12 @@ p {
 
 .ratings_vendor {
   position: relative;
+}
+
+@media (min-width: 500px) {
+  .ratings_vendor {
+    min-width: 350px;
+  }
 }
 
 .ratings_vendor .close {
@@ -412,6 +441,11 @@ p.owner_title span {
   padding: 5px;
 }
 
+.ratings_main {
+  height: 200px;
+  overflow-y: scroll;
+}
+
 hr {
   background: #b0b0b0;
 }
@@ -464,6 +498,7 @@ hr {
   font-weight: 500;
   font-size: 10px;
   line-height: 12px;
+  white-space: nowrap;
   text-align: center;
   color: #666666;
   text-transform: capitalize;

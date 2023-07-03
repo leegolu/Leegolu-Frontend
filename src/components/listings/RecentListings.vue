@@ -72,7 +72,7 @@
           </div>
 
           <div class="boost">
-            <q-btn @click="advertdialog = true"> Boost Advert </q-btn>
+            <q-btn @click="handleAds"> Boost Advert </q-btn>
           </div>
 
           <q-btn @click="dialog = false" class="close">
@@ -94,32 +94,43 @@
               <div class="title">
                 {{ listing.title }}
               </div>
-              <div class="price">
-                {{ listing.price }}
-              </div>
+              <div class="price">₦{{ listing.price.toLocaleString() }}</div>
             </div>
           </div>
           <div class="row ad justify-between items-center">
-            <p>Boost this advert for 3 Days</p>
-            <p class="text-weight-bold">₦2,000</p>
+            <p>Boost this advert for {{ selectedAdsDuration }}</p>
+            <p class="text-weight-bold">
+              ₦{{ selectedAdAmt.toLocaleString() }}
+            </p>
           </div>
 
           <div class="middle advert">
-            <div class="items">
-              <q-btn> 3 Days </q-btn>
+            <div class="items bty">
+              <q-btn
+                v-for="(plan, index) in plans"
+                :key="index"
+                :class="selectedAdsDuration === plan.name ? 'active' : ''"
+                @click="selectDuration(plan, plan.id)"
+              >
+                {{ plan.name }}
+              </q-btn>
             </div>
-            <div class="items">
+            <!-- {{ selectedAdsDuration }} -->
+            <!-- {{selectedAdsDuration}} -->
+            <!-- <div class="items">
               <q-btn> 7 Days </q-btn>
             </div>
             <div class="items">
               <q-btn> 30 Days </q-btn>
-            </div>
+            </div> -->
           </div>
 
           <div class="boost advert">
-            <q-btn>
+            <q-btn @click="boostPlan" :loading="boostBtn">
               Boost Advert for
-              <span class="q-ml-sm text-weight-bold"> ₦2,000 </span>
+              <span class="q-ml-sm text-weight-bold">
+                ₦{{ selectedAdAmt.toLocaleString() }}
+              </span>
             </q-btn>
           </div>
 
@@ -138,10 +149,47 @@ export default {
     return {
       dialog: false,
       advertdialog: false,
+      boostBtn: false,
+      selectedAdsDuration: "1 day",
+      selectedAd: "",
+      selectedAdAmt: "1000",
     };
   },
-  props: ["listing"],
+  props: ["listing", "plans"],
   methods: {
+    handleAds() {
+      this.dialog = false;
+      this.advertdialog = true;
+    },
+    selectDuration(arg, selected) {
+      console.log(arg, selected);
+      this.selectedAdsDuration = arg.name;
+      this.selectedAd = selected;
+      this.selectedAdAmt = arg.price;
+    },
+
+    boostPlan() {
+      this.boostBtn = true;
+      this.$api
+        .post(`${this.listing.id}/product/boost`, {
+          plan: this.selectedAd,
+        })
+        .then(({ data }) => {
+          console.log(data);
+          this.$q.notify({
+            color: "green",
+            message: data.message,
+            position: "top-left",
+          });
+          this.boostBtn = false;
+          this.advertdialog = false;
+          this.product = data.product;
+          this.boosted = true;
+        })
+        .catch(({ response }) => {
+          this.boostBtn = false;
+        });
+    },
     onItemClick() {
       // console.log("clicked");
     },
@@ -286,6 +334,11 @@ export default {
   width: 90%;
   transform: translateX(-50%);
 }
+.items.bty {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
 //  middle area
 
@@ -307,6 +360,10 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
 }
+
+// .listing_ .middle .items.bty .q-btn {
+//   white-space: nowrap;
+// }
 
 .listing_ .middle .count {
   font-family: "Open Sans";
@@ -477,6 +534,7 @@ export default {
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #c9c9c9;
   border-radius: 14.5px;
+  white-space: nowrap;
 }
 .dialog_content .middle.advert .q-btn::before {
   box-shadow: none;
@@ -495,7 +553,10 @@ export default {
   color: #000000;
   margin-top: 0.1rem;
 }
-
+.dialog_content .middle.advert .q-btn.active {
+  background: #1f7bb5;
+  color: #fff;
+}
 .dialog_content .middle p {
   font-family: "Open Sans";
   font-style: normal;

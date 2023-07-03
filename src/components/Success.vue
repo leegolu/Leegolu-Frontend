@@ -38,8 +38,6 @@ export default {
   methods: {
     handleShow() {
       this.show = false;
-      console.log(this.$router.currentRoute.value.query.videotour);
-      this.$router.currentRoute.value.query.videotour === "";
     },
   },
 };

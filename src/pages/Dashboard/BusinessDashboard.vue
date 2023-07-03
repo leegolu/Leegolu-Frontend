@@ -99,6 +99,7 @@
             v-for="(listing, index) in listings"
             :key="index"
             :listing="listing"
+            :plans="plans"
           />
         </div>
       </div>
@@ -431,6 +432,7 @@ export default {
       businessreg: false,
       loadingAvatar: false,
       avatar: {},
+      plans: [],
       image: null,
       myAds: "",
       myEngagements: "",
@@ -489,6 +491,7 @@ export default {
     this.getMyLeads();
     this.getMyPageViews();
     this.getListings();
+    this.getPlans();
     this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
   },
   setup() {
@@ -512,6 +515,18 @@ export default {
     // console.log(this.$router.currentRoute.value);
   },
   methods: {
+    getPlans() {
+      this.$api
+        .get(`boost/plans`)
+        .then((response) => {
+          console.log(response);
+          this.plans = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
     previewImage(event) {
       var input = event.target;
       if (input.files) {
