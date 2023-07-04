@@ -52,6 +52,11 @@ const routes = [
         name: "success",
       },
       {
+        path: "/payment-success",
+        component: () => import("src/pages/Success.vue"),
+        name: "payment.success",
+      },
+      {
         path: "/Plans",
         component: () => import("pages/Dashboard/Plans.vue"),
         name: "Plans",

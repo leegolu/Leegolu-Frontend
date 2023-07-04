@@ -67,6 +67,7 @@
               <q-rating
                 v-model="product.data.rating"
                 size="1em"
+                disable
                 :max="5"
                 color="secondary"
               />
@@ -82,21 +83,27 @@
             flat
             class="bg-secondary"
             color="white"
+            :disable="settings.allow_phone_view === false"
             style="border-radius: 5px"
             @click="viewPhone"
             :loading="loadingBtn"
-            ><img src="/images/cal.svg" class="q-mr-sm" alt="" />Show
-            Contact</q-btn
+            ><img src="/images/cal.svg" class="q-mr-sm" alt="" />Show Contact
+            <q-tooltip v-if="settings.allow_phone_view === false">
+              This vendor does not allow calls
+            </q-tooltip></q-btn
           >
           <q-btn
             flat
             @click="viewChat"
             style="border-radius: 5px"
             color="white"
+            :disable="settings.allow_chat_view === false"
             class="bg-primary"
             :loading="loadingChatBtn"
-            ><img src="/images/chat.svg" class="q-mr-sm" alt="" />Chat
-            Seller</q-btn
+            ><img src="/images/chat.svg" class="q-mr-sm" alt="" />Chat Seller
+            <q-tooltip v-if="settings.allow_chat_view === false">
+              This vendor does not allow chats
+            </q-tooltip></q-btn
           >
         </div>
         <hr class="q-mt-xl q-mb-md" />
@@ -258,6 +265,7 @@
             <q-rating
               v-model="product.data.rating"
               size="1em"
+              disable
               :max="5"
               color="secondary"
             />
@@ -335,6 +343,7 @@ export default {
       chat: ref(false),
       phone_number: "",
       phoneDialog: ref(false),
+      settings: ref({}),
     };
   },
 
@@ -394,13 +403,29 @@ export default {
           const now = new Date();
           const timeDifference = now - postDate;
           const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
-          this.loading = false;
           this.hoursago = hoursAgo;
           // console.log(hoursAgo);
-          console.log(response);
+          // console.log(response);
+          this.getVendor(response.data.vendor.slug);
         })
         .catch((e) => {
           this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getVendor(slug) {
+      this.$api
+        .get(`vendor/${slug}`)
+        .then((response) => {
+          // console.log(response);
+          this.settings = response.data.privacy;
+          this.loading = false;
+
+          // this.$store.leegoluauth.userDetails = response.data.user;
+        })
+        .catch((e) => {
+          // this.loading = false;
           this.errors = error.errors || {};
         });
     },
@@ -464,7 +489,7 @@ export default {
           // console.log(response);
           this.conversationMessages = response.data.messages;
 
-          console.log(this.conversationMessages);
+          // console.log(this.conversationMessages);
           this.chat = true;
         })
         .catch(({ response }) => {

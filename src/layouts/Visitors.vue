@@ -89,13 +89,20 @@
               >
                 <div class="row no-wrap">
                   <img class="ava" src="/images/userblack.svg" />
+                  <!-- <img class="ava" src="/images/userblack.svg" /> -->
                   <q-icon name="expand_more" class="text-black" />
                 </div>
                 <q-menu class="headermenu">
                   <div class="q-pa-md">
                     <div class="column items-center">
                       <q-avatar size="72px">
-                        <img src="/images/usersvg.svg" />
+                        <img
+                          :src="
+                            this.$store.leegoluauth.userDetails.avatar === null
+                              ? '/images/usersvg.svg'
+                              : this.$store.leegoluauth.userDetails.avatar.url
+                          "
+                        />
                       </q-avatar>
                       <div class="text-subtitle1 q-mt-md q-mb-xs">
                         {{ this.$store.leegoluauth.userDetails.name }}

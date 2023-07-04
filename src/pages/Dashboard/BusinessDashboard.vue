@@ -85,6 +85,30 @@
             </div>
           </div> -->
         </div>
+
+        <!-- <div class="small_card_bus notFree">
+          <div class="wallet_left">
+            <img src="/images/gift.png" alt="" />
+          </div>
+          <div class="">
+            <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
+            <div class="wallet_amt">Leegolu Business</div>
+            <div class="wallet_small">Shop | ₦3000</div>
+
+            <div class="progress_wrap q-mt-lg">
+              <div class="progress">
+                <div class="small">4/20 Listings</div>
+                <q-linear-progress reverse :value="progress1" color="warning">
+                </q-linear-progress>
+              </div>
+              <div class="progress q-mt-sm">
+                <div class="small">30 days left</div>
+                <q-linear-progress reverse :value="progress1" color="warning">
+                </q-linear-progress>
+              </div>
+            </div>
+          </div>
+        </div> -->
       </div>
 
       <hr v-if="listings.length" />
@@ -404,9 +428,9 @@
           </div>
         </div>
 
-        <div @click="reg" class="close">
+        <!-- <div @click="reg" class="close">
           <i class="fa-solid fa-xmark"></i>
-        </div>
+        </div> -->
       </div>
     </q-card>
   </q-dialog>
@@ -562,6 +586,7 @@ export default {
         .then((response) => {
           // console.log("Success:", response);
           this.loadingAvatar = false;
+          this.getVendor();
           this.addphotoforleegolubusinessmodal = false;
           this.businessreg = true;
           this.$q.notify({
@@ -669,6 +694,18 @@ export default {
     skipImg() {
       this.addphotoforleegolubusinessmodal = false;
       this.businessreg = true;
+    },
+    getVendor() {
+      this.$api
+        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
+        .then((response) => {
+          // console.log(response);
+          this.$store.leegoluauth.userDetails = response.data.user;
+        })
+        .catch((e) => {
+          // this.loading = false;
+          this.errors = error.errors || {};
+        });
     },
 
     reg() {
@@ -1057,6 +1094,20 @@ hr {
   height: 165px;
   padding: 1.5rem 1rem 1rem;
 }
+.small_card_bus.notFree {
+  background: linear-gradient(180deg, #0f476a 0%, #1f7bb5 100%);
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  // width: 314px;
+  flex-direction: row;
+  align-items: flex-start;
+  flex: 2;
+  gap: 1rem;
+  height: 100%;
+  padding: 1.5rem 1rem 1rem;
+}
 
 .small_card_bus .di .type {
   font-family: "Open Sans";
@@ -1089,6 +1140,9 @@ hr {
 @media (min-width: 600px) {
   .small_card_bus {
     flex-wrap: wrap;
+  }
+  .small_card_bus.notFree {
+    flex-wrap: nowrap;
   }
 }
 .small_card_bus .free img {
@@ -1136,6 +1190,10 @@ hr {
   line-height: 10px;
   // text-align: right;
   color: #ffffff;
+}
+
+.small_card_bus.notFree .icon {
+  text-align: right;
 }
 
 .small_card_bus .small {
@@ -1192,7 +1250,7 @@ hr {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
   padding: 5rem 0;
 }
 
@@ -1472,6 +1530,10 @@ hr {
     padding: 1rem;
   }
 
+  .small_card_bus .progress_wrap {
+    margin-top: 10px;
+  }
+
   .sub {
     font-size: 10px !important;
     white-space: nowrap;
@@ -1494,6 +1556,9 @@ hr {
     background: linear-gradient(180deg, #1f7bb5 0%, #0f476a 132.69%);
     box-shadow: 0px 0px 20px rgba(0, 83, 95, 0.4);
     border-radius: 5px;
+  }
+  .small_card_bus.notFree {
+    height: 100% !important;
   }
   .small_card_bus .di .type {
     font-size: 13px;

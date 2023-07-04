@@ -1069,7 +1069,7 @@ p.count {
   box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
   border-radius: 4px;
   position: relative;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem 1.8rem;
 }
 .dialog_content .dialog_top {
   display: flex;
@@ -1197,12 +1197,13 @@ p.count {
   background: #1f7bb5;
   border-radius: 5px;
   text-transform: capitalize;
+  height: 55px;
 }
 .dialog_content .boost .q-btn.removee {
   background: #ee4e36;
 }
 .dialog_content .boost {
-  padding: 1rem;
+  // padding: 1rem;
 }
 
 .dialog_content .boost .minimize {
@@ -1318,7 +1319,7 @@ input {
 }
 .input-box {
   position: relative;
-  margin: 25px;
+  // margin: 25px;
   .input-label {
     position: absolute;
     color: $color;

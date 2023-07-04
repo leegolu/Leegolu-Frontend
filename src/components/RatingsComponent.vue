@@ -91,56 +91,67 @@
             <q-btn> Lowest </q-btn>
             <q-btn> Recent </q-btn> -->
           </div>
-          <q-btn push flat class="addBtn">
-            <span>Add<i class="fa-solid q-ml-xs fa-add"></i></span>
-            <q-popup-proxy v-model="popup">
-              <q-banner class="ratingBanner">
-                <div class="ratings_secs">
-                  <div class="ratings_btns">
-                    <q-btn
-                      @click="selectRatingorReview('add ratings')"
-                      :class="selectedOne === 'add ratings' ? 'active' : ''"
-                    >
-                      Add Ratings
-                    </q-btn>
-                    <q-btn
-                      :class="selectedOne !== 'add ratings' ? 'active' : ''"
-                      @click="selectRatingorReview('review')"
-                    >
-                      Add Reviews
-                    </q-btn>
+          <div>
+            <q-spinner
+              v-if="deleteloading"
+              class="q-mr-sm"
+              color="primary"
+              size="1em"
+            />
+            <q-btn push flat class="addBtn">
+              <span
+                >Add <span v-if="productData.reviews.length === 0">Review</span
+                ><i class="fa-solid q-ml-xs fa-add"></i
+              ></span>
+              <q-popup-proxy v-model="popup">
+                <q-banner class="ratingBanner">
+                  <div class="ratings_secs">
+                    <div class="ratings_btns">
+                      <q-btn
+                        @click="selectRatingorReview('add ratings')"
+                        :class="selectedOne === 'add ratings' ? 'active' : ''"
+                      >
+                        Add Ratings
+                      </q-btn>
+                      <q-btn
+                        :class="selectedOne !== 'add ratings' ? 'active' : ''"
+                        @click="selectRatingorReview('review')"
+                      >
+                        Add Reviews
+                      </q-btn>
+                    </div>
                   </div>
-                </div>
-                <!-- <div class="q-mb-xs">Add Rating</div> -->
-                <div class="q-mt-md" v-if="selectedOne === 'add ratings'">
-                  <q-rating
-                    v-model="rating"
-                    size="2.3em"
-                    :max="5"
-                    color="primary"
-                  />
-                </div>
-                <div v-else>
-                  <q-input
-                    style="font-size: 10px"
-                    v-model="text"
-                    label="Add review"
-                  />
-                </div>
+                  <!-- <div class="q-mb-xs">Add Rating</div> -->
+                  <div class="q-mt-md" v-if="selectedOne === 'add ratings'">
+                    <q-rating
+                      v-model="rating"
+                      size="2.3em"
+                      :max="5"
+                      color="primary"
+                    />
+                  </div>
+                  <div v-else>
+                    <q-input
+                      style="font-size: 10px"
+                      v-model="text"
+                      label="Add review"
+                    />
+                  </div>
 
-                <q-btn
-                  color="white"
-                  @click="rate"
-                  no-caps
-                  :loading="loading"
-                  class="bg-primary q-mt-md"
-                  flat
-                >
-                  Submit
-                </q-btn>
-              </q-banner>
-            </q-popup-proxy>
-          </q-btn>
+                  <q-btn
+                    color="white"
+                    @click="rate"
+                    no-caps
+                    :loading="loading"
+                    class="bg-primary q-mt-md"
+                    flat
+                  >
+                    Submit
+                  </q-btn>
+                </q-banner>
+              </q-popup-proxy>
+            </q-btn>
+          </div>
         </div>
       </div>
 
@@ -174,6 +185,14 @@
                 })
               }}</span>
             </div>
+            <q-btn
+              v-if="review.authorization"
+              class="detele"
+              flat
+              size="13px"
+              @click="deleteReview(review)"
+              icon="delete"
+            />
 
             <div class="ratings_desc">
               {{ review.review }}
@@ -234,6 +253,7 @@ export default {
       text: "",
       showSuccess: false,
       message: "",
+      deleteloading: false,
     };
   },
 
@@ -324,6 +344,34 @@ export default {
           });
       }
     },
+
+    deleteReview(review) {
+      this.deleteloading = true;
+
+      this.$api
+        .delete(`${review.id}/delete`)
+        .then((response) => {
+          this.deleteloading = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+          });
+          console.log(response);
+          this.productData.reviews = this.productData.reviews.filter(
+            (reviewnow) => reviewnow.id !== review.id
+          );
+          this.popup = false;
+        })
+        .catch(({ response }) => {
+          this.deleteloading = false;
+
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+          });
+          this.errors = error.errors || {};
+        });
+    },
   },
 };
 </script>
@@ -342,6 +390,8 @@ p {
 .holde {
   position: absolute;
   top: 2%;
+  left: 0;
+  z-index: 3;
 }
 
 .ratings_vendor {
@@ -442,7 +492,7 @@ p.owner_title span {
 }
 
 .ratings_main {
-  height: 200px;
+  max-height: 160px;
   overflow-y: scroll;
 }
 
@@ -551,11 +601,17 @@ hr {
 .ratings_card {
   display: flex;
   align-items: flex-start;
+  position: relative;
   gap: 0.5rem;
   padding: 1rem 1rem 0.5rem;
   border-bottom: 1px solid #dfdfdf;
 }
-
+.detele {
+  position: absolute;
+  top: 12%;
+  right: 0;
+  color: #ee4e36;
+}
 .ratings_card span {
   font-family: "Inter";
   font-style: normal;
@@ -576,6 +632,15 @@ hr {
   .ratings_btns {
     /* width: 90%; */
     overflow-x: scroll;
+  }
+
+  .detele {
+    font-size: 9px !important;
+  }
+
+  .holde {
+    top: 10%;
+    left: -9%;
   }
 }
 </style>

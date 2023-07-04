@@ -4,20 +4,45 @@
       <div class="settings_top q-my-xl">
         <div class="left_settings">
           <div class="img_side">
-            <img src="/images/listing1.png" alt="" />
+            <img
+              :src="
+                this.$store.leegoluauth.userDetails.avatar === null
+                  ? '/images/listing1.png'
+                  : this.$store.leegoluauth.userDetails.avatar.url
+              "
+              alt=""
+            />
             <q-btn @click="dialogAvatar = true" flat>
               <img class="small" src="/images/settingscamera.svg" alt="" />
             </q-btn>
           </div>
           <div class="">
-            <div class="set_name">Chris Aregbesola</div>
+            <div class="set_name">
+              {{
+                this.$store.leegoluauth.userDetails
+                  ? this.$store.leegoluauth.userDetails.name
+                  : "User"
+              }},
+            </div>
 
-            <div class="joined">Joined 12 June, 2023</div>
+            <div class="joined">
+              Joined
+              {{
+                new Date(
+                  this.$store.leegoluauth.userDetails.created_at
+                ).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }}
+            </div>
+            <!-- <div class="joined">Joined 12 June, 2023</div> -->
           </div>
         </div>
 
         <div class="right_settings">
-          <q-btn> Manage Profile </q-btn>
+          <q-btn @click="scroll"> Manage Profile </q-btn>
         </div>
       </div>
       <hr />
@@ -46,7 +71,7 @@
                   Leegolu market place.
                 </div>
 
-                <div class="active">
+                <div v-if="val" class="active">
                   <div class="icon">
                     <img src="/images/lighting.svg" alt="" /> Active
                   </div>
@@ -67,8 +92,13 @@
                   your business & make more sales online.
                 </div>
 
-                <div class="active">
+                <div v-if="!val2" class="active">
                   <q-btn>Upgrade from ₦1,000</q-btn>
+                </div>
+                <div v-if="val2" class="active">
+                  <div class="icon">
+                    <img src="/images/lighting.svg" alt="" /> Active
+                  </div>
                 </div>
 
                 <div class="check">
@@ -92,7 +122,7 @@
           </div>
         </div>
 
-        <div class="style">
+        <div id="style" class="style">
           <q-table
             :rows="rows"
             :hide-header="mode === 'grid'"
@@ -116,15 +146,36 @@
             </template>
             <template v-slot:body-cell-password="props">
               <q-td :props="props">
-                <div class="added">
-                  {{ props.row.number_account }}
+                <div v-if="props.row.name === 'Name'" class="added">
+                  {{
+                    this.$store.leegoluauth.userDetails
+                      ? this.$store.leegoluauth.userDetails.name
+                      : "User"
+                  }}
+                </div>
+                <div v-if="props.row.name === 'Phone Number'" class="added">
+                  {{
+                    this.$store.leegoluauth.userDetails
+                      ? this.$store.leegoluauth.userDetails.phone
+                      : "User"
+                  }}
+                </div>
+                <div v-if="props.row.name === 'Password'" class="added">
+                  **********
+                </div>
+                <div v-if="props.row.name === 'Email'" class="added">
+                  {{
+                    this.$store.leegoluauth.userDetails
+                      ? this.$store.leegoluauth.userDetails.email
+                      : "User"
+                  }},
                 </div>
               </q-td>
             </template>
             <template v-slot:body-cell-value="props">
               <q-td class="value" :props="props">
                 <div class="added">
-                  <q-btn flat>
+                  <q-btn @click="edit(props.row)" flat>
                     <img src="/images/editicon.svg" alt="" />
                   </q-btn>
                 </div>
@@ -270,6 +321,90 @@
         </div>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="editNameModal" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Edit Name</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input label="New Name" dense v-model="editP.name" autofocus />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            :loading="edit1"
+            flat
+            @click="editUsersDetails"
+            label="Finish"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="editPhonwModal" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Edit Phone</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input label="New Phone" dense v-model="editP.phone" autofocus />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            :loading="edit1"
+            flat
+            @click="editUsersDetails"
+            label="Finish"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="editPasswordModal" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Edit Password</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            label="Current Password"
+            dense
+            v-model="password.current_password"
+            autofocus
+          />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-input
+            label="New Password"
+            dense
+            v-model="password.password"
+            autofocus
+          />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-input
+            label="Confirm Password"
+            dense
+            v-model="password.password_confirmation"
+            autofocus
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            :loading="edit2"
+            @click="editUsersPassword"
+            flat
+            label="Finish"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
 
@@ -303,6 +438,11 @@ const columns = [
 ];
 
 const rows = [
+  {
+    name: "Name",
+    number_account: "chris.gbesola",
+    addedOn: "2 Days ago",
+  },
   {
     name: "Phone Number",
     number_account: "08060970483",
@@ -386,6 +526,13 @@ export default {
       load: false,
       load1: false,
       load2: false,
+      edit1: false,
+      edit2: false,
+      editPasswordModal: false,
+      editNameModal: false,
+      editPhonwModal: false,
+      password: {},
+      editP: {},
       previewAvatar: "/images/sqrpreview.png",
     };
   },
@@ -419,7 +566,7 @@ export default {
   watch: {
     "privacyData.allow_chat_view": function (newVal) {
       // Perform actions when 'allow_chat' property is changed
-      console.log(`'allow_chat' changed to ${newVal}`);
+      // console.log(`'allow_chat' changed to ${newVal}`);
       newVal = newVal ? 1 : 0;
       if (newVal) {
         this.load = true;
@@ -459,7 +606,7 @@ export default {
     },
     "privacyData.allow_email_view": function (newVal) {
       // Perform actions when 'allow_call' property is changed
-      console.log(`'allow_emal' changed to ${newVal}`);
+      // console.log(`'allow_emal' changed to ${newVal}`);
       newVal = newVal ? 1 : 0;
       if (newVal) {
         this.load1 = true;
@@ -500,7 +647,7 @@ export default {
     },
     "privacyData.allow_phone_view": function (newVal) {
       // Perform actions when 'allow_call' property is changed
-      console.log(`'allow_call' changed to ${newVal}`);
+      // console.log(`'allow_call' changed to ${newVal}`);
       newVal = newVal ? 1 : 0;
       if (newVal) {
         this.load2 = true;
@@ -534,7 +681,7 @@ export default {
           .then((response) => {
             this.privacyData = response.data.data;
             this.load2 = false;
-            console.log(response);
+            // console.log(response);
           })
           .catch(({ response }) => {
             this.load2 = false;
@@ -569,6 +716,110 @@ export default {
       reader.readAsDataURL(props);
     },
 
+    scroll() {
+      document.getElementById("style").scrollIntoView({ behavior: "smooth" });
+    },
+
+    edit(detail) {
+      if (detail.name === "Name") {
+        this.editP.name = this.$store.leegoluauth.userDetails.name;
+        this.editNameModal = true;
+      } else if (detail.name === "Phone Number") {
+        this.editP.phone = this.$store.leegoluauth.userDetails.phone;
+
+        this.editPhonwModal = true;
+      } else if (detail.name === "Password") {
+        this.editPasswordModal = true;
+      }
+    },
+
+    editUsersDetails() {
+      this.edit1 = true;
+      if (this.editNameModal) {
+        this.$api
+          .patch(`user/setting`, {
+            name: this.editP.name,
+          })
+          .then((response) => {
+            this.edit1 = true;
+            console.log(response);
+            // this.privacyData = response.data.data;
+            this.edit1 = false;
+            this.$q.notify({
+              message: response.data.message,
+              color: "green",
+              position: "bottom",
+            });
+            this.editNameModal = false;
+            this.$store.leegoluauth.userDetails = response.data.data;
+          })
+          .catch(({ response }) => {
+            this.edit1 = false;
+            this.errors = error.errors || {};
+            this.$q.notify({
+              message: "An error occured",
+              color: "red",
+              position: "bottom",
+            });
+          });
+      } else if (this.editPhonwModal) {
+        this.$api
+          .patch(`user/setting`, {
+            phone: this.editP.phone,
+          })
+          .then((response) => {
+            this.edit1 = true;
+            console.log(response);
+            // this.privacyData = response.data.data;
+            this.edit1 = false;
+            this.$q.notify({
+              message: response.data.message,
+              color: "green",
+              position: "bottom",
+            });
+            this.editPhonwModal = false;
+            this.$store.leegoluauth.userDetails = response.data.data;
+          })
+          .catch(({ response }) => {
+            this.edit1 = false;
+            this.errors = error.errors || {};
+            this.$q.notify({
+              message: "An error occured",
+              color: "red",
+              position: "bottom",
+            });
+          });
+      }
+    },
+    editUsersPassword() {
+      this.edit2 = true;
+      this.$api
+        .post(`password/setting`, this.password)
+        .then((response) => {
+          // this.privacyData = response.data.data;
+          // this.load1 = false;
+          console.log(response);
+          this.edit2 = false;
+          this.editPasswordModal = false;
+          this.$q.notify({
+            message: response.data.message,
+            color: "green",
+            position: "bottom",
+          });
+        })
+        .catch(({ response }) => {
+          // this.load1 = false;
+          this.edit2 = false;
+
+          this.errors = error.errors || {};
+          this.$q.notify({
+            message: "An error occured",
+            color: "red",
+            position: "bottom",
+          });
+        });
+    },
+
     addAvatar() {
       const formData = new FormData();
       formData.append("avatar", this.avatar.avatar);
@@ -581,7 +832,7 @@ export default {
           },
         })
         .then((response) => {
-          // console.log("Success:", response);
+          console.log("Success:", response);
           this.loadingAvatar = false;
           this.dialogAvatar = false;
           this.avatar = {};
@@ -608,7 +859,8 @@ export default {
       this.$api
         .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
+          this.$store.leegoluauth.userDetails = response.data.user;
         })
         .catch((e) => {
           // this.loading = false;
@@ -635,6 +887,7 @@ export default {
   padding: 1rem 2.4rem;
   height: 138px;
   display: flex;
+  gap: 1rem;
   align-items: center;
   justify-content: space-between;
 }
@@ -652,6 +905,7 @@ export default {
   border-radius: 50%;
   width: 77px;
   height: 77px;
+  object-fit: cover;
 }
 hr {
   background: rgba(176, 176, 176, 0.5);
@@ -791,31 +1045,31 @@ hr {
     .main_textSet {
       color: #fff;
     }
+  }
 
-    .active {
-      font-family: "Open Sans";
-      font-style: normal;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 19px;
-      text-align: center;
-      color: #ffffff;
-      background: #354e8d;
-      border-radius: 17.5px;
-      padding: 1rem;
-      width: 106px;
-      height: 35px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      bottom: 5%;
-      left: 50%;
-      transform: translateX(-50%);
-      img {
-        width: 14px;
-        height: 14px;
-      }
+  .active {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    text-align: center;
+    color: #ffffff;
+    background: #354e8d;
+    border-radius: 17.5px;
+    padding: 1rem;
+    width: 106px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    img {
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -1034,6 +1288,7 @@ p.advert {
     flex-wrap: wrap;
     justify-content: center;
     height: auto;
+    padding: 1rem 1rem;
   }
 
   .topp .topp_left span {
@@ -1065,6 +1320,10 @@ p.advert {
 
   .set_name {
     font-size: 18px;
+  }
+
+  .settings_top {
+    margin-top: 20px;
   }
 
   .settings_top .img_side .q-btn img {

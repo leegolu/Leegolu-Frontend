@@ -127,7 +127,12 @@ export default {
           // let error = this.$plugins.reader.error(e);
           this.errors = response.data.errors || {};
           // this.errors = error.errors || {};
-          // this.$helper.notify(error.message || error, error.status || "error");
+          this.$q.notify({
+            message: response.data.message,
+            color: "red",
+            position: "top",
+            actions: [{ icon: "close", color: "white" }],
+          });
         });
     },
   },

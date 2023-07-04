@@ -50,11 +50,11 @@ export default {
   max-width: 445px;
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1);
 }
 .head {
   background: #ffffff;
-  box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
+  // box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   width: 100%;
   padding: 0.5rem;
