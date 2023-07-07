@@ -92,6 +92,13 @@
       </div>
     </div>
     <div v-if="sortedArray.length" class="listings">
+      <div class="row justify-end">
+        <q-btn @click="toggleView" class="toggle_btn" flat>
+          <i
+            :class="view !== 'grid' ? 'fa-solid fa-grid-2' : 'fa-solid fa-list'"
+          ></i>
+        </q-btn>
+      </div>
       <div v-for="(listing, index) in sortedArray" :key="index">
         <Listings
           @refreshevent="getListings"
@@ -140,6 +147,7 @@ export default {
       sortDirection: "",
       sortDirectionSelected: "Sort by Date",
       selectedCategory: "all",
+      view: "grid",
     };
   },
   components: {
@@ -189,6 +197,18 @@ export default {
     },
   },
   methods: {
+    toggleView() {
+      if (this.view === "grid") {
+        this.view = "list";
+      } else if (this.view === "list") {
+        this.view = "grid";
+      }
+      document
+        .querySelectorAll(".listings_hold .listing")
+        .forEach((listing) => {
+          listing.classList.toggle("grid");
+        });
+    },
     setCategory(category) {
       this.selectedCategory = category;
     },
@@ -309,7 +329,18 @@ export default {
 }
 
 .listings {
-  margin: 2rem 1.5rem;
+  margin: 0.5rem 1.5rem 2rem;
+}
+
+.toggle_btn {
+  font-size: 1.5rem;
+  min-height: auto;
+  margin-top: 0.5rem;
+}
+@media (min-width: 500px) {
+  .toggle_btn {
+    display: none;
+  }
 }
 
 .sort_area .regular.boosted {

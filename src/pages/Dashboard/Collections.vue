@@ -53,7 +53,7 @@
             <!-- {{ props.row }} -->
             <div class="name_row">
               <div class="img">
-                <img :src="props.row.avatar.url.url" />
+                <img :src="props.row.avatar.url" />
                 <!-- <img :src="props.row.image_url" /> -->
               </div>
 

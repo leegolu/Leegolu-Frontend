@@ -172,7 +172,7 @@ export default {
     boostPlan() {
       this.boostBtn = true;
       this.$api
-        .post(`${this.listing.id}/product/boost`, {
+        .post(`${this.listing.id}/purchase/boost`, {
           plan: this.selectedAd,
         })
         .then(({ data }) => {

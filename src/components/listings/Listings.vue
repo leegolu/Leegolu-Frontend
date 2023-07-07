@@ -41,17 +41,23 @@
 
       <div class="middle">
         <div class="items">
-          <img src="/images/impressions.png" alt="" />
+          <div class="imgg">
+            <img src="/images/im3.svg" alt="" />
+          </div>
           <p>Impressions</p>
           <div class="count">{{ listing.views }}</div>
         </div>
         <div class="items">
-          <img src="/images/engagesvg.svg" alt="" />
+          <div class="imgg">
+            <img src="/images/im2.svg" alt="" />
+          </div>
           <p>Engagement</p>
           <div class="count">{{ listing.views }}</div>
         </div>
         <div class="items">
-          <img src="/images/layer.png" alt="" />
+          <div class="imgg">
+            <img src="/images/im1.svg" alt="" />
+          </div>
           <p>Leads</p>
           <div class="count">{{ listing.views }}</div>
         </div>
@@ -103,26 +109,30 @@
               <div class="title">
                 {{ listing.name }}
               </div>
-              <div class="price">
-                {{ listing.price.toLocaleString() }}
-              </div>
+              <div class="price">₦{{ listing.price.toLocaleString() }}</div>
             </div>
           </div>
           <div class="middle">
             <div class="items">
-              <img src="/images/impressions.png" alt="" />
+              <div class="imgg">
+                <img src="/images/im3.svg" alt="" />
+              </div>
               <p>Impressions</p>
               <div class="count">{{ listing.views }}</div>
               <!-- <div class="count">{{ listing.impressions }}</div> -->
             </div>
             <div class="items">
-              <img src="/images/engage.png" alt="" />
+              <div class="imgg">
+                <img src="/images/im2.svg" alt="" />
+              </div>
               <p>Engagement</p>
               <div class="count">{{ listing.views }}</div>
               <!-- <div class="count">{{ listing.engagements }}</div> -->
             </div>
             <div class="items">
-              <img src="/images/layer.png" alt="" />
+              <div class="imgg">
+                <img src="/images/im1.svg" alt="" />
+              </div>
               <p>Leads</p>
               <div class="count">{{ listing.views }}</div>
               <!-- <div class="count">{{ listing.leads }}</div> -->
@@ -164,9 +174,7 @@
               <div class="title">
                 {{ listing.name }}
               </div>
-              <div class="price">
-                {{ listing.price.toLocaleString() }}
-              </div>
+              <div class="price">₦{{ listing.price.toLocaleString() }}</div>
             </div>
           </div>
           <div class="row ad justify-between items-center">
@@ -260,7 +268,7 @@ export default {
     boostPlan() {
       this.boostBtn = true;
       this.$api
-        .post(`${this.listing.id}/product/boost`, {
+        .post(`${this.listing.id}/purchase/boost`, {
           plan: this.selectedAd,
         })
         .then(({ data }) => {
@@ -345,8 +353,10 @@ export default {
   background: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
-  padding: 0.5rem;
+  padding: 0.7rem;
   margin: 2rem 0;
+  overflow-y: hidden;
+  max-height: 134px;
 }
 
 .listing .left {
@@ -355,7 +365,7 @@ export default {
   // grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 1rem;
   min-width: 300px;
-  align-items: center;
+  // align-items: center;
 }
 
 .boosted {
@@ -368,15 +378,21 @@ export default {
   position: relative;
 }
 
+.img {
+  height: 100%;
+  max-height: 116px;
+}
+
 .img img {
   width: 116px;
-  height: 116px;
+  height: 100%;
   object-fit: cover;
 }
 
 .items.bty {
   display: flex;
   align-items: center;
+  flex-direction: row !important;
   gap: 1rem;
 }
 .tag {
@@ -406,6 +422,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   color: #000000;
+  margin-bottom: 0.1rem;
 }
 
 .left_right .price {
@@ -436,6 +453,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 0.4rem;
 }
 
 .left_right .status.declined {
@@ -454,17 +472,27 @@ export default {
   font-size: 10px;
   line-height: 14px;
   color: #000000;
+  margin-top: 1rem;
 }
 
 //  middle area
 
+// .listing .middle .imgg {
+//   width: 18.32px;
+//   height: 18.32px;
+//   background: rgba(31, 123, 181, 0.4);
+//   border-radius: 4px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 0.2rem;
+// }
+
 .listing .middle img {
-  width: 20.32px;
-  height: 20.32px;
+  width: 19px;
   object-fit: contain;
-  background: rgba(31, 123, 181, 0.4);
-  border-radius: 4px;
-  padding: 0.2rem;
+
+  height: 19px;
 }
 
 .listing .middle {
@@ -472,6 +500,7 @@ export default {
   align-items: center;
   // justify-content: space-between;
   gap: 5rem;
+  min-width: 300px;
   padding-top: 0rem;
 }
 
@@ -507,6 +536,7 @@ p {
   display: flex;
   align-items: center;
   gap: 1rem;
+  min-width: 300px;
 }
 .listing .right .modify {
   width: 106px;
@@ -618,6 +648,7 @@ p {
   border: 3px solid rgba(176, 176, 176, 0.5);
   border-radius: 3px;
   width: 65px;
+  object-fit: cover;
   height: 65px;
 }
 .dialog_content .dialog_top.advert img {
@@ -652,6 +683,7 @@ p {
   font-style: normal;
   font-weight: 700;
   font-size: 14px;
+  white-space: nowrap;
   line-height: 19px;
   text-align: center;
   color: #1f7bb5;
@@ -662,6 +694,17 @@ p {
 .dialog_content .middle.advert .q-btn::before {
   box-shadow: none;
 }
+
+// .card .middle .items .imgg {
+//   width: 24.32px;
+//   height: 24.32px;
+//   background: rgba(31, 123, 181, 0.4);
+//   border-radius: 4px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 0.2rem;
+// }
 .dialog_content .middle img {
   width: 19.96px;
   height: 19.96px;
@@ -758,6 +801,27 @@ p {
 .dialog_content .close::before {
   box-shadow: none;
 }
+.middle .items:nth-child(2) {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.middle .items:nth-child(1) {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.middle .items:nth-child(3) {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
 
 p.advert {
   font-family: "Open Sans";
@@ -790,6 +854,9 @@ p.advert {
     gap: 2rem;
     padding-bottom: 0.6rem;
   }
+  .left_right .date {
+    margin-top: 1.5rem;
+  }
 }
 
 @media (max-width: 500px) {
@@ -797,68 +864,76 @@ p.advert {
     font-size: 12px;
   }
 
-  .listing .left {
+  .listing .left,
+  .listing .middle,
+  .listing .right {
     min-width: 100%;
   }
-  .listing {
+  .listing.grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.3rem;
     overflow: unset;
+    max-height: 100%;
     // max-width: 80%;
     // margin: 2rem auto;
   }
 
-  .listing .right {
+  .listing.grid .right {
     justify-content: center;
     flex-direction: column;
     gap: 0.5rem;
   }
-  .listing .middle {
+  .listing.grid .middle {
     justify-content: space-between;
     margin-bottom: 0.5rem;
   }
 
-  .img img {
+  .listing.grid .img {
+    max-height: 100%;
+  }
+
+  .listing.grid .img img {
     width: 100%;
     height: 195px;
     object-fit: cover;
   }
 
-  .listing .left {
+  .listing.grid .left {
     grid-template-columns: 1fr;
     gap: 0.3rem;
   }
   .left_right .price {
-    margin: 0rem 0 0.4rem;
+    margin: 0rem 0 0.1rem;
+    font-weight: 600;
   }
 
   .left_right .title {
     font-size: 14px;
   }
-  .left_right .price {
-    font-weight: 600;
-  }
 
-  .listing .right .modify {
+  .listing.grid .right .modify {
     width: 100% !important;
     background: #c2e6e9;
   }
 
-  .listing .right .manage_ad {
+  .listing.grid .right .manage_ad {
     width: 100% !important;
   }
   .left_right .date {
     padding-top: 0rem;
     font-size: 8px;
   }
+  .listing.grid .left_right .date {
+    margin-top: 0;
+  }
 
-  .div {
+  .listing.grid .div {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: row-reverse;
-    margin: 0.2rem 0;
+    margin: 0rem 0 0.2rem;
   }
 
   .listing .middle p {
@@ -867,10 +942,6 @@ p.advert {
 
   .listing .middle .count {
     margin-top: 0;
-  }
-
-  .middle .items:nth-child(2) {
-    text-align: center;
   }
 }
 </style>

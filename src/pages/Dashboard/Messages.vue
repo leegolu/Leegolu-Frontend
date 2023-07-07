@@ -249,7 +249,7 @@ export default {
         descending: false,
         page: 1,
         rowsPerPage: 5,
-        rowsNumber: 100,
+        // rowsNumber: 100,
       },
       loaders: {
         delete: false,

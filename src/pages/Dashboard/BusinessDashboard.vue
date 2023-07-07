@@ -157,7 +157,22 @@
           </div>
           <div style="gap: 0.5rem" class="row items-center">
             <div class="business_seive">
-              <q-btn color="white" class="bg-primary" flat> Page Visits </q-btn>
+              <q-btn color="white" class="bg-primary" flat>
+                Page Visits
+                <q-menu>
+                  <q-list style="min-width: 100px">
+                    <q-item clickable @click="getStats">
+                      <q-item-section>View daily page visits</q-item-section>
+                    </q-item>
+                    <q-item clickable @click="viewWeekly">
+                      <q-item-section>View weekly page visits</q-item-section>
+                    </q-item>
+                    <q-item clickable @click="viewYearly">
+                      <q-item-section>View yearly visits</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
             </div>
             <!-- <div class="business_seive">
             <q-btn flat> Callback Requests </q-btn>
@@ -166,10 +181,16 @@
               <q-btn flat> Message Requests </q-btn>
             </div>
             <div class="business_seive">
-              <q-btn flat> Phone Views </q-btn>
+              <q-btn @click="getMyPhoneViews" flat> Phone Views </q-btn>
             </div>
           </div>
         </div>
+        <!-- <p class="text-black">
+          {{ series }}
+        </p>
+        <p class="text-black">
+          {{ chartOptions }}
+        </p> -->
         <apexchart
           type="bar"
           height="380"
@@ -416,7 +437,12 @@
                 />
               </div>
 
-              <q-btn @click="finish" flat type="button" class="btn"
+              <q-btn
+                :loading="loadingFinish"
+                @click="finish"
+                flat
+                type="button"
+                class="btn"
                 >Finish</q-btn
               >
               <div class="clear"></div>
@@ -459,7 +485,9 @@ export default {
       plans: [],
       image: null,
       myAds: "",
+      chatView: "Page visits",
       myEngagements: "",
+      loadingFinish: false,
       listings: [],
       myLeads: "",
       errors: {},
@@ -482,18 +510,53 @@ export default {
       chartOptions: {
         chart: {
           id: "basic-bar",
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true,
+              selection: true,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true | '<img src="/static/icons/reset.png" width="20">',
+              customIcons: [],
+            },
+          },
+          selection: {
+            enabled: true,
+          },
         },
         xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+          // type: "numeric",
+          categories: [],
         },
+
         colors: ["#1f7bb5", "#247BA0"],
       },
       series: [
         {
           name: "series-1",
-          data: [30, 40, 45, 50, 49, 60, 70, 91],
+          data: [],
         },
       ],
+      toolbar: {
+        show: true,
+        offsetX: 0,
+        offsetY: 0,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true | '<img src="/static/icons/reset.png" width="20">',
+          customIcons: [],
+        },
+      },
     };
   },
 
@@ -507,13 +570,14 @@ export default {
   //   },
   // },
   created() {
+    this.getStats();
     this.getRoles();
     this.getStates();
     this.getBusinessTypes();
     this.getMyads();
     this.getMyEngagements();
     this.getMyLeads();
-    this.getMyPageViews();
+    // this.getMyPhoneViews();
     this.getListings();
     this.getPlans();
     this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
@@ -661,11 +725,11 @@ export default {
           this.errors = error.errors || {};
         });
     },
-    getMyPageViews() {
+    getMyPhoneViews() {
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/page-views`)
+        .get(`${this.$store.leegoluauth.vendorDetails.slug}/phone-views`)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -680,6 +744,78 @@ export default {
           this.myLeads = response.data.data;
           // this.categories = response.data.data;
           // this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getStats() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/page-views/daily?month=${currentMonth}&year=${currentYear}`
+        )
+        .then((response) => {
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.month;
+          // let stringifyArray = response.data["x-axis"].map((i) => i.toString());
+          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    viewWeekly() {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/page-views/weekly?month=${currentMonth}`
+        )
+        .then((response) => {
+          console.log(response);
+          // this.series[0].data = response.data["y-axis"];
+          // this.series[0].name = response.data.month;
+          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    viewYearly() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/page-views/yearly?year=${currentYear}`
+        )
+        .then((response) => {
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].year = response.data.month;
+          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
         })
         .catch((e) => {
           this.loading = false;
@@ -801,9 +937,27 @@ export default {
         return;
       } else {
         this.$store.leegoluauth.vendorDetails = this.vendordetails;
-        this.$store.leegoluauth.modal = false;
+        // this.$store.leegoluauth.modal = false;
 
-        this.$router.replace({ name: "Plans" });
+        // this.$router.replace({ name: "Plans" });
+        this.loadingFinish = true;
+
+        this.$api
+          .post("onboarding", this.vendordetails)
+          .then((response) => {
+            this.$store.leegoluauth.vendorDetails = response.data.vendor;
+            this.$store.leegoluauth.vendor = response.data.vendor;
+            this.$helper.notify(response.data.message, "success");
+            this.$store.leegoluauth.modal = false;
+            this.$router.replace({ name: "Plans", query: { getplan: "yes" } });
+
+            this.loadingFinish = false;
+          })
+          .catch(({ response }) => {
+            // console.log(response);
+            this.loadingFinish = false;
+            this.errors = response.data.errors || {};
+          });
       }
     },
   },

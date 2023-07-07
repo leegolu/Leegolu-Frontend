@@ -21,6 +21,10 @@
           />
         </div>
       </div>
+
+      <q-btn @click="cancelProcess" class="close_">
+        <i class="fa-solid fa-xmark"></i>
+      </q-btn>
     </div>
   </q-layout>
 </template>
@@ -106,6 +110,18 @@ export default {
   },
 
   methods: {
+    cancelProcess() {
+      if (this.$router.currentRoute.value.query.getplan === "yes") {
+        this.$router.replace({
+          name: "business.dashboard",
+          query: { videotour: "yes" },
+        });
+      } else {
+        this.$router.replace({
+          name: "business.dashboard",
+        });
+      }
+    },
     getPlans() {
       this.$api
         .get("shop/plans")
@@ -127,6 +143,12 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   padding: 5rem 3rem 0 3rem;
+  position: relative;
+}
+.close_ {
+  position: absolute;
+  right: 3%;
+  top: 3%;
 }
 .main_title {
   font-family: "Open Sans";

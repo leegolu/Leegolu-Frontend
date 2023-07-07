@@ -43,17 +43,23 @@
           </div>
           <div class="middle">
             <div class="items">
-              <img src="/images/impressions.png" alt="" />
+              <div class="imgg">
+                <img src="/images/im3.svg" alt="" />
+              </div>
               <p>Impressions</p>
               <div class="count">{{ listing.views }}</div>
             </div>
             <div class="items">
-              <img src="/images/engage.png" alt="" />
+              <div class="imgg">
+                <img src="/images/im2.svg" alt="" />
+              </div>
               <p>Engagement</p>
               <div class="count">{{ listing.views }}</div>
             </div>
             <div class="items">
-              <img src="/images/layer.png" alt="" />
+              <div class="imgg">
+                <img src="/images/im1.svg" alt="" />
+              </div>
               <p>Leads</p>
               <div class="count">{{ listing.views }}</div>
             </div>
@@ -171,7 +177,7 @@ export default {
     boostPlan() {
       this.boostBtn = true;
       this.$api
-        .post(`${this.listing.id}/product/boost`, {
+        .post(`${this.listing.id}/purchase/boost`, {
           plan: this.selectedAd,
         })
         .then(({ data }) => {
@@ -336,6 +342,7 @@ export default {
 }
 .items.bty {
   display: flex;
+  flex-direction: row !important;
   align-items: center;
   gap: 1rem;
 }
@@ -528,6 +535,7 @@ export default {
   font-style: normal;
   font-weight: 700;
   font-size: 14px;
+  white-space: nowrap;
   line-height: 19px;
   text-align: center;
   color: #1f7bb5;
@@ -539,6 +547,16 @@ export default {
 .dialog_content .middle.advert .q-btn::before {
   box-shadow: none;
 }
+// .card .middle .items .imgg {
+//   width: 24.32px;
+//   height: 24.32px;
+//   background: rgba(31, 123, 181, 0.4);
+//   border-radius: 4px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 0.2rem;
+// }
 .dialog_content .middle img {
   width: 19.96px;
   height: 19.96px;
@@ -645,6 +663,28 @@ p.advert {
   font-size: 20px;
   line-height: 27px;
   color: #000000;
+}
+
+.middle .items:nth-child(2) {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.middle .items:nth-child(1) {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.middle .items:nth-child(3) {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 @media (max-width: 1150px) {

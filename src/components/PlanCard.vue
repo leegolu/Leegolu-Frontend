@@ -70,7 +70,7 @@
           </div>
 
           <div class="boost">
-            <q-btn :loading="loading" @click="onboardVendor">Proceed</q-btn>
+            <q-btn :loading="loading" @click="purchasePlan">Proceed</q-btn>
           </div>
 
           <q-btn @click="dialogCreate = false" class="close">
@@ -98,59 +98,78 @@ export default {
       this.dialogCreate = true;
     },
 
-    onboardVendor() {
+    purchasePlan() {
       this.loading = true;
-      if (this.errors.name) {
-        let data = {
-          ...this.$store.leegoluauth.vendorDetails,
-          plan: this.plan.id,
-          name: this.vendordetails.name,
-        };
+      this.$api
+        .post(
+          `${this.$store.leegoluauth.vendorDetails.slug}/purchase/plan`,
+          data
+        )
+        .then((response) => {
+          // console.log(response);
+          this.$helper.notify(response.data.message, "success");
+          this.$router.replace({
+            name: "business.dashboard",
+            query: { videotour: "yes" },
+          });
+          this.loading = false;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.loading = false;
+          this.errors = response.data.errors || {};
+        });
+      // if (this.errors.name) {
+      //   let data = {
+      //     ...this.$store.leegoluauth.vendorDetails,
+      //     plan: this.plan.id,
+      //     name: this.vendordetails.name,
+      //   };
 
-        this.$api
-          .post("onboarding", data)
-          .then((response) => {
-            // console.log(response);
-            // console.log(response.data);
-            // console.log(response.data.vendor);
-            this.$store.leegoluauth.vendorDetails = response.data.vendor;
-            this.$store.leegoluauth.vendor = response.data.vendor;
-            this.$helper.notify(response.data.message, "success");
-            this.$router.replace({
-              name: "business.dashboard",
-              query: { videotour: "yes" },
-            });
-            this.loading = false;
-          })
-          .catch(({ response }) => {
-            // console.log(response);
-            this.loading = false;
-            this.errors = response.data.errors || {};
-          });
-      } else {
-        let data = {
-          ...this.$store.leegoluauth.vendorDetails,
-          plan: this.plan.id,
-        };
-        this.$api
-          .post("onboarding", data)
-          .then((response) => {
-            // console.log(response);
-            this.$store.leegoluauth.vendorDetails = response.data.vendor;
-            this.$store.leegoluauth.vendor = response.data.vendor;
-            this.$helper.notify(response.data.message, "success");
-            this.$router.replace({
-              name: "business.dashboard",
-              query: { videotour: "yes" },
-            });
-            this.loading = false;
-          })
-          .catch(({ response }) => {
-            // console.log(response);
-            this.loading = false;
-            this.errors = response.data.errors || {};
-          });
-      }
+      //   this.$api
+      //     .post("onboarding", data)
+      //     .then((response) => {
+      //       // console.log(response);
+      //       // console.log(response.data);
+      //       // console.log(response.data.vendor);
+      //       this.$store.leegoluauth.vendorDetails = response.data.vendor;
+      //       this.$store.leegoluauth.vendor = response.data.vendor;
+      //       this.$helper.notify(response.data.message, "success");
+      //       this.$router.replace({
+      //         name: "business.dashboard",
+      //         query: { videotour: "yes" },
+      //       });
+      //       this.loading = false;
+      //     })
+      //     .catch(({ response }) => {
+      //       // console.log(response);
+      //       this.loading = false;
+      //       this.errors = response.data.errors || {};
+      //     });
+      // } else {
+      //   let data = {
+      //     ...this.$store.leegoluauth.vendorDetails,
+      //     plan: this.plan.id,
+      //   };
+      //   this.$api
+      //     .post("onboarding", data)
+      //     .then((response) => {
+      //       // console.log(response);
+      //       this.$store.leegoluauth.vendorDetails = response.data.vendor;
+      //       this.$store.leegoluauth.vendor = response.data.vendor;
+      //       this.$helper.notify(response.data.message, "success");
+      //       this.$router.replace({
+      //         name: "business.dashboard",
+      //         query: { videotour: "yes" },
+      //       });
+      //       this.loading = false;
+      //     })
+      //     .catch(({ response }) => {
+      //       // console.log(response);
+      //       this.loading = false;
+      //       this.errors = response.data.errors || {};
+      //     });
+      // }
     },
   },
 };
