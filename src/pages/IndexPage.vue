@@ -405,37 +405,79 @@
   <section class="products q-pt-xl container">
     <div class="head_text">Top Rated Shops</div>
     <div class="product_cards">
-      <div v-for="(product, index) in topProducts" :key="index" class="product">
-        <img :src="product.product_image" alt="" />
-        <div class="location">
-          <p>{{ product.location }}</p>
-        </div>
-        <div class="name">
-          <p>{{ product.name }}</p>
-        </div>
-        <div class="price">
-          <p>{{ product.amount.toLocaleString() }}</p>
-        </div>
-        <div class="desc">
-          <p>{{ product.desc }}</p>
-        </div>
-        <div class="kinds">
+      <div
+        v-for="(product, index) in topProducts"
+        :key="index"
+        class="product shops"
+      >
+        <Splide
+          :options="{
+            perPage: 1,
+            rewind: true,
+            autoplay: true,
+            gap: 10,
+            arrows: false,
+            navigations: false,
+          }"
+          aria-label="My Favorite Images"
+        >
+          <SplideSlide>
+            <div>
+              <img :src="product.product_image" alt="" />
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div>
+              <img :src="product.product_image" alt="" />
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div>
+              <img :src="product.product_image" alt="" />
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div>
+              <img :src="product.product_image" alt="" />
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div>
+              <img :src="product.product_image" alt="" />
+            </div>
+          </SplideSlide>
+        </Splide>
+        <div class="body_">
+          <div class="location">
+            <p>{{ product.location }}</p>
+          </div>
+          <div class="name">
+            <p>Emmanuel</p>
+          </div>
+          <div class="price">
+            <p>Electronics</p>
+          </div>
+          <div class="desc q-pb-sm">
+            <p>{{ product.desc }}</p>
+          </div>
+          <!-- <div class="kinds">
           <p class="kind">{{ product.kind }}</p>
           <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
-        </div>
-        <div class="owners">
-          <p class="owner">
+        </div> -->
+          <div class="owners q-mt-md">
+            <!-- <p class="owner">
             <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
-          </p>
-          <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
-            <q-rating
-              v-model="ratingModel"
-              size="1.5em"
-              :max="4"
-              color="black"
-            />
-            <span>{{ product.ratings_count }}</span>
-          </p>
+          </p> -->
+            <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
+              <q-rating
+                v-model="ratingModel"
+                size="1em"
+                :max="4"
+                color="black"
+              />
+              <span>{{ product.ratings_count }}</span>
+            </p>
+          </div>
         </div>
         <div class="love">
           <i class="fa-regular fa-heart"></i>
@@ -1060,6 +1102,13 @@ a {
   position: relative;
   cursor: pointer;
 }
+.product_cards .product.shops {
+  padding: 0rem;
+}
+.product_cards .product.shops .body_ {
+  padding: 0.8rem;
+  margin-top: 0.4rem;
+}
 
 .product_cards .product .love {
   position: absolute;
@@ -1159,6 +1208,14 @@ a {
   height: 150px;
   /* height: 206px; */
   object-fit: contain;
+  // padding-top: 0.3rem;
+}
+
+.product_cards .product.shops img {
+  object-fit: cover;
+}
+.product_cards .product.shops .name p {
+  margin-bottom: 0;
 }
 
 /* join */

@@ -1,6 +1,11 @@
 <template>
-  <!-- <div class="wrapper">
-     <div class="top"><img src="/images/shopicon.svg" alt="" /> Manage Shop</div>
+  <div class="loader" v-if="loading">
+    <div>
+      <q-spinner-comment color="primary" size="5em" />
+    </div>
+  </div>
+  <div v-if="!loading && !vendor.subscriptions.length" class="wrapper">
+    <div class="top"><img src="/images/shopicon.svg" alt="" /> Manage Shop</div>
 
     <div class="main_area">
       <div class="main_area_top">
@@ -20,7 +25,7 @@
         </div>
 
         <div class="right">
-          <q-btn flat :to="{ name: 'plans' }">
+          <q-btn flat :to="{ name: 'Plans' }">
             Activate a plan <i class="fa-solid fa-arrow-right"></i>
           </q-btn>
         </div>
@@ -76,13 +81,9 @@
         </template>
       </q-table>
     </div>
-  </div> -->
-  <div class="loader" v-if="loading">
-    <div>
-      <q-spinner-comment color="primary" size="5em" />
-    </div>
   </div>
-  <div v-if="!loading" class="wrapper">
+
+  <div v-if="!loading && vendor.subscriptions.length" class="wrapper">
     <div class="top">
       <div class="top_hold">
         <img src="/images/shopicon.svg" alt="" /> Manage Shop

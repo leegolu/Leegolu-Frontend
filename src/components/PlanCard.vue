@@ -101,18 +101,18 @@ export default {
     purchasePlan() {
       this.loading = true;
       this.$api
-        .post(
-          `${this.$store.leegoluauth.vendorDetails.slug}/purchase/plan`,
-          data
-        )
+        .post(`${this.$store.leegoluauth.vendorDetails.slug}/purchase/plan`, {
+          plan: this.plan.id,
+        })
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           this.$helper.notify(response.data.message, "success");
-          this.$router.replace({
-            name: "business.dashboard",
-            query: { videotour: "yes" },
-          });
-          this.loading = false;
+          // this.$router.replace({
+          //   name: "business.dashboard",
+          //   query: { videotour: "yes" },
+          // });
+          window.location.href = response.data.url;
+          // this.loading = false;
         })
         .catch(({ response }) => {
           // console.log(response);
@@ -378,7 +378,8 @@ export default {
 }
 
 .dialog_content .boost {
-  padding: 1rem 0;
+  // padding: 1rem 0;
+  margin: 0 25px;
 }
 
 .dialog_content .close {

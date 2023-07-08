@@ -147,8 +147,11 @@ export default {
 }
 .close_ {
   position: absolute;
-  right: 3%;
-  top: 3%;
+  right: 1%;
+  font-size: 2rem;
+  height: auto;
+  color: #f5f5f5;
+  top: -4%;
 }
 .main_title {
   font-family: "Open Sans";

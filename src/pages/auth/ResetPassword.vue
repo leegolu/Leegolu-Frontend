@@ -11,12 +11,15 @@
             </div>
           </div>
 
-          <form id="form">
+          <form @submit.prevent="changePassword" id="form">
             <div class="input-box active-grey">
               <label class="input-label">Email Address</label>
               <input
                 type="text"
                 class="input-1"
+                name="email"
+                required
+                v-model="data.email"
                 placeholder="johndoe@gmail.com"
               />
             </div>
@@ -28,12 +31,13 @@
                 >Cancel</q-btn
               >
               <q-btn
-                :to="{ name: 'checkmail' }"
-                type="button"
+                :loading="loading"
+                type="submit"
                 color="secondary"
                 class="btn"
                 >Proceed</q-btn
               >
+              <!-- :to="{ name: 'checkmail' }" -->
               <!-- <div class="clear"></div> -->
             </div>
           </form>
@@ -47,8 +51,34 @@
 export default {
   data() {
     return {
-      data: { bus: "Leegolu Regular" },
+      data: { email: "" },
+      loading: false,
     };
+  },
+
+  methods: {
+    changePassword() {
+      this.loading = true;
+      this.$api
+        .post(`password/request`, this.data)
+        .then((response) => {
+          console.log(response);
+          this.$helper.notify(response.data.message, "success");
+          this.$router.replace({
+            name: "checkmail",
+          });
+          // this.$router.replace({
+          //   name: "business.dashboard",
+          //   query: { videotour: "yes" },
+          // });
+          this.loading = false;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.loading = false;
+          this.errors = response.data.errors || {};
+        });
+    },
   },
 };
 </script>

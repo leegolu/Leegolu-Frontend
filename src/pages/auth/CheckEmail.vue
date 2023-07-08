@@ -33,12 +33,17 @@ export default {};
 
 <style lang="scss" scoped>
 .hold {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   height: 100vh;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  place-items: center;
 }
 .wrapp {
   flex-direction: column;
@@ -112,6 +117,8 @@ img {
   font-weight: 500;
   font-size: 12px;
   line-height: 100%;
+  max-width: 60%;
+  margin: 0 auto;
   text-transform: capitalize;
 }
 

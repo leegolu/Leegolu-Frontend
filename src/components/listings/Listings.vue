@@ -282,6 +282,7 @@ export default {
           this.advertdialog = false;
           this.product = data.product;
           this.boosted = true;
+          window.location.href = data.url;
         })
         .catch(({ response }) => {
           this.boostBtn = false;

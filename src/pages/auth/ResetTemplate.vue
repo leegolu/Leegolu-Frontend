@@ -45,12 +45,15 @@ export default {};
   width: 100%;
 }
 .hold {
-  background: #f5f5f5;
+  // background: #f5f5f5;
   height: 100vh;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 .wrapp {
   flex-direction: column;

@@ -20,6 +20,15 @@
           </div>
           <div class="sub">Welcome to your Leegolu dashboard.</div>
           <q-btn
+            v-if="role === 'regular'"
+            @click="tourModal = true"
+            color="primary"
+            class="q-mt-lg tour"
+          >
+            Take Tour
+          </q-btn>
+          <q-btn
+            v-else
             :to="{ name: 'manage-shop' }"
             color="primary"
             class="q-mt-lg tour"
@@ -29,7 +38,14 @@
         </div>
 
         <div class="right">
-          <img src="/images/dashsvg.svg" alt="" />
+          <img
+            :src="
+              role === 'regular'
+                ? '/images/dashrocket.svg'
+                : '/images/dashsvg.svg'
+            "
+            alt=""
+          />
         </div>
       </div>
 
@@ -55,60 +71,90 @@
           <div v-if="myLeads === ''" class="count">0</div>
           <div v-else class="count">{{ myLeads }}</div>
         </div>
-        <div class="small_card_bus">
+        <div v-if="role === 'regular'" class="small_card_bus reg notFree">
           <div class="wallet_left">
-            <img src="/images/gift.png" alt="" />
+            <img src="/images/giftbg.png" alt="" />
 
-            <div class="di">
+            <!-- <div class="di">
               <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
               <div class="type">Leegolu Business</div>
-            </div>
+            </div> -->
           </div>
 
-          <div class="free">Free <img src="/images/arrwhite.svg" alt="" /></div>
-          <!-- <div class="">
+          <!-- <div class="free"><q-btn>Upgrade to Business</q-btn></div> -->
+          <div class="">
             <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
-            <div class="wallet_amt">Leegolu Business</div>
-            <div class="wallet_small">Shop | ₦3000</div>
+            <div class="wallet_amt text-right">Leegolu Regular</div>
+            <div class="free_note"><div>Free</div></div>
 
-            <div class="progress_wrap q-mt-lg">
-              <div class="progress">
-                <div class="small">4/20 Listings</div>
-                <q-linear-progress reverse :value="progress1" color="warning">
-                </q-linear-progress>
-              </div>
-              <div class="progress q-mt-sm">
-                <div class="small">30 days left</div>
-                <q-linear-progress reverse :value="progress1" color="warning">
-                </q-linear-progress>
-              </div>
+            <div class="reg_btn">
+              <q-btn :to="{ name: 'Plans' }"
+                >Upgrade to Business <img src="/images/regarr.svg" alt=""
+              /></q-btn>
             </div>
-          </div> -->
+          </div>
         </div>
 
-        <!-- <div class="small_card_bus notFree">
+        <div
+          v-if="role === 'business' && vendor.subscriptions.length"
+          class="small_card_bus notFree"
+        >
           <div class="wallet_left">
             <img src="/images/gift.png" alt="" />
           </div>
           <div class="">
             <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
             <div class="wallet_amt">Leegolu Business</div>
-            <div class="wallet_small">Shop | ₦3000</div>
+            <div class="wallet_small">
+              {{ vendor.subscriptions[0].plan }} | ₦{{
+                vendor.subscriptions[0].price
+              }}
+            </div>
 
             <div class="progress_wrap q-mt-lg">
               <div class="progress">
-                <div class="small">4/20 Listings</div>
+                <div class="small">
+                  {{ vendor.products.length }}/{{ totalUploads }} Listings
+                </div>
                 <q-linear-progress reverse :value="progress1" color="warning">
                 </q-linear-progress>
               </div>
+
               <div class="progress q-mt-sm">
-                <div class="small">30 days left</div>
-                <q-linear-progress reverse :value="progress1" color="warning">
+                <div class="small">{{ daysLeft }} days left</div>
+                <q-linear-progress reverse :value="progress2" color="warning">
                 </q-linear-progress>
               </div>
+              <!-- <q-linear-progress
+                reverse
+                size="25px"
+                :value="progress2"
+                color="accent"
+              >
+              </q-linear-progress> -->
             </div>
           </div>
-        </div> -->
+        </div>
+        <div
+          v-if="role === 'business' && !vendor.subscriptions.length"
+          class="small_card_bus reg notFree nosub"
+        >
+          <div class="wallet_left">
+            <img src="/images/yellobg.svg" alt="" />
+            <img src="/images/giftbg.png" alt="" />
+          </div>
+          <div class="">
+            <div class="icon">inactive</div>
+            <div class="wallet_amt">Leegolu Business</div>
+            <div class="wallet_small">No Subscription</div>
+
+            <div class="reg_btn">
+              <q-btn :to="{ name: 'Plans' }"
+                >Activate a plan <img src="/images/regarr.svg" alt=""
+              /></q-btn>
+            </div>
+          </div>
+        </div>
       </div>
 
       <hr v-if="listings.length" />
@@ -282,7 +328,12 @@
           </div>
 
           <div class="right">
-            <img src="/images/welcometobusiness.svg" alt="" />
+            <img
+              v-if="role === 'regular'"
+              src="/images/dashrocket.svg"
+              alt=""
+            />
+            <img v-else src="/images/welcometobusiness.svg" alt="" />
           </div>
         </div>
 
@@ -460,6 +511,9 @@
       </div>
     </q-card>
   </q-dialog>
+  <q-dialog v-model="tourModal">
+    <ModalTourVue />
+  </q-dialog>
 </template>
 
 <script>
@@ -469,15 +523,21 @@ import DashboardHomeListing from "../../components/listings/RecentListings.vue";
 // import Charts from "../../components/Charts.vue";
 import { ref, computed } from "vue";
 import TourVue from "src/components/Tour.vue";
+import { useAuthStore } from "stores/auth";
+import ModalTourVue from "src/components/ModalTour.vue";
+let store = useAuthStore();
+
 export default {
   components: {
     apexchart: VueApexCharts,
     DashboardHomeListing,
     TourVue,
+    ModalTourVue,
   },
   data() {
     return {
-      welcometoleegolubusinessmodal: false,
+      tourModal: false,
+      welcometoleegolubusinessmodal: true,
       preview: "/images/preview.png",
       businessreg: false,
       loadingAvatar: false,
@@ -499,7 +559,6 @@ export default {
         state: "",
         business_type: "Fashion & Apparel",
       },
-      roles: [],
       businessTypes: [],
       loading: false,
       states: [],
@@ -559,19 +618,8 @@ export default {
       },
     };
   },
-
-  // watch: {
-  //   welcometoleegolubusinessmodal: {
-  //     handler: function (val, oldVal) {
-  //       console.log(val);
-  //     },
-  //     deep: true,
-  //     immediate: true,
-  //   },
-  // },
   created() {
     this.getStats();
-    this.getRoles();
     this.getStates();
     this.getBusinessTypes();
     this.getMyads();
@@ -583,17 +631,81 @@ export default {
     this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
   },
   setup() {
-    const progress1 = ref(0.3);
-    const progress2 = ref(0.9);
+    const progress1 = ref(0);
+    let progress2 = ref(0);
+    let progressLabel2 = ref(0.3);
+    let totalUploads = ref(30);
     useMeta({
       title: "Dashboard",
     });
-    return {
-      progress1,
-      progressLabel1: computed(() => (progress1.value * 100).toFixed(2) + "%"),
+    let role = store.userDetails.role[0].name;
+    let vendor = store.vendorDetails;
+    // console.log(vendor.subscriptions[0].end_date);
 
-      progress2,
-      progressLabel2: computed(() => (progress2.value * 100).toFixed(2) + "%"),
+    return {
+      role,
+      vendor,
+      totalUploads,
+      progress2: computed(() => {
+        const currentDate = new Date();
+        const totalDuration =
+          new Date(vendor.subscriptions[0].end_date) -
+          new Date(vendor.subscriptions[0].start_date);
+        const elapsedDuration =
+          currentDate - new Date(vendor.subscriptions[0].start_date);
+        const progress = (elapsedDuration / totalDuration) * 100;
+        // console.log(
+        //   Math.min(Math.round(progress * 100) / 100, 100).toFixed() / 100
+        // );
+        progress2.value =
+          Math.min(Math.round(progress * 100) / 100, 100).toFixed() / 100;
+
+        return Math.min(Math.round(progress * 100) / 100, 100).toFixed() / 100;
+      }),
+      // progress2: computed(() => {
+      //   const currentDate = new Date();
+      //   const totalDuration =
+      //     new Date(vendor.subscriptions[0].end_date) -
+      //     new Date(vendor.subscriptions[0].start_date);
+      //   const elapsedDuration =
+      //     currentDate - new Date(vendor.subscriptions[0].start_date);
+      //   const progress = (elapsedDuration / totalDuration) * 100;
+      //   console.log(
+      //     Math.min(Math.round(progress * 100) / 100, 100).toFixed() / 100
+      //   );
+      //   progress2.value =
+      //     (Math.min(Math.round(progress * 100) / 100, 100).toFixed() + "%") /
+      //     100;
+
+      //   return (Math.min(Math.round(progress * 100) / 100, 100) + "%") / 100;
+      // }),
+
+      daysLeft: computed(() => {
+        const currentDate = new Date();
+        const remainingDuration =
+          new Date(vendor.subscriptions[0].end_date) - currentDate;
+        const daysLeft = Math.ceil(remainingDuration / (1000 * 60 * 60 * 24));
+        return daysLeft;
+      }),
+      progress1: computed(() => {
+        // const progress = (vendor.products.length / totalUploads.value) * 100;
+        progress1.value =
+          ((vendor.products.length / totalUploads.value) * 100).toFixed() / 100;
+        // console.log((vendor.products.length / totalUploads.value) * 100);
+        let fixedVal = (
+          (vendor.products.length / totalUploads.value) *
+          100
+        ).toFixed(1);
+        // console.log(Math.abs(fixedVal / 100));
+
+        return Math.abs(fixedVal / 100);
+        // return Math.round(progress * 100) / 100;
+      }),
+      // progress1,
+      progressLabel2: computed(() => {
+        console.log((progressLabel2.value * 100).toFixed(2) + "%");
+        return (progressLabel2.value * 100).toFixed(2) + "%";
+      }),
     };
   },
   mounted() {
@@ -637,39 +749,52 @@ export default {
     },
 
     addAvatar() {
-      const formData = new FormData();
-      formData.append("avatar", this.avatar.avatar);
+      if (this.avatar.avatar) {
+        const formData = new FormData();
+        formData.append("avatar", this.avatar.avatar);
 
-      this.loadingAvatar = true;
-      this.$api
-        .post(`upload-avatar`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          // console.log("Success:", response);
-          this.loadingAvatar = false;
-          this.getVendor();
+        this.loadingAvatar = true;
+        this.$api
+          .post(`upload-avatar`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((response) => {
+            // console.log("Success:", response);
+            this.loadingAvatar = false;
+            this.getVendor();
+            if (this.role === "regular") {
+              this.addphotoforleegolubusinessmodal = false;
+            } else {
+              this.addphotoforleegolubusinessmodal = false;
+              this.businessreg = true;
+            }
+            this.$q.notify({
+              message: response.data.message,
+              color: "green",
+              position: "bottom",
+            });
+          })
+          .catch(({ response }) => {
+            // console.log(response);
+            this.errors = response.data.message;
+            this.loadingAvatar = false;
+            this.$q.notify({
+              message: response.data.message,
+              color: "red",
+              position: "bottom",
+              actions: [{ icon: "close", color: "white" }],
+            });
+          });
+      } else {
+        if (this.role === "regular") {
+          this.addphotoforleegolubusinessmodal = false;
+        } else {
           this.addphotoforleegolubusinessmodal = false;
           this.businessreg = true;
-          this.$q.notify({
-            message: response.data.message,
-            color: "green",
-            position: "bottom",
-          });
-        })
-        .catch(({ response }) => {
-          // console.log(response);
-          this.errors = response.data.message;
-          this.loadingAvatar = false;
-          this.$q.notify({
-            message: response.data.message,
-            color: "red",
-            position: "bottom",
-            actions: [{ icon: "close", color: "white" }],
-          });
-        });
+        }
+      }
     },
 
     toggleModals() {
@@ -787,9 +912,16 @@ export default {
         )
         .then((response) => {
           console.log(response);
-          // this.series[0].data = response.data["y-axis"];
-          // this.series[0].name = response.data.month;
-          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.month;
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
         })
         .catch((e) => {
           this.loading = false;
@@ -806,7 +938,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.series[0].data = response.data["y-axis"];
-          this.series[0].year = response.data.month;
+          this.series[0].name = response.data.year;
           // this.chartOptions.xaxis.categories = response.data["x-axis"];
           this.chartOptions = {
             ...this.chartOptions,
@@ -848,22 +980,7 @@ export default {
       this.$store.leegoluauth.modal = false;
       this.businessreg = false;
     },
-    getRoles() {
-      this.$api
-        .get("roles")
-        .then((response) => {
-          // console.log(response);å
-          let roles = response.data.data;
-          // console.log(roles);
-          this.roles = roles.filter((role) => {
-            return role.name === "business" || role.name === "regular";
-          });
-        })
-        .catch((e) => {
-          this.loading = false;
-          this.errors = error.errors || {};
-        });
-    },
+
     getBusinessTypes() {
       this.$api
         .get("business-types")
@@ -1066,6 +1183,8 @@ hr {
   top: 0;
   bottom: 0;
   right: -20%;
+  top: 2%;
+  height: 95%;
 }
 
 .right_card_top,
@@ -1243,11 +1362,13 @@ hr {
   // width: 314px;
   flex-direction: column;
   // align-items: center;
+  position: relative;
   flex: 2;
   gap: 1rem;
   height: 165px;
   padding: 1.5rem 1rem 1rem;
 }
+
 .small_card_bus.notFree {
   background: linear-gradient(180deg, #0f476a 0%, #1f7bb5 100%);
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
@@ -1261,6 +1382,9 @@ hr {
   gap: 1rem;
   height: 100%;
   padding: 1.5rem 1rem 1rem;
+}
+.small_card_bus.notFree.nosub {
+  background: #ee4e36;
 }
 
 .small_card_bus .di .type {
@@ -1309,6 +1433,23 @@ hr {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
+}
+
+.small_card_bus.notFree.nosub .wallet_left img:first-of-type {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.small_card_bus.notFree.nosub .wallet_left img:last-of-type {
+  width: 41.6px;
+  height: 29.6px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
 }
 .small_card_bus .wallet_amt {
   font-family: "Open Sans";
@@ -1320,8 +1461,54 @@ hr {
   color: #ffffff;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+}
+.small_card_bus.reg .wallet_amt {
+  justify-content: flex-end;
 }
 
+.small_card_bus.reg .free_note {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.small_card_bus.reg .free_note > div {
+  color: #fff;
+  text-align: center;
+  font-family: Open Sans;
+  font-size: 6px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  border-radius: 3px;
+  background: #ee4e36;
+  width: fit-content;
+  height: 9px;
+  width: 21px;
+}
+.small_card_bus.reg .reg_btn {
+  display: flex;
+  justify-content: flex-end;
+}
+.small_card_bus.reg .reg_btn .q-btn {
+  color: #fff;
+  text-align: center;
+  font-family: Open Sans;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 15.5px;
+  background: #354e8d;
+  height: 31px;
+  min-height: auto;
+  margin-top: 3rem;
+}
+.small_card_bus.reg .reg_btn .q-btn img {
+  width: 10.5px;
+  height: 8.76px;
+}
 .small_card_bus .wallet_small {
   font-family: "Open Sans";
   font-style: normal;
@@ -1330,6 +1517,10 @@ hr {
   line-height: 14px;
   text-align: right;
   color: #93e6ca;
+}
+
+.small_card_bus.notFree.nosub .wallet_small {
+  color: #fff;
 }
 
 .small_card_bus .icon i {
@@ -1500,6 +1691,15 @@ hr {
   justify-content: center;
   align-items: center;
   margin-top: 1.5rem;
+}
+
+.modal .right {
+  padding-top: 0;
+  height: 100%;
+}
+.modal .right img {
+  height: 100%;
+  object-fit: cover;
 }
 
 @media (min-width: 1200px) {

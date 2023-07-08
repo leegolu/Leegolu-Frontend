@@ -482,6 +482,15 @@ p {
   bottom: -1.5em !important;
 }
 
+.product_cards .splide__pagination {
+  bottom: 0.5em !important;
+}
+.product_cards .splide__pagination__page {
+  border-radius: 50%;
+  height: 5px;
+  width: 5px;
+}
+
 .splide__pagination__page.is-active {
   background: #ee4e36 !important;
 }

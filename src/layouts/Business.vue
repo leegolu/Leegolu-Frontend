@@ -120,15 +120,6 @@
                 </div>
               </q-menu>
             </q-btn>
-            <!-- <q-btn @click="dialogAvatar = true" class="avatar" round flat>
-              <q-avatar size="55px">
-                <img
-                  class="ava"
-                  src="https://cdn.quasar.dev/img/boy-avatar.png"
-                />
-              </q-avatar>
-              <q-tooltip>Account</q-tooltip>
-            </q-btn> -->
           </div>
         </div>
       </q-toolbar>
@@ -143,7 +134,7 @@
       :breakpoint="800"
     >
       <q-scroll-area class="fit">
-        <q-list padding>
+        <q-list v-if="role === 'business'" padding>
           <q-item
             class="links"
             v-for="link in links1"
@@ -181,494 +172,53 @@
 
           <q-separator class="q-my-md" />
         </q-list>
+        <q-list v-if="role === 'regular'" padding>
+          <q-item
+            class="links"
+            v-for="link in links2"
+            :key="link.text"
+            v-ripple
+            clickable
+            :to="{
+              name: link.to,
+            }"
+          >
+            <q-item-section class="avater_side" avatar>
+              <OverviewVue v-if="link.text === 'Overview'" />
+              <ListingsIcon v-if="link.text === 'My Listings'" />
+              <CusIcons v-if="link.text === 'My Customers'" />
+              <MessIcons v-if="link.text === 'Messages'" />
+              <FavouriteIcon v-if="link.text === 'My Favorites'" />
+              <BellIcons v-if="link.text === 'Notifications'" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ link.text }}</q-item-label>
+            </q-item-section>
+            <q-badge
+              v-if="link.text === 'Notifications'"
+              color="negative"
+              class="q-ml-md"
+              text-color="white"
+              style="height: 20px"
+              :label="notifications.length"
+            />
+          </q-item>
+          <q-separator class="q-my-md" />
+        </q-list>
+
+        <div v-if="role === 'regular'" class="sub">
+          <img src="/images/money.png" alt="" />
+
+          <div class="btext">
+            <div class="small_tex">Make more money with a</div>
+
+            <div class="main_text">Leegolu Business account</div>
+          </div>
+
+          <q-btn :to="{ name: 'Plans' }"> Upgrade to Business </q-btn>
+        </div>
       </q-scroll-area>
     </q-drawer>
-
-    <q-dialog v-model="modal1">
-      <q-card class="create_ad">
-        <div class="dialog_top">
-          <img src="/images/flag.png" alt="" />
-
-          <div class="create">Create advert</div>
-        </div>
-
-        <div class="text">
-          Upload the shot that best sells your design. High quality images
-          attract more customers. We recommend your images are taken by a
-          professional and when possible get a model to wear them.
-        </div>
-
-        <div class="previewMain">
-          <div class="form">
-            <q-file
-              type="file"
-              v-model="data2.uploads"
-              accept=".jpg,.png,.svg,.jpeg"
-              name="uploads"
-              @update:model-value="setFile"
-              class="previewinput"
-            />
-
-            <div class="previewDiv">
-              <template v-if="preview">
-                <img :src="preview" class="previewimg" />
-                <img src="/images/click.png" class="click" alt="" />
-              </template>
-            </div>
-          </div>
-        </div>
-
-        <div class="create q-pt-xl">Advert Details</div>
-
-        <!-- <div class="form"></div> -->
-        <form id="form">
-          <div class="q-mt-sm" v-if="loading">Loading</div>
-          <div class="wraps">
-            <div v-if="!showsubCat" class="input-box active-grey">
-              <label class="input-label">Category</label>
-              <select
-                v-model="data2.state"
-                @change="getSubCategory(data2.state)"
-                name=""
-                id=""
-              >
-                <option
-                  v-for="category in categories"
-                  :key="category.id"
-                  :value="category.slug"
-                >
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
-            <div v-if="showsubCat" class="input-box active-grey">
-              <!-- <q-btn flat style="min-height: unset"> Reset </q-btn> -->
-              <label class="input-label bg-grey bg-red q-pa-xs text-white"
-                >Select Sub Category
-              </label>
-              <select
-                @change="getUploadRequirements(data.subcategory)"
-                v-model="data.subcategory"
-                name=""
-                id=""
-              >
-                <option
-                  v-for="subcategory in subcategories"
-                  :key="subcategory.id"
-                  :value="subcategory.id"
-                >
-                  {{ subcategory.name }}
-                </option>
-              </select>
-            </div>
-            <div v-if="!showarea" class="input-box active-grey">
-              <label class="input-label">Location</label>
-              <select
-                v-model="data2.location"
-                @change="getAreas(data2.location)"
-                name=""
-                id=""
-              >
-                <option
-                  v-for="state in states"
-                  :key="state.id"
-                  :value="state.id"
-                >
-                  {{ state.name }}
-                </option>
-              </select>
-            </div>
-            <div v-if="showarea" class="input-box active-grey">
-              <label class="input-label bg-grey bg-red q-pa-xs text-white"
-                >Select Exact Location</label
-              >
-              <select v-model="data.area" name="" id="">
-                <option v-for="area in areas" :key="area.id" :value="area.id">
-                  {{ area.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="wraps">
-            <div class="input-box active-grey">
-              <label class="input-label">Advert Title</label>
-              <input v-model="data.name" type="text" class="input-1" />
-            </div>
-            <div class="input-box active-grey">
-              <label class="input-label">Brand</label>
-              <input v-model="data.brand" type="text" class="input-1" />
-            </div>
-          </div>
-
-          <div class="input-box active-grey">
-            <label class="input-label">Advert Description </label>
-            <textarea
-              v-model="data.description"
-              name=""
-              id=""
-              cols="30"
-              rows="10"
-            ></textarea>
-          </div>
-
-          <div class="wraps">
-            <div class="input-box active-grey">
-              <label class="input-label">Condition</label>
-              <select v-model="data.condition" name="" id="">
-                <option value="Brand new">Brand new</option>
-                <option value="Used">Used</option>
-              </select>
-            </div>
-
-            <div class="price">
-              <div class="input-box active-grey">
-                <label class="input-label">Price</label>
-                <input v-model="data.price" type="number" class="input-1" />
-              </div>
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="data.negotiable"
-                  label="Negotiable"
-                />
-              </div>
-            </div>
-          </div>
-
-          <q-btn type="button" @click="create" color="primary" class="btn"
-            >Proceed</q-btn
-          >
-          <div class="clear"></div>
-        </form>
-      </q-card>
-    </q-dialog>
-    <q-dialog v-model="modal2">
-      <q-card class="create_ad">
-        <div class="dialog_top">
-          <img src="/images/flag.png" alt="" />
-
-          <div class="create">Create advert</div>
-        </div>
-        <!-- {{ errors }} -->
-        <div class="text">
-          <p class="more">Add more details</p>
-          Upload the shot that best sells your design. High quality images
-          attract more customers. We recommend your images are taken by a
-          professional and when possible get a model to wear them.
-        </div>
-        <!-- {{ data }} -->
-        <div class="form"></div>
-        <div class="wraps">
-          <template v-for="(requirement, index) in requirements" :key="index">
-            <div class="input-box active-grey">
-              <label class="input-label">{{ requirement.name }}</label>
-              <select v-model="data[requirement.name]" name="" id="">
-                <option
-                  v-for="(option, index) in requirement.fields"
-                  :key="index"
-                  :value="option"
-                >
-                  {{ option }}
-                </option>
-              </select>
-              <!-- {{ requirement }} -->
-              <!-- {{ errors[requirement.name] }} -->
-              <small
-                v-if="errors[requirement.name]"
-                class="text-red text-weight-bold"
-              >
-                {{ errors[requirement.name][0] }}
-              </small>
-            </div>
-          </template>
-
-          <!-- <div class="input-box active-grey">
-              <label class="input-label">Make</label>
-              <select name="" id="">
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-                <option value="+243">+243</option>
-              </select>
-            </div> -->
-        </div>
-
-        <div class="input-box active-grey">
-          <label class="input-label">Model</label>
-          <input v-model="data.model" type="text" class="input-1" />
-        </div>
-
-        <!-- <div class="price">
-              <div class="input-box active-grey">
-                <label class="input-label">Color</label>
-                <input type="text" class="input-1" />
-              </div>
-            </div> -->
-
-        <!-- <div class="q-py-lg advert q-gutter-sm">
-            <label class="adDet">Advert Details</label>
-            <q-editor
-              v-model="editor"
-              :definitions="{
-                save: {
-                  tip: 'Save your work',
-                  icon: 'save',
-                  label: 'Save',
-                  handler: saveWork,
-                },
-                upload: {
-                  tip: 'Upload to cloud',
-                  icon: 'cloud_upload',
-                  label: 'Upload',
-                  handler: uploadIt,
-                },
-              }"
-              :toolbar="[
-                ['bold', 'italic', 'strike', 'underline'],
-                ['upload', 'save'],
-              ]"
-            />
-          </div> -->
-
-        <!-- <div class="Features q-mt-md">Features</div>
-          <div class="check_wraps">
-            <div class="left">
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-              <div>
-                <q-checkbox color="negative" v-model="air" label="Negotiable" />
-              </div>
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-            </div>
-            <div class="left">
-              <div>
-                <q-checkbox color="negative" v-model="air" label="Negotiable" />
-              </div>
-
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-              <div>
-                <q-checkbox color="negative" v-model="air" label="Negotiable" />
-              </div>
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-            </div>
-            <div class="left">
-              <div>
-                <q-checkbox color="negative" v-model="air" label="Negotiable" />
-              </div>
-
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-              <div>
-                <q-checkbox color="negative" v-model="air" label="Negotiable" />
-              </div>
-            </div>
-            <div class="left">
-              <div>
-                <q-checkbox color="negative" v-model="air" label="Negotiable" />
-              </div>
-
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-              <div>
-                <q-checkbox
-                  color="negative"
-                  v-model="price"
-                  label="Negotiable"
-                />
-              </div>
-              <div>
-                <q-checkbox color="negative" v-model="air" label="Negotiable" />
-              </div>
-            </div>
-          </div> -->
-
-        <div class="row no-wrap items-center justify-between">
-          <q-btn
-            @click="finish"
-            :loading="loading"
-            type="button"
-            color="primary"
-            class="btn"
-            >Proceed</q-btn
-          >
-          <q-btn @click="prev" type="button" outline class="btn prev"
-            >Prev</q-btn
-          >
-        </div>
-        <div class="clear"></div>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="modal3" persistent>
-      <q-card class="card finshAd">
-        <div class="dialog_content">
-          <div class="dialog_top">
-            <img src="/images/flag.png" alt="" />
-
-            <div class="create">Create advert</div>
-          </div>
-          <div class="dialog_top advert">
-            <div class="left_dialog">
-              <img src="/images/listing1.png" alt="" />
-            </div>
-
-            <div class="det">
-              <div class="title">Ankara Simple Style</div>
-              <div class="price">₦50,000</div>
-            </div>
-          </div>
-          <div class="row ad justify-between items-center">
-            <p>Boost this advert for 3 Days</p>
-            <p class="text-weight-bold">₦2,000</p>
-          </div>
-
-          <div class="middle advert">
-            <div class="items">
-              <q-btn> Free </q-btn>
-            </div>
-            <div class="items">
-              <q-btn color="primary"> 3 Days </q-btn>
-            </div>
-            <div class="items">
-              <q-btn> 7 Days </q-btn>
-            </div>
-            <div class="items">
-              <q-btn> 30 Days </q-btn>
-            </div>
-          </div>
-
-          <div class="row items-center justify-between">
-            <q-btn
-              @click="modal2 = true"
-              type="button"
-              color="info"
-              class="prev btn"
-              >Prev</q-btn
-            >
-            <q-btn
-              @click="modal3 = false"
-              type="button"
-              outline
-              color="primary"
-              class="btn post"
-              >Post Ad</q-btn
-            >
-          </div>
-          <div class="clear"></div>
-        </div>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="successModal">
-      <q-card class="card">
-        <q-card-section>
-          <div class="text-h6">Success</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          You have successfully created a listing
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn
-            :to="{ name: 'listings' }"
-            flat
-            class="bg-primary text-white"
-            label="View Listings"
-            color="primary"
-            v-close-popup
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="dialogAvatar" persistent>
-      <q-card class="card avatar">
-        <div class="dialog_content">
-          <p class="advert text-center">Add Avatar</p>
-          <div class="dialog_top">
-            <div class="previewMain">
-              <div class="form">
-                <q-file
-                  type="file"
-                  v-model="avatar.avatar"
-                  accept=".jpg,.png,.svg,.jpeg"
-                  name="avatar"
-                  @update:model-value="setAvatar"
-                  class="previewinput"
-                  id="my-file"
-                />
-
-                <div class="previewDiv">
-                  <template v-if="previewAvatar">
-                    <img :src="previewAvatar" class="previewimg" />
-                    <img src="/images/upload.png" class="click" alt="" />
-                  </template>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="boost">
-            <q-btn :loading="loadingAvatar" @click="addAvatar"
-              >Add Avatar</q-btn
-            >
-          </div>
-
-          <q-btn @click="dialogAvatar = false" class="close">
-            <i class="fa-solid fa-xmark"></i>
-          </q-btn>
-        </div>
-      </q-card>
-    </q-dialog>
 
     <q-footer class="layout_footer">
       <div class="footer_holder">
@@ -788,6 +338,8 @@ import MessIcons from "src/components/icons/MessIcons.vue";
 import ManageIcon from "src/components/icons/ManageIcon.vue";
 import FavouriteIcon from "src/components/icons/FavIcons.vue";
 import PlusIcon from "src/components/icons/PlusIcon.vue";
+import { useAuthStore } from "stores/auth";
+let store = useAuthStore();
 export default {
   name: "MyLayout",
   data() {
@@ -825,6 +377,8 @@ export default {
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
+    console.log(store.userDetails);
+    let role = store.userDetails.role[0].name;
     return {
       editor: ref(
         "After you define a new button," +
@@ -850,6 +404,8 @@ export default {
       fabYoutube,
       leftDrawerOpen,
       search,
+      store,
+      role,
       notifications: ref([]),
       toggleLeftDrawer,
       links1: [
@@ -869,6 +425,34 @@ export default {
           text: "My Collections",
           to: "collections",
         },
+        {
+          icon: "/images/customers.svg",
+          text: "My Customers",
+          to: "customers",
+        },
+        { icon: "/images/messages.svg", text: "Messages", to: "messages" },
+
+        {
+          icon: "/images/fav.svg",
+          text: "My Favorites",
+          to: "favourites",
+        },
+        {
+          icon: "/images/notif.svg",
+          text: "Notifications",
+          to: "notifications",
+        },
+        // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
+      ],
+      links2: [
+        {
+          icon: "/images/svgmanage.svg",
+          text: "Overview",
+          to: "business.dashboard",
+        },
+
+        { icon: "/images/icon3.svg", text: "My Listings", to: "listings" },
+
         {
           icon: "/images/customers.svg",
           text: "My Customers",
@@ -1234,6 +818,46 @@ export default {
 .header {
   background: #ffffff;
   border-bottom: 1px solid #dddddd;
+}
+
+.sub {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.sub .btext {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  color: #000000;
+}
+
+.sub img {
+  width: 84px;
+  height: 59px;
+  object-fit: contain;
+}
+
+.sub .main_text {
+  font-weight: 700;
+}
+
+.sub .q-btn {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  color: #ffffff;
+  background: #1f7bb5;
+  border-radius: 9px;
+  margin-top: 1rem;
+  text-transform: capitalize;
 }
 .mybtn {
   width: 166px;

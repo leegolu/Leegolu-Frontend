@@ -9,22 +9,35 @@
             <div class="sub">Supply a new password for your account</div>
           </div>
 
-          <form id="form">
+          <form @submit="changePassword" id="form">
             <div class="input-box active-grey">
               <label class="input-label">Password</label>
-              <input type="text" class="input-1" placeholder="*******" />
+              <input
+                required
+                v-model="data.password"
+                type="text"
+                class="input-1"
+                placeholder="*******"
+              />
             </div>
 
             <div class="password">
               <div class="input-box active-grey">
                 <label class="input-label">Confirm Password</label>
-                <input type="text" class="input-1" placeholder="*******" />
+                <input
+                  required
+                  v-model="data.password_confirmation"
+                  type="text"
+                  class="input-1"
+                  placeholder="*******"
+                />
               </div>
             </div>
 
             <q-btn
               :to="{ name: 'success' }"
-              type="button"
+              type="submit"
+              :loading="loading"
               color="secondary"
               class="btn"
               >Save</q-btn
@@ -41,8 +54,37 @@
 export default {
   data() {
     return {
-      data: { bus: "Leegolu Regular" },
+      data: {},
+      loading: false,
     };
+  },
+
+  methods: {
+    changePassword() {
+      this.loading = true;
+      this.$api
+        .post(`password/reset`, {
+          password: this.data.password,
+          password_confirmation: this.data.password_confirmation,
+        })
+        .then((response) => {
+          console.log(response);
+          this.$helper.notify(response.data.message, "success");
+          this.$router.replace({
+            name: "checkmail",
+          });
+          // this.$router.replace({
+          //   name: "business.dashboard",
+          //   query: { videotour: "yes" },
+          // });
+          this.loading = false;
+        })
+        .catch(({ response }) => {
+          // console.log(response);
+          this.loading = false;
+          this.errors = response.data.errors || {};
+        });
+    },
   },
 };
 </script>
@@ -118,6 +160,7 @@ input {
   background: #ffffff;
   box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
+  width: 100%;
 }
 
 #form {

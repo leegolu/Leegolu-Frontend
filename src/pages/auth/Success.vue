@@ -25,7 +25,9 @@ export default {};
 
 <style lang="scss" scoped>
 .hold {
-  background: #f5f5f5;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
   height: 100vh;
   flex-direction: column;
   justify-content: center;

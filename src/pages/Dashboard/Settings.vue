@@ -92,10 +92,13 @@
                   your business & make more sales online.
                 </div>
 
-                <div v-if="!val2" class="active">
-                  <q-btn>Upgrade from ₦1,000</q-btn>
+                <div v-if="val2 === false" class="">
+                  <q-btn :to="{ name: 'Plans' }" class="upgrade"
+                    >Upgrade from ₦1,000</q-btn
+                  >
                 </div>
-                <div v-if="val2" class="active">
+                <!-- {{ val2 }} -->
+                <div v-else class="active">
                   <div class="icon">
                     <img src="/images/lighting.svg" alt="" /> Active
                   </div>
@@ -550,16 +553,18 @@ export default {
     // console.log(
     //   console.log(this.$store.leegoluauth.vendorDetails.hasActiveSubscription)
     // );
-    if (this.$store.leegoluauth.vendorDetails.hasActiveSubscription) {
+    if (this.$store.leegoluauth.userDetails.role[0].name === "business") {
+      // console.log("business");
       // console.log(this.$store.leegoluauth.vendorDetails.hasActiveSubscription);
-      this.val = false;
       this.val2 = true;
-
+      this.val = false;
       // console.log(this.val);
     } else {
+      // console.log("regular");
+      this.val = true;
+      this.val2 = false;
+
       // console.log(this.$store.leegoluauth.vendorDetails.hasActiveSubscription);
-      this.val2 = true;
-      this.val = false;
     }
   },
 
@@ -1115,6 +1120,10 @@ hr {
     }
   }
 }
+
+// .upgrade{
+
+// }
 
 .main_textSet {
   font-family: "Open Sans";

@@ -177,6 +177,7 @@ export default {
         })
         .then(({ data }) => {
           console.log(data);
+
           this.$q.notify({
             color: "green",
             message: data.message,
@@ -186,6 +187,7 @@ export default {
           this.advertdialog = false;
           this.product = data.product;
           this.boosted = true;
+          window.location.href = data.url;
         })
         .catch(({ response }) => {
           this.boostBtn = false;

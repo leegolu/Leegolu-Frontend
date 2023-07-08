@@ -10,7 +10,7 @@
         <div class="why_desc">{{ desc }}</div>
 
         <div class="q-mt-lg">
-          <q-btn class="visit" flat
+          <q-btn @click="tourVideo" class="visit" flat
             >{{ !play ? "View your dashboard" : "Take a tour" }}
             <img src="/images/bluearrow.svg" alt=""
           /></q-btn>
@@ -21,27 +21,44 @@
         ><img src="/images/close.svg" alt=""
       /></q-btn>
     </div>
+
+    <q-dialog v-model="tourModal">
+      <ModalTourVue />
+    </q-dialog>
   </div>
 </template>
 
 <script>
+import ModalTourVue from "./ModalTour.vue";
 export default {
   props: ["play", "title", "desc"],
   data() {
     return {
       show: true,
+      tourModal: false,
     };
   },
-
+  components: {
+    ModalTourVue,
+  },
   // mounted() {
   //   console.log(this.$router.currentRoute.value.query);
   // },
 
   methods: {
+    closeTour() {
+      this.tourModal = false;
+    },
     handleShow() {
       this.show = false;
       console.log(this.$router.currentRoute.value.query.videotour);
       this.$router.currentRoute.value.query.videotour === "";
+    },
+
+    tourVideo() {
+      if (this.play) {
+        this.tourModal = true;
+      }
     },
   },
 };
