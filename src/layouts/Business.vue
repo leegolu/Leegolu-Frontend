@@ -260,6 +260,7 @@
                 style="gap: 0.2rem"
                 class="row items-center"
                 :to="{ name: 'collections' }"
+                v-if="role === 'business'"
                 clickable
                 v-close-popup
               >
@@ -284,6 +285,7 @@
                 class="row items-center"
                 :to="{ name: 'manage-shop' }"
                 clickable
+                v-if="role === 'business'"
                 v-close-popup
               >
                 <ManageIcon style="width: 20px; height: 20px" />

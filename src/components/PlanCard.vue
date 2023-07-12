@@ -13,7 +13,7 @@
     </div>
 
     <div class="options">
-      <ul>
+      <!-- <ul>
         <li>
           <i class="fa-solid q-mr-sm text-green fa-check"></i>
           10 Listings
@@ -22,13 +22,13 @@
           <i class="fa-solid q-mr-sm text-green fa-check"></i>
           Custom Domain
         </li>
-      </ul>
-      <!-- <ul>
+      </ul> -->
+      <ul>
         <li v-for="(option, index) in plan.description" :key="index">
           <i class="fa-solid q-mr-sm text-green fa-check"></i>
           {{ option }}
         </li>
-      </ul> -->
+      </ul>
     </div>
 
     <div class="btn">
@@ -379,7 +379,8 @@ export default {
 
 .dialog_content .boost {
   // padding: 1rem 0;
-  margin: 0 25px;
+  margin: 25px 0;
+  // margin: 0 25px;
 }
 
 .dialog_content .close {

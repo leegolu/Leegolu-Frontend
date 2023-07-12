@@ -740,6 +740,12 @@ export default {
   .main_area_top .main_area_left.act {
     gap: 1rem;
   }
+  .stats .stat {
+    padding-right: 0.5rem;
+  }
+  .stats .stat .main {
+    font-size: 25px;
+  }
 
   .link {
     font-size: 12px;

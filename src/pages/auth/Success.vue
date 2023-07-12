@@ -112,4 +112,10 @@ img {
     min-width: 90%;
   }
 }
+
+@media (max-width: 400px) {
+  .hold {
+    height: 80vh;
+  }
+}
 </style>

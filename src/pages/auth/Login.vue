@@ -104,6 +104,7 @@ export default {
           this.loading = false;
           this.$store.leegoluauth.setUserDetails(response.data);
           this.$store.leegoluauth.userDetails = response.data.user;
+
           this.$store.leegoluauth.vendorDetails = response.data.vendor;
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
@@ -372,6 +373,11 @@ input {
   }
   .right {
     padding: 1rem;
+  }
+}
+@media (max-width: 400px) {
+  .login {
+    height: 85vh;
   }
 }
 </style>

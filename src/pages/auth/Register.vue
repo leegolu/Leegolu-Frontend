@@ -581,6 +581,12 @@ export default {
           console.log(response);
           // console.log(response);
           this.$store.leegoluauth.userDetails = response.data.user;
+
+          if (response.data.user.role[0].name === "business") {
+            this.$store.leegoluauth.vendorDetails = {
+              subscriptions: [],
+            };
+          }
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
           this.$helper.notify(response.data.message, "success");

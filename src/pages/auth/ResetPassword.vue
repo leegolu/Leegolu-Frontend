@@ -302,4 +302,10 @@ input {
   letter-spacing: -0.01em;
   color: #000000;
 }
+
+@media (max-width: 400px) {
+  .login {
+    height: 80vh;
+  }
+}
 </style>

@@ -569,6 +569,11 @@ export default {
       chartOptions: {
         chart: {
           id: "basic-bar",
+          plotOptions: {
+            bar: {
+              horizontal: true,
+            },
+          },
           toolbar: {
             show: true,
             offsetX: 0,
@@ -576,6 +581,7 @@ export default {
             tools: {
               download: true,
               selection: true,
+
               zoom: true,
               zoomin: true,
               zoomout: true,
@@ -583,39 +589,45 @@ export default {
               reset: true | '<img src="/static/icons/reset.png" width="20">',
               customIcons: [],
             },
+            autoSelected: "pan",
           },
-          selection: {
+          zoom: {
             enabled: true,
           },
         },
         xaxis: {
           // type: "numeric",
           categories: [],
+          labels: {
+            rotate: 0, // Adjust this value as needed
+          },
+          tickPlacement: "on",
+          // tickAmount: 25,
         },
-
+        plotOptions: {
+          bar: {
+            columnWidth: "100%", // Adjust this value as needed
+            dataLabels: {
+              enabled: true,
+            },
+          },
+        },
         colors: ["#1f7bb5", "#247BA0"],
       },
+      // bar: {
+      //   horizontal: false,
+      //   borderRadius: 0,
+      //   borderRadiusApplication: "around",
+      //   borderRadiusWhenStacked: "last",
+      //   columnWidth: "70%",
+      //   barHeight: "70%",
+      // },
       series: [
         {
           name: "series-1",
           data: [],
         },
       ],
-      toolbar: {
-        show: true,
-        offsetX: 0,
-        offsetY: 0,
-        tools: {
-          download: true,
-          selection: true,
-          zoom: true,
-          zoomin: true,
-          zoomout: true,
-          pan: true,
-          reset: true | '<img src="/static/icons/reset.png" width="20">',
-          customIcons: [],
-        },
-      },
     };
   },
   created() {
@@ -1322,6 +1334,14 @@ hr {
   margin-bottom: 0.3rem;
 }
 
+.form img.previewimg {
+  width: 154px;
+  height: 154px;
+}
+.previewDiv .click {
+  left: 28%;
+  top: 23%;
+}
 .small_card .small_card_sub {
   font-family: "Open Sans";
   font-style: normal;
@@ -1841,6 +1861,9 @@ hr {
 @media (max-width: 500px) {
   .main_card {
     padding: 1.5rem;
+  }
+  .dash_modal .modal.three .modal_sub_text {
+    margin: 0;
   }
   .tourrr {
     left: -9%;
