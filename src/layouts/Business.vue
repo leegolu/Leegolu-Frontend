@@ -75,11 +75,11 @@
 
           <div style="gap: 0.7rem" class="le flex no-wrap items-center">
             <q-btn
-              :to="{ name: 'createListing' }"
+              @click="createModal = true"
               text-color="primary"
               class="mybtn"
             >
-              Create Listing <i class="fa-solid q-ml-md fa-plus"></i
+              Create <i class="fa-solid q-ml-md fa-plus"></i
             ></q-btn>
             <q-btn class="" style="min-height: auto; padding: 3px" no-caps flat>
               <img
@@ -124,6 +124,29 @@
         </div>
       </q-toolbar>
     </q-header>
+
+    <q-dialog style="max-width: 500px; margin: 0 auto" v-model="createModal">
+      <q-card class="q-pa-md">
+        <div class="text-h6 q-mb-md text-center">
+          What do you want to create?
+        </div>
+        <div class="row q-gutter-sm justify-center">
+          <q-btn
+            :to="{ name: 'createListing' }"
+            color="secondary"
+            no-caps
+            text-color="white"
+            label="Create Listing"
+          />
+          <q-btn
+            :to="{ name: 'videoPage' }"
+            no-caps
+            color="primary"
+            label="Create Video"
+          />
+        </div>
+      </q-card>
+    </q-dialog>
 
     <q-drawer
       v-model="leftDrawerOpen"
@@ -365,6 +388,7 @@ export default {
       avatar: {},
       areas: [],
       errors: {},
+      createModal: false,
       loading: false,
       dialogAvatar: false,
       data: { negotiable: true },

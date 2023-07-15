@@ -52,7 +52,7 @@ const routes = [
         name: "success",
       },
       {
-        path: "/payment-success",
+        path: "/payment-status",
         component: () => import("src/pages/Success.vue"),
         name: "payment.success",
       },
@@ -82,6 +82,11 @@ const routes = [
         path: "/categorypage/:slug",
         component: () => import("pages/CategoryPage.vue"),
         name: "category-page",
+      },
+      {
+        path: "/shorts",
+        component: () => import("pages/Shorts.vue"),
+        name: "shorts",
       },
       {
         path: "/searchpage/:slug",
@@ -120,6 +125,11 @@ const routes = [
         path: "/business/adverts",
         component: () => import("pages/Dashboard/Adverts.vue"),
         name: "adverts",
+      },
+      {
+        path: "/business/videoPage",
+        component: () => import("pages/Dashboard/VideoPage.vue"),
+        name: "videoPage",
       },
       {
         path: "/business/listings",

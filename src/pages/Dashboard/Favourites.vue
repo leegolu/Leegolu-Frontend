@@ -8,7 +8,8 @@
     <div class="top">
       <span class="title">
         <!-- <i class="fa-solid q-mr-sm fa-message"></i> -->
-        My Favorites | {{ favourites.products.length }}
+        My Favorites |
+        {{ favourites.products.length + favourites.shops.length }}
       </span>
 
       <div class="sort_area">
@@ -113,59 +114,58 @@
         <!-- <div class="head_text">Favorite Listings</div> -->
         <div class="product_cards">
           <div
-            v-for="(product, index) in favourites.shops"
+            v-for="(shop, index) in favourites.shops"
             :key="index"
-            class="product"
+            class="product shops"
           >
-            <div @click="goto(product)">
-              <img :src="product.uploads[0].url" alt="" />
+            <Splide
+              @click="gotoShop(shop)"
+              :options="{
+                perPage: 1,
+                rewind: true,
+                autoplay: true,
+                gap: 10,
+                arrows: false,
+                navigations: false,
+              }"
+              aria-label="My Favorite Images"
+            >
+              <SplideSlide v-for="products in shop.products" :key="products.id">
+                <div>
+                  <img :src="products.uploads[0].url" alt="" />
+                </div>
+              </SplideSlide>
+            </Splide>
+            <div @click="gotoShop(shop)" class="body_">
               <div class="location">
-                <p>{{ product.area.name }}</p>
+                <p>{{ shop.area }}, {{ shop.state }}</p>
               </div>
               <div class="name">
-                <p>{{ product.name }}</p>
+                <p>{{ shop.business_name }}</p>
               </div>
-              <div class="price">
-                <p>₦{{ product.price.toLocaleString() }}</p>
-              </div>
-              <div class="desc">
-                <p>{{ product.description }}</p>
-                <p v-if="product.details">
-                  <span
-                    v-for="(entry, index) in Object.entries(product.details)"
-                    :key="index"
-                  >
-                    <span v-if="entry[1] !== null"
-                      >{{ entry[0] }}: {{ entry[1] + ", " }}</span
-                    >
-                  </span>
-                </p>
-              </div>
-              <div class="kinds">
-                <p class="kind">{{ product.condition }}</p>
-              </div>
-              <div class="owners">
-                <p class="owner">
-                  <img src="/images/shopp.svg" alt="" />{{
-                    product.vendor_name
-                  }}
-                </p>
+
+              <div class="owners q-mt-md">
                 <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                   <q-rating
-                    v-model="product.rating"
-                    size="1.5em"
-                    :max="4"
+                    v-model="shop.rating"
+                    size="1em"
+                    :max="5"
                     color="black"
                   />
-                  <span>{{ product.ratings_count }}</span>
+                  <!-- <span>{{ shop.rating }}</span> -->
                 </p>
               </div>
             </div>
             <div class="love">
-              <q-btn flat @click="removeFav(product)">
+              <q-btn
+                flat
+                @click="
+                  shop.like === false ? addShoptoFav(shop) : removeShopFav(shop)
+                "
+              >
                 <i
                   :class="
-                    product.like
+                    shop.like
                       ? 'fa-solid text-red fa-heart'
                       : 'fa-regular fa-heart'
                   "
@@ -189,7 +189,9 @@
 <script>
 import { useMeta } from "quasar";
 import { ref } from "vue";
-
+import { Splide, SplideSlide } from "@splidejs/vue-splide";
+import "@splidejs/vue-splide/css";
+import "@splidejs/vue-splide/css/core";
 export default {
   setup() {
     useMeta({
@@ -199,6 +201,10 @@ export default {
     return {
       ratingModel: ref(4),
     };
+  },
+  components: {
+    Splide,
+    SplideSlide,
   },
   data() {
     return {
@@ -212,6 +218,7 @@ export default {
       files: null,
       filter: "",
       curl: "",
+      shops: [],
       separator: "",
     };
   },
@@ -233,7 +240,12 @@ export default {
         params: { slug: product.slug },
       });
     },
-
+    gotoShop(shop) {
+      this.$router.replace({
+        name: "vendor.page",
+        params: { slug: shop.slug },
+      });
+    },
     removeFav(item) {
       item.like = !item.like;
       this.$api
@@ -262,6 +274,82 @@ export default {
         });
     },
 
+    addShoptoFav(item) {
+      // console.log(slug);
+      item.like = !item.like;
+      console.log(item);
+      this.$api
+        .post(`vendor/${item.slug}/like`)
+        .then((response) => {
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.shops.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.shops[updatedItemIndex].like = item.like;
+          }
+          this.$q.notify({
+            message: "Shop added to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to like product",
+              color: "green",
+            });
+          }
+          // this.$q.notify({
+          //   message: "An error occured",
+          //   color: "red",
+          // });
+          this.errors = error.errors || {};
+        });
+    },
+
+    removeShopFav(item) {
+      item.like = !item.like;
+      this.$api
+        .delete(`vendor/${item.slug}/like`)
+        .then((response) => {
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.shops.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.shops[updatedItemIndex].like = item.like;
+          }
+          this.$q.notify({
+            message: "Shop removed to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to like product",
+              color: "green",
+            });
+          }
+          this.loading = false;
+          this.$q.notify({
+            message: "An error occured",
+            color: "red",
+          });
+          this.errors = error.errors || {};
+        });
+    },
+
     toggleModal(props) {
       this.rowData = props;
       this.advertdialog = true;
@@ -272,7 +360,7 @@ export default {
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/favorites`)
         .then((response) => {
-          // console.log("Success:", response);
+          console.log("Success:", response);
           this.favourites = response.data;
           this.loading = false;
         })

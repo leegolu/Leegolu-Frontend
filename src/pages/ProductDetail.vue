@@ -46,7 +46,7 @@
           the contact on Olist
         </p> -->
 
-        <div class="owner">
+        <div @click="ratingsView = true" class="cursor-pointer owner">
           <div class="owner_left">
             <img
               :src="
@@ -62,7 +62,7 @@
               {{ product.vendor.business_name }}
               <!-- <span> | 7 Months</span> -->
             </p>
-            <div @click="ratingsView = true" class="ratings_area">
+            <div class="ratings_area">
               <span class="rating_main_text">{{ product.data.rating }}.0</span>
               <q-rating
                 v-model="product.data.rating"

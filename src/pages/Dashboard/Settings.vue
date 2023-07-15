@@ -285,6 +285,51 @@
         </div>
       </div>
     </div>
+    <!-- <hr />
+      <div class="plans_sub">
+        <div class="topp row items-center justify-between">
+          <div style="gap: 0.4rem" class="topp_left row items-center no-wrap">
+            <img src="/images/userr.svg" alt="" />
+            <span>Video Settings</span>
+          </div>
+
+          <div class="arrow row">
+            <img src="/images/down.svg" alt="" />
+          </div>
+        </div>
+
+        <div class="style">
+          <q-card class="q-px-sm q-pb-lg sub_table">
+            <div class="q-mt-sm q-gutter-sm">
+              <q-radio v-model="upload" val="For Product" label="For Product" />
+              <q-radio v-model="upload" val="For Vendor" label="For Vendor" />
+            </div>
+
+            <div class="">
+              <q-file
+                class="q-mt-md"
+                label="Upload video file"
+                @rejected="onRejected"
+                outlined
+                accept=".mp4"
+                @update:model-value="setVideoFile"
+                v-model="videoFile"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="attach_file" />
+                </template>
+              </q-file>
+            </div>
+
+            <div class="q-my-lg">
+              <video v-if="videoUrl" class="full-width" controls>
+                <source :src="videoUrl" type="video/mp4" />
+              </video>
+            </div>
+          </q-card>
+        </div>
+      </div>
+    </div> -->
     <q-dialog v-model="dialogAvatar" persistent>
       <q-card class="card avatar">
         <div class="dialog_content">
@@ -412,6 +457,7 @@
 </template>
 
 <script>
+import { Notify } from "quasar";
 // import { ref } from "vue";
 const columns = [
   {
@@ -456,11 +502,11 @@ const rows = [
     number_account: "**********",
     addedOn: "2 Days ago",
   },
-  {
-    name: "Email",
-    number_account: "chris.gbesola@yahoo.com",
-    actions: "2 Days ago",
-  },
+  // {
+  //   name: "Email",
+  //   number_account: "chris.gbesola@yahoo.com",
+  //   actions: "2 Days ago",
+  // },
 ];
 
 const columnsPrivacy = [
@@ -536,6 +582,10 @@ export default {
       editPhonwModal: false,
       password: {},
       editP: {},
+      videoFile: null,
+      videoUrl: null,
+
+      upload: "For Product",
       previewAvatar: "/images/sqrpreview.png",
     };
   },
@@ -711,6 +761,23 @@ export default {
           this.loading = false;
         });
     },
+    setVideoFile(props) {
+      this.videoUrl = URL.createObjectURL(props);
+    },
+
+    getVendor() {
+      this.$api
+        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
+        .then((response) => {
+          this.loading = false;
+          this.vendor = response.data.vendor;
+          console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+        });
+    },
+
     onRequestPrivacy(props) {},
     setAvatar(props) {
       // console.log(props);

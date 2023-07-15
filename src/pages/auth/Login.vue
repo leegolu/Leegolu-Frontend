@@ -109,7 +109,11 @@ export default {
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
           this.$store.leegoluauth.modal = false;
-
+          // if (response.data.user.role[0].name === "business") {
+          //   this.$store.leegoluauth.vendorDetails = {
+          //     subscriptions: [],
+          //   };
+          // }
           this.$helper.notify(response.data.message, "success");
           if (this.$store.leegoluauth.previousRoute === "") {
             this.$router.replace({ name: "business.dashboard" });

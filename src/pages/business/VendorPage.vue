@@ -37,16 +37,25 @@
                 {{ builderData.business_name }}
               </div>
               <div v-if="vendor.about" class="left_details_desc q-mt-sm">
-                {{ builderData.business_tagline }}
+                {{
+                  builderData.business_tagline
+                    ? builderData.business_tagline
+                    : "This is a custom tagline"
+                }}
               </div>
-              <div class="rating row q-mb-sm items-center">
+              <div
+                @click="ratingsView = true"
+                class="rating row q-mb-sm items-center"
+              >
                 <q-rating
-                  v-model="ratingModel"
+                  @click="ratingsView = true"
+                  v-model="vendor.rating"
                   size="1em"
                   :max="5"
+                  disable
                   color="black"
                 />
-                <span class="rate">240</span>
+                <span class="rate">{{ 100 }}</span>
               </div>
               <!-- <div class="rating row items-center"></div> -->
 
@@ -514,12 +523,20 @@
       @closeModal="close"
     />
   </q-dialog>
+
+  <q-dialog v-model="ratingsView">
+    <RatingsComponentShopVue
+      :shopData="vendor"
+      @closeModalRatings="closeRatings"
+    />
+  </q-dialog>
 </template>
 
 <script>
 import { ref } from "vue";
 import DashboardHomeListingVue from "src/components/listings/DashboardHomeListing.vue";
 import ChatPageVue from "src/components/ChatPage.vue";
+import RatingsComponentShopVue from "src/components/RatingsComponentShop.vue";
 export default {
   data() {
     return {
@@ -529,6 +546,7 @@ export default {
       coverpreview: "/images/coverbg.svg",
       value: false,
       chat: false,
+      ratingsView: false,
       loadingChatBtn: false,
       phoneDialog: false,
       preview: "/images/sqrpreview.png",
@@ -563,6 +581,7 @@ export default {
   components: {
     DashboardHomeListingVue,
     ChatPageVue,
+    RatingsComponentShopVue,
   },
   mounted() {
     // console.log(this.$router.currentRoute.value.params.slug);
@@ -641,6 +660,10 @@ export default {
     },
   },
   methods: {
+    closeRatings() {
+      // console.log("how fa");
+      this.ratingsView = false;
+    },
     addtoFav() {
       let vendor = this.$router.currentRoute.value.params.slug;
       // console.log(slug);

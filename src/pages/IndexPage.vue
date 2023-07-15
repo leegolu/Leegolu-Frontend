@@ -54,46 +54,7 @@
               </div>
             </q-menu>
           </q-btn>
-          <!-- <q-btn flat icon="fa-solid fa-user" color="secondary">
-            <q-menu>
-              <q-list>
-                <q-btn
-                  style="white-space: nowrap"
-                  :to="{
-                    name: `${
-                      this.$store.leegoluauth.userDetails.role[0].name ===
-                      'business'
-                        ? 'business.dashboard'
-                        : 'regular.dashboard'
-                    }`,
-                  }"
-                  color="secondary"
-                  class="q-px-md"
-                >
-                  Go to dashboard
-                </q-btn>
-              </q-list>
-            </q-menu>
-          </q-btn> -->
         </div>
-        <!-- <div v-else class="div">
-          <q-btn
-            :to="{
-              name: `${
-                this.$store.leegoluauth.userDetails.role[0].name === 'business'
-                  ? 'business.dashboard'
-                  : 'regular.dashboard'
-              }`,
-            }"
-            class="q-px-md"
-            color="secondary"
-          >
-            Go to dashboard
-          </q-btn>
-        </div> -->
-        <!-- <router-link to="/login"> Sign In </router-link>
-        <router-link to="/register"> Join Now </router-link>
-        <q-btn color="secondary"> Start Selling </q-btn> -->
       </div>
     </div>
   </div>
@@ -253,6 +214,53 @@
 
   <section class="popular container">
     <div class="head_text">
+      Shorts
+      <router-link :to="{ name: 'shorts' }"
+        ><span class="line"> | View All </span></router-link
+      >
+    </div>
+
+    <Splide
+      :options="{
+        perPage: 6,
+        rewind: true,
+        autoplay: true,
+        gap: 10,
+        arrows: false,
+        navigations: false,
+        breakpoints: {
+          640: {
+            perPage: 2,
+          },
+          767: {
+            perPage: 2,
+          },
+          1024: {
+            perPage: 3,
+          },
+          2000: {
+            perPage: 4,
+          },
+        },
+      }"
+      aria-label="My Favorite Images"
+    >
+      <SplideSlide v-for="(video, index) in videos" :key="index">
+        <div class="reel">
+          <img src="/images/shirt.png" alt="Sample 1" />
+          <!-- <div class="name_"></div> -->
+          <q-btn @click="playvideo(video)"
+            ><img src="/images/play.svg" alt=""
+          /></q-btn>
+          <!-- <video class="full-width" controls>
+            <source :src="video.media.url" type="video/mp4" />
+          </video> -->
+        </div>
+      </SplideSlide>
+    </Splide>
+  </section>
+  <!-- <section class="popular container">
+    <div class="head_text">
       Popular Categories
       <router-link :to="{ name: 'category-page', params: { slug: 'fashion' } }"
         ><span class="line"> | View All </span></router-link
@@ -308,27 +316,16 @@
           </div>
         </div>
       </SplideSlide>
-      <!-- <SplideSlide>
-        <div class="category">
-          <img src="/images/phone.png" alt="Sample 1" />
-        </div>
-      </SplideSlide> -->
-      <!-- <SplideSlide>
-        <div class="category">
-          <img src="/images/sneakers.png" alt="Sample 1" />
-        </div>
-      </SplideSlide>
-      <SplideSlide>
-        <div class="category">
-          <img src="/images/tv.png" alt="Sample 1" />
-        </div>
-      </SplideSlide> -->
+
     </Splide>
-  </section>
+  </section> -->
 
   <section class="products container">
     <div class="head_text">Featured Listings</div>
-    <div v-if="listings.length > 0" class="product_cards">
+    <div class="product_cards" v-if="!listings.length">
+      <q-skeleton v-for="n in 4" :key="n" width="200px" height="100px" />
+    </div>
+    <div v-if="listings.length" class="product_cards">
       <div v-for="(product, index) in listings" :key="index" class="product">
         <div @click="goto(product)">
           <img :src="product.uploads[0].url" alt="" />
@@ -404,13 +401,14 @@
   </section>
   <section class="products q-pt-xl container">
     <div class="head_text">Top Rated Shops</div>
-    <div class="product_cards">
-      <div
-        v-for="(product, index) in topProducts"
-        :key="index"
-        class="product shops"
-      >
+
+    <div class="product_cards" v-if="!shops.length">
+      <q-skeleton v-for="n in 4" :key="n" width="200px" height="100px" />
+    </div>
+    <div v-if="shops.length" class="product_cards">
+      <div v-for="(shop, index) in shops" :key="index" class="product shops">
         <Splide
+          @click="gotoShop(shop)"
           :options="{
             perPage: 1,
             rewind: true,
@@ -421,66 +419,57 @@
           }"
           aria-label="My Favorite Images"
         >
-          <SplideSlide>
+          <SplideSlide v-for="products in shop.products" :key="products.id">
             <div>
-              <img :src="product.product_image" alt="" />
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div>
-              <img :src="product.product_image" alt="" />
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div>
-              <img :src="product.product_image" alt="" />
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div>
-              <img :src="product.product_image" alt="" />
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div>
-              <img :src="product.product_image" alt="" />
+              <img :src="products.uploads[0].url" alt="" />
             </div>
           </SplideSlide>
         </Splide>
-        <div class="body_">
+        <div @click="gotoShop(shop)" class="body_">
           <div class="location">
-            <p>{{ product.location }}</p>
+            <p>{{ shop.area }}, {{ shop.state }}</p>
           </div>
           <div class="name">
-            <p>Emmanuel</p>
+            <p>{{ shop.business_name }}</p>
           </div>
-          <div class="price">
+          <!-- <div class="price">
             <p>Electronics</p>
-          </div>
-          <div class="desc q-pb-sm">
+          </div> -->
+          <!-- <div class="desc q-pb-sm">
             <p>{{ product.desc }}</p>
-          </div>
+          </div> -->
           <!-- <div class="kinds">
           <p class="kind">{{ product.kind }}</p>
           <p v-if="product.make !== ''" class="make">{{ product.make }}</p>
-        </div> -->
+          </div> -->
           <div class="owners q-mt-md">
             <!-- <p class="owner">
             <i class="fa-solid q-mr-xs fa-gift"></i>{{ product.owner }}
           </p> -->
             <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
               <q-rating
-                v-model="ratingModel"
+                v-model="shop.rating"
                 size="1em"
-                :max="4"
+                :max="5"
                 color="black"
               />
-              <span>{{ product.ratings_count }}</span>
+              <!-- <span>{{ shop.rating }}</span> -->
             </p>
           </div>
         </div>
         <div class="love">
-          <i class="fa-regular fa-heart"></i>
+          <q-btn
+            flat
+            @click="
+              shop.like === false ? addShoptoFav(shop) : removeShopFav(shop)
+            "
+          >
+            <i
+              :class="
+                shop.like ? 'fa-solid text-red fa-heart' : 'fa-regular fa-heart'
+              "
+            ></i
+          ></q-btn>
         </div>
       </div>
     </div>
@@ -504,6 +493,14 @@
       </div>
     </div>
   </section>
+
+  <q-dialog v-model="videoModal">
+    <q-card class="video_card">
+      <video class="" controls>
+        <source :src="videoData.media.url" type="video/mp4" />
+      </video>
+    </q-card>
+  </q-dialog>
 
   <FooterVue />
 </template>
@@ -536,6 +533,10 @@ export default defineComponent({
     return {
       listings: [],
       categorys: [],
+      videos: [],
+      shops: [],
+      videoData: {},
+      videoModal: false,
       searchInp: "",
       popular: [
         {
@@ -560,160 +561,14 @@ export default defineComponent({
           img: "/images/sneakPop.png",
         },
       ],
-      topProducts: [
-        {
-          product_image: "/images/car.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/sneakers.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "",
-        },
-        {
-          product_image: "/images/tv.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Used",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/computer.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "New",
-          make: "",
-        },
-      ],
-      products: [
-        {
-          product_image: "/images/car.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/sneakers.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "",
-        },
-        {
-          product_image: "/images/tv.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Used",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/computer.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "New",
-          make: "",
-        },
-        {
-          product_image: "/images/ac.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/keyboard.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-        {
-          product_image: "/images/sneak.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "",
-        },
-        {
-          product_image: "/images/mytv.png",
-          name: "Royal Star 45” TV fHD/HD Smart...",
-          location: "KETU, LAGOS",
-          amount: "₦112,500",
-          desc: '32" inches hisence LED TV, tiny frame, A5 series, Design for 2022 FIFA World Cup.',
-          owner: "Izuogu & Sons Limited",
-          ratings: 5,
-          ratings_count: 203,
-          kind: "Brand New",
-          make: "Hisense",
-        },
-      ],
     };
   },
 
   created() {
     this.getFeaturedlistngs();
     this.getCategorys();
+    this.getFeaturedShops();
+    this.getVideos();
   },
 
   methods: {
@@ -721,6 +576,16 @@ export default defineComponent({
       this.$router.replace({
         name: "product.detail",
         params: { slug: product.slug },
+      });
+    },
+    playvideo(videoData) {
+      this.videoData = videoData;
+      this.videoModal = true;
+    },
+    gotoShop(shop) {
+      this.$router.replace({
+        name: "vendor.page",
+        params: { slug: shop.slug },
       });
     },
 
@@ -813,11 +678,120 @@ export default defineComponent({
           this.errors = error.errors || {};
         });
     },
+    addShoptoFav(item) {
+      // console.log(slug);
+      item.like = !item.like;
+      console.log(item);
+      this.$api
+        .post(`vendor/${item.slug}/like`)
+        .then((response) => {
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.shops.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.shops[updatedItemIndex].like = item.like;
+          }
+          this.$q.notify({
+            message: "Shop added to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          this.loading = false;
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to like product",
+              color: "green",
+            });
+          }
+          // this.$q.notify({
+          //   message: "An error occured",
+          //   color: "red",
+          // });
+          this.errors = error.errors || {};
+        });
+    },
+
+    removeShopFav(item) {
+      item.like = !item.like;
+      this.$api
+        .delete(`vendor/${item.slug}/like`)
+        .then((response) => {
+          // this.getFeaturedlistngs();
+          const updatedItemIndex = this.shops.findIndex(
+            (i) => i.id === item.id
+          );
+          if (updatedItemIndex !== -1) {
+            this.shops[updatedItemIndex].like = item.like;
+          }
+          this.$q.notify({
+            message: "Shop removed to favourites",
+            color: "green",
+          });
+          // console.log(response);
+        })
+        .catch(({ response }) => {
+          if (response.status === 401) {
+            this.$store.leegoluauth.previousRoute =
+              this.$router.currentRoute.value.fullPath;
+            this.$router.replace({ name: "login" });
+            this.$q.notify({
+              message: "You need to login to like product",
+              color: "green",
+            });
+          }
+          this.loading = false;
+          this.$q.notify({
+            message: "An error occured",
+            color: "red",
+          });
+          this.errors = error.errors || {};
+        });
+    },
     getFeaturedlistngs() {
       this.$api
         .get(`listings/all`)
         .then((response) => {
-          this.listings = response.data.data;
+          this.listings = response.data.data.slice(0, 16);
+          console.log(response);
+        })
+        .catch((e) => {
+          this.loading = false;
+          // this.errors = error.errors || {};
+        });
+    },
+    getVideos() {
+      this.$api
+        .get(`index/videos/all`)
+        .then((response) => {
+          console.log(response);
+          this.videos = response.data.data;
+        })
+        .catch((e) => {
+          this.loading = false;
+          // this.errors = error.errors || {};
+        });
+    },
+    getFeaturedShops() {
+      this.$api
+        .get(`shops/all`)
+        .then((response) => {
+          // this.shops = response.data.data.slice(1, 5);
+          // let newShopData = response.data.data.filter(
+          //   (shop) =>
+          //     shop.products.length && shop.hasActiveSubscription === true
+          // );
+          let newShopData = response.data.data.filter(
+            (shop) => shop.products.length
+          );
+
+          console.log(newShopData);
+          this.shops = newShopData.slice(0, 4);
           console.log(response);
         })
         .catch((e) => {
@@ -864,7 +838,21 @@ a {
   line-height: 19px;
   color: #ffffff;
 }
+.reel {
+  position: relative;
+}
 
+.reel .q-btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.reel .q-btn img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
 .right > div {
   display: flex;
   align-items: center;
@@ -926,7 +914,7 @@ a {
 }
 
 .popular {
-  margin: 3rem auto 2rem;
+  margin: 1rem auto 4rem;
 }
 .popular img {
   width: 130px;
@@ -1102,13 +1090,6 @@ a {
   position: relative;
   cursor: pointer;
 }
-.product_cards .product.shops {
-  padding: 0rem;
-}
-.product_cards .product.shops .body_ {
-  padding: 0.8rem;
-  margin-top: 0.4rem;
-}
 
 .product_cards .product .love {
   position: absolute;
@@ -1132,6 +1113,7 @@ a {
   text-transform: uppercase;
   color: #000000;
 }
+
 .product_cards .product .name p {
   font-weight: 600;
   font-size: 15px;
@@ -1211,11 +1193,9 @@ a {
   // padding-top: 0.3rem;
 }
 
-.product_cards .product.shops img {
-  object-fit: cover;
-}
-.product_cards .product.shops .name p {
-  margin-bottom: 0;
+.product.shops img {
+  border-bottom-right-radius: 7px;
+  border-bottom-left-radius: 7px;
 }
 
 /* join */
@@ -1293,6 +1273,12 @@ a {
   }
   .nav {
     padding: 0.7rem 1rem;
+  }
+}
+@media (max-width: 1000px) {
+  .join_area .join_title {
+    font-size: 30px;
+    line-height: 35px;
   }
 }
 @media (max-width: 500px) {

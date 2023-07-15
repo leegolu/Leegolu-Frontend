@@ -172,7 +172,7 @@
               class="ratings_stars row items-end no-wrap"
             >
               <q-rating
-                v-model="productData.data.rating"
+                v-model="productData.data.user_rating"
                 size="1em"
                 :max="4"
                 color="secondary"

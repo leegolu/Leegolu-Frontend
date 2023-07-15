@@ -6,7 +6,9 @@
   "author": "emmanueltlom <nwabuodafiemmanuel@gmail.com>",
   "private": true,
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "icons": "icongenie generate -i logored.png --theme-color"
+
   },
   "dependencies": {
     "@mahdikhashan/vue3-click-outside": "^0.1.2",

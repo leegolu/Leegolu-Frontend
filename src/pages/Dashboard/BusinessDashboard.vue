@@ -198,23 +198,35 @@
               <div class="logo_main_text">
                 {{ this.$store.leegoluauth.vendor.business_name }}
               </div>
-              <div class="logo_main_desc">Business Metrics</div>
+              <div class="logo_main_desc">
+                Business Metrics
+                <q-spinner
+                  v-if="chartloading"
+                  class="q-mr-sm"
+                  color="primary"
+                  size="1em"
+                />
+              </div>
             </div>
           </div>
           <div style="gap: 0.5rem" class="row items-center">
             <div class="business_seive">
-              <q-btn color="white" class="bg-primary" flat>
+              <q-btn
+                :class="chartView === 'Page visits' ? 'bg-primary' : ''"
+                flat
+                @click="getMessageReq('Page visits')"
+              >
                 Page Visits
                 <q-menu>
                   <q-list style="min-width: 100px">
                     <q-item clickable @click="getStats">
-                      <q-item-section>View daily page visits</q-item-section>
+                      <q-item-section> Daily visits</q-item-section>
                     </q-item>
                     <q-item clickable @click="viewWeekly">
-                      <q-item-section>View weekly page visits</q-item-section>
+                      <q-item-section> Weekly visits</q-item-section>
                     </q-item>
                     <q-item clickable @click="viewYearly">
-                      <q-item-section>View yearly visits</q-item-section>
+                      <q-item-section> Yearly visits</q-item-section>
                     </q-item>
                   </q-list>
                 </q-menu>
@@ -223,12 +235,72 @@
             <!-- <div class="business_seive">
             <q-btn flat> Callback Requests </q-btn>
           </div> -->
-            <div class="business_seive">
-              <q-btn flat> Message Requests </q-btn>
+            <!-- <div class="business_seive">
+              <q-btn
+                @click="getMessageReq('Message requests')"
+                :class="chartView === 'Message requests' ? 'bg-primary' : ''"
+                flat
+              >
+                Message Requests
+              </q-btn>
+            </div> -->
+            <div style="gap: 0.5rem" class="row items-center">
+              <div class="business_seive">
+                <q-btn
+                  @click="getMessageReq('Message requests')"
+                  :class="chartView === 'Message requests' ? 'bg-primary' : ''"
+                  flat
+                >
+                  Message Requests
+                  <q-menu>
+                    <q-list style="min-width: 100px">
+                      <q-item clickable @click="getMessagesStats">
+                        <q-item-section> Daily stats</q-item-section>
+                      </q-item>
+                      <q-item clickable @click="viewMessagesWeekly">
+                        <q-item-section> Weekly stats</q-item-section>
+                      </q-item>
+                      <q-item clickable @click="viewMessagesYearly">
+                        <q-item-section> Yearly stats</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
             </div>
-            <div class="business_seive">
-              <q-btn @click="getMyPhoneViews" flat> Phone Views </q-btn>
+            <div style="gap: 0.5rem" class="row items-center">
+              <div class="business_seive">
+                <q-btn
+                  @click="getMessageReq('Phone views')"
+                  :class="chartView === 'Phone views' ? 'bg-primary' : ''"
+                  flat
+                >
+                  Phone Views
+                  <q-menu>
+                    <q-list style="min-width: 100px">
+                      <q-item clickable @click="getPhonesStats">
+                        <q-item-section> Daily stats</q-item-section>
+                      </q-item>
+                      <q-item clickable @click="viewPhonesWeekly">
+                        <q-item-section> Weekly stats</q-item-section>
+                      </q-item>
+                      <q-item clickable @click="viewPhonesYearly">
+                        <q-item-section> Yearly stats</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
             </div>
+            <!-- <div class="business_seive">
+              <q-btn
+                :class="chartView === 'Phone views' ? 'bg-primary' : ''"
+                @click="getMyPhoneViews('Phone views')"
+                flat
+              >
+                Phone Views
+              </q-btn>
+            </div> -->
           </div>
         </div>
         <!-- <p class="text-black">
@@ -538,6 +610,7 @@ export default {
     return {
       tourModal: false,
       welcometoleegolubusinessmodal: true,
+      // stats:'page visits',
       preview: "/images/preview.png",
       businessreg: false,
       loadingAvatar: false,
@@ -545,13 +618,14 @@ export default {
       plans: [],
       image: null,
       myAds: "",
-      chatView: "Page visits",
+      chartView: "Page visits",
       myEngagements: "",
       loadingFinish: false,
       listings: [],
       myLeads: "",
       errors: {},
       countrycode: "+243",
+      chartloading: false,
       vendordetails: {
         name: "",
         address: "",
@@ -634,12 +708,14 @@ export default {
     this.getStats();
     this.getStates();
     this.getBusinessTypes();
-    this.getMyads();
-    this.getMyEngagements();
-    this.getMyLeads();
     // this.getMyPhoneViews();
-    this.getListings();
     this.getPlans();
+    if (this.$store.leegoluauth.vendorDetails.slug) {
+      this.getListings();
+      this.getMyads();
+      this.getMyEngagements();
+      this.getMyLeads();
+    }
     this.welcometoleegolubusinessmodal = this.$store.leegoluauth.modal;
   },
   setup() {
@@ -652,6 +728,7 @@ export default {
     });
     let role = store.userDetails.role[0].name;
     let vendor = store.vendorDetails;
+    console.log(role);
     // console.log(vendor.subscriptions[0].end_date);
 
     return {
@@ -817,7 +894,7 @@ export default {
       this.addphotoforleegolubusinessmodal = false;
       this.businessreg = true;
     },
-
+    // https://moon.leegolu.com/api/v2/payment/callback
     getListings() {
       this.loading = true;
       this.$api
@@ -862,14 +939,17 @@ export default {
           this.errors = error.errors || {};
         });
     },
-    getMyPhoneViews() {
+    getMyPhoneViews(arg) {
+      this.chartView = arg;
+      this.chartloading = true;
       this.$api
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/phone-views`)
         .then((response) => {
+          this.chartloading = false;
           console.log(response);
         })
         .catch((e) => {
-          this.loading = false;
+          this.chartloading = false;
           this.errors = error.errors || {};
         });
     },
@@ -893,7 +973,7 @@ export default {
       const currentMonth = currentDate.getMonth() + 1;
       this.$api
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/page-views/daily?month=${currentMonth}&year=${currentYear}`
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?page&month=${currentMonth}&year=${currentYear}`
         )
         .then((response) => {
           console.log(response);
@@ -918,11 +998,14 @@ export default {
     viewWeekly() {
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth() + 1;
+
+      this.chartloading = true;
       this.$api
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/page-views/weekly?month=${currentMonth}`
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?page&month=${currentMonth}`
         )
         .then((response) => {
+          this.chartloading = false;
           console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.month;
@@ -936,18 +1019,20 @@ export default {
           };
         })
         .catch((e) => {
-          this.loading = false;
+          this.chartloading = false;
           this.errors = error.errors || {};
         });
     },
     viewYearly() {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
+      this.chartloading = true;
       this.$api
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/page-views/yearly?year=${currentYear}`
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?page&year=${currentYear}`
         )
         .then((response) => {
+          this.chartloading = false;
           console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.year;
@@ -962,9 +1047,179 @@ export default {
           };
         })
         .catch((e) => {
+          this.chartloading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getMessagesStats() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?messages&month=${currentMonth}&year=${currentYear}`
+        )
+        .then((response) => {
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.month;
+          // let stringifyArray = response.data["x-axis"].map((i) => i.toString());
+          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
+        })
+        .catch((e) => {
           this.loading = false;
           this.errors = error.errors || {};
         });
+    },
+    viewMessagesWeekly() {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      this.chartloading = true;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?messages&month=${currentMonth}`
+        )
+        .then((response) => {
+          this.chartloading = false;
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.month;
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
+        })
+        .catch((e) => {
+          this.chartloading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    viewMessagesYearly() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      this.chartloading = true;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?messages&year=${currentYear}`
+        )
+        .then((response) => {
+          this.chartloading = false;
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.year;
+          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
+        })
+        .catch((e) => {
+          this.chartloading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getPhonesStats() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?phone&month=${currentMonth}&year=${currentYear}`
+        )
+        .then((response) => {
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.month;
+          // let stringifyArray = response.data["x-axis"].map((i) => i.toString());
+          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    viewPhonesWeekly() {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      this.chartloading = true;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?phone&month=${currentMonth}`
+        )
+        .then((response) => {
+          this.chartloading = false;
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.month;
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
+        })
+        .catch((e) => {
+          this.chartloading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    viewPhonesYearly() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      this.chartloading = true;
+      this.$api
+        .get(
+          `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?phone&year=${currentYear}`
+        )
+        .then((response) => {
+          this.chartloading = false;
+          console.log(response);
+          this.series[0].data = response.data["y-axis"];
+          this.series[0].name = response.data.year;
+          // this.chartOptions.xaxis.categories = response.data["x-axis"];
+          this.chartOptions = {
+            ...this.chartOptions,
+            ...{
+              xaxis: {
+                categories: response.data["x-axis"],
+              },
+            },
+          };
+        })
+        .catch((e) => {
+          this.chartloading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getMessageReq(arg) {
+      this.chartView = arg;
     },
 
     toggleModal() {
@@ -1694,6 +1949,13 @@ hr {
   line-height: 16px;
   text-align: center;
   color: #000000;
+}
+.top_business .business_seive .q-btn.bg-primary {
+  color: #fff;
+}
+
+.q-menu .q-item:hover {
+  color: #ee4e36;
 }
 
 .btn {
