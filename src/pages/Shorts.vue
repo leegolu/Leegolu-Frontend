@@ -2,8 +2,27 @@
   <section class="products q-pt-xl container">
     <div class="category_wrapper">
       <div class="left">
-        <div class="section q-pt-lg">
-          <div class="section_main_text">Shorts</div>
+        <div class="section">
+          <div class="section_main_text">
+            <!-- {{ thiscategory.category }} -->
+            Shorts
+            <span class="count">| {{ videos.length }}</span>
+          </div>
+
+          <div class="each_category_wrap">
+            <div
+              v-for="(each, index) in thiscategory.subcategories"
+              :key="index"
+              class="each_category"
+            >
+              <q-item
+                :to="{ name: 'subcategory-page', params: { slug: each.slug } }"
+              >
+                {{ each.name }}
+              </q-item>
+              <!-- <span class="count"> | {{ each.count }} </span> -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -29,23 +48,28 @@
             />
           </div>
         </div>
-        <div class="shorts-container">
-          <div
-            v-for="(video, index) in videos"
-            :key="index"
-            class="video-wrapper"
-          >
-            <video
-              :ref="`video-${index}`"
-              controls
-              :src="video.media.url"
-              class="video"
-              @ended="playNextVideo(index)"
-            ></video>
+        <div v-if="videos.length" class="product_cards">
+          <div id="container">
+            <div
+              v-for="(video, index) in videos"
+              :key="index"
+              ref="videoRefs"
+              class="short-video"
+            >
+              <video
+                controls
+                :id="'video' + index"
+                :autoplay="index === 0"
+                muted
+                @ended="videoEnded(index)"
+                :src="video.media.url"
+                class="video"
+              ></video>
+            </div>
           </div>
         </div>
 
-        <!-- <div v-else>No videos available</div> -->
+        <div v-else>No shorts at this time</div>
       </div>
     </div>
 
@@ -57,7 +81,33 @@
       :class="$q.dark.isActive ? 'bg-grey-9' : 'white'"
     >
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-        <q-list class="q-px-md q-py-xl" padding> </q-list>
+        <q-list class="q-px-md q-py-xl" padding>
+          <div class="left">
+            <div class="section">
+              <div class="section_main_text">
+                Shorts
+                <span class="count">| {{ videos.length }}</span>
+              </div>
+
+              <div class="each_category_wrap">
+                <div
+                  v-for="(each, index) in thiscategory.subcategories"
+                  :key="index"
+                  class="each_category"
+                >
+                  <q-item
+                    :to="{
+                      name: 'subcategory-page',
+                      params: { slug: each.slug },
+                    }"
+                  >
+                    {{ each.name }}
+                  </q-item>
+                </div>
+              </div>
+            </div>
+          </div>
+        </q-list>
       </q-scroll-area>
     </q-drawer>
   </section>
@@ -144,28 +194,33 @@ export default defineComponent({
       observer: null,
       videoWrappers: [],
       ratingModel: ref(3),
+      currentVideoIndex: 0,
     };
   },
 
-  // mounted() {
-  //   window.addEventListener("scroll", this.handleScroll);
-  // },
-  // beforeDestroy() {
-  //   window.removeEventListener("scroll", this.handleScroll);
-  // },
-  mounted() {
-    this.setupIntersectionObserver();
-  },
-  beforeDestroy() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-  },
   created() {
     this.getVideos();
     // this.getsubCategoryProducts();
   },
 
+  watch: {
+    videos: {
+      immediate: true,
+      handler(newVideos) {
+        if (newVideos.length > 0) {
+          this.$nextTick(() => {
+            this.observeVideos();
+          });
+        }
+      },
+    },
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      this.observeVideos();
+    });
+  },
   methods: {
     getVideos() {
       this.$api
@@ -180,51 +235,67 @@ export default defineComponent({
         });
     },
 
-    // handleScroll() {
-    //   const videoWrappers = this.$refs.videoWrappers;
-    //   const currentVideo = videoWrappers[this.currentVideoIndex];
-    //   console.log(currentVideo.getBoundingClientRect());
+    observeVideos() {
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const video = entry.target.querySelector("video");
+            const index = parseInt(video.id.replace("video", ""), 10);
+            // console.log(this.currentVideoIndex);
+            // console.log(index);
+            // console.log(entry.isIntersecting);
+            // console.log(video.paused);
+            if (entry.isIntersecting && video.paused) {
+              console.log("paused");
+              this.currentVideoIndex = index;
+            }
+            if (entry.isIntersecting) {
+              // this.currentVideoIndex++;
+              if (index === this.currentVideoIndex) {
+                video.play();
+              } else {
+                video.pause();
+              }
+            } else {
+              video.pause();
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
 
-    //   const rect = currentVideo.getBoundingClientRect();
-    //   if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-    //     this.playVideo(currentVideo);
-    //   } else {
-    //     this.pauseVideo(currentVideo);
-    //   }
-    // },
-    setupIntersectionObserver() {
-      this.videoWrappers = document.querySelectorAll(".video-wrapper");
-
-      this.observer = new IntersectionObserver(this.handleIntersection, {
-        root: null,
-        rootMargin: "0px",
-        threshold: 0.5, // Adjust the threshold value as needed
-      });
-
-      this.videoWrappers.forEach((videoWrapper) => {
-        this.observer.observe(videoWrapper);
-      });
-    },
-    handleIntersection(entries) {
-      entries.forEach((entry) => {
-        const videoIndex = entry.target.getAttribute("data-video-index");
-        if (entry.isIntersecting) {
-          this.playVideo(this.$refs[`video-${videoIndex}`]);
-        } else {
-          this.pauseVideo(this.$refs[`video-${videoIndex}`]);
+      this.$nextTick(() => {
+        // console.log(this.$refs);
+        if (this.$refs.videoRefs) {
+          this.$refs.videoRefs.forEach((video) => {
+            this.observer.observe(video);
+          });
         }
       });
     },
-    playVideo(videoElement) {
-      videoElement.play();
+
+    videoEnded(index) {
+      // console.log(this.currentVideoIndex);
+      // console.log(index);
+      if (index === this.currentVideoIndex) {
+        this.currentVideoIndex =
+          (this.currentVideoIndex + 1) % this.videos.length;
+        this.scrollToVideo(this.currentVideoIndex);
+      }
     },
-    pauseVideo(videoElement) {
-      videoElement.pause();
-    },
-    playNextVideo(currentIndex) {
-      if (currentIndex + 1 < this.videos.length) {
-        this.currentVideoIndex = currentIndex + 1;
-        this.playVideo(this.$refs.videoWrappers[this.currentVideoIndex]);
+    scrollToVideo(index) {
+      // console.log(index);
+      const videoElement = this.$refs["videoRefs"][index];
+
+      if (videoElement && index < this.$refs["videoRefs"].length) {
+        videoElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
+        // window.scrollBy(0, -offset);
+      } else if (index === this.$refs["videoRefs"].length) {
+        this.$refs["videoRefs"][0];
       }
     },
   },
@@ -239,13 +310,34 @@ p {
 .video-wrapper {
   width: 100%;
   margin: 1rem 0;
-  height: 75vh;
+  height: 90vh;
 }
 
 .video {
   width: 100%;
+  max-width: 450px;
   height: 100%;
   object-fit: cover;
+}
+#container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  /* height: 100vh; */
+  scroll-snap-type: y mandatory;
+}
+
+/* Style each short video */
+.short-video {
+  flex: 0 0 75vh;
+  /* max-width: 500px; */
+  /* margin: 1rem auto; */
+  margin: 1rem 0;
+  margin-right: auto;
+  /* margin-left: auto; */
+  max-height: 80vh;
+  width: 100%;
+  scroll-snap-align: center;
 }
 
 .wrapper {
@@ -520,8 +612,15 @@ p {
     display: none;
   }
 
+  .q-pt-xl {
+    padding-top: 28px;
+  }
+
   .search_text_wrap {
     margin-bottom: 2rem;
+  }
+  .video {
+    width: 100%;
   }
 }
 </style>

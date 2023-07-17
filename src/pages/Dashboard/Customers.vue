@@ -233,11 +233,19 @@
           </div>
 
           <div class="boost">
-            <div @click="advertdialog = false" class="minimize">
+            <div @click="advertdialog = false" class="minimize cursor-pointer">
               Minimize
               <i class="fa-solid fa-arrow-up"></i>
             </div>
-            <q-btn :href="`tel:${rowData.phone}`"> Call Now </q-btn>
+            <q-btn
+              v-if="rowData.mode === 'call'"
+              :href="`tel:${rowData.phone}`"
+            >
+              Call Now
+            </q-btn>
+            <q-btn v-if="rowData.mode === 'chat'" :to="{ name: 'messages' }">
+              Chat Now
+            </q-btn>
           </div>
 
           <q-btn @click="advertdialog = false" class="close">
@@ -583,6 +591,10 @@ export default {
   font-size: 16px;
   line-height: 22px;
   color: #000000;
+}
+
+.title.name_top {
+  margin: 0;
 }
 .name_down {
   font-family: "Inter";

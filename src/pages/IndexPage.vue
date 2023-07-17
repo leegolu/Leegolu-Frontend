@@ -114,16 +114,6 @@
           >
             {{ item.name }}
           </q-item>
-          <q-item class="item"> Cars </q-item>
-          <q-item class="item"> Mobile Phones </q-item>
-          <q-item class="item"> Skin Care </q-item>
-          <q-item class="item"> Skin Care </q-item>
-          <q-item class="item"> Skin Care </q-item>
-          <q-item class="item"> Skin Care </q-item>
-          <q-item class="item"> Skin Care </q-item>
-          <q-item class="item"> Skin Care </q-item>
-          <q-item class="item"> Skin Care </q-item>
-          <q-item class="item"> Skin Care </q-item>
         </div>
       </div>
     </div>
@@ -322,7 +312,11 @@
 
   <section class="products container">
     <div class="head_text">Featured Listings</div>
-    <div class="product_cards" v-if="!listings.length">
+    <div
+      style="place-items: center"
+      class="product_cards"
+      v-if="!listings.length"
+    >
       <q-skeleton v-for="n in 4" :key="n" width="200px" height="100px" />
     </div>
     <div v-if="listings.length" class="product_cards">
@@ -360,7 +354,7 @@
           <div class="owners">
             <p class="owner">
               <img src="/images/shopp.svg" alt="" />
-              {{ product.vendor_name }}
+              {{ product.shop }}
             </p>
             <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
               <q-rating
@@ -402,7 +396,7 @@
   <section class="products q-pt-xl container">
     <div class="head_text">Top Rated Shops</div>
 
-    <div class="product_cards" v-if="!shops.length">
+    <div style="place-items: center" class="product_cards" v-if="!shops.length">
       <q-skeleton v-for="n in 4" :key="n" width="200px" height="100px" />
     </div>
     <div v-if="shops.length" class="product_cards">

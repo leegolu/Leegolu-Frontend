@@ -178,7 +178,7 @@ export default {
         return this.listings.filter((listing) => listing.boosted === true);
       } else {
         return this.listings.filter(
-          (listing) => listing.status === this.selectedCategory
+          (listing) => listing.is_approved === this.selectedCategory
         );
       }
     },

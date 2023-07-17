@@ -886,7 +886,7 @@ export default {
   text-transform: capitalize;
 }
 .mybtn {
-  width: 166px;
+  // width: 166px;
   height: 36px;
   background: #ffffff;
   border: 1px solid #d9d9d9;

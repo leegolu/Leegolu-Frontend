@@ -113,9 +113,7 @@
               </div>
               <div class="owners">
                 <p class="owner">
-                  <img src="/images/shopp.svg" alt="" />{{
-                    product.vendor_name
-                  }}
+                  <img src="/images/shopp.svg" alt="" />{{ product.shop }}
                 </p>
                 <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                   <q-rating

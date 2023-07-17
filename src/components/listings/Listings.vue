@@ -389,7 +389,11 @@ export default {
   height: 100%;
   object-fit: cover;
 }
-
+@media (min-width: 1300px) {
+  .img img {
+    width: 100%;
+  }
+}
 .items.bty {
   display: flex;
   align-items: center;

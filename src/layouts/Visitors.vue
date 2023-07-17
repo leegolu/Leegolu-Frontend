@@ -47,9 +47,7 @@
             <div v-if="this.$store.leegoluauth.token === ''" class="div">
               <router-link to="/login"> Sign In </router-link>
               <router-link :to="{ name: 'register' }"> Join Now </router-link>
-              <q-btn :to="{ name: 'register' }" color="secondary">
-                Start Selling
-              </q-btn>
+              <q-btn :to="{ name: 'register' }" color="secondary"> Sell </q-btn>
             </div>
 
             <div v-else class="div avaicons">
@@ -208,18 +206,6 @@
             >
               {{ item.name }}
             </q-item>
-
-            <q-item class="item"> Cars </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item"> Mobile Phones </q-item>
-            <q-item class="item">Skin Care </q-item>
           </div>
         </div>
       </div>

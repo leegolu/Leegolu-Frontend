@@ -143,7 +143,7 @@ th.text-right {
 // }
 .popular .splide__slide {
   width: 150px !important;
-  height: 150px !important;
+  height: 120px !important;
 }
 
 // .popular .splide__list {
@@ -442,6 +442,10 @@ p {
   max-width: 340px;
 }
 
+.wrapp {
+  max-width: 1440px;
+}
+
 .sub_header_wrap .subb {
   max-width: 150px;
 }
@@ -578,6 +582,11 @@ p {
   }
   .popular .splide__list {
     gap: 0rem;
+  }
+
+  .video_card {
+    // padding-bottom: 76.25%;
+    height: 300px;
   }
 
   .recent_listing_head {

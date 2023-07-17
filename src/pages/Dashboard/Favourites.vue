@@ -72,8 +72,7 @@
               </div>
               <div class="owners">
                 <p class="owner">
-                  <i class="fa-solid q-mr-xs fa-gift"></i
-                  >{{ product.vendor_name }}
+                  <img src="/images/shopp.svg" alt="" />{{ product.shop }}
                 </p>
                 <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                   <q-rating
@@ -407,6 +406,10 @@ export default {
 }
 .products {
   margin: 2rem 1.5rem;
+}
+.product .owner img {
+  width: 17px;
+  height: 16px;
 }
 
 .sort_area .left {
