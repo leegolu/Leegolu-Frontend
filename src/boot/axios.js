@@ -77,7 +77,7 @@ export default boot(({ router, store, app }) => {
       if (status_code === 401) {
         // store.auth.setToken(null);
         Notify.create({
-          message: "You need to log in to view this page",
+          message: "You need to login...",
           color: "red",
         });
         // console.log(store.state.value);
@@ -86,18 +86,22 @@ export default boot(({ router, store, app }) => {
           router.currentRoute.value.fullPath;
         // store.leegoluauth.previousRoute = router.currentRoute.value.fullPath;
         // helpers.notify("You need to log in to view this page", "error");
-        return router.replace({ name: "login" });
+        router.replace({ name: "login" });
+        return Promise.reject(e);
       } else if (e.message === "Network Error") {
         Notify.create({
           message: e.message + "check your internet connection",
           color: "red",
         });
+        return Promise.reject(e);
       } else if (status_code === 500) {
+        // console.log(e);
         Notify.create({
           message:
             "This is not your fault, we have been notified and is currently fixing any issues.",
           color: "red",
         });
+        return Promise.reject(e);
       } else {
         return Promise.reject(e);
       }

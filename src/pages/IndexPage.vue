@@ -38,12 +38,7 @@
                     style="white-space: nowrap"
                     no-caps
                     :to="{
-                      name: `${
-                        this.$store.leegoluauth.userDetails.role[0].name ===
-                        'business'
-                          ? 'business.dashboard'
-                          : 'regular.dashboard'
-                      }`,
+                      name: 'business.dashboard',
                     }"
                     color="secondary"
                     class="q-px-md"
@@ -210,7 +205,18 @@
       >
     </div>
 
+    <div v-if="loading">
+      <q-skeleton
+        width="100%"
+        class="row justify-center items-center"
+        height="100px"
+        >No shorts at this time</q-skeleton
+      >
+    </div>
+    <!-- <div class="text-center text-weight-bold">No shorts at this time</div> -->
+
     <Splide
+      v-if="videos.length"
       :options="{
         perPage: 6,
         rewind: true,
@@ -237,7 +243,18 @@
     >
       <SplideSlide v-for="(video, index) in videos" :key="index">
         <div class="reel">
-          <img src="/images/shirt.png" alt="Sample 1" />
+          <video
+            hidden
+            :src="video.media.url"
+            @canplaythrough="generatePreviewImage(video)"
+          ></video>
+          <q-img
+            class="reel_img"
+            spinner-color="black"
+            :src="video.previewImage"
+            alt="Reel"
+          />
+          <!-- <img src="/images/shirt.png" alt="Sample 1" /> -->
           <!-- <div class="name_"></div> -->
           <q-btn @click="playvideo(video)"
             ><img src="/images/play.svg" alt=""
@@ -312,17 +329,13 @@
 
   <section class="products container">
     <div class="head_text">Featured Listings</div>
-    <div
-      style="place-items: center"
-      class="product_cards"
-      v-if="!listings.length"
-    >
+    <div style="place-items: center" class="product_cards" v-if="loading">
       <q-skeleton v-for="n in 4" :key="n" width="200px" height="100px" />
     </div>
     <div v-if="listings.length" class="product_cards">
       <div v-for="(product, index) in listings" :key="index" class="product">
         <div @click="goto(product)">
-          <img :src="product.uploads[0].url" alt="" />
+          <img :src="product.media[0].url" alt="" />
           <div class="location">
             <p>{{ product.area.name }}, {{ product.state.name }}</p>
           </div>
@@ -354,7 +367,7 @@
           <div class="owners">
             <p class="owner">
               <img src="/images/shopp.svg" alt="" />
-              {{ product.shop }}
+              {{ product.owner }}
             </p>
             <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
               <q-rating
@@ -395,8 +408,9 @@
   </section>
   <section class="products q-pt-xl container">
     <div class="head_text">Top Rated Shops</div>
+    <!-- {{ shops }} -->
 
-    <div style="place-items: center" class="product_cards" v-if="!shops.length">
+    <div style="place-items: center" class="product_cards" v-if="loading">
       <q-skeleton v-for="n in 4" :key="n" width="200px" height="100px" />
     </div>
     <div v-if="shops.length" class="product_cards">
@@ -411,14 +425,21 @@
             arrows: false,
             navigations: false,
           }"
+          v-if="shop.products.length"
           aria-label="My Favorite Images"
         >
           <SplideSlide v-for="products in shop.products" :key="products.id">
             <div>
-              <img :src="products.uploads[0].url" alt="" />
+              <img :src="products.media[0].url" alt="" />
             </div>
           </SplideSlide>
         </Splide>
+        <div v-else>
+          <img
+            src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+            alt=""
+          />
+        </div>
         <div @click="gotoShop(shop)" class="body_">
           <div class="location">
             <p>{{ shop.area }}, {{ shop.state }}</p>
@@ -527,6 +548,7 @@ export default defineComponent({
     return {
       listings: [],
       categorys: [],
+      loading: true,
       videos: [],
       shops: [],
       videoData: {},
@@ -690,23 +712,11 @@ export default defineComponent({
             message: "Shop added to favourites",
             color: "green",
           });
-          // console.log(response);
+          console.log(response);
         })
         .catch(({ response }) => {
           this.loading = false;
-          if (response.status === 401) {
-            this.$store.leegoluauth.previousRoute =
-              this.$router.currentRoute.value.fullPath;
-            this.$router.replace({ name: "login" });
-            this.$q.notify({
-              message: "You need to login to like product",
-              color: "green",
-            });
-          }
-          // this.$q.notify({
-          //   message: "An error occured",
-          //   color: "red",
-          // });
+
           this.errors = error.errors || {};
         });
     },
@@ -752,7 +762,8 @@ export default defineComponent({
         .get(`listings/all`)
         .then((response) => {
           this.listings = response.data.data.slice(0, 16);
-          console.log(response);
+          // console.log(response);
+          this.loading = false;
         })
         .catch((e) => {
           this.loading = false;
@@ -764,13 +775,41 @@ export default defineComponent({
         .get(`index/videos/all`)
         .then((response) => {
           console.log(response);
-          this.videos = response.data.data;
+          this.videos = response.data.data.map((video) => ({
+            ...video,
+            previewImage: null,
+          }));
+          this.loading = false;
         })
         .catch((e) => {
           this.loading = false;
           // this.errors = error.errors || {};
         });
     },
+    generatePreviewImage(video) {
+      const videoElement = document.createElement("video");
+      videoElement.src = video.media.url;
+      console.log(videoElement);
+
+      videoElement.addEventListener("loadeddata", () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set the canvas dimensions to match the video
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+
+        // Draw the first frame on the canvas
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+        // Convert the canvas image to a data URL
+        const dataURL = canvas.toDataURL("image/jpeg");
+
+        // Assign the data URL to the video's previewImage property
+        video.previewImage = dataURL;
+      });
+    },
+
     getFeaturedShops() {
       this.$api
         .get(`shops/all`)
@@ -784,9 +823,12 @@ export default defineComponent({
             (shop) => shop.products.length
           );
 
-          console.log(newShopData);
-          this.shops = newShopData.slice(0, 4);
+          // console.log(newShopData);
+          this.shops = newShopData.length
+            ? newShopData.slice(0, 4)
+            : response.data.data.slice(0, 4);
           console.log(response);
+          this.loading = false;
         })
         .catch((e) => {
           this.loading = false;
@@ -798,7 +840,7 @@ export default defineComponent({
         .get(`categories`)
         .then((response) => {
           this.categorys = response.data.data;
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -834,6 +876,7 @@ a {
 }
 .reel {
   position: relative;
+  height: 100%;
 }
 
 .reel .q-btn {
@@ -910,8 +953,11 @@ a {
 .popular {
   margin: 1rem auto 4rem;
 }
-.popular img {
-  width: 130px;
+.popular .reel_img {
+  width: 100%;
+  // width: 130px;
+  border-radius: 5px;
+  height: 100%;
   cursor: pointer;
 }
 
@@ -1184,6 +1230,8 @@ a {
   height: 150px;
   /* height: 206px; */
   object-fit: contain;
+  border-radius: 5px;
+  // object-fit: contain;
   // padding-top: 0.3rem;
 }
 
@@ -1306,6 +1354,7 @@ a {
   }
   .popular img {
     width: 110px;
+    width: 100%;
   }
 
   .wrapper button {

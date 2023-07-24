@@ -17,7 +17,7 @@
           <div class="form">
             <div class="style">
               <div class="q-mt-sm q-gutter-sm">
-                <q-radio v-model="upload" val="For User" label="For User" />
+                <!-- <q-radio v-model="upload" val="For User" label="For User" /> -->
                 <q-radio
                   v-model="upload"
                   val="For Product"
@@ -82,6 +82,8 @@
 import { ref } from "vue";
 import { fabYoutube } from "@quasar/extras/fontawesome-v6";
 import { Dialog, Notify } from "quasar";
+import { useAuthStore } from "stores/auth";
+let store = useAuthStore();
 export default {
   name: "MyLayout",
   data() {
@@ -105,11 +107,16 @@ export default {
       handler() {
         if (this.upload === "For Product") {
           this.showProdList = "show product";
-        } else if (this.upload === "For User") {
-          this.showProdList = "show categories";
         } else {
           this.showProdList = false;
         }
+        // if (this.upload === "For Product") {
+        //   this.showProdList = "show product";
+        // } else if (this.upload === "For User") {
+        //   this.showProdList = "show categories";
+        // } else {
+        //   this.showProdList = false;
+        // }
       },
       immediate: true,
     },
@@ -121,9 +128,10 @@ export default {
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
+    let role = store.userDetails.role[0].name;
     return {
       editor: ref(""),
-
+      role,
       fabYoutube,
       leftDrawerOpen,
       search,
@@ -155,7 +163,7 @@ export default {
       this.$api
         .get("categories")
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.catOptions = response.data.data.map((cat) => ({
             label: cat.name,
             value: cat.id,
@@ -172,7 +180,7 @@ export default {
       this.$api
         .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.options = response.data.vendor.products.map((product) => ({
             label: product.name,
             value: product.id,
@@ -191,7 +199,12 @@ export default {
         this.loading = true;
         this.$api
           .post(
-            `upload-video${this.$store.leegoluauth.vendorDetails.slug}`,
+            `
+            ${
+              this.role === "regular"
+                ? `vendor/upload-video/${this.$store.leegoluauth.userDetails.id}`
+                : `vendor/upload-video/${this.$store.leegoluauth.vendorDetails.slug}`
+            }`,
             formData,
             {
               headers: {
@@ -200,7 +213,7 @@ export default {
             }
           )
           .then((response) => {
-            console.log("Success:", response);
+            // console.log("Success:", response);
             this.loading = false;
             this.$q.notify({
               message: response.data.message,
@@ -240,6 +253,31 @@ export default {
               position: "top",
               actions: [{ icon: "close", color: "white" }],
             });
+
+            if (e.response.status === 403) {
+              Dialog.create({
+                title: "Usage Alert!",
+                message:
+                  "You've reached your upload limit. Buy a suitable plan to extend you upload limit.",
+                ok: {
+                  push: true,
+                  label: "Buy plan",
+                  color: "green",
+                },
+                persistent: true,
+              })
+                .onOk(() => {
+                  this.$router.replace({
+                    name: "Plans",
+                  });
+                })
+                .onCancel(() => {
+                  // console.log('>>>> Cancel')
+                })
+                .onDismiss(() => {
+                  // console.log('I am triggered on both OK and Cancel')
+                });
+            }
             // console.log("Error:", response);
           });
       } else if (this.upload === "For Product") {
@@ -260,7 +298,7 @@ export default {
               },
             })
             .then((response) => {
-              console.log("Success:", response);
+              // console.log("Success:", response);
               this.loading = false;
               this.$q.notify({
                 message: response.data.message,
@@ -300,6 +338,31 @@ export default {
                 position: "top",
                 actions: [{ icon: "close", color: "white" }],
               });
+
+              if (e.response.status === 403) {
+                Dialog.create({
+                  title: "Usage Alert!",
+                  message:
+                    "You've reached your upload limit. Buy a suitable plan to extend you upload limit.",
+                  ok: {
+                    push: true,
+                    label: "Buy plan",
+                    color: "green",
+                  },
+                  persistent: true,
+                })
+                  .onOk(() => {
+                    this.$router.replace({
+                      name: "Plans",
+                    });
+                  })
+                  .onCancel(() => {
+                    // console.log('>>>> Cancel')
+                  })
+                  .onDismiss(() => {
+                    // console.log('I am triggered on both OK and Cancel')
+                  });
+              }
               // console.log("Error:", response);
             });
         }
@@ -461,7 +524,13 @@ input:focus {
   margin-top: 1rem;
   color: #000000;
 }
-
+@media (min-width: 600px) {
+  .create_ad {
+    max-width: 882px !important;
+    width: 90% !important;
+    margin: 0rem auto 2rem;
+  }
+}
 .successful .more {
   font-family: "Open Sans";
   font-style: normal;

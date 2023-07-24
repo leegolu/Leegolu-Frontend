@@ -109,12 +109,7 @@
                         style="white-space: nowrap"
                         no-caps
                         :to="{
-                          name: `${
-                            this.$store.leegoluauth.userDetails.role[0].name ===
-                            'business'
-                              ? 'business.dashboard'
-                              : 'regular.dashboard'
-                          }`,
+                          name: 'business.dashboard',
                         }"
                         color="secondary"
                         class="q-px-md"

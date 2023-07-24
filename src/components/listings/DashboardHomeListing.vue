@@ -4,7 +4,7 @@
     <div class="listing_">
       <div class="left">
         <div class="img">
-          <img :src="listing.uploads[0].url" alt="" />
+          <img :src="listing.media[0].url" alt="" />
 
           <p class="tag red">
             <span class="main_textt">{{ listing.views }}</span>

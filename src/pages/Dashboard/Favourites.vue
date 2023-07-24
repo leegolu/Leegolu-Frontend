@@ -72,7 +72,7 @@
               </div>
               <div class="owners">
                 <p class="owner">
-                  <img src="/images/shopp.svg" alt="" />{{ product.shop }}
+                  <img src="/images/shopp.svg" alt="" />{{ product.owner }}
                 </p>
                 <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                   <q-rating
@@ -211,7 +211,10 @@ export default {
       show: "favorites-listings",
       errors: [],
       image: ref(null),
-      favourites: [],
+      favourites: {
+        products: [],
+        shops: [],
+      },
       rowData: {},
       data: {},
       files: null,
@@ -365,8 +368,8 @@ export default {
         })
         .catch(({ response }) => {
           // console.log(response);
-          this.errors = response.data.message;
           this.loading = false;
+          this.errors = response.data.message;
           this.$q.notify({
             message: response.data.message,
             color: "red",

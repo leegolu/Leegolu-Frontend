@@ -352,7 +352,7 @@
           </div>
           <div class="dialog_top advert">
             <div class="left_dialog">
-              <img :src="createdProduct.uploads[0].url" alt="" />
+              <img :src="createdProduct.media[0].url" alt="" />
             </div>
 
             <div class="det">
@@ -478,6 +478,9 @@
 import { ref } from "vue";
 import useQuasar from "quasar/src/composables/use-quasar.js";
 import { fabYoutube } from "@quasar/extras/fontawesome-v6";
+import { useAuthStore } from "stores/auth";
+import { Dialog } from "quasar";
+let store = useAuthStore();
 export default {
   name: "MyLayout",
   data() {
@@ -530,7 +533,9 @@ export default {
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
+    let role = store.userDetails.role[0].name;
     return {
+      role,
       editor: ref(""),
 
       saveWork() {
@@ -772,7 +777,7 @@ export default {
       this.$api
         .get("states")
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           this.states = response.data.data;
         })
         .catch((e) => {
@@ -800,10 +805,13 @@ export default {
       this.$api
         .get(`${id}/requirement`)
         .then((response) => {
-          // console.log(response);
-          this.requirements = response.data.data[0].dropdowns;
+          console.log(response);
+          this.requirements = response.data.data.length
+            ? response.data.data[0].dropdowns
+            : response.data.data;
         })
         .catch((e) => {
+          console.log(e);
           this.loading = false;
           this.errors = error.errors || {};
         });
@@ -824,11 +832,12 @@ export default {
     handleBoost() {
       this.boostBtn = true;
       this.$api
-        .post(`${this.createdProduct.id}/product/boost`, {
+        .post(`${this.createdProduct.id}/purchase/boost`, {
           plan: this.selectedAd,
         })
         .then(({ data }) => {
           console.log(data);
+          window.location.href = data.url;
           this.boostBtn = false;
           this.modal3 = false;
           this.successModal = true;
@@ -851,7 +860,7 @@ export default {
       // console.log(imageFiles[0]);
       const formData = new FormData();
       imageFiles.forEach((image) => {
-        formData.append("uploads[]", image);
+        formData.append("media[]", image);
       });
       // formData.append("uploads[]", imageFiles[0]);
       // formData.append("uploads[]", imageFiles[1] ? imageFiles[1] : null);
@@ -872,7 +881,11 @@ export default {
       this.loading = true;
       this.$api
         .post(
-          `${this.$store.leegoluauth.vendorDetails.slug}/product/upload`,
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/product-upload`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/product-upload`
+          }`,
           formData,
           {
             headers: {
@@ -898,15 +911,42 @@ export default {
           this.data = { negotiable: true, uploads: "" };
         })
         .catch((e) => {
-          // console.log(e.response);
-          this.errors = e.response.data.errors;
+          console.log(e.response);
+          console.log(e.response.status);
+          this.errors = e.response.data.errors ? e.response.data.errors : {};
           this.loading = false;
           this.$q.notify({
             message: e.response.data.message,
             color: "red",
             position: "top",
+            timeout: 1223432,
             actions: [{ icon: "close", color: "white" }],
           });
+
+          if (e.response.status === 403) {
+            Dialog.create({
+              title: "Usage Alert!",
+              message:
+                "You've reached your upload limit. Buy a suitable plan to extend you upload limit.",
+              ok: {
+                push: true,
+                label: "Buy plan",
+                color: "green",
+              },
+              persistent: true,
+            })
+              .onOk(() => {
+                this.$router.replace({
+                  name: "Plans",
+                });
+              })
+              .onCancel(() => {
+                // console.log('>>>> Cancel')
+              })
+              .onDismiss(() => {
+                // console.log('I am triggered on both OK and Cancel')
+              });
+          }
           // console.log("Error:", response);
         });
     },
@@ -923,7 +963,7 @@ export default {
       // formData.append("METHOD", 'PUT')
       if (this.uploadedImages.length) {
         imageFiles.forEach((image) => {
-          formData.append("uploads[]", image);
+          formData.append("media[]", image);
         });
         // formData.append("uploads[]", imageFiles[0]);
         // formData.append("uploads[]", imageFiles[1] ? imageFiles[1] : null);

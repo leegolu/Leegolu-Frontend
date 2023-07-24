@@ -139,7 +139,8 @@
             label="Create Listing"
           />
           <q-btn
-            :to="{ name: 'videoPage' }"
+            icon="paid"
+            @click="handlecreatevideo"
             no-caps
             color="primary"
             label="Create Video"
@@ -257,7 +258,7 @@
             <div class="footer_tag">Listings</div>
           </div>
         </q-item>
-        <q-item flat :to="{ name: 'createListing' }">
+        <q-item flat clickable @click="createModal = true">
           <div style="gap: 0.2rem" class="column justify-center items-center">
             <PlusIcon />
             <div class="footer_tag">New Listing</div>
@@ -364,6 +365,7 @@ import ManageIcon from "src/components/icons/ManageIcon.vue";
 import FavouriteIcon from "src/components/icons/FavIcons.vue";
 import PlusIcon from "src/components/icons/PlusIcon.vue";
 import { useAuthStore } from "stores/auth";
+import { Dialog } from "quasar";
 let store = useAuthStore();
 export default {
   name: "MyLayout",
@@ -403,7 +405,7 @@ export default {
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
-    console.log(store.userDetails);
+    // console.log(store.userDetails);
     let role = store.userDetails.role[0].name;
     return {
       editor: ref(
@@ -596,7 +598,7 @@ export default {
       this.$api
         .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.loading = false;
@@ -632,6 +634,37 @@ export default {
         });
     },
 
+    handlecreatevideo() {
+      if (this.role === "regular") {
+        Dialog.create({
+          title: "Alert!",
+          message:
+            "You do not have an active subscription, you will need to be subscribed to a plan to use feature.",
+          ok: {
+            push: true,
+            label: "Buy plan",
+            color: "green",
+          },
+          persistent: true,
+        })
+          .onOk(() => {
+            this.$router.replace({
+              name: "Plans",
+            });
+          })
+          .onCancel(() => {
+            // console.log('>>>> Cancel')
+          })
+          .onDismiss(() => {
+            // console.log('I am triggered on both OK and Cancel')
+          });
+      } else {
+        this.$router.replace({
+          name: "videoPage",
+        });
+      }
+    },
+
     getSubCategory(category) {
       this.loading = true;
       this.showsubCat = true;
@@ -654,7 +687,7 @@ export default {
       this.$api
         .get(url)
         .then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           this.loading = false;
           this.notifications = data.data;
         })
@@ -725,14 +758,14 @@ export default {
       let createproductObject = data;
       // console.log(this.postFormData);
       const formData = new FormData();
-      formData.append("uploads[]", this.data2.uploads);
-      formData.append("uploads[]", this.data2.uploads);
-      formData.append("uploads[]", this.data2.uploads);
-      // formData.append("uploads", this.data.uploads[0]);
-      // formData.append("uploads[]", this.data.uploads);
-      // formData.append("uploads[]", this.data.uploads);
-      // formData.append("uploads[]", this.data.uploads);
-      // formData.append("uploads", this.data.uploads);
+      formData.append("media[]", this.data2.media);
+      formData.append("media[]", this.data2.media);
+      formData.append("media[]", this.data2.media);
+      // formData.append("media", this.data.media[0]);
+      // formData.append("media[]", this.data.media);
+      // formData.append("media[]", this.data.media);
+      // formData.append("media[]", this.data.media);
+      // formData.append("media", this.data.media);
 
       for (var key in createproductObject) {
         // console.log(key);
@@ -754,7 +787,7 @@ export default {
           }
         )
         .then((response) => {
-          console.log("Success:", response);
+          // console.log("Success:", response);
           this.loading = false;
           this.$q.notify({
             message: response.data.message,
@@ -766,7 +799,7 @@ export default {
           this.modal1 = false;
           this.modal2 = false;
           this.successModal = true;
-          this.data = { negotiable: true, uploads: "" };
+          this.data = { negotiable: true, media: "" };
         })
         .catch((e) => {
           // console.log(e.response);
@@ -783,7 +816,7 @@ export default {
     },
 
     create() {
-      if (!this.data2.uploads) {
+      if (!this.data2.media) {
         this.$q.notify({
           color: "red",
           message: "Image field field is required",

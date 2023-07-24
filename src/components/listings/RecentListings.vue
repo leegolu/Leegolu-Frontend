@@ -4,7 +4,7 @@
     <div class="listing_">
       <div class="left">
         <div class="img">
-          <img :src="listing.uploads[0].url" alt="" />
+          <img :src="listing.media[0].url" alt="" />
 
           <p class="tag red">
             <span class="main_textt">{{ listing.views }}</span>
@@ -29,7 +29,7 @@
         <div class="dialog_content">
           <div class="dialog_top">
             <div class="left_dialog">
-              <img :src="listing.uploads[0].url" alt="" />
+              <img :src="listing.media[0].url" alt="" />
             </div>
 
             <div class="det">
@@ -93,7 +93,7 @@
           <p class="advert text-center">Boost Advert</p>
           <div class="dialog_top advert">
             <div class="left_dialog">
-              <img :src="listing.uploads[0].url" alt="" />
+              <img :src="listing.media[0].url" alt="" />
             </div>
 
             <div class="det">

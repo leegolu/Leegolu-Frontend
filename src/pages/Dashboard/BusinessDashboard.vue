@@ -135,6 +135,7 @@
             </div>
           </div>
         </div>
+        <!-- {{ vendor.subscriptions.length }} -->
         <div
           v-if="role === 'business' && !vendor.subscriptions.length"
           class="small_card_bus reg notFree nosub"
@@ -709,6 +710,7 @@ export default {
     this.getStates();
     this.getBusinessTypes();
     // this.getMyPhoneViews();
+    // this.getVendor();
     this.getPlans();
     if (this.$store.leegoluauth.vendorDetails.slug) {
       this.getListings();
@@ -728,7 +730,7 @@ export default {
     });
     let role = store.userDetails.role[0].name;
     let vendor = store.vendorDetails;
-    console.log(role);
+    // console.log(role);
     // console.log(vendor.subscriptions[0].end_date);
 
     return {
@@ -751,23 +753,6 @@ export default {
 
         return Math.min(Math.round(progress * 100) / 100, 100).toFixed() / 100;
       }),
-      // progress2: computed(() => {
-      //   const currentDate = new Date();
-      //   const totalDuration =
-      //     new Date(vendor.subscriptions[0].end_date) -
-      //     new Date(vendor.subscriptions[0].start_date);
-      //   const elapsedDuration =
-      //     currentDate - new Date(vendor.subscriptions[0].start_date);
-      //   const progress = (elapsedDuration / totalDuration) * 100;
-      //   console.log(
-      //     Math.min(Math.round(progress * 100) / 100, 100).toFixed() / 100
-      //   );
-      //   progress2.value =
-      //     (Math.min(Math.round(progress * 100) / 100, 100).toFixed() + "%") /
-      //     100;
-
-      //   return (Math.min(Math.round(progress * 100) / 100, 100) + "%") / 100;
-      // }),
 
       daysLeft: computed(() => {
         const currentDate = new Date();
@@ -792,14 +777,20 @@ export default {
       }),
       // progress1,
       progressLabel2: computed(() => {
-        console.log((progressLabel2.value * 100).toFixed(2) + "%");
+        // console.log((progressLabel2.value * 100).toFixed(2) + "%");
         return (progressLabel2.value * 100).toFixed(2) + "%";
       }),
     };
   },
   mounted() {
-    if (this.$router.currentRoute.value.query.videotour === "yes") {
+    if (
+      this.$router.currentRoute.value.query.videotour === "yes" ||
+      this.$store.leegoluauth.videotour === "yes"
+    ) {
       this.showTour = true;
+    }
+    if (this.$router.currentRoute.value.query.planPurchased === "success") {
+      this.getVendor();
     }
     // console.log(this.$router.currentRoute.value);
   },
@@ -808,7 +799,7 @@ export default {
       this.$api
         .get(`boost/plans`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.plans = response.data.data;
         })
         .catch((e) => {
@@ -946,7 +937,7 @@ export default {
         .get(`${this.$store.leegoluauth.vendorDetails.slug}/phone-views`)
         .then((response) => {
           this.chartloading = false;
-          console.log(response);
+          // console.log(response);
         })
         .catch((e) => {
           this.chartloading = false;
@@ -976,7 +967,7 @@ export default {
           `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?page&month=${currentMonth}&year=${currentYear}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.month;
           // let stringifyArray = response.data["x-axis"].map((i) => i.toString());
@@ -1006,7 +997,7 @@ export default {
         )
         .then((response) => {
           this.chartloading = false;
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.month;
           this.chartOptions = {
@@ -1033,7 +1024,7 @@ export default {
         )
         .then((response) => {
           this.chartloading = false;
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.year;
           // this.chartOptions.xaxis.categories = response.data["x-axis"];
@@ -1060,7 +1051,7 @@ export default {
           `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?messages&month=${currentMonth}&year=${currentYear}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.month;
           // let stringifyArray = response.data["x-axis"].map((i) => i.toString());
@@ -1089,7 +1080,7 @@ export default {
         )
         .then((response) => {
           this.chartloading = false;
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.month;
           this.chartOptions = {
@@ -1116,7 +1107,7 @@ export default {
         )
         .then((response) => {
           this.chartloading = false;
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.year;
           // this.chartOptions.xaxis.categories = response.data["x-axis"];
@@ -1143,7 +1134,7 @@ export default {
           `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?phone&month=${currentMonth}&year=${currentYear}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.month;
           // let stringifyArray = response.data["x-axis"].map((i) => i.toString());
@@ -1172,7 +1163,7 @@ export default {
         )
         .then((response) => {
           this.chartloading = false;
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.month;
           this.chartOptions = {
@@ -1199,7 +1190,7 @@ export default {
         )
         .then((response) => {
           this.chartloading = false;
-          console.log(response);
+          // console.log(response);
           this.series[0].data = response.data["y-axis"];
           this.series[0].name = response.data.year;
           // this.chartOptions.xaxis.categories = response.data["x-axis"];
@@ -1234,8 +1225,10 @@ export default {
       this.$api
         .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           this.$store.leegoluauth.userDetails = response.data.user;
+          this.$store.leegoluauth.vendorDetails = response.data.vendor;
+          this.$store.leegoluauth.vendor = response.data.vendor;
         })
         .catch((e) => {
           // this.loading = false;

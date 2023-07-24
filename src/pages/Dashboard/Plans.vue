@@ -17,7 +17,11 @@
             v-for="(plan, index) in businessPlans"
             :key="index"
             :plan="plan"
+            :states="states"
+            :areas="areas"
+            :businessTypes="businessTypes"
             :loadingsign="loading"
+            @getArea="getAreas"
           />
         </div>
       </div>
@@ -39,6 +43,9 @@ export default {
     return {
       businessPlans: [],
       loading: true,
+      states: [],
+      businessTypes: [],
+      areas: [],
       plans: [
         {
           name: "Seller",
@@ -107,6 +114,8 @@ export default {
 
   created() {
     this.getPlans();
+    this.getStates();
+    this.getBusinessTypes();
   },
 
   methods: {
@@ -130,6 +139,45 @@ export default {
           this.loading = false;
           this.businessPlans = response.data.data;
           // this.vendordetails.state = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+
+    getBusinessTypes() {
+      this.$api
+        .get("business-types")
+        .then((response) => {
+          // console.log(response);
+          this.businessTypes = response.data.data;
+          // this.vendordetails.business_type = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getStates() {
+      this.$api
+        .get("states")
+        .then((response) => {
+          // console.log(response);
+          this.states = response.data.data;
+          // this.vendordetails.state = response.data.data[0].id;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.errors = error.errors || {};
+        });
+    },
+    getAreas(id) {
+      this.$api
+        .get(`${id}/areas`)
+        .then((response) => {
+          console.log(response);
+          this.areas = response.data.data;
         })
         .catch((e) => {
           this.loading = false;

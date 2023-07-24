@@ -26,7 +26,7 @@
         </div>
         <div v-if="productData" class="dialog_top advert">
           <div class="left_dialog">
-            <img :src="productData.uploads[0].url" alt="" />
+            <img :src="productData.media[0].url" alt="" />
             <!-- <img src="/images/listing2.png" alt="" /> -->
             <!-- <img :src="productData." alt="" /> -->
           </div>

@@ -82,7 +82,7 @@
             class="product"
           >
             <div @click="goto(product)">
-              <img :src="product.uploads[0].url" alt="" />
+              <img :src="product.media[0].url" alt="" />
               <div class="location">
                 <p>{{ product.area.name }}, {{ product.state.name }}</p>
               </div>
@@ -113,7 +113,7 @@
               </div>
               <div class="owners">
                 <p class="owner">
-                  <img src="/images/shopp.svg" alt="" />{{ product.shop }}
+                  <img src="/images/shopp.svg" alt="" />{{ product.owner }}
                 </p>
                 <p class="ratings row q-col-gutter-x-xs items-center no-wrap">
                   <q-rating

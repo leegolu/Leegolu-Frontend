@@ -6,7 +6,7 @@
     <div class="listing">
       <div class="left">
         <div class="img">
-          <img :src="listing.uploads[0].url" alt="" />
+          <img :src="listing.media[0].url" alt="" />
           <p v-if="listing.boosted" class="tag">Boosted</p>
         </div>
 
@@ -102,7 +102,7 @@
         <div class="dialog_content">
           <div class="dialog_top">
             <div class="left_dialog">
-              <img :src="listing.uploads[0].url" alt="" />
+              <img :src="listing.media[0].url" alt="" />
             </div>
 
             <div class="det">
@@ -167,7 +167,7 @@
           <p class="advert text-center">Boost Advert</p>
           <div class="dialog_top advert">
             <div class="left_dialog">
-              <img :src="listing.uploads[0].url" alt="" />
+              <img :src="listing.media[0].url" alt="" />
             </div>
 
             <div class="det">

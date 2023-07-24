@@ -15,7 +15,12 @@
 
         <div class="change col">
           <!-- <q-btn> RETURN TO DASHBOARD</q-btn> -->
-          <q-btn :to="{ name: 'business.dashboard' }">
+          <q-btn
+            :to="{
+              name: 'business.dashboard',
+              query: { planPurchased: 'success' },
+            }"
+          >
             RETURN TO DASHBOARD</q-btn
           >
         </div>

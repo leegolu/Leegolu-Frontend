@@ -4,7 +4,7 @@ import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 
 export default ({ app, store }) => {
-  console.log(store);
+  // console.log(store);
   let auth = store.state._value.leegoluauth;
   window.Pusher = Pusher;
   window.Echo = new Echo({
@@ -16,7 +16,7 @@ export default ({ app, store }) => {
       console.log(channel, options);
       return {
         authorize: (socketId, callback) => {
-          console.log(socketId);
+          // console.log(socketId);
           axios
             .post(
               "http://moon.leegolu.com/api/broadcasting/auth",

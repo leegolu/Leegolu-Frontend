@@ -15,7 +15,7 @@
           infinite
         >
           <q-carousel-slide
-            v-for="(image, index) in product.data.uploads"
+            v-for="(image, index) in product.data.media"
             :key="index"
             :name="index"
             @click="popupImg(image)"

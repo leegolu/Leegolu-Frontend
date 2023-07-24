@@ -9,6 +9,7 @@ export const useAuthStore = defineStore("leegoluauth", {
     modal: true,
     previousRoute: "",
     pageBuilderData: {},
+    videotour: "",
     // token: localStorage.getItem("token") || "",
   }),
   getters: {
@@ -17,7 +18,7 @@ export const useAuthStore = defineStore("leegoluauth", {
   },
   actions: {
     setUserDetails(data) {
-      console.log(data);
+      // console.log(data);
       const token = data.token;
       const user = data;
       localStorage.setItem("token", token);

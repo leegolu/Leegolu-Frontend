@@ -81,14 +81,14 @@
                     <img
                       v-if="index < 5"
                       class="overImgs"
-                      :src="`${n.uploads[0].url}`"
+                      :src="`${n.media[0].url}`"
                       alt=""
                     />
 
                     <!-- <img
                       v-for="(n, index) in props.row.products"
                       :key="index"
-                      :src="`${n.uploads[0].url}`"
+                      :src="`${n.media[0].url}`"
                     /> -->
 
                     <!-- <img
@@ -205,7 +205,7 @@
               >
                 <div class="leads_wrap">
                   <div class="leads">
-                    <img :src="listing.uploads[0].url" alt="" />
+                    <img :src="listing.media[0].url" alt="" />
 
                     <div class="lead_detail">
                       <div class="title">{{ listing.name }}</div>
@@ -270,7 +270,7 @@
               >
                 <div class="leads_wrap">
                   <div class="leads">
-                    <img :src="listing.uploads[0].url" alt="" />
+                    <img :src="listing.media[0].url" alt="" />
 
                     <div class="lead_detail">
                       <div class="title">{{ listing.name }}</div>

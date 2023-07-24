@@ -2,7 +2,7 @@
   <div v-if="show" class="hold">
     <div style="gap: 1rem" class="head row no-wrap">
       <div class="left">
-        <img class="main_img" :src="product.uploads[0].url" alt="" />
+        <img class="main_img" :src="product.media[0].url" alt="" />
         <!-- <img class="play" src="/images/play.svg" alt="" /> -->
       </div>
       <div class="details">
