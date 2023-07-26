@@ -189,8 +189,10 @@ export default {
   props: ["plan", "loadingsign", "businessTypes", "states", "areas"],
   setup() {
     let role = store.userDetails.role[0].name;
+    let vendor = store.vendorDetails;
     return {
       role,
+      vendor,
     };
   },
   data() {
@@ -214,6 +216,27 @@ export default {
           ok: {
             push: true,
             label: "Become a business",
+            color: "green",
+          },
+          persistent: true,
+        })
+          .onOk(() => {
+            this.businessreg = true;
+          })
+          .onCancel(() => {
+            // console.log('>>>> Cancel')
+          })
+          .onDismiss(() => {
+            // console.log('I am triggered on both OK and Cancel')
+          });
+      } else if (this.role === "business" && !this.vendor.business_name) {
+        Dialog.create({
+          title: " Alert!",
+          message:
+            "You are a have not finished your onboarding as a vendor, take a moment to complete it...",
+          ok: {
+            push: true,
+            label: "Finish onboarding",
             color: "green",
           },
           persistent: true,

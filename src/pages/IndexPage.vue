@@ -1295,7 +1295,17 @@ a {
     display: none;
   }
 }
+@media (min-width: 1000px) {
+  .product_cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
 @media (max-width: 1100px) {
+  .product_cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
   .product_cards {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }

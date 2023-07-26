@@ -11,13 +11,17 @@
         <div class="owner_right">
           <p class="owner_title">
             <!-- {{ productData }} -->
-            {{ productData.vendor.business_name }}
+            {{
+              productData.vendor.business_name
+                ? productData.vendor.business_name
+                : productData.user.name
+            }}
             <!-- <span> | 7 Months</span> -->
           </p>
 
           <div class="ratings_area">
             <span class="rating_main_text"
-              >{{ productData.data.rating }}.0</span
+              >{{ productData.data.user_rating }}.0</span
             >
             <q-rating
               v-model="productData.data.rating"

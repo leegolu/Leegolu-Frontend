@@ -17,7 +17,7 @@
           <q-carousel-slide
             v-for="(image, index) in product.data.media"
             :key="index"
-            :name="index"
+            :name="index + 1"
             @click="popupImg(image)"
             :img-src="image.url"
           />
@@ -49,17 +49,31 @@
         <div @click="ratingsView = true" class="cursor-pointer owner">
           <div class="owner_left">
             <img
+              v-if="product.vendor.avatar"
               :src="
-                product.vendor.avatar !== null
+                product.vendor.avatar === null
                   ? `/images/usersvg.svg`
-                  : product.vendor.avatar
+                  : product.vendor.avatar.url
+              "
+              alt=""
+            />
+            <img
+              v-else
+              :src="
+                product.user.avatar === null
+                  ? `/images/usersvg.svg`
+                  : product.user.avatar.url
               "
               alt=""
             />
           </div>
           <div class="owner_right">
             <p class="owner_title">
-              {{ product.vendor.business_name }}
+              {{
+                product.vendor.business_name
+                  ? product.vendor.business_name
+                  : product.user.name
+              }}
               <!-- <span> | 7 Months</span> -->
             </p>
             <div class="ratings_area">
@@ -251,19 +265,35 @@
 
           <div class="seller_img q-mb-md">
             <img
+              v-if="product.vendor.avatar"
               :src="
-                product.vendor.avatar !== null
+                product.vendor.avatar === null
                   ? `/images/usersvg.svg`
-                  : product.vendor.avatar
+                  : product.vendor.avatar.url
+              "
+              alt=""
+            />
+            <img
+              v-else
+              :src="
+                product.user.avatar === null
+                  ? `/images/usersvg.svg`
+                  : product.user.avatar.url
               "
               alt=""
             />
           </div>
-          <div class="vendorname">{{ product.vendor.business_name }}</div>
-          <div class="ratings_area">
-            <span class="rating_main_text">4.0</span>
+          <div class="vendorname">
+            {{
+              product.vendor.business_name
+                ? product.vendor.business_name
+                : product.user.name
+            }}
+          </div>
+          <div v-if="product.vendor.business_name" class="ratings_area">
+            <span class="rating_main_text">{{ product.vendor.rating }}</span>
             <q-rating
-              v-model="product.data.rating"
+              v-model="product.vendor.rating"
               size="1em"
               disable
               :max="5"
@@ -405,8 +435,10 @@ export default {
           const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
           this.hoursago = hoursAgo;
           // console.log(hoursAgo);
-          // console.log(response);
-          this.getVendor(response.data.vendor.slug);
+          console.log(response);
+          this.loading = false;
+          // if(response.data.vendor.len)
+          // this.getVendor(response.data.data.slug);
         })
         .catch((e) => {
           this.loading = false;
@@ -418,7 +450,7 @@ export default {
       this.$api
         .get(`vendor/${slug}`)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           this.settings = response.data.privacy;
           this.loading = false;
 
@@ -483,7 +515,13 @@ export default {
       // console.log("emited");
       // this.$q.loading.show();
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/${id}/messages`)
+        .get(
+          `${
+            this.$store.leegoluauth.userDetails.role[0].name === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/${id}/messages`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/${id}/messages`
+          }`
+        )
         .then((response) => {
           // this.$q.loading.hide();
           // console.log(response);

@@ -109,7 +109,20 @@ export default {
           this.$store.leegoluauth.token = response.data.token;
           localStorage.setItem("token", response.data.token);
           this.$store.leegoluauth.modal = false;
-          // if (response.data.user.role[0].name === "business") {
+          // console.log(response.data.vendor.subscriptions.length);
+          if (
+            response.data.user.role[0].name === "business" &&
+            Array.isArray(response.data.vendor)
+          ) {
+            this.$store.leegoluauth.vendorDetails = {
+              subscriptions: [],
+            };
+          }
+          // if (
+          //   response.data.user.role[0].name === "business" &&
+          //   !Array.isArray(response.data.vendor) &&
+          //   response.data.vendor.subscriptions.length !== 0
+          // ) {
           //   this.$store.leegoluauth.vendorDetails = {
           //     subscriptions: [],
           //   };

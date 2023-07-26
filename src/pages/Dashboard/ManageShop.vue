@@ -5,7 +5,9 @@
     </div>
   </div>
   <div v-if="!loading && !vendor.subscriptions.length" class="wrapper">
-    <div class="top"><img src="/images/shopicon.svg" alt="" /> Manage Shop</div>
+    <div class="top row items-center">
+      <img src="/images/shopicon.svg" alt="" /> Manage Shop
+    </div>
 
     <div class="main_area">
       <div class="main_area_top">
@@ -305,7 +307,7 @@ export default {
       editstate: false,
       createstate: null,
       filter: "",
-      vendor: { products: [] },
+      vendor: { products: [], subscriptions: [] },
       curl: "",
       separator: "",
       mode: "list",

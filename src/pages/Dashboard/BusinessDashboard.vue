@@ -96,7 +96,10 @@
         </div>
 
         <div
-          v-if="role === 'business' && vendor.subscriptions.length"
+          v-if="
+            role === 'business' &&
+            this.$store.leegoluauth.vendorDetails.subscriptions.length
+          "
           class="small_card_bus notFree"
         >
           <div class="wallet_left">
@@ -106,15 +109,19 @@
             <div class="icon"><i class="fa-solid fa-bolt"></i> Active</div>
             <div class="wallet_amt">Leegolu Business</div>
             <div class="wallet_small">
-              {{ vendor.subscriptions[0].plan }} | ₦{{
-                vendor.subscriptions[0].price
+              {{ this.$store.leegoluauth.vendorDetails.subscriptions[0].plan }}
+              | ₦{{
+                this.$store.leegoluauth.vendorDetails.subscriptions[0].price
               }}
             </div>
 
             <div class="progress_wrap q-mt-lg">
               <div class="progress">
                 <div class="small">
-                  {{ vendor.products.length }}/{{ totalUploads }} Listings
+                  {{ this.$store.leegoluauth.vendorDetails.products.length }}/{{
+                    totalUploads
+                  }}
+                  Listings
                 </div>
                 <q-linear-progress reverse :value="progress1" color="warning">
                 </q-linear-progress>
@@ -137,7 +144,10 @@
         </div>
         <!-- {{ vendor.subscriptions.length }} -->
         <div
-          v-if="role === 'business' && !vendor.subscriptions.length"
+          v-if="
+            role === 'business' &&
+            !this.$store.leegoluauth.vendorDetails.subscriptions.length
+          "
           class="small_card_bus reg notFree nosub"
         >
           <div class="wallet_left">
@@ -481,7 +491,7 @@
       </div>
     </q-card>
   </q-dialog>
-  <q-dialog class="dash_modal" v-model="businessreg">
+  <q-dialog class="dash_modal" persistent v-model="businessreg">
     <q-card style="width: 100%; max-width: 800px">
       <div class="modal three">
         <div class="modal_wrap">
@@ -501,6 +511,9 @@
                   class="input-1"
                   placeholder="Enter your business name"
                 />
+                <small v-if="errors.name" class="text-weight-bold text-red">
+                  {{ errors.name[0] }}
+                </small>
               </div>
               <div class="input-box active-grey">
                 <label class="input-label">About Business</label>
@@ -519,6 +532,12 @@
                     {{ businessType.name }}
                   </option>
                 </select>
+                <small
+                  v-if="errors.business_type"
+                  class="text-weight-bold text-red"
+                >
+                  {{ errors.business_type[0] }}
+                </small>
               </div>
               <div class="wraps">
                 <div class="input-box active-grey">
@@ -536,6 +555,10 @@
                       {{ state.name }}
                     </option>
                   </select>
+
+                  <small v-if="errors.state" class="text-weight-bold text-red">
+                    {{ errors.state[0] }}
+                  </small>
                 </div>
                 <div class="input-box active-grey">
                   <label class="input-label">Area</label>
@@ -548,6 +571,9 @@
                       {{ area.name }}
                     </option>
                   </select>
+                  <small v-if="errors.area" class="text-weight-bold text-red">
+                    {{ errors.area[0] }}
+                  </small>
                 </div>
               </div>
               <!-- {{ vendordetails }} -->
@@ -559,6 +585,9 @@
                   class="input-1"
                   placeholder="13 Pious Adolf Crescent, Trans-Elemo, Laffia"
                 />
+                <small v-if="errors.address" class="text-weight-bold text-red">
+                  {{ errors.address[0] }}
+                </small>
               </div>
 
               <q-btn
@@ -730,12 +759,20 @@ export default {
     });
     let role = store.userDetails.role[0].name;
     let vendor = store.vendorDetails;
-    // console.log(role);
+    // const str = vendor.subscriptions[1].description[0];
+    // const numberPattern = /\d+/; // Regular expression to match one or more digits
+
+    // const matches = str.match(numberPattern);
+    // const number = matches ? parseInt(matches[0]) : null;
+    // console.log(number)
+    // totalUploads.value = number;
+    // console.log(vendor);
     // console.log(vendor.subscriptions[0].end_date);
 
     return {
       role,
       vendor,
+      // number,
       totalUploads,
       progress2: computed(() => {
         const currentDate = new Date();
@@ -764,12 +801,11 @@ export default {
       progress1: computed(() => {
         // const progress = (vendor.products.length / totalUploads.value) * 100;
         progress1.value =
-          ((vendor.products.length / totalUploads.value) * 100).toFixed() / 100;
+          ((vendor.products.length / totalUploads) * 100).toFixed() / 100;
         // console.log((vendor.products.length / totalUploads.value) * 100);
-        let fixedVal = (
-          (vendor.products.length / totalUploads.value) *
-          100
-        ).toFixed(1);
+        let fixedVal = ((vendor.products.length / totalUploads) * 100).toFixed(
+          1
+        );
         // console.log(Math.abs(fixedVal / 100));
 
         return Math.abs(fixedVal / 100);
@@ -791,6 +827,14 @@ export default {
     }
     if (this.$router.currentRoute.value.query.planPurchased === "success") {
       this.getVendor();
+    }
+
+    if (
+      this.role === "business" &&
+      this.$store.leegoluauth.modal === false &&
+      !this.vendor.business_name
+    ) {
+      this.businessreg = true;
     }
     // console.log(this.$router.currentRoute.value);
   },
@@ -879,6 +923,7 @@ export default {
 
     toggleModals() {
       this.welcometoleegolubusinessmodal = false;
+      this.$store.leegoluauth.modal = false;
       this.addphotoforleegolubusinessmodal = true;
     },
     toggleBus() {
@@ -888,8 +933,15 @@ export default {
     // https://moon.leegolu.com/api/v2/payment/callback
     getListings() {
       this.loading = true;
+
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
+        .get(
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/listing`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/listing`
+          }`
+        )
         .then((response) => {
           console.log("Success:", response);
           this.listings = response.data.data;
@@ -910,7 +962,13 @@ export default {
 
     getMyads() {
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/adverts`)
+        .get(
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/adverts`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/adverts`
+          }`
+        )
         .then((response) => {
           this.myAds = response.data.data;
         })
@@ -921,7 +979,11 @@ export default {
     },
     getMyEngagements() {
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/engagements`)
+        .get(`${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/engagements`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/engagements`
+          }`)
         .then((response) => {
           this.myEngagements = response.data.data;
         })
@@ -934,7 +996,11 @@ export default {
       this.chartView = arg;
       this.chartloading = true;
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/phone-views`)
+        .get(`${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/phone-views`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/phone-views`
+          }`)
         .then((response) => {
           this.chartloading = false;
           // console.log(response);
@@ -946,7 +1012,11 @@ export default {
     },
     getMyLeads() {
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/leads`)
+        .get(`${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/leads`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/leads`
+          }`)
         .then((response) => {
           // console.log(response);
           this.myLeads = response.data.data;
@@ -963,8 +1033,13 @@ export default {
       const currentYear = currentDate.getFullYear();
       const currentMonth = currentDate.getMonth() + 1;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?page&month=${currentMonth}&year=${currentYear}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/daily?page&month=${currentMonth}&year=${currentYear}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?page&month=${currentMonth}&year=${currentYear}`
+          }`
         )
         .then((response) => {
           // console.log(response);
@@ -992,9 +1067,15 @@ export default {
 
       this.chartloading = true;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?page&month=${currentMonth}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/weekly?page&month=${currentMonth}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?page&month=${currentMonth}`
+          }`
         )
+
         .then((response) => {
           this.chartloading = false;
           // console.log(response);
@@ -1019,8 +1100,13 @@ export default {
       const currentYear = currentDate.getFullYear();
       this.chartloading = true;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?page&year=${currentYear}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/yearly?page&year=${currentYear}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?page&year=${currentYear}`
+          }`
         )
         .then((response) => {
           this.chartloading = false;
@@ -1047,8 +1133,13 @@ export default {
       const currentYear = currentDate.getFullYear();
       const currentMonth = currentDate.getMonth() + 1;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?messages&month=${currentMonth}&year=${currentYear}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/daily?messages&month=${currentMonth}&year=${currentYear}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?messages&month=${currentMonth}&year=${currentYear}`
+          }`
         )
         .then((response) => {
           // console.log(response);
@@ -1075,8 +1166,13 @@ export default {
       const currentMonth = currentDate.getMonth() + 1;
       this.chartloading = true;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?messages&month=${currentMonth}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/weekly?messages&month=${currentMonth}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?messages&month=${currentMonth}`
+          }`
         )
         .then((response) => {
           this.chartloading = false;
@@ -1102,8 +1198,13 @@ export default {
       const currentYear = currentDate.getFullYear();
       this.chartloading = true;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?messages&year=${currentYear}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/yearly?messages&year=${currentYear}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?messages&year=${currentYear}`
+          }`
         )
         .then((response) => {
           this.chartloading = false;
@@ -1130,8 +1231,13 @@ export default {
       const currentYear = currentDate.getFullYear();
       const currentMonth = currentDate.getMonth() + 1;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?phone&month=${currentMonth}&year=${currentYear}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/daily?phone&month=${currentMonth}&year=${currentYear}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/daily?phone&month=${currentMonth}&year=${currentYear}`
+          }`
         )
         .then((response) => {
           // console.log(response);
@@ -1158,8 +1264,13 @@ export default {
       const currentMonth = currentDate.getMonth() + 1;
       this.chartloading = true;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?phone&month=${currentMonth}`
+         `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/weekly?phone&month=${currentMonth}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?phone&month=${currentMonth}`
+          }`
         )
         .then((response) => {
           this.chartloading = false;
@@ -1185,8 +1296,13 @@ export default {
       const currentYear = currentDate.getFullYear();
       this.chartloading = true;
       this.$api
+
         .get(
-          `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?phone&year=${currentYear}`
+          `${
+            this.role === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/chart/yearly?phone&year=${currentYear}`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/chart/yearly?phone&year=${currentYear}`
+          }`
         )
         .then((response) => {
           this.chartloading = false;
@@ -1218,8 +1334,12 @@ export default {
       this.addphotoforleegolubusinessmodal = true;
     },
     skipImg() {
-      this.addphotoforleegolubusinessmodal = false;
-      this.businessreg = true;
+      if (this.role === "regular") {
+        this.addphotoforleegolubusinessmodal = false;
+      } else {
+        this.addphotoforleegolubusinessmodal = false;
+        this.businessreg = true;
+      }
     },
     getVendor() {
       this.$api
@@ -1333,6 +1453,11 @@ export default {
           .catch(({ response }) => {
             // console.log(response);
             this.loadingFinish = false;
+            this.$q.notify({
+              color: "red",
+              message: response.data.message,
+              position: "top-right",
+            });
             this.errors = response.data.errors || {};
           });
       }

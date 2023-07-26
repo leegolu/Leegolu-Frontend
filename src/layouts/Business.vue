@@ -19,7 +19,7 @@
 
         <q-space />
 
-        <div class="bar">
+        <!-- <div class="bar">
           <div class="input_wrap">
             <input
               dense
@@ -35,6 +35,82 @@
               icon="search"
               unelevated
             />
+          </div>
+        </div> -->
+        <div class="bar dash">
+          <div class="input_wrap">
+            <q-select
+              ref="search"
+              dark
+              dense
+              standout
+              use-input
+              hide-selected
+              class="GL__toolbar-select search_inp q-pl-md"
+              color="white"
+              :stack-label="false"
+              label="Search or jump to..."
+              v-model="text"
+              :options="filteredOptions"
+              @filter="filter"
+              style="width: 100%"
+            >
+              <template v-slot:append>
+                <!-- <img
+                  src="https://cdn.quasar.dev/img/layout-gallery/img-github-search-key-slash.svg"
+                /> -->
+                <q-btn
+                  text-color="primary"
+                  class="search-btn"
+                  icon="search"
+                  style="padding: 0; min-height: auto"
+                  unelevated
+                />
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section>
+                    <div class="text-center">
+                      <q-spinner-pie color="grey-5" size="24px" />
+                    </div>
+                  </q-item-section>
+                </q-item>
+                <div class="text-center text-red q-pb-md">No data found</div>
+              </template>
+
+              <template v-slot:option="scope">
+                <q-item
+                  v-bind="scope.itemProps"
+                  class="GL__select-GL__menu-link"
+                >
+                  <q-item-section side>
+                    <q-icon name="collections_bookmark" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label v-html="scope.opt.label" />
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    :class="{ 'default-type': !scope.opt.type }"
+                  >
+                    <!-- {{ scope }} -->
+                    <q-btn
+                      outline
+                      :to="{ name: scope.opt.to }"
+                      dense
+                      no-caps
+                      text-color="blue-grey-5"
+                      size="12px"
+                      class="bg-grey-1 q-px-sm"
+                    >
+                      {{ scope.opt.type || "Jump to" }}
+                      <q-icon name="subdirectory_arrow_left" size="14px" />
+                    </q-btn>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
         </div>
 
@@ -367,6 +443,71 @@ import PlusIcon from "src/components/icons/PlusIcon.vue";
 import { useAuthStore } from "stores/auth";
 import { Dialog } from "quasar";
 let store = useAuthStore();
+
+let links1 = [
+  {
+    icon: "/images/svgmanage.svg",
+    text: "Overview",
+    to: "business.dashboard",
+  },
+  {
+    icon: "/images/svgoverview.svg",
+    text: "Manage Shop",
+    to: "manage-shop",
+  },
+  { icon: "/images/icon3.svg", text: "My Listings", to: "listings" },
+  {
+    icon: "/images/collections.svg",
+    text: "My Collections",
+    to: "collections",
+  },
+  {
+    icon: "/images/customers.svg",
+    text: "My Customers",
+    to: "customers",
+  },
+  { icon: "/images/messages.svg", text: "Messages", to: "messages" },
+
+  {
+    icon: "/images/fav.svg",
+    text: "My Favorites",
+    to: "favourites",
+  },
+  {
+    icon: "/images/notif.svg",
+    text: "Notifications",
+    to: "notifications",
+  },
+];
+
+let links2 = [
+  {
+    icon: "/images/svgmanage.svg",
+    text: "Overview",
+    to: "business.dashboard",
+  },
+
+  { icon: "/images/icon3.svg", text: "My Listings", to: "listings" },
+
+  {
+    icon: "/images/customers.svg",
+    text: "My Customers",
+    to: "customers",
+  },
+  { icon: "/images/messages.svg", text: "Messages", to: "messages" },
+
+  {
+    icon: "/images/fav.svg",
+    text: "My Favorites",
+    to: "favourites",
+  },
+  {
+    icon: "/images/notif.svg",
+    text: "Notifications",
+    to: "notifications",
+  },
+];
+
 export default {
   name: "MyLayout",
   data() {
@@ -401,13 +542,86 @@ export default {
     const $q = useQuasar();
 
     const leftDrawerOpen = ref(false);
-    const search = ref("");
+    const search = ref(null);
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
     // console.log(store.userDetails);
     let role = store.userDetails.role[0].name;
+    const text = ref("");
+    const options = ref(null);
+    const filteredOptions = ref([]);
+    function filter(val, update) {
+      if (options.value === null) {
+        // load data
+        setTimeout(() => {
+          if (role === "regular") {
+            options.value = [
+              {
+                text: "Create Listing",
+                to: "adverts",
+              },
+              ...links2,
+              {
+                text: "Settings",
+                to: "settings",
+              },
+            ];
+          } else {
+            options.value = [
+              {
+                text: "Create Listing",
+                to: "adverts",
+              },
+              ...links1,
+              {
+                text: "Settings",
+                to: "settings",
+              },
+            ];
+          }
+          search.value.filter("");
+        }, 500);
+        update();
+        return;
+      }
+
+      if (val === "") {
+        update(() => {
+          filteredOptions.value = options.value.map((op) => ({
+            label: op.text,
+            to: op.to,
+          }));
+        });
+        return;
+      }
+
+      update(() => {
+        filteredOptions.value = [
+          // {
+          //   label: val,
+          //   type: "In this dashboard",
+          // },
+          // {
+          //   label: val,
+          //   type: "All",
+          // },
+          ...options.value
+            .filter((op) => op.text.toLowerCase().includes(val.toLowerCase()))
+            .map((op) => ({ label: op.text, to: op.to })),
+        ];
+
+        // console.log(options.value);
+      });
+    }
+
     return {
+      text,
+      options,
+      filteredOptions,
+      search,
+
+      filter,
       editor: ref(
         "After you define a new button," +
           " you have to make sure to put it in the toolbar too!"
@@ -436,70 +650,8 @@ export default {
       role,
       notifications: ref([]),
       toggleLeftDrawer,
-      links1: [
-        {
-          icon: "/images/svgmanage.svg",
-          text: "Overview",
-          to: "business.dashboard",
-        },
-        {
-          icon: "/images/svgoverview.svg",
-          text: "Manage Shop",
-          to: "manage-shop",
-        },
-        { icon: "/images/icon3.svg", text: "My Listings", to: "listings" },
-        {
-          icon: "/images/collections.svg",
-          text: "My Collections",
-          to: "collections",
-        },
-        {
-          icon: "/images/customers.svg",
-          text: "My Customers",
-          to: "customers",
-        },
-        { icon: "/images/messages.svg", text: "Messages", to: "messages" },
-
-        {
-          icon: "/images/fav.svg",
-          text: "My Favorites",
-          to: "favourites",
-        },
-        {
-          icon: "/images/notif.svg",
-          text: "Notifications",
-          to: "notifications",
-        },
-        // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
-      ],
-      links2: [
-        {
-          icon: "/images/svgmanage.svg",
-          text: "Overview",
-          to: "business.dashboard",
-        },
-
-        { icon: "/images/icon3.svg", text: "My Listings", to: "listings" },
-
-        {
-          icon: "/images/customers.svg",
-          text: "My Customers",
-          to: "customers",
-        },
-        { icon: "/images/messages.svg", text: "Messages", to: "messages" },
-
-        {
-          icon: "/images/fav.svg",
-          text: "My Favorites",
-          to: "favourites",
-        },
-        {
-          icon: "/images/notif.svg",
-          text: "Notifications",
-          to: "notifications",
-        },
-        // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
-      ],
+      links1: links1,
+      links2: links2,
       // links1: [
       //   {
       //     icon: "fa-duotone fa-house",
@@ -633,6 +785,17 @@ export default {
           this.errors = error.errors || {};
         });
     },
+
+    // gotoPage(opt) {
+    //   if (opt.to) {
+    //     this.$router.replace({
+    //       name: opt.to,
+    //     });
+    //   }else{
+
+    //   }
+    //   // console.log(opt);
+    // },
 
     handlecreatevideo() {
       if (this.role === "regular") {
@@ -999,7 +1162,57 @@ export default {
   background: transparent;
   padding: 0 1rem;
 }
+.GL {
+  &.__select-GL__menu-link {
+    .default-type {
+      visibility: hidden;
+    }
+    &:hover {
+      background: #0366d6;
+      color: white;
 
+      .q-item__section--side {
+        color: white;
+      }
+      .default-type {
+        visibility: visible;
+      }
+    }
+  }
+  &.__toolbar-link {
+    a {
+      color: white;
+      text-decoration: none;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  &.__menu-link:hover {
+    background: #0366d6;
+    color: white;
+  }
+  &.__menu-link-signed-in,
+  &.__menu-link-status {
+    &:hover {
+      & > div {
+        background: white !important;
+      }
+    }
+  }
+  &.__menu-link-status {
+    color: $blue-grey-6;
+    &:hover {
+      color: $light-blue-9;
+    }
+  }
+  &.__toolbar-select.q-field--focused {
+    width: 450px !important;
+    .q-field__append {
+      display: none;
+    }
+  }
+}
 input:focus {
   outline: none;
 }

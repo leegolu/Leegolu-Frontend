@@ -883,8 +883,8 @@ export default {
         .post(
           `${
             this.role === "regular"
-              ? `${this.$store.leegoluauth.userDetails.id}/product-upload`
-              : `${this.$store.leegoluauth.vendorDetails.slug}/product-upload`
+              ? `${this.$store.leegoluauth.userDetails.id}/product/upload`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/product/upload`
           }`,
           formData,
           {
@@ -1677,7 +1677,13 @@ p.advert {
   height: 46px;
   text-transform: capitalize;
 }
-
+@media (min-width: 600px) {
+  .create_ad {
+    max-width: 882px !important;
+    width: 90% !important;
+    margin: 0rem auto 2rem;
+  }
+}
 @media (max-width: 950px) {
   .bar .input_wrap {
     width: 70%;
