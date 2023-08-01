@@ -312,6 +312,9 @@ p {
   padding: 0.5rem;
 }
 
+.bar.dash .q-field--standout .q-field__control {
+  background: none;
+}
 .bar.dash .q-field--dark:not(.q-field--highlighted) .q-field__label {
   font-family: "Montserrat";
   font-style: normal;
@@ -328,6 +331,10 @@ p {
   line-height: 17px;
   color: #9a9a9a;
 }
+.q-select__dialog .q-field--highlighted .q-field__label {
+  color: #000 !important;
+}
+
 .bar.dash .q-field--standout.q-field--highlighted .q-field__control {
   box-shadow: none;
 }
@@ -338,6 +345,12 @@ p {
 }
 .bar.dash .q-field__append:last-child i {
   display: none;
+}
+.bar.dash .q-field--standout .q-field__control:before {
+  background: none;
+}
+.bar.dash .q-field__input {
+  color: #000;
 }
 
 .carou .q-carousel__slide {

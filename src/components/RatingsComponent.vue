@@ -12,9 +12,9 @@
           <p class="owner_title">
             <!-- {{ productData }} -->
             {{
-              productData.vendor.business_name
-                ? productData.vendor.business_name
-                : productData.user.name
+              productData.owner.business_name
+                ? productData.owner.business_name
+                : productData.owner.user.name
             }}
             <!-- <span> | 7 Months</span> -->
           </p>

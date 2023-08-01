@@ -233,7 +233,13 @@ export default {
     getListings() {
       this.loading = true;
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/listing`)
+        .get(
+          `${
+            this.$store.leegoluauth.userDetails.role[0].name === "regular"
+              ? `${this.$store.leegoluauth.userDetails.id}/listing`
+              : `${this.$store.leegoluauth.vendorDetails.slug}/listing`
+          }`
+        )
         .then((response) => {
           console.log("Success:", response);
           this.listings = response.data.data;

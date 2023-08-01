@@ -379,7 +379,11 @@ export default {
     },
     onRequest(props) {
       this.loadingCol = true;
-      const url = `${this.$store.leegoluauth.vendorDetails.slug}/customers`;
+      const url = `${
+        this.$store.leegoluauth.userDetails.role[0].name === "regular"
+          ? `${this.$store.leegoluauth.userDetails.id}/customers`
+          : `${this.$store.leegoluauth.vendorDetails.slug}/customers`
+      }`;
       this.curl = url;
       this.$api
         .get(url)

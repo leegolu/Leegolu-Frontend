@@ -49,20 +49,20 @@
         <div @click="ratingsView = true" class="cursor-pointer owner">
           <div class="owner_left">
             <img
-              v-if="product.vendor.avatar"
+              v-if="product.owner.user.avatar"
               :src="
-                product.vendor.avatar === null
+                product.owner.user.avatar === null
                   ? `/images/usersvg.svg`
-                  : product.vendor.avatar.url
+                  : product.owner.user.avatar.url
               "
               alt=""
             />
             <img
               v-else
               :src="
-                product.user.avatar === null
+                product.owner.user.avatar === null
                   ? `/images/usersvg.svg`
-                  : product.user.avatar.url
+                  : product.owner.user.avatar.url
               "
               alt=""
             />
@@ -70,9 +70,9 @@
           <div class="owner_right">
             <p class="owner_title">
               {{
-                product.vendor.business_name
-                  ? product.vendor.business_name
-                  : product.user.name
+                product.owner.business_name
+                  ? product.owner.business_name
+                  : product.owner.user.name
               }}
               <!-- <span> | 7 Months</span> -->
             </p>
@@ -265,35 +265,35 @@
 
           <div class="seller_img q-mb-md">
             <img
-              v-if="product.vendor.avatar"
+              v-if="product.owner.user.avatar"
               :src="
-                product.vendor.avatar === null
+                product.owner.user.avatar === null
                   ? `/images/usersvg.svg`
-                  : product.vendor.avatar.url
+                  : product.owner.user.avatar.url
               "
               alt=""
             />
             <img
               v-else
               :src="
-                product.user.avatar === null
+                product.owner.user.avatar === null
                   ? `/images/usersvg.svg`
-                  : product.user.avatar.url
+                  : product.owner.user.avatar.url
               "
               alt=""
             />
           </div>
           <div class="vendorname">
             {{
-              product.vendor.business_name
-                ? product.vendor.business_name
-                : product.user.name
+              product.owner.business_name
+                ? product.owner.business_name
+                : product.owner.user.name
             }}
           </div>
-          <div v-if="product.vendor.business_name" class="ratings_area">
-            <span class="rating_main_text">{{ product.vendor.rating }}</span>
+          <div v-if="product.owner.business_name" class="ratings_area">
+            <span class="rating_main_text">{{ product.owner.rating }}</span>
             <q-rating
-              v-model="product.vendor.rating"
+              v-model="product.owner.rating"
               size="1em"
               disable
               :max="5"
@@ -467,7 +467,7 @@ export default {
       let product = this.$router.currentRoute.value.params.slug;
 
       this.$api
-        .get(`${this.product.vendor.slug}/${product}/view-phone`)
+        .get(`${this.product.owner.slug}/${product}/view-phone`)
         .then((response) => {
           this.loadingBtn = false;
           this.phoneDialog = true;
@@ -475,15 +475,6 @@ export default {
           // console.log(response);
         })
         .catch(({ response }) => {
-          if (response.status === 401) {
-            this.$store.leegoluauth.previousRoute =
-              this.$router.currentRoute.value.fullPath;
-            this.$router.replace({ name: "login" });
-            this.$q.notify({
-              message: "You need to login to view vendor contact",
-              color: "green",
-            });
-          }
           this.loadingBtn = false;
           this.errors = error.errors || {};
         });

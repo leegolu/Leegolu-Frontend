@@ -41,12 +41,11 @@
           <div class="input_wrap">
             <q-select
               ref="search"
-              dark
               dense
               standout
               use-input
               hide-selected
-              class="GL__toolbar-select search_inp q-pl-md"
+              class="GL__toolbar-select search_inp"
               color="white"
               :stack-label="false"
               label="Search or jump to..."
@@ -81,6 +80,7 @@
 
               <template v-slot:option="scope">
                 <q-item
+                  :to="{ name: scope.opt.to }"
                   v-bind="scope.itemProps"
                   class="GL__select-GL__menu-link"
                 >
@@ -652,34 +652,6 @@ export default {
       toggleLeftDrawer,
       links1: links1,
       links2: links2,
-      // links1: [
-      //   {
-      //     icon: "fa-duotone fa-house",
-      //     text: "Overview",
-      //     to: "business.dashboard",
-      //   },
-      //   { icon: "fa-duotone fa-shop", text: "Manage Shop", to: "manage-shop" },
-      //   { icon: "fa-duotone fa-list", text: "My Listings", to: "listings" },
-      //   {
-      //     icon: "fa-duotone fa-pen",
-      //     text: "My Collections",
-      //     to: "collections",
-      //   },
-      //   { icon: "fa-duotone fa-user", text: "My Customers", to: "customers" },
-      //   { icon: "fa-duotone fa-message", text: "Messages", to: "messages" },
-
-      //   {
-      //     icon: "fa-duotone fa-heart",
-      //     text: "My Favorites",
-      //     to: "favourites",
-      //   },
-      //   {
-      //     icon: "fa-duotone fa-bell",
-      //     text: "Notifications",
-      //     to: "notifications",
-      //   },
-      //   // { icon: "fa-duotone fa-gear", text: "Settings", to: "settings" },
-      // ],
     };
   },
   components: {
@@ -786,17 +758,6 @@ export default {
         });
     },
 
-    // gotoPage(opt) {
-    //   if (opt.to) {
-    //     this.$router.replace({
-    //       name: opt.to,
-    //     });
-    //   }else{
-
-    //   }
-    //   // console.log(opt);
-    // },
-
     handlecreatevideo() {
       if (this.role === "regular") {
         Dialog.create({
@@ -845,7 +806,11 @@ export default {
     },
 
     getNotifications() {
-      const url = `${this.$store.leegoluauth.vendorDetails.slug}/notifications`;
+      const url = `${
+        this.$store.leegoluauth.userDetails.role[0].name === "regular"
+          ? `${this.$store.leegoluauth.userDetails.id}/notifications`
+          : `${this.$store.leegoluauth.vendorDetails.slug}/notifications`
+      }`;
       this.curl = url;
       this.$api
         .get(url)
@@ -888,18 +853,7 @@ export default {
           this.errors = error.errors || {};
         });
     },
-    // getUploadRequirements(id) {
-    //   this.$api
-    //     .get(`${"61a8ee18-7277-46fc-81c0-41ee7147a1c5"}/requirement`)
-    //     .then((response) => {
-    //       console.log(response);
-    //       this.requirements = response.data.data[0].dropdowns;
-    //     })
-    //     .catch((e) => {
-    //       this.loading = false;
-    //       this.errors = error.errors || {};
-    //     });
-    // },
+
     getUploadRequirements(id) {
       this.$api
         .get(`${id}/requirement`)
@@ -911,126 +865,6 @@ export default {
           this.loading = false;
           this.errors = error.errors || {};
         });
-    },
-
-    finish() {
-      this.data.negotiable = this.data.negotiable ? 1 : 0;
-      let data = {
-        ...this.data,
-      };
-      let createproductObject = data;
-      // console.log(this.postFormData);
-      const formData = new FormData();
-      formData.append("media[]", this.data2.media);
-      formData.append("media[]", this.data2.media);
-      formData.append("media[]", this.data2.media);
-      // formData.append("media", this.data.media[0]);
-      // formData.append("media[]", this.data.media);
-      // formData.append("media[]", this.data.media);
-      // formData.append("media[]", this.data.media);
-      // formData.append("media", this.data.media);
-
-      for (var key in createproductObject) {
-        // console.log(key);
-
-        // console.log(createproductObject[key]);
-        formData.append(key, createproductObject[key]);
-      }
-
-      // console.log(formData);
-      this.loading = true;
-      this.$api
-        .post(
-          `${this.$store.leegoluauth.vendorDetails.slug}/product/upload`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then((response) => {
-          // console.log("Success:", response);
-          this.loading = false;
-          this.$q.notify({
-            message: response.data.message,
-            color: "green",
-            timeout: 100000,
-            position: "top",
-            actions: [{ icon: "close", color: "white" }],
-          });
-          this.modal1 = false;
-          this.modal2 = false;
-          this.successModal = true;
-          this.data = { negotiable: true, media: "" };
-        })
-        .catch((e) => {
-          // console.log(e.response);
-          this.errors = e.response.data.errors;
-          this.loading = false;
-          this.$q.notify({
-            message: e.response.data.message,
-            color: "red",
-            position: "top",
-            actions: [{ icon: "close", color: "white" }],
-          });
-          // console.log("Error:", response);
-        });
-    },
-
-    create() {
-      if (!this.data2.media) {
-        this.$q.notify({
-          color: "red",
-          message: "Image field field is required",
-        });
-      } else if (!this.data.subcategory) {
-        this.$q.notify({
-          color: "red",
-          message: "Sub Category field is required",
-        });
-        return;
-      } else if (!this.data.area) {
-        this.$q.notify({
-          color: "red",
-          message: "Location field is required",
-        });
-        return;
-      } else if (!this.data.name) {
-        this.$q.notify({
-          color: "red",
-          message: "Name field is required",
-        });
-        return;
-      } else if (!this.data.description) {
-        this.$q.notify({
-          color: "red",
-          message: "Description field is required",
-        });
-
-        return;
-      } else if (!this.data.condition) {
-        this.$q.notify({
-          color: "red",
-          message: "Condition field is required",
-        });
-        return;
-      } else if (!this.data.price) {
-        this.$q.notify({
-          color: "red",
-          message: "Price field is required",
-        });
-        return;
-      } else if (!this.data.negotiable) {
-        this.$q.notify({
-          color: "red",
-          message: "The Negotiable field is required",
-        });
-        return;
-      } else {
-        this.modal1 = false;
-        this.modal2 = true;
-      }
     },
   },
 };

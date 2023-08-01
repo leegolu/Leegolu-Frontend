@@ -626,12 +626,9 @@ export default {
       if (newVal) {
         this.load = true;
         this.$api
-          .post(
-            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
-            {
-              chat: newVal,
-            }
-          )
+          .post(`setting/privacy`, {
+            chat: newVal,
+          })
           .then((response) => {
             this.load = false;
             // console.log(response);
@@ -643,12 +640,9 @@ export default {
           });
       } else {
         this.$api
-          .post(
-            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
-            {
-              chat: newVal,
-            }
-          )
+          .post(`setting/privacy`, {
+            chat: newVal,
+          })
           .then((response) => {
             this.load = false;
             this.privacyData = response.data.data;
@@ -666,12 +660,9 @@ export default {
       if (newVal) {
         this.load1 = true;
         this.$api
-          .post(
-            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
-            {
-              email: newVal,
-            }
-          )
+          .post(`setting/privacy`, {
+            email: newVal,
+          })
           .then((response) => {
             this.load1 = false;
             this.privacyData = response.data.data;
@@ -683,12 +674,9 @@ export default {
           });
       } else {
         this.$api
-          .post(
-            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
-            {
-              email: newVal,
-            }
-          )
+          .post(`setting/privacy`, {
+            email: newVal,
+          })
           .then((response) => {
             this.privacyData = response.data.data;
             this.load1 = false;
@@ -708,12 +696,9 @@ export default {
         this.load2 = true;
         // console.log(newVal);
         this.$api
-          .post(
-            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
-            {
-              phone: newVal,
-            }
-          )
+          .post(`setting/privacy`, {
+            phone: newVal,
+          })
           .then((response) => {
             this.privacyData = response.data.data;
             // console.log(response);
@@ -727,12 +712,9 @@ export default {
       } else {
         // console.log(newVal);
         this.$api
-          .post(
-            `${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`,
-            {
-              phone: newVal,
-            }
-          )
+          .post(`setting/privacy`, {
+            phone: newVal,
+          })
           .then((response) => {
             this.privacyData = response.data.data;
             this.load2 = false;
@@ -750,7 +732,7 @@ export default {
   methods: {
     onRequest(props) {
       this.$api
-        .get(`${this.$store.leegoluauth.vendorDetails.slug}/setting/privacy`)
+        .get(`setting/privacy`)
         .then((response) => {
           this.loading = false;
           this.privacyData = response.data.data;
@@ -763,19 +745,6 @@ export default {
     },
     setVideoFile(props) {
       this.videoUrl = URL.createObjectURL(props);
-    },
-
-    getVendor() {
-      this.$api
-        .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
-        .then((response) => {
-          this.loading = false;
-          this.vendor = response.data.vendor;
-          console.log(response);
-        })
-        .catch(({ response }) => {
-          this.loading = false;
-        });
     },
 
     onRequestPrivacy(props) {},
@@ -932,6 +901,7 @@ export default {
         .get(`vendor/${this.$store.leegoluauth.vendorDetails.slug}`)
         .then((response) => {
           // console.log(response);
+          this.vendor = response.data.vendor;
           this.$store.leegoluauth.userDetails = response.data.user;
         })
         .catch((e) => {

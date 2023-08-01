@@ -974,49 +974,55 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getMyEngagements() {
       this.$api
-        .get(`${
+        .get(
+          `${
             this.role === "regular"
               ? `${this.$store.leegoluauth.userDetails.id}/engagements`
               : `${this.$store.leegoluauth.vendorDetails.slug}/engagements`
-          }`)
+          }`
+        )
         .then((response) => {
           this.myEngagements = response.data.data;
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getMyPhoneViews(arg) {
       this.chartView = arg;
       this.chartloading = true;
       this.$api
-        .get(`${
+        .get(
+          `${
             this.role === "regular"
               ? `${this.$store.leegoluauth.userDetails.id}/phone-views`
               : `${this.$store.leegoluauth.vendorDetails.slug}/phone-views`
-          }`)
+          }`
+        )
         .then((response) => {
           this.chartloading = false;
           // console.log(response);
         })
         .catch((e) => {
           this.chartloading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getMyLeads() {
       this.$api
-        .get(`${
+        .get(
+          `${
             this.role === "regular"
               ? `${this.$store.leegoluauth.userDetails.id}/leads`
               : `${this.$store.leegoluauth.vendorDetails.slug}/leads`
-          }`)
+          }`
+        )
         .then((response) => {
           // console.log(response);
           this.myLeads = response.data.data;
@@ -1025,7 +1031,7 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getStats() {
@@ -1058,7 +1064,7 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     viewWeekly() {
@@ -1092,7 +1098,7 @@ export default {
         })
         .catch((e) => {
           this.chartloading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     viewYearly() {
@@ -1125,7 +1131,7 @@ export default {
         })
         .catch((e) => {
           this.chartloading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getMessagesStats() {
@@ -1158,7 +1164,7 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     viewMessagesWeekly() {
@@ -1190,7 +1196,7 @@ export default {
         })
         .catch((e) => {
           this.chartloading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     viewMessagesYearly() {
@@ -1223,7 +1229,7 @@ export default {
         })
         .catch((e) => {
           this.chartloading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getPhonesStats() {
@@ -1256,7 +1262,7 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     viewPhonesWeekly() {
@@ -1266,7 +1272,7 @@ export default {
       this.$api
 
         .get(
-         `${
+          `${
             this.role === "regular"
               ? `${this.$store.leegoluauth.userDetails.id}/chart/weekly?phone&month=${currentMonth}`
               : `${this.$store.leegoluauth.vendorDetails.slug}/chart/weekly?phone&month=${currentMonth}`
@@ -1288,7 +1294,7 @@ export default {
         })
         .catch((e) => {
           this.chartloading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     viewPhonesYearly() {
@@ -1321,7 +1327,7 @@ export default {
         })
         .catch((e) => {
           this.chartloading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
 
@@ -1352,7 +1358,7 @@ export default {
         })
         .catch((e) => {
           // this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
 
@@ -1371,7 +1377,7 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getStates() {
@@ -1384,7 +1390,7 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
     getAreas(id) {
@@ -1396,7 +1402,7 @@ export default {
         })
         .catch((e) => {
           this.loading = false;
-          this.errors = error.errors || {};
+          this.errors = e.errors || {};
         });
     },
 
